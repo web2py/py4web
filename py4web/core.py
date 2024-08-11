@@ -2131,7 +2131,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "-L",
     "--logging_level",
     type=int,
-    default=logging.WARNING,
+    default=logging.INFO,
     help="The log level (0 - 50) [default: 30 (=WARNING)]",
 )
 @click.option(

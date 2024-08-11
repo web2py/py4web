@@ -1,12 +1,17 @@
+import errno
 import logging
 import os
+import socket
 import ssl
+import subprocess
 import sys
+import threading
+from ast import literal_eval
 
 from ombott.server_adapters import ServerAdapter
 
 try:
-    from .utils.wsservers import *
+    from .utils.wsservers import wsservers_list
 except ImportError:
     wsservers_list = []
 
@@ -24,11 +29,22 @@ __all__ = [
 # ---------------------- utils -----------------------------------------------
 
 
-# export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
 def get_log_file(out_banner=True):
-    log_dir = os.environ.get("PY4WEB_LOGS", None)
-    if log_dir and os.path.isdir(log_dir):
-        log_file = os.path.join(log_dir, "server-py4web.log")
+    """
+    Returns the filename for logging or None
+    Assumes:
+    export PY4WEB_ERRORLOG=/tmp # export PY4WEB_ERRORLOG=
+    if PY4WEB_ERRORLOG is :stderr or :stdout returns None
+    if PY4WEB_ERRORLOG is a folder returns the name of a logfile in that dir
+    if PY4WEB_ERRORLOG is a filename it returns that filename
+    if the out_banner argument is true, it outputs the filename
+    """
+    log_dir = os.environ.get("PY4WEB_ERRORLOG", None)
+    if log_dir and not log_dir.startswith(":"):
+        if os.path.isdir(log_dir):
+            log_file = os.path.join(log_dir, "server-py4web.log")
+        else:
+            log_file = log_dir
         if out_banner:
             print(f"log_file: {log_file}")
         return log_file
@@ -36,7 +52,7 @@ def get_log_file(out_banner=True):
 
 
 def check_level(level):
-
+    "Check the level is a valid loglevel"
     # lib/python3.7/logging/__init__.py
     # CRITICAL = 50
     # FATAL = CRITICAL
@@ -62,10 +78,11 @@ def check_level(level):
     )
 
 
-def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w", test_log=False):
+def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w"):
+    "Configures logging"
 
     log_file = get_log_file()
-    log_to = dict()
+    log_to = {}
 
     if log_file:
         if sys.version_info >= (3, 9):
@@ -73,12 +90,8 @@ def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w", test_log=F
             log_to["filemode"] = fmode
             log_to["encoding"] = "utf-8"
         else:
-            try:
-                h = logging.FileHandler(log_file, mode=fmode, encoding="utf-8")
-                log_to.update({"handlers": [h]})
-            except (LookupError, KeyError, ValueError) as ex:
-                print(f"{ex}, bad  encoding {__file__}")
-                pass
+            h = logging.FileHandler(log_file, mode=fmode, encoding="utf-8")
+            log_to.update({"handlers": [h]})
 
     short_msg = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
     # long_msg = short_msg + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
@@ -86,20 +99,12 @@ def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w", test_log=F
     time_msg = "%H:%M:%S"
     # date_time_msg = '%Y-%m-%d %H:%M:%S'
 
-    try:
-        logging.basicConfig(
-            format=short_msg,
-            datefmt=time_msg,
-            level=check_level(level),
-            **log_to,
-        )
-    except (OSError, LookupError, KeyError, ValueError) as ex:
-        print(f"{ex}, {__file__}")
-        print(f"cannot open {log_file}")
-        logging.basicConfig(
-            format="%(message)s",
-            level=check_level(level),
-        )
+    logging.basicConfig(
+        format=short_msg,
+        datefmt=time_msg,
+        level=check_level(level),
+        **log_to,
+    )
 
     if logger_name is None:
         return None
@@ -107,52 +112,36 @@ def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w", test_log=F
     log = logging.getLogger("SA:" + logger_name)
     log.propagate = True
 
-    if test_log:
-        for func in (
-            log.debug,
-            log.info,
-            log.warn,
-            log.error,
-            log.critical,
-        ):
-            func("func: " + func.__name__)
-
     return log
 
 
 def get_workers(opts, default=10):
-    try:
-        return opts["workers"] if opts["workers"] else default
-    except KeyError:
-        return default
+    "Extracts the number of worker from opts or default"
+    return int(opts["workers"]) if opts.get("workers") else default
 
 
 def check_port(host="127.0.0.1", port=8000):
-    import errno
-    import socket
-    import subprocess
-
-    def os_cmd(run_cmd):
-        try:
-            subprocess.run(
-                run_cmd,
-                shell=True,
-                check=True,
-                text=True,
-            )
-        except subprocess.CalledProcessError:
-            pass
+    "Check the specified port is available and print debug info"
 
     if host.startswith("unix:/"):
         socket_path = host[5:]
         if os.path.exists(socket_path):
             if port == 0:
-                os_cmd(f"ls -alFi {socket_path}")
-                sys.exit(f"can't run gunicorn: {socket_path} exists")
+                if (
+                    subprocess.run(
+                        ["ls", "-alFi", "socket_path"], shell=False, check=False
+                    ).returncode
+                    != 0
+                ):
+                    sys.exit(f"can't run gunicorn: {socket_path} exists")
             elif port == 1:
-                os_cmd("ps -ef | head -1; ps -ef | grep py4web | grep -v grep")
-                os_cmd(f"ls -alFi {socket_path}")
-                os_cmd(f"lsof -w {socket_path}")
+                subprocess.run(
+                    "ps -ef | head -1; ps -ef | grep py4web | grep -v grep",
+                    shell=True,
+                    check=False,
+                )
+                subprocess.run(["ls", "-alFi", socket_path], shell=False, check=False)
+                subprocess.run(["lsof", "-w", socket_path], shell=False, check=False)
             elif port == 8000:
                 pass
         print(f"gunicorn listening at: {host}")
@@ -163,9 +152,11 @@ def check_port(host="127.0.0.1", port=8000):
         s.bind((host, int(port)))
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
-            os_cmd(
+            subprocess.run(
                 f"command -v lsof >/dev/null 2>&1 && ps -ef | head -1; ps -ef |"
-                f" grep py4web | grep -v grep && lsof -nPi:{port}"
+                f" grep py4web | grep -v grep && lsof -nPi:{port}",
+                shell=True,
+                check=False,
             )
             sys.exit(f"{host}:{port} is already in use")
         else:
@@ -177,21 +168,21 @@ def check_port(host="127.0.0.1", port=8000):
 
 
 def gunicorn():
-    import threading
-
+    "Builds and returns a guncorn server"
     from gevent import local  # pip install gevent gunicorn setproctitle
 
     if isinstance(threading.local(), local.local):
         print("gunicorn: monkey.patch_all() applied")
 
     class GunicornServer(ServerAdapter):
-        def run(self, app_handler):
+        "The gunicorn server adapter"
+
+        def run(self, handler):
+            "runs the server"
             try:
                 from gunicorn.app.base import Application
             except ImportError as ex:
                 sys.exit(f"{ex}\nTry: pip install gunicorn gevent setproctitle")
-
-            from ast import literal_eval
 
             check_port(self.host, self.port)
 
@@ -217,7 +208,7 @@ def gunicorn():
 
             if not self.quiet:
                 level = check_level(self.options["logging_level"])
-                log_file = get_log_file(out_banner=False)
+                log_file = get_log_file()
 
                 logger = logging_conf(level)
                 log_to = "-" if log_file is None else log_file
@@ -232,35 +223,40 @@ def gunicorn():
                 )
 
             class GunicornApplication(Application):
+                "A  gunicorn application"
+
+                @staticmethod
+                def check_kv(kx, vx):
+                    "convenience function"
+                    if (
+                        kx
+                        and vx
+                        and (
+                            kx
+                            not in (
+                                "bind",
+                                "config",
+                            )
+                        )
+                    ):
+                        if vx.startswith("{") and vx.endswith("}"):
+                            vx = literal_eval(vx)
+                        if vx == "None":
+                            vx = None
+                        return kx, vx
+                    return None, None
+
                 def get_gunicorn_options(
                     self,
                     gu_default="gunicorn.conf.py",
                     env_file="gunicorn.saenv",
                     env_key="GUNICORN_",
                 ):
-                    def check_kv(kx, vx):
-                        if (
-                            kx
-                            and vx
-                            and (
-                                kx
-                                not in (
-                                    "bind",
-                                    "config",
-                                )
-                            )
-                        ):
-                            if vx.startswith("{") and vx.endswith("}"):
-                                vx = literal_eval(vx)
-                            if vx == "None":
-                                vx = None
-                            return kx, vx
-                        return None, None
-
+                    "Returns the default options"
                     if os.path.isfile(gu_default):
                         return {"use_python_config": gu_default, "config": gu_default}
 
-                    res_opts = dict()
+                    res_opts = {}
 
                     if os.path.isfile(env_file):
                         try:
@@ -278,7 +274,7 @@ def gunicorn():
                                         k, v = k.strip().lower(), v.strip()
                                     except (ValueError, AttributeError):
                                         continue
-                                    k, v = check_kv(k, v)
+                                    k, v = GunicornApplication.check_kv(k, v)
                                     if k is None:
                                         continue
                                     res_opts[k] = v
@@ -293,7 +289,7 @@ def gunicorn():
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
                             k = k.split("_", 1)[1].lower()
-                            k, v = check_kv(k, v)
+                            k, v = GunicornApplication.check_kv(k, v)
                             if k is None:
                                 continue
                             res_opts[k] = v
@@ -304,6 +300,7 @@ def gunicorn():
                     return res_opts
 
                 def load_config(self):
+                    "Loads the config"
                     sa_config.update(self.get_gunicorn_options())
                     logger and logger.debug(sa_config)
 
@@ -321,7 +318,7 @@ def gunicorn():
                             break
 
                 def load(self):
-                    return app_handler
+                    return handler
 
             GunicornApplication().run()
 
@@ -332,10 +329,8 @@ gunicornGevent = gunicorn
 
 
 def gevent():
+    "Returns a gevent server"
     # gevent version 23.9.1
-
-    import threading
-
     from gevent import local, pywsgi  # pip install gevent
 
     if not isinstance(threading.local(), local.local):
@@ -348,7 +343,11 @@ def gevent():
     # ./py4web.py run apps -s gevent --watch=off --host=192.168.1.161 --port=8443 --ssl_cert=server.pem -L 0
 
     class GeventServer(ServerAdapter):
-        def run(self, app_handler):
+        "Defines a gevent server"
+
+        def run(self, handler):
+            "runs the server"
+
             logger = None  # "default"
 
             if not self.quiet:
@@ -369,12 +368,12 @@ def gevent():
                     do_handshake_on_connect=False,
                 )
                 if certfile
-                else dict()
+                else {}
             )
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
-                app_handler,
+                handler,
                 log=logger,
                 error_log=logger,
                 **ssl_args,
@@ -386,6 +385,7 @@ def gevent():
 
 
 def geventWebSocketServer():
+    "builds and returns a Gevent websocket server"
     from gevent import pywsgi
     # from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
     from gevent_ws import WebSocketHandler  # pip install gevent gevent-ws
@@ -402,7 +402,10 @@ def geventWebSocketServer():
     #   -sSv  https://192.168.1.161:9000/
 
     class GeventWebSocketServer(ServerAdapter):
-        def run(self, app_handler):
+        "Class implementing a Gevent websocket server"
+
+        def run(self, handler):
+            "Runs the server"
             logger = None  # "default"
 
             if not self.quiet:
@@ -419,12 +422,12 @@ def geventWebSocketServer():
                     keyfile=self.options.get("keyfile", None),
                 )
                 if certfile
-                else dict()
+                else {}
             )
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
-                app_handler,
+                handler,
                 handler_class=WebSocketHandler,
                 log=logger,
                 error_log=logger,
@@ -440,16 +443,19 @@ geventWs = geventWebSocketServer
 
 
 def wsgirefThreadingServer():
+    "builds and returns a wsgiref threading server"
+
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
 
-    import socket
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
-    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
-                                       make_server)
+    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
 
     class WSGIRefThreadingServer(ServerAdapter):
-        def run(self, app_handler):
+        "Class implementing a WSGIRef server"
+
+        def run(self, handler):
+            "runs the server"
 
             self.log = None
 
@@ -521,14 +527,14 @@ def wsgirefThreadingServer():
 
                 def log_request(self, *args, **kw):
                     if not self_run.quiet:
-                        return WSGIRequestHandler.log_request(self, *args, **kw)
+                        WSGIRequestHandler.log_request(self, *args, **kw)
 
-                def log_message(self, format, *args):
+                def log_message(self, formatstr, *args):
                     if not self_run.quiet:  # and ( not args[1] in ['200', '304']) :
                         msg = "%s - - [%s] %s" % (
                             self.client_address[0],
                             self.log_date_time_string(),
-                            format % args,
+                            formatstr % args,
                         )
                         self_run.log.info(msg)
 
@@ -544,7 +550,7 @@ def wsgirefThreadingServer():
                     server_cls = ServerClass
 
             srv = make_server(
-                self.host, self.port, app_handler, server_cls, LogHandler
+                self.host, self.port, handler, server_cls, LogHandler
             )  # handler_cls)
             srv.serve_forever()
 
@@ -555,16 +561,20 @@ wsgiTh = wsgirefThreadingServer
 
 
 def rocketServer():
+    "Builds and returns a rocket3 server"
+
     try:
         from rocket3 import Rocket3 as Rocket
     except ImportError:
         from .rocket3 import Rocket3 as Rocket
 
     class RocketServer(ServerAdapter):
-        def run(self, app_handler):
+        "Class implementing a rocket3 server"
+
+        def run(self, handler):
+            "runs the server"
 
             if not self.quiet:
-
                 logging_conf(
                     self.options["logging_level"],
                 )
@@ -583,7 +593,7 @@ def rocketServer():
                 else (self.host, self.port)
             )
 
-            server = Rocket(interface, "wsgi", dict(wsgi_app=app_handler))
+            server = Rocket(interface, "wsgi", dict(wsgi_app=handler))
             server.start()
 
     return RocketServer
