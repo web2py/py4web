@@ -1650,7 +1650,7 @@ def watch(apps_folder, server_config, mode="sync"):
         click.echo("--watch option has no effect in multi-process environment \n")
         return
 
-    if server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
+    if server_adapters.blocking.get(server_config["server"]):
         # these servers block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
@@ -1709,7 +1709,7 @@ def start_server(kwargs):
 
     if not server_config["server"]:
         if server_config["platform"] == "windows" or number_workers < 2:
-            server_config["server"] = "rocketServer"
+            server_config["server"] = "rocket"
         else:
             if not gunicorn:
                 logging.error("gunicorn not installed")
@@ -1717,18 +1717,15 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    if server_config["server"] not in {"rocketServer", "wsgirefWsTwistedServer"}:
-        signal.signal(
-            signal.SIGINT,
-            lambda signal, frame: click.echo(
-                "KeyboardInterrupt (ID: {signal}) has been caught. Cleaning up..."
-            )
-            and sys.exit(0),
-        )
+    def stop_then_kill(sig, grame):
+        os.kill(os.getpid(), signal.SIGTERM)
+        time.sleep(2)
+        os.kill(os.getpid(), signal.SIGKILL)
 
-    params["server"] = server_config["server"]
-    if params["server"] in server_adapters.__all__:
-        params["server"] = getattr(server_adapters, params["server"])()
+    signal.signal(signal.SIGINT, stop_then_kill)
+
+    adapter = server_adapters.available.get(server_config["server"])
+    params["server"] = adapter or server_config["server"]
     if number_workers > 1:
         params["workers"] = number_workers
     if server_config["server"] == "gunicorn":
@@ -2051,7 +2048,9 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     help="No prompt, assume yes to questions",
     show_default=True,
 )
-@click.option("-H", "--host", default="127.0.0.1", help="Host listening IP", show_default=True)
+@click.option(
+    "-H", "--host", default="127.0.0.1", help="Host listening IP", show_default=True
+)
 @click.option(
     "-P", "--port", default=8000, type=int, help="Port number", show_default=True
 )
@@ -2089,10 +2088,11 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--server",
     default="default",
     type=click.Choice(
-        ["default", "wsgiref", "tornado", "gevent", "waitress"]
-        + server_adapters.__all__
+        ["default"] + list(server_adapters.available) + server_adapters.unavailable
     ),
-    help="Web server to use",
+    help="Web server to use (unavailable: {})".format(
+        ", ".join(server_adapters.unavailable)
+    ),
     show_default=False,
 )
 @click.option(
