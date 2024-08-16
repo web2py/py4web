@@ -444,11 +444,13 @@ enables the following syntax:
 
    groups = Tags(db.auth_user)
 
-   def requires_membership(group_name):
-       return Condition(
-          lambda: group_name in groups.get(auth.user_id),
-          exception=HTTP(404)
-       )
+   class requires_membership(Fixture):
+       def __init__(self, group):
+           self.__prerequisites__ = [auth.user] # you must have a user before you can check
+           self.group  = group # store the group when action defined
+       def on_request(self, context): # will be called if the action is called
+           if self.group not in groups.get(auth.user_id):
+               raise HTTP(401) # check and do something
 
    @action('index')
    @action.uses(requires_membership('teacher'))
