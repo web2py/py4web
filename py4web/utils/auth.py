@@ -665,11 +665,11 @@ class Auth(Fixture):
         # then check for possible login blockers
         if not user:
             error = "invalid_credentials"
-        elif (user["action_token"] or "").startswith("pending-registration:"):
+        elif (user.get("action_token") or "").startswith("pending-registration:"):
             error = "registration_is_pending"
-        elif user["action_token"] == "account-blocked":
+        elif user.get("action_token") == "account-blocked":
             error = "account_is_blocked"
-        elif user["action_token"] == "pending-approval":
+        elif user.get("action_token") == "pending-approval":
             error = "account_needs_to_be_approved"
 
         # return the error or the user
