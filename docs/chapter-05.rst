@@ -333,8 +333,8 @@ The scaffold app contains an example of a more complex action:
 
 Notice the following:
 
--  ``request``, ``response``, ``abort`` are defined by
-   which is a fast bottlepy spin-off.
+-  ``request``, ``response``, ``abort`` are defined by ``ombott``
+   which is a minimal and fast bottlepy spin-off.
 -  ``redirect`` and ``URL`` are similar to their web2py counterparts
 -  helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported
    from ``yatl.helpers`` . They work pretty much as in web2py
