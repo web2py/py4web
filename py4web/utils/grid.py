@@ -318,6 +318,7 @@ class Grid:
         grid_class_style=GridClassStyle,
         T=lambda text: text,
         groupby=None,
+        use_appname=None,
         # deprecated
         fields=None,
         form_maker=Form,
@@ -351,6 +352,8 @@ class Grid:
             fullpath = request.fullpath.rstrip("/")
             if path == "index":
                 fullpath = fullpath[:-6]
+            if use_appname == False:
+                fullpath = fullpath.replace(f"/{request.app_name}", "")
             redirect(
                 f"{fullpath}/select"
                 + (f"?{request.query_string}" if request.query_string else "")
@@ -403,12 +406,16 @@ class Grid:
             header_elements=None,
             footer_elements=None,
             required_fields=required_fields or [],
+            use_appname=use_appname
         )
 
         #  instance variables that will be computed
         self.action = None
         self.current_page_number = None
         self.endpoint = request.fullpath[: -len(self.path)].rstrip("/")
+        if use_appname == False:
+            self.endpoint = self.endpoint.replace(f"/{request.app_name}", "")
+        print(f"endpoint = {self.endpoint}")
         self.hidden_fields = None
         self.form = None
         self.number_of_pages = None
@@ -940,12 +947,12 @@ class Grid:
         if orderby:
             if orderby == sort_order:
                 sort_query_parms["orderby"] = "~" + orderby
-                url = URL(self.endpoint, "select", vars=sort_query_parms)
+                url = URL(self.endpoint, "select", vars=sort_query_parms, use_appname=self.param.use_appname)
                 attrs = self.attributes_plugin.link(url=url)
                 col_header = A(heading, up, **attrs)
             else:
                 sort_query_parms["orderby"] = orderby
-                url = URL(self.endpoint, "select", vars=sort_query_parms)
+                url = URL(self.endpoint, "select", vars=sort_query_parms, use_appname=self.param.use_appname)
                 attrs = self.attributes_plugin.link(url=url)
                 col_header = A(
                     heading, dw if "~" + orderby == sort_order else "", **attrs
@@ -1130,7 +1137,7 @@ class Grid:
                 else "grid-pagination-button"
             )
             attrs = self.attributes_plugin.link(
-                url=URL(self.endpoint, "select", vars=pager_query_parms)
+                url=URL(self.endpoint, "select", vars=pager_query_parms, use_appname=self.param.use_appname)
             )
             pager.append(
                 A(
