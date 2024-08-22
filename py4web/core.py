@@ -1423,19 +1423,7 @@ class Reloader:
                     del Reloader.MODULES[app_name]
                     clear_modules()
 
-                load_module_message = None
-                buf_out = io.StringIO()
-                buf_err = buf_out
-                with redirect_stdout(buf_out), redirect_stderr(buf_err):
-                    module = load_module(module_name, init)
-                    load_module_message = buf_out.getvalue()
-                buf_out.close()
-                buf_out = sys.stdout
-                buf_err = sys.stderr
-
-                if load_module_message:
-                    click.secho(f"\x1b[A    output {app_name}       ", fg="yellow")
-                    click.echo(load_module_message)
+                module = load_module(module_name, init)
 
                 click.secho(f"\x1b[A[X] loaded {app_name}       ", fg="green")
                 Reloader.MODULES[app_name] = module
