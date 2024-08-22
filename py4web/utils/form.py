@@ -7,8 +7,20 @@ import uuid
 import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
-                          TEXTAREA, XML, A, P)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    LABEL,
+    OPTION,
+    SELECT,
+    SPAN,
+    TEXTAREA,
+    XML,
+    A,
+    P,
+)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -328,7 +340,6 @@ class FormStyleFactory:
         if "_virtual_fields" in dir(table):
             all_fields += table._virtual_fields
         for field in all_fields:
-
             is_virtual = isinstance(field, FieldVirtual)
 
             # only display field if readable or writable
@@ -389,7 +400,6 @@ class FormStyleFactory:
             if readonly or not field.writable or field.type == "id" or is_virtual:
                 # for boolean readonly we use a readonly checbox
                 if field.type == "boolean":
-
                     control = CheckboxWidget().make(
                         field, value, error, title, readonly=True
                     )
@@ -520,7 +530,6 @@ class FormStyleFactory:
             form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
 
         if deletable:
-
             deletable_record_attributes = dict()
 
             deletable_field_name = "_delete"
@@ -822,6 +831,7 @@ class Form(object):
                     if validation:
                         validation(self)
                     if not self.errors:
+                        """
                         for file in uploaded_files:
                             if field.name not in self.vars:
                                 field, value = file
@@ -830,13 +840,9 @@ class Form(object):
                                 )
                                 if value is not None:
                                     self.vars[field.name] = value
+                        """
                         self.accepted = True
                         if dbio:
-                            validated_vars = {
-                                k: v
-                                for k, v in self.vars.items()
-                                if k != "id"
-                            }
                             self.update_or_insert(validated_vars)
                 elif dbio:
                     self.accepted = True

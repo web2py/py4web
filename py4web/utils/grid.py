@@ -501,14 +501,21 @@ class Grid:
 
         for index, col in enumerate(self.param.columns):
             if isinstance(col, Column):
+
                 if not col.key:
                     col.key = f"column-{index}"
                 self.columns.append(col)
+
             elif isinstance(col, Field):
-                # what about represe
+
                 def compute(row, col=col):
                     value = row(str(col))
-                    return col.represent(value) if col.represent else value
+                    if col.represent:
+                        value = col.represent(value)
+                    # deal with download links in special manner if no representation
+                    if col.type == "upload" and value and col.download_url:
+                        value = A("download", _href=col.download_url(value))
+                    return value
 
                 self.columns.append(
                     Column(
