@@ -1717,12 +1717,10 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    def stop_then_kill(sig, grame):
-        os.kill(os.getpid(), signal.SIGTERM)
-        time.sleep(2)
+    def kill_all(sig, grame):
         os.kill(os.getpid(), signal.SIGKILL)
 
-    signal.signal(signal.SIGINT, stop_then_kill)
+    signal.signal(signal.SIGINT, kill_all)
 
     adapter = server_adapters.available.get(server_config["server"])
     params["server"] = adapter or server_config["server"]
