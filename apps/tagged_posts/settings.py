@@ -8,16 +8,20 @@ This file is provided as an example:
 import os
 from py4web.core import required_folder
 
+# mode (default or development)
+MODE = os.environ.get("PY4WEB_MODE")
+
 # db settings
 APP_FOLDER = os.path.dirname(__file__)
 APP_NAME = os.path.split(APP_FOLDER)[-1]
+
 # DB_FOLDER:    Sets the place where migration files will be created
 #               and is the store location for SQLite databases
 DB_FOLDER = required_folder(APP_FOLDER, "databases")
 DB_URI = "sqlite://storage.db"
 DB_POOL_SIZE = 1
 DB_MIGRATE = True
-DB_FAKE_MIGRATE = False  # maybe?
+DB_FAKE_MIGRATE = False
 
 # location where static files are stored:
 STATIC_FOLDER = required_folder(APP_FOLDER, "static")
@@ -26,7 +30,10 @@ STATIC_FOLDER = required_folder(APP_FOLDER, "static")
 UPLOAD_FOLDER = required_folder(APP_FOLDER, "uploads")
 
 # send verification email on registration
-VERIFY_EMAIL = True
+VERIFY_EMAIL = MODE != "development"
+
+# complexity of the password 0: no constraints, 50: safe!
+PASSWORD_ENTROPY = 0 if MODE == "development" else 50
 
 # account requires to be approved ?
 REQUIRES_APPROVAL = False
@@ -52,14 +59,14 @@ SMTP_TLS = False
 
 # session settings
 SESSION_TYPE = "cookies"
-SESSION_SECRET_KEY = None   # or replace with your own secret
+SESSION_SECRET_KEY = None  # or replace with your own secret
 MEMCACHE_CLIENTS = ["127.0.0.1:11211"]
 REDIS_SERVER = "localhost:6379"
 
 # logger settings
 LOGGERS = [
     "warning:stdout"
-]  # syntax "severity:filename" filename can be stderr or stdout
+]  # syntax "severity:filename:format" filename can be stderr or stdout
 
 # Disable default login when using OAuth
 DEFAULT_LOGIN_ENABLED = True
@@ -93,14 +100,18 @@ USE_PAM = False
 USE_LDAP = False
 LDAP_SETTINGS = {
     "mode": "ad",  # Microsoft Active Directory
-    "server": "mydc.domain.com", # FQDN or IP of one Domain Controller
-    "base_dn": "cn=Users,dc=domain,dc=com", # base dn, i.e. where the users are located
+    "server": "mydc.domain.com",  # FQDN or IP of one Domain Controller
+    "base_dn": "cn=Users,dc=domain,dc=com",  # base dn, i.e. where the users are located
 }
 
 # i18n settings
 T_FOLDER = required_folder(APP_FOLDER, "translations")
 
-# Celery settings
+# Scheduler settings
+USE_SCHEDULER = False
+SCHEDULER_MAX_CONCURRENT_RUNS = 1
+
+# Celery settings (alternative to the build-in scheduler)
 USE_CELERY = False
 CELERY_BROKER = "redis://localhost:6379/0"
 

@@ -4,8 +4,8 @@ These are fixtures that every app needs so probably you will not be editing this
 """
 import os
 import sys
-import logging
 from py4web import Session, Cache, Translator, Flash, DAL, Field, action
+from py4web.server_adapters.logging_utils import make_logger
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.downloader import downloader
@@ -17,19 +17,7 @@ from . import settings
 # #######################################################
 # implement custom loggers form settings.LOGGERS
 # #######################################################
-logger = logging.getLogger("py4web:" + settings.APP_NAME)
-formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
-)
-for item in settings.LOGGERS:
-    level, filename = item.split(":", 1)
-    if filename in ("stdout", "stderr"):
-        handler = logging.StreamHandler(getattr(sys, filename))
-    else:
-        handler = logging.FileHandler(filename)
-    handler.setFormatter(formatter)
-    logger.setLevel(getattr(logging, level.upper(), "DEBUG"))
-    logger.addHandler(handler)
+logger = make_logger("py4web:" + settings.APP_NAME, settings.LOGGERS)
 
 # #######################################################
 # connect to db

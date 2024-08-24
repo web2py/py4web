@@ -4,31 +4,20 @@ These are fixtures that every app needs so probably you will not be editing this
 """
 import os
 import sys
-import logging
 from py4web import Session, Cache, Translator, Flash, DAL, Field, action
+from py4web.server_adapters.logging_utils import make_logger
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.downloader import downloader
 from pydal.tools.tags import Tags
+from pydal.tools.scheduler import Scheduler
 from py4web.utils.factories import ActionFactory
 from . import settings
 
 # #######################################################
 # implement custom loggers form settings.LOGGERS
 # #######################################################
-logger = logging.getLogger("py4web:" + settings.APP_NAME)
-formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
-)
-for item in settings.LOGGERS:
-    level, filename = item.split(":", 1)
-    if filename in ("stdout", "stderr"):
-        handler = logging.StreamHandler(getattr(sys, filename))
-    else:
-        handler = logging.FileHandler(filename)
-    handler.setFormatter(formatter)
-    logger.setLevel(getattr(logging, level.upper(), "DEBUG"))
-    logger.addHandler(handler)
+logger = make_logger("py4web:" + settings.APP_NAME, settings.LOGGERS)
 
 # #######################################################
 # connect to db
@@ -52,6 +41,7 @@ T = Translator(settings.T_FOLDER)
 # #######################################################
 if settings.SESSION_TYPE == "cookies":
     session = Session(secret=settings.SESSION_SECRET_KEY)
+
 elif settings.SESSION_TYPE == "redis":
     import redis
 
@@ -64,11 +54,13 @@ elif settings.SESSION_TYPE == "redis":
         else cs(k, v, e)
     )
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+
 elif settings.SESSION_TYPE == "memcache":
     import memcache, time
 
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+
 elif settings.SESSION_TYPE == "database":
     from py4web.utils.dbstore import DBStore
 
@@ -84,7 +76,7 @@ auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL
 auth.param.login_after_registration = settings.LOGIN_AFTER_REGISTRATION
 auth.param.allowed_actions = settings.ALLOWED_ACTIONS
 auth.param.login_expiration_time = 3600
-auth.param.password_complexity = {"entropy": 0}
+auth.param.password_complexity = {"entropy": settings.PASSWORD_ENTROPY}
 auth.param.block_previous_password_num = 3
 auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
 auth.define_tables()
@@ -135,13 +127,15 @@ if settings.OAUTH2GOOGLE_CLIENT_ID:
     )
 
 if settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE:
-    from py4web.utils.auth_plugins.oauth2google_scoped import OAuth2GoogleScoped # TESTED
+    from py4web.utils.auth_plugins.oauth2google_scoped import (
+        OAuth2GoogleScoped,
+    )  # TESTED
 
     auth.register_plugin(
         OAuth2GoogleScoped(
             secrets_file=settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE,
-            scopes=[], # Put here any scopes you want in addition to login
-            db=db, # Needed to store credentials in auth_credentials
+            scopes=[],  # Put here any scopes you want in addition to login
+            db=db,  # Needed to store credentials in auth_credentials
         )
     )
 
@@ -183,10 +177,12 @@ if settings.OAUTH2OKTA_CLIENT_ID:
 # files uploaded and reference by Field(type='upload')
 # #######################################################
 if settings.UPLOAD_FOLDER:
-    @action('download/<filename>')
+
+    @action("download/<filename>")
     @action.uses(db)
     def download(filename):
         return downloader(db, settings.UPLOAD_FOLDER, filename)
+
     # To take advantage of this in Form(s)
     # for every field of type upload you MUST specify:
     #
@@ -194,17 +190,15 @@ if settings.UPLOAD_FOLDER:
     # field.download_url = lambda filename: URL('download/%s' % filename)
 
 # #######################################################
-# Optionally configure celery
+# Define and optionally start the scheduler
 # #######################################################
-if settings.USE_CELERY:
-    from celery import Celery
-
-    # to use "from .common import scheduler" and then use it according
-    # to celery docs, examples in tasks.py
-    scheduler = Celery(
-        "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
+if settings.USE_SCHEDULER:
+    scheduler = Scheduler(
+        db, logger=logger, max_concurrent_runs=settings.SCHEDULER_MAX_CONCURRENT_RUNS
     )
-
+    scheduler.start()
+else:
+    scheduler = None
 
 # #######################################################
 # Enable authentication
@@ -213,6 +207,8 @@ auth.enable(uses=(session, T, db), env=dict(T=T))
 
 # #######################################################
 # Define convenience decorators
+# They can be used instead of @action and @action.uses
+# They should NEVER BE MIXED with @action and @action.uses
 # #######################################################
 unauthenticated = ActionFactory(db, session, T, flash, auth)
 authenticated = ActionFactory(db, session, T, flash, auth.user)

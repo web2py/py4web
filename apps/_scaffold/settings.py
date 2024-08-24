@@ -66,7 +66,7 @@ REDIS_SERVER = "localhost:6379"
 # logger settings
 LOGGERS = [
     "warning:stdout"
-]  # syntax "severity:filename" filename can be stderr or stdout
+]  # syntax "severity:filename:format" filename can be stderr or stdout
 
 # Disable default login when using OAuth
 DEFAULT_LOGIN_ENABLED = True
