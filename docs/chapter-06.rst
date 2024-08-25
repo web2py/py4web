@@ -363,7 +363,7 @@ The client can also set/add flash messages by calling:
 
 ::
 
-   utils.flash({'message': 'hello world', 'class': 'info'});
+   Q.flash({'message': 'hello world', 'class': 'info'});
 
 py4web defaults to an alert class called ``info`` and most CSS
 frameworks define classes for alerts called ``success``, ``error``,
