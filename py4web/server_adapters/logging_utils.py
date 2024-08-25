@@ -32,7 +32,7 @@ def make_logger(name, loggers_info):
             handler = logging.StreamHandler(getattr(sys, filename))
         else:
             handler = logging.FileHandler(filename)
-        handler.setFormatter(formatter)
+        handler.setFormatter(logging.Formatter(formatter))
         handler.setLevel(getattr(logging, level.upper(), "DEBUG"))
         root.addHandler(handler)
     return root
