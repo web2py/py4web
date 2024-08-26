@@ -277,6 +277,7 @@ class FormStyleFactory:
         deletable,
         noncreate,
         show_id,
+        use_appname,
         kwargs=None,
     ):
         kwargs = kwargs if kwargs else {}
@@ -284,6 +285,8 @@ class FormStyleFactory:
         kwargs["_accept-charset"] = "utf8"
         form_method = "POST"
         form_action = request.url.split(":", 1)[1]
+        if use_appname == False:
+            form_action = form_action.replace(f"/{request.app_name}", "")
         form_enctype = "multipart/form-data"
 
         if "_method" in kwargs:
@@ -696,6 +699,7 @@ class Form(object):
         signing_info=None,
         submit_value="Submit",
         show_id=False,
+        use_appname=None,
         **kwargs,
     ):
         self.param = Param(
@@ -732,6 +736,7 @@ class Form(object):
         self.lifespan = lifespan
         self.csrf_protection = csrf_protection
         self.show_id = show_id
+        self.use_appname = use_appname
         # initialized and can change
         self.vars = {}
         self.errors = {}
@@ -927,6 +932,7 @@ class Form(object):
                 self.deletable,
                 self.noncreate,
                 show_id=self.show_id,
+                use_appname=self.use_appname,
                 kwargs=self.kwargs,
             )
             for item in self.param.sidecar:
