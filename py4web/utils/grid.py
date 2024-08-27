@@ -613,6 +613,7 @@ class Grid:
                 formstyle=self.param.formstyle,
                 validation=self.param.validation,
                 show_id=self.param.show_id,
+                use_appname=self.param.use_appname,
                 **attrs,
             )
             if self.action == "new" and self.param.create:
