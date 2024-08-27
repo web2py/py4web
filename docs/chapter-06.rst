@@ -657,16 +657,9 @@ require that users action have specific group membership:
 
    groups = Tags(db.auth_user)
 
-   class requires_membership(Fixture):
-       def __init__(self, group):
-           self.__prerequisites__ = [auth.user] # you must have a user before you can check
-           self.group  = group # store the group when action defined
-       def on_request(self, context): # will be called if the action is called
-           if self.group not in groups.get(auth.user_id):
-               raise HTTP(401) # check and do something
-
    @action("payroll")
-   @action.uses(auth, requires_membership("employees"))
+   @action.uses(auth, 
+                Condition(lambda: 'employees' in groups.get(auth.user_id), on_false=lambda: redirect('index')))
    def payroll():
        return
 
