@@ -69,7 +69,10 @@ class AuthEnforcer(Fixture):
 
         if "text/html" not in request.headers.get("accept", ""):
             raise HTTP(403, body={"message": message})
-        redirect_next = request.fullpath
+        if self.auth.param.use_appname_in_redirects == False:
+            redirect_next = request.fullpath.replace(f"/{request.app_name}", "")
+        else:
+            redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
         self.auth.flash.set(message)
@@ -91,7 +94,10 @@ class AuthEnforcer(Fixture):
                     request.headers.get("json-redirects", "") != "on"
                 ):
                     raise HTTP(403)
-                redirect_next = request.fullpath
+                if self.auth.param.use_appname_in_redirects == False:
+                    redirect_next = request.fullpath.replace(f"/{request.app_name}", "")
+                else:
+                    redirect_next = request.fullpath
                 if request.query_string:
                     redirect_next = redirect_next + "?{}".format(request.query_string)
                 redirect(
@@ -1482,7 +1488,10 @@ class DefaultAuthForms:
                 self.auth.get_or_delete_existing_unverified_account(email)
         extra_form_fields = self.auth.extra_form_fields.get("register", [])
         fields += extra_form_fields
-        form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
+        form = Form(fields, 
+                    submit_value=button_name, 
+                    formstyle=self.formstyle, 
+                    use_appname=self.auth.param.use_appname_in_redirects)
         user = None
         if form.accepted:
             # notice that here the form is alrealdy validated
@@ -1620,6 +1629,7 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
+            use_appname=self.auth.param.use_appname_in_redirects
         )
         user = None
         next_url = prevent_open_redirect(request.query.get("next"))
@@ -1682,7 +1692,7 @@ class DefaultAuthForms:
         next_url = self.auth.session.get("auth.2fa_next_url")
 
         if not user_id:
-            redirect(URL("index"))
+            redirect(URL("index", use_appname=self.auth.param.use_appname_in_redirects))
 
         user = self.auth.db.auth_user(user_id)
         code = self.auth.session.get("auth.2fa_code")
@@ -1710,6 +1720,7 @@ class DefaultAuthForms:
             form_name="auth_2fa",
             keep_values=True,
             hidden=dict(next_url=next_url),
+            use_appname=self.auth.param.use_appname_in_redirects,
         )
 
         if form.accepted:
@@ -1783,6 +1794,7 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
+            use_appname=self.auth.param.use_appname_in_redirects
         )
         if form.accepted:
             email = form.vars.get("email", "")
@@ -1851,6 +1863,7 @@ class DefaultAuthForms:
             fields,
             formstyle=self.formstyle,
             submit_value=button_name,
+            use_appname=self.auth.param.use_appname_in_redirects
         )
         self._process_change_password_form(form, user, False)
         if form.accepted:
@@ -1896,6 +1909,7 @@ class DefaultAuthForms:
             fields,
             formstyle=self.formstyle,
             submit_value=button_name,
+            use_appname=self.auth.param.use_appname_in_redirects
         )
         user = self.auth.db.auth_user(self.auth.user_id)
         self._process_change_password_form(form, user, True)
@@ -1959,6 +1973,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
             deletable=deletable,
             submit_value=button_name,
+            use_appname=self.auth.param.use_appname_in_redirects
         )
         if form.accepted:
             self._set_flash("profile-saved")
@@ -1996,4 +2011,4 @@ class DefaultAuthForms:
         if action in self.auth.on_accept:
             self.auth.on_accept[action](form, user)
         if not form or form.accepted:
-            redirect(self.auth.session.get(f"_next_{action}") or URL("index"))
+            redirect(self.auth.session.get(f"_next_{action}") or URL("index", use_appname=self.auth.param.use_appname_in_redirects))
