@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py4web"
-version = "1.20240826.1"
+version = "1.20240901.1"
 authors = [{ name="Massimo Di Pierro", email="massimo.dipierro@gmail.com" },]
 description = "A fast, stable, comprehensive web framework"
 readme = "README.rst"
@@ -20,7 +20,7 @@ dynamic = ["dependencies"]
 dependencies = {file = "requirements.txt"}
 
 [tool.setuptools]
-packages = ["py4web", "py4web.utils", "py4web.utils.auth_plugins",]
+packages = ["py4web", "py4web.server_adapters", "py4web.utils", "py4web.utils.auth_plugins"]
 
 [tool.setuptools.package-data]
 py4web = ["assets/*"]
