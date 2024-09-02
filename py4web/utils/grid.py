@@ -360,7 +360,7 @@ class Grid:
         if isinstance(query, query._db.Table):
             query = query._id != None
 
-        if fields and any(field.type == "id" for field in fields):
+        if fields and any(field.name == "id" for field in fields):
             show_id = True
 
         self.path = path
