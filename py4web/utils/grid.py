@@ -1390,8 +1390,8 @@ def get_parent(path, parent_field):
             if "parent_id" in kvp:
                 parent_id = kvp.split("parent_id=")[1]
 
-    if parent_id and "&" in parent_id:
-        parent_id = parent_id.split("&")[0]
+    if parent_id and "&" in str(parent_id):
+        parent_id = str(parent_id).split("&")[0]
 
     return parent_id
 
