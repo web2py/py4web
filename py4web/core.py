@@ -37,6 +37,7 @@ import uuid
 import zipfile
 from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
+from fqdn import FQDN
 
 import portalocker
 from watchgod import awatch
@@ -860,6 +861,8 @@ def URL(  # pylint: disable=invalid-name
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name?}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
+    if FQDN(request.urlparts[1]).is_valid:
+        use_appname = False
     if use_appname is None:
         # force use_appname on domain-unmapped apps
         use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")

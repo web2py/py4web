@@ -15,6 +15,7 @@ rocket3 >= 20230507.1
 yatl >= 20230507.3
 pydal >= 20240713.1
 watchgod >= 0.6
+fqdn
 
 # optional modules:
 # gunicorn
