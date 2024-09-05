@@ -501,7 +501,6 @@ class Grid:
 
         for index, col in enumerate(self.param.columns):
             if isinstance(col, Column):
-
                 if not col.key:
                     col.key = f"column-{index}"
                 self.columns.append(col)
@@ -1365,11 +1364,13 @@ def get_parent(path, parent_field):
     :return parent_id: the id of the parent record
     """
     parent_id = request.query.get("parent_id")
+    if parent_id is not None:
+        return int(parent_id)
 
     child_table = parent_field._table
     fn = parent_field.name
 
-    #  find the record id of the parent from the child table record
+    #  if not found, search the record id of the parent from the child table record
     if path:
         parts = path.split("/")
         record_id = parts[1] if len(parts) > 1 else None
@@ -1377,23 +1378,23 @@ def get_parent(path, parent_field):
             record = child_table(record_id)
             if record:
                 parent_id = record[fn]
+                if parent_id is not None:
+                    return int(parent_id)
 
-    #  not passed in, check in the form
-    if not parent_id:
-        parent_id = request.forms.get(fn)
+    #  else, check in the form
+    parent_id = request.forms.get(fn)
+    if parent_id is not None:
+        return int(parent_id)
 
-    #  not found yet, check in the referer
-    if not parent_id:
-        referrer = request.query.get("_referrer")
-        if referrer:
-            kvp = base64.b16decode(referrer.encode("utf8")).decode("utf8")
-            if "parent_id" in kvp:
-                parent_id = kvp.split("parent_id=")[1]
+    #  else, check in the referer
+    referrer = request.query.get("_referrer")
+    if referrer:
+        kvp = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+        if "parent_id" in kvp:
+            parent_id = kvp.split("parent_id=")[1].split("&")[0]
+            return int(parent_id)
 
-    if parent_id and "&" in parent_id:
-        parent_id = parent_id.split("&")[0]
-
-    return parent_id
+    return None
 
 
 class AttributesPlugin:
