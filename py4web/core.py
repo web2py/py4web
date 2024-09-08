@@ -1611,10 +1611,21 @@ def watch(apps_folder, server_config, mode="sync"):
     async def watch_folder(apps_folder):
         """Async function that watches a folder for changes"""
         click.echo(f"watching ({mode}-mode) python file changes in: {apps_folder}")
+
+        # Then load all the apps as submodules
+        if os.environ.get("PY4WEB_APP_NAMES"):
+            app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
+        else:
+            app_names = None
+
         async for changes in awatch(os.path.join(apps_folder)):
             apps = []
             for subpath in [pathlib.Path(pair[1]) for pair in changes]:
                 name = subpath.relative_to(apps_folder).parts[0]
+                # ignore apps not listed in app names
+                if app_names is not None and name not in app_names:
+                    continue
+                # record the name of the app that changed
                 if subpath.suffix == ".py":
                     apps.append(name)
                 ## manage `app_watch_handler` decorators
@@ -1625,11 +1636,13 @@ def watch(apps_folder, server_config, mode="sync"):
                             APP_WATCH["tasks"][handler] = {}
                         APP_WATCH["tasks"][handler][subpath.as_posix()] = True
 
+            # reimport the apps the changed
             for name in apps:
                 if mode == "lazy":
                     DIRTY_APPS[name] = True
                 else:
                     Reloader.import_app(name)
+
             ## in 'lazy' mode it's done in bottle's 'before_request' hook
             if mode != "lazy":
                 try_app_watch_tasks()
