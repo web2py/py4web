@@ -432,3 +432,45 @@ relative to an app. Python files (i.e. "\*.py") in a list passed to the
 decorator are ignored since they are watched by default. Handler
 function’s parameter is a list of filepaths that were changed. All
 exceptions inside handlers are printed in terminal.
+
+Domain-mapped apps
+------------------
+
+In production environments it is often required to have several apps being
+served by a single py4web server, where different apps are mapped to
+different domains. 
+
+py4web can easily handle running multiple apps, but there is no build-in
+mechanism for mapping domains to specific applications. Such mapping needs
+to be done externally to py4web -- for instance using a web reverse-proxy, 
+such as nginx. 
+
+While nginx or other reverse-proxies are also useful in production 
+environments for handling SSL termination, caching and other uses, 
+we cover only the mapping of domains to py4web applications here.  
+
+An example nginx configuration for an application ``myapp`` mapped to 
+a domain ``myapp.example.com`` might look like that:
+
+.. code:: console
+
+   server {
+      listen 80;
+      server_name myapp.example.com;
+      proxy_http_version 1.1;
+      proxy_set_header Host $host;
+      proxy_set_header X-PY4WEB-APPNAME /myapp;
+      location / {
+         proxy_pass http://127.0.0.1:8000/myapp$request_uri;
+      }
+   }
+
+This is an example ``server`` block of nginx configuraiton. One would have to create a separate such block for **each app/each domain** being served by py4web server. Note some important aspects:
+
+- ``server_name`` defines the domain mapped to the app ``myapp``,
+- ``proxy_http_version 1.1;`` directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk to the backend-server -- here py4web -- and it creates all kinds of issues with buffering and otherwise),
+- ``proxy_set_header Host $host;`` directive ensures that the correct ``Host`` is passed to py4web -- here ``myapp.example.com``
+- ``proxy_set_header X-PY4WEB-APPNAME /myapp;`` directive ensures that py4web (and ombott) knows which app to serve and **also** that this application is domain-mapped -- pay specific attention to the slash (``/``) in front of the ``myapp`` name -- it is **required** to ensure correct parsing of URLs on ombott level,
+- finally ``proxy_pass http://127.0.0.1:8000/myapp$request_uri;`` ensures that the request is passed in its entirity (``$request_uri``) to py4web server (here: ``127.0.0.1:8000``) and the correct app (``/myapp``).
+
+Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as ``Auth``, ``Form``, and ``Grid`` are done correctly using the domain to which the app is mapped to. 
