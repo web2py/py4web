@@ -167,11 +167,11 @@ The follow can be specified on Auth instantiation:
 two_factor_required
 ^^^^^^^^^^^^^^^^^^^
 
-When you pass a method name to the two_factor_filter parameter you are telling py4web to call that method to determine whether or not this login should
+When you pass a method name to the ``two_factor_required`` parameter you are telling py4web to call that method to determine whether or not this login should
 be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, 
 two factor authentication is bypassed for this login.
 
-Sample two_factor_filter method
+Sample ``two_factor_required`` method
 
 This example shows how to allow users that are on a specific network.
 
