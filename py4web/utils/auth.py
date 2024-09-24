@@ -1644,7 +1644,7 @@ class DefaultAuthForms:
                 ):
                     self.auth.session["auth.2fa_user"] = user["id"]
                     self.auth.session["auth.2fa_next_url"] = next_url
-                    redirect(URL("auth", "two_factor"))
+                    redirect(URL(f"{self.auth.route}/two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1730,7 +1730,7 @@ class DefaultAuthForms:
                 self._set_flash(
                     self.auth.param.messages["errors"]["two_factor_max_tries"]
                 )
-                redirect(URL("auth", "login", vars=dict(next=next_url)))
+                redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):
