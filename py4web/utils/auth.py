@@ -1452,7 +1452,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-in"],
                         action="login",
-                        href="/auth/api/login",
+                        href=URL(f"{self.auth.route}/api/login"),
                     )
                 )
 
@@ -1461,7 +1461,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["lost-password"],
                         action="request_reset_password",
-                        href="/auth/api/request_reset_password",
+                        href=URL(f"{self.auth.route}/api/request_reset_password"),
                     )
                 )
 
@@ -1469,7 +1469,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/register",
+                href=URL(f"{self.auth.route}/api/register"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1511,7 +1511,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-in"],
-                    _href="../auth/login",
+                    _href=URL(f"{self.auth.route}/login"),
                     _class=self.auth.param.button_classes["sign-in"],
                     _role="button",
                 )
@@ -1520,7 +1520,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
-                    _href="../auth/request_reset_password",
+                    _href=URL(f"{self.auth.route}/request_reset_password"),
                     _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
@@ -1536,7 +1536,7 @@ class DefaultAuthForms:
             if not hasattr(plugin, "get_login_url"):
                 continue
 
-            url = f"/auth/plugin/{name}/login"
+            url = URL(f"{self.auth.route}/plugin/{name}/login")
 
             next_url = prevent_open_redirect(request.query.get("next"))
             if next_url:
@@ -1548,7 +1548,7 @@ class DefaultAuthForms:
 
         combined_div = DIV(
             *[
-                A(item["label"], _href=f"..{item['href']}", _role="button")
+                A(item["label"], _href=f"{item['href']}", _role="button")
                 for item in top_buttons
             ]
         )
@@ -1590,7 +1590,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-up"],
                         action="register",
-                        href="/auth/api/register",
+                        href=URL(f"{self.auth.route}/api/register"),
                     )
                 )
 
@@ -1599,7 +1599,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["lost-password"],
                         action="request_reset_password",
-                        href="/auth/api/request_reset_password",
+                        href=URL(f"{self.auth.route}/api/request_reset_password"),
                     )
                 )
 
@@ -1609,7 +1609,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/login",
+                href=URL(f"{self.auth.route}/api/login"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1644,7 +1644,7 @@ class DefaultAuthForms:
                 ):
                     self.auth.session["auth.2fa_user"] = user["id"]
                     self.auth.session["auth.2fa_next_url"] = next_url
-                    redirect(URL("auth", "two_factor"))
+                    redirect(URL(f"{self.auth.route}/two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1652,7 +1652,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-up"],
-                    _href="../auth/register",
+                    _href=URL(f"{self.auth.route}/register"),
                     _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
@@ -1661,7 +1661,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
-                    _href="../auth/request_reset_password",
+                    _href=URL(f"{self.auth.route}/request_reset_password"),
                     _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
@@ -1730,7 +1730,7 @@ class DefaultAuthForms:
                 self._set_flash(
                     self.auth.param.messages["errors"]["two_factor_max_tries"]
                 )
-                redirect(URL("auth", "login", vars=dict(next=next_url)))
+                redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):
@@ -1752,7 +1752,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-in"],
                         action="login",
-                        href="/auth/api/login",
+                        href=URL(f"{self.auth.route}/api/login"),
                     )
                 )
 
@@ -1761,7 +1761,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-up"],
                         action="register",
-                        href="/auth/api/register",
+                        href=URL(f"{self.auth.route}/api/register"),
                     )
                 )
 
@@ -1769,7 +1769,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/request_reset_password",
+                href=URL(f"{self.auth.route}/api/request_reset_password"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1794,7 +1794,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-in"],
-                    _href="../auth/login",
+                    _href=URL(f"{self.auth.route}/login"),
                     _class=self.auth.param.button_classes["sign-in"],
                     _role="button",
                 )
@@ -1804,7 +1804,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-up"],
-                    _href="../auth/register",
+                    _href=URL(f"{self.auth.route}/register"),
                     _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
@@ -1836,7 +1836,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=True,
                 fields=fields,
-                href="/auth/api/reset_password",
+                href=URL(f"{self.auth.route}/api/reset_password"),
                 submit_label=button_name,
             )
 
@@ -1888,7 +1888,7 @@ class DefaultAuthForms:
                 public=False,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/change_password",
+                href=URL(f"{self.auth.route}/api/change_password"),
                 submit_label=button_name,
             )
 
@@ -1948,7 +1948,7 @@ class DefaultAuthForms:
                 public=False,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/profile",
+                href=URL(f"{self.auth.route}/api/profile"),
                 submit_label=button_name,
                 deletable=deletable,
             )
@@ -1968,7 +1968,7 @@ class DefaultAuthForms:
     def logout(self, model=False):
         if model:
             return dict(
-                public=False, hidden=False, noform=True, href="/auth/api/logout"
+                public=False, hidden=False, noform=True, href=URL(f"{self.auth.route}/api/logout")
             )
 
         """Process logout"""
@@ -1980,7 +1980,7 @@ class DefaultAuthForms:
     def verify_email(self, model=False):
         if model:
             return dict(
-                public=True, hidden=True, noform=True, href="/auth/api/verify_email"
+                public=True, hidden=True, noform=True, href=URL(f"{self.auth.route}/api/verify_email")
             )
 
         """Process token in email verification"""
