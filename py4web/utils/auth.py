@@ -230,6 +230,7 @@ class Auth(Fixture):
         password_in_db=True,
         two_factor_required=None,
         two_factor_send=None,
+        two_factor_validate=None,
         template_args=None,
     ):
         # configuration parameters
@@ -255,6 +256,7 @@ class Auth(Fixture):
             expose_all_models=True,
             two_factor_required=two_factor_required,
             two_factor_send=two_factor_send,
+            two_factor_validate=two_factor_validate,
             two_factor_tries=3,
             auth_enforcer=None,
             template_args=template_args or {},
@@ -1675,7 +1677,7 @@ class DefaultAuthForms:
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
     def two_factor(self):
-        if self.auth.param.two_factor_send is None:
+        if (self.auth.param.two_factor_send is None) and (self.auth.param.two_factor_validate is None):
             raise HTTP(404)
 
         user_id = self.auth.session.get("auth.2fa_user")
@@ -1686,12 +1688,14 @@ class DefaultAuthForms:
 
         user = self.auth.db.auth_user(user_id)
         code = self.auth.session.get("auth.2fa_code")
-        if not code:
+        if (not code) and (not self.auth.param.two_factor_send is None):
             # generate and send the code
             code = str(random.randint(100000, 999999))
             code = self.auth.param.two_factor_send(user, code)
             # store code in session
             self.auth.session["auth.2fa_code"] = code
+            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+        elif self.auth.session.get("auth.2fa_tries_left") is None:
             self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
         form = Form(
@@ -1703,9 +1707,10 @@ class DefaultAuthForms:
                     requires=IS_EQUAL_TO(
                         code,
                         error_message=self.auth.param.messages["errors"]["two_factor"],
-                    ),
+                    ) if self.auth.param.two_factor_validate is None else None,
                 ),
             ],
+            validation=self.auth.param.two_factor_validate,
             formstyle=self.auth.param.formstyle,
             form_name="auth_2fa",
             keep_values=True,
@@ -1715,7 +1720,7 @@ class DefaultAuthForms:
         if form.accepted:
             # reset the 2f session
             self._reset_two_factor()
-            # store user i session
+            # store user in session
             self.auth.store_user_in_session(user["id"])
             # login user
             self._postprocessing("login", form, user)
