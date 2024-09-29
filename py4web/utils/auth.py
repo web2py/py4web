@@ -1698,19 +1698,27 @@ class DefaultAuthForms:
         elif self.auth.session.get("auth.2fa_tries_left") is None:
             self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
+        def two_factor_validate(form):
+            # external validation outcome
+            outcome = None
+            if self.auth.param.two_factor_validate:
+                outcome = self.auth.param.two_factor_validate(user, form.vars['authentication_code'])
+            # outcome:
+            #   True: external validation passed
+            #   False: external validation failed
+            #   None: external validation status unknown - check against the generated code
+            if outcome==False or ((outcome is None) and (form.vars['authentication_code']!=code)):
+                form.errors['authentication_code'] = self.auth.param.messages["errors"]["two_factor"]
+
         form = Form(
             [
                 Field(
                     "authentication_code",
                     label=self.auth.param.messages["labels"]["two_factor"],
                     required=True,
-                    requires=IS_EQUAL_TO(
-                        code,
-                        error_message=self.auth.param.messages["errors"]["two_factor"],
-                    ) if self.auth.param.two_factor_validate is None else None,
                 ),
             ],
-            validation=self.auth.param.two_factor_validate,
+            validation=two_factor_validate,
             formstyle=self.auth.param.formstyle,
             form_name="auth_2fa",
             keep_values=True,
