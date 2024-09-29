@@ -36,3 +36,5 @@ build: clean assets
 	python -m build
 deploy: build
 	python -m twine upload dist/*
+install:
+	python -m pip install .
