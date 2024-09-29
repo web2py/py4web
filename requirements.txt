@@ -11,7 +11,7 @@ threadsafevariable >= 20230507.1
 pyjwt >= 2.0.1
 pycryptodome
 pluralize >= 20240515.1
-rocket3 >= 20240915.1
+rocket3 >= 20240929.1
 yatl >= 20230507.3
 pydal >= 20240906.1
 watchgod >= 0.6
