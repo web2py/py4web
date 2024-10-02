@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 20240713 documentation</title>
+  <title>Fixtures &mdash; py4web 20240915 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=d08cd428"></script>
+        <script src="_static/documentation_options.js?v=78bb2521"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                20240713
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -390,13 +390,7 @@ displaying a message to the view, because flash messages:</p>
 </pre></div>
 </div>
 <p>and in the template:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>...
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;py4web-flash&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-...
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/utils.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-[[if globals().get(&#39;flash&#39;):]]
-<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">utils</span><span class="p">.</span><span class="nx">flash</span><span class="p">([[</span><span class="o">=</span><span class="nx">XML</span><span class="p">(</span><span class="nx">flash</span><span class="p">)]]);&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-[[pass]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">flash-alerts</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;padded&quot;</span> <span class="na">data-alert</span><span class="o">=</span><span class="s">&quot;[[=globals().get(&#39;flash&#39;,&#39;&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">flash-alerts</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>By setting the value of the message in the flash helper, a flash
@@ -410,7 +404,7 @@ in a one-time cookie. After redirection the message is sent back by the
 browser to the server and the server sets it again automatically before
 returning the content, unless it is overwritten by another set.</p>
 <p>The client can also set/add flash messages by calling:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>utils.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Q.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
 </pre></div>
 </div>
 <p>py4web defaults to an alert class called <code class="docutils literal notranslate"><span class="pre">info</span></code> and most CSS
@@ -654,14 +648,9 @@ later on the <a class="reference internal" href="chapter-13.html#authorization-u
 require that users action have specific group membership:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">requires_membership</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">Condition</span><span class="p">(</span>
-       <span class="k">lambda</span><span class="p">:</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span>
-       <span class="n">exception</span><span class="o">=</span><span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
-    <span class="p">)</span>
-
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;payroll&quot;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="n">requires_membership</span><span class="p">(</span><span class="s2">&quot;employees&quot;</span><span class="p">))</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
+             <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;employees&#39;</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span> <span class="n">on_false</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)))</span>
 <span class="k">def</span> <span class="nf">payroll</span><span class="p">():</span>
     <span class="k">return</span>
 </pre></div>
@@ -1049,7 +1038,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240713
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

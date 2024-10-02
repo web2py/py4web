@@ -19,19 +19,19 @@ Screenshots
 
 Running py4web
 
-.. image:: docs/images/first_run.png
+.. image:: https://py4web.com/_documentation/static/en/_images/first_run.png
 
 The main Dashboard
 
-.. image:: docs/images/dashboard_main.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_main.png
 
 Editing a file in the Dashboard
 
-.. image:: docs/images/dashboard_edit.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_edit.png
 
 Editing a database in the Dashboard
 
-.. image:: docs/images/dashboard_restapi.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_restapi.png
 
 Installation
 ############

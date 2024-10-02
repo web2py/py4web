@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20240713 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 20240915 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=d08cd428"></script>
+        <script src="_static/documentation_options.js?v=78bb2521"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                20240713
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -73,6 +73,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#two-factor-authentication">Two Factor Authentication</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-required">two_factor_required</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-send">two_factor_send</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-validate">two_factor_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-tries">two_factor_tries</a></li>
 </ul>
 </li>
@@ -257,17 +258,18 @@ a logged in user and should redirect to login if no user is logged in.</p>
 process. In the first step, users are shown the standard username/password form. If they successfully pass this challenge by submitting the correct
 username and password, and two factor authentication is enabled for the user, the server will present a second form before logging them in.</p>
 <p>There are a few Auth settings available to control how two factor authentication works.</p>
-<p>The follow can be specified on Auth instantiation:</p>
+<p>The following can be specified on Auth instantiation:</p>
 <ul class="simple">
-<li><p>two_factor_required</p></li>
-<li><p>two_factor_send</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code></p></li>
 </ul>
 <section id="two-factor-required">
 <h4>two_factor_required<a class="headerlink" href="#two-factor-required" title="Link to this heading"></a></h4>
-<p>When you pass a method name to the two_factor_filter parameter you are telling py4web to call that method to determine whether or not this login should
-be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False,
-two factor authentication is bypassed for this login.</p>
-<p>Sample two_factor_filter method</p>
+<p>When you pass a method name to the <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> parameter you are telling py4web to call that method to determine whether or not this login should
+be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, two factor authentication
+is bypassed for this login.</p>
+<p>Sample <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> method</p>
 <p>This example shows how to allow users that are on a specific network.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">user_outside_network</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">ipaddress</span>
@@ -288,8 +290,8 @@ two factor authentication is bypassed for this login.</p>
 </section>
 <section id="two-factor-send">
 <h4>two_factor_send<a class="headerlink" href="#two-factor-send" title="Link to this heading"></a></h4>
-<p>When two factor authentication is active, py4web generates a 6 digit code (using random.randint) and sends it to you. How this code is sent, is up to you.
-The two_factor_send argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
+<p>When two factor authentication is active, py4web can generate a 6 digit code (using random.randint) and makes it possible to send it to the user. How this code is
+sent, is up to you. The <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
 <p>This example shows how to send an email with the two factor code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
@@ -304,10 +306,51 @@ The two_factor_send argument to the Auth class allows you to specify the method 
     <span class="k">return</span> <span class="n">code</span>
 </pre></div>
 </div>
-<p>Notice that this method takes to arguments: the current user, and the code to be sent.
+<p>Notice that this method takes two arguments: the current user, and the code to be sent.
 Also notice this method can override the code and return a new one.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_required</span> <span class="o">=</span> <span class="n">user_outside_network</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_send</span> <span class="o">=</span> <span class="n">send_two_factor_email</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-validate">
+<h4>two_factor_validate<a class="headerlink" href="#two-factor-validate" title="Link to this heading"></a></h4>
+<p>By default, py4web will validate the user input in the two factor form by comparing the code entered by the user with the code generated and sent using
+<code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>. However, sometimes it may be useful to define a custom validation of this user-entered code. For instance, if one would like to use the
+TOTP (or the Time-Based One-Time-Passwords) as the two factor authentication method, the validation requires comparing the code entered by the user with the
+value generated at the same time at the server side. Hence, it is not sufficient to generate that value earlier when showing the form (using for instance
+<code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method), because by the time the user submits the form, the current valid value may already be different. Instead, this value should be
+generated when validating the form submitted by the user.</p>
+<p>To accomplish such custom validation, the <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> method is available. It takes two arguments - the current user and the code that was entered
+by the user into the two factor authentication form. The primary use-case for this method is validation of time-based passwords.</p>
+<p>This example shows how to validate a time-based two factor code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validate_code</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="c1"># get the correct code from an external function</span>
+      <span class="n">correct_code</span> <span class="o">=</span> <span class="n">generate_time_based_code</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+   <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="c1"># return None to indicate that validation could not be performed</span>
+      <span class="k">return</span> <span class="kc">None</span>
+
+   <span class="c1"># compare the value entered in the auth form with the correct code</span>
+   <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="n">correct_code</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">True</span>
+   <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">validate_code</span></code> method must return one of three values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> - if the validation succeded,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code> - if the validation failed,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - if the validation was not possible for any reason</p></li>
+</ul>
+<p>Notice that - if defined - this method is _always_ called to validate the two factor authentication form. It is up to you to decide what kind of validation it
+does. If the returned value is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the user input will be accepted as valid. If the returned value is <code class="docutils literal notranslate"><span class="pre">False</span></code> then the user input will be rejected as
+invalid, number of tries will be decresed by one, and user will be asked to try again. If the returned value is <code class="docutils literal notranslate"><span class="pre">None</span></code> the user input will be checked against
+the code generated with the use of <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method and the final result will depend on that comparison. In this case authentication will fail if <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>
+method was not defined, and hence no code was sent to the user.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_validate</span> <span class="o">=</span> <span class="n">validate_code</span>
 </pre></div>
 </div>
 </section>
@@ -323,9 +366,16 @@ Also notice this method can override the code and return a new one.</p>
 <li><dl class="simple">
 <dt>upon successful login and user passes two_factor_required</dt><dd><ul>
 <li><p>redirect to py4web auth/two_factor endpoint</p></li>
+<li><dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method has been defined:</dt><dd><ul>
 <li><p>generate 6 digit verification code</p></li>
-<li><p>call two_factor_send to send the verification code to the user</p></li>
+<li><p>call <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> to send the verification code to the user</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>display verification page where user can enter their code</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> method has been defined - call it to validate the user-entered code</p></li>
 <li><p>upon successful verification, take user to _next_url that was passed to the login page</p></li>
 </ul>
 </dd>
@@ -497,11 +547,13 @@ tag(s):</p>
 enables the following syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">requires_membership</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">Condition</span><span class="p">(</span>
-       <span class="k">lambda</span><span class="p">:</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span>
-       <span class="n">exception</span><span class="o">=</span><span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
-    <span class="p">)</span>
+<span class="k">class</span> <span class="nc">requires_membership</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prerequisites__</span> <span class="o">=</span> <span class="p">[</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">]</span> <span class="c1"># you must have a user before you can check</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span>  <span class="o">=</span> <span class="n">group</span> <span class="c1"># store the group when action defined</span>
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="c1"># will be called if the action is called</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span> <span class="c1"># check and do something</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">requires_membership</span><span class="p">(</span><span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
@@ -634,7 +686,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20240713
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

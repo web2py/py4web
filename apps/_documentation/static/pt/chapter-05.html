@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating an app &mdash; Documentação py4web 20240713</title>
+  <title>Creating an app &mdash; Documentação py4web 20240915</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,10 +18,10 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=999ad667"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/translations.js?v=3b002d5c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                20240713
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -72,6 +72,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-scaffold-app">The _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#copying-the-scaffold-app">Copying the _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watch-for-files-change">Watch for files change</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#domain-mapped-apps">Domain-mapped apps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
@@ -333,8 +334,8 @@ on which you can rely to build your real project.</p>
 </div>
 <p>Observe o seguinte:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by
-which is a fast bottlepy spin-off.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by <code class="docutils literal notranslate"><span class="pre">ombott</span></code>
+which is a minimal and fast bottlepy spin-off.</p></li>
 <li><p>`` `` Redirect`` e URL`` são semelhantes aos seus homólogos web2py</p></li>
 <li><p>ajudantes ( `` A``, `` div``, `` SPAN``, `` IMG``, etc.) deve ser importado a partir `` yatl.helpers``. Eles trabalham muito bem como em web2py</p></li>
 <li><p>`` Db``, `` session``, `` T``, `` cache``, `` auth`` são Chaves. Eles devem ser definidos em `` common.py``.</p></li>
@@ -409,6 +410,42 @@ decorator are ignored since they are watched by default. Handler
 function’s parameter is a list of filepaths that were changed. All
 exceptions inside handlers are printed in terminal.</p>
 </section>
+<section id="domain-mapped-apps">
+<h2>Domain-mapped apps<a class="headerlink" href="#domain-mapped-apps" title="Link to this heading"></a></h2>
+<p>In production environments it is often required to have several apps being
+served by a single py4web server, where different apps are mapped to
+different domains.</p>
+<p>py4web can easily handle running multiple apps, but there is no build-in
+mechanism for mapping domains to specific applications. Such mapping needs
+to be done externally to py4web – for instance using a web reverse-proxy,
+such as nginx.</p>
+<p>While nginx or other reverse-proxies are also useful in production
+environments for handling SSL termination, caching and other uses,
+we cover only the mapping of domains to py4web applications here.</p>
+<p>An example nginx configuration for an application <code class="docutils literal notranslate"><span class="pre">myapp</span></code> mapped to
+a domain <code class="docutils literal notranslate"><span class="pre">myapp.example.com</span></code> might look like that:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">server {</span>
+<span class="go">   listen 80;</span>
+<span class="go">   server_name myapp.example.com;</span>
+<span class="go">   proxy_http_version 1.1;</span>
+<span class="go">   proxy_set_header Host $host;</span>
+<span class="go">   proxy_set_header X-PY4WEB-APPNAME /myapp;</span>
+<span class="go">   location / {</span>
+<span class="go">      proxy_pass http://127.0.0.1:8000/myapp$request_uri;</span>
+<span class="go">   }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>This is an example <code class="docutils literal notranslate"><span class="pre">server</span></code> block of nginx configuraiton. One would have to create a separate such block for <strong>each app/each domain</strong> being served by py4web server. Note some important aspects:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">server_name</span></code> defines the domain mapped to the app <code class="docutils literal notranslate"><span class="pre">myapp</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_http_version</span> <span class="pre">1.1;</span></code> directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk to the backend-server – here py4web – and it creates all kinds of issues with buffering and otherwise),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">Host</span> <span class="pre">$host;</span></code> directive ensures that the correct <code class="docutils literal notranslate"><span class="pre">Host</span></code> is passed to py4web – here <code class="docutils literal notranslate"><span class="pre">myapp.example.com</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">X-PY4WEB-APPNAME</span> <span class="pre">/myapp;</span></code> directive ensures that py4web (and ombott) knows which app to serve and <strong>also</strong> that this application is domain-mapped – pay specific attention to the slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) in front of the <code class="docutils literal notranslate"><span class="pre">myapp</span></code> name – it is <strong>required</strong> to ensure correct parsing of URLs on ombott level,</p></li>
+<li><p>finally <code class="docutils literal notranslate"><span class="pre">proxy_pass</span> <span class="pre">http://127.0.0.1:8000/myapp$request_uri;</span></code> ensures that the request is passed in its entirity (<code class="docutils literal notranslate"><span class="pre">$request_uri</span></code>) to py4web server (here: <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8000</span></code>) and the correct app (<code class="docutils literal notranslate"><span class="pre">/myapp</span></code>).</p></li>
+</ul>
+<p>Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as <code class="docutils literal notranslate"><span class="pre">Auth</span></code>, <code class="docutils literal notranslate"><span class="pre">Form</span></code>, and <code class="docutils literal notranslate"><span class="pre">Grid</span></code> are done correctly using the domain to which the app is mapped to.</p>
+</section>
 </section>
 
 
@@ -447,7 +484,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240713
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
