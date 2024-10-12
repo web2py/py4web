@@ -84,7 +84,6 @@ html_logo = 'images/logo.png'
 html_favicon = 'images/logo-32x32.ico'
 html_theme_options = {
     'logo_only': False,
-    'display_version': True,
 }
 # The master toctree document.
 master_doc = 'index'

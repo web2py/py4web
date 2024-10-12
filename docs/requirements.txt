@@ -5,5 +5,5 @@ PyStemmer<2.2
 sphinx
 sphinx-tabs
 sphinx_rtd_theme
-rinohtype
+rinohtype==0.5.4
 sphinxcontrib-spelling
