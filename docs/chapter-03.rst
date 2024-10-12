@@ -377,39 +377,36 @@ This currently gives an error on binaries installations and from source installa
      Run the applications on apps_folder
 
    Options:
-     -Y, --yes                     No prompt, assume yes to questions
-                                   [default: False]
-
-     -H, --host TEXT               Host listening IP [default: 127.0.0.1]
-     -P, --port INTEGER            Port number  [default: 8000]
-     -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
-                                   empty)
-     -p, --password_file TEXT      File for the encrypted password  [default:
-                                   password.txt]
-     -Q, --quiet                   Suppress server output
-     -R, --routes                  Write apps routes to file
-     -s, --server                  [default|wsgiref|tornado|gunicorn|gevent|waitress|gunicorn|gunicornGevent|gevent|
-                                   geventWebSocketServer|geventWs|wsgirefThreadingServer|wsgiTh|rocketServer]
-                                   Web server to use
-     -w, --number_workers INTEGER  Number of workers  [default: 0]
-     -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
-                                   [default: full]
-
-     --watch [off|sync|lazy]       Watch python changes and reload apps
-                                   automatically, modes: off, sync, lazy
-                                   [default: lazy]
-
-     --ssl_cert PATH               SSL certificate file for HTTPS
-     --ssl_key PATH                SSL key file for HTTPS
-     --errorlog TEXT               Where to send error logs
-                                   (:stdout|:stderr|tickets_only|{filename})
-                                   [default: :stderr]
-     -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
-                                   (=WARNING)]
-     -D, --debug                   Debug switch  [default: False]
-     -U, --url_prefix TEXT         Prefix to add to all URLs in and out
-     -help, -h, --help             Show this message and exit.
-
+      -Y, --yes                       No prompt, assume yes to questions
+      -H, --host TEXT                 Host listening IP  [default: 127.0.0.1]
+      -P, --port INTEGER              Port number  [default: 8000]
+      -A, --app_names TEXT            List of apps to run, comma separated (all if
+                                       omitted or empty)
+      -p, --password_file TEXT        File for the encrypted password  [default:
+                                       password.txt]
+      -Q, --quiet                     Suppress server output
+      -R, --routes                    Write apps routes to file
+      -s, --server [default|wsgiref|tornado|wsgiref+threaded|rocket|waitress|gunicorn|gevent|gunicorn+gevent|gevent+websockets]
+                                       Web server to use (unavailable: waitress,
+                                       gunicorn, gevent, gunicorn+gevent,
+                                       gevent+websockets)
+      -w, --number_workers INTEGER    Number of workers  [default: 0]
+      -d, --dashboard_mode TEXT       Dashboard mode: demo, readonly, full, none
+                                       [default: full]
+      --watch [off|sync|lazy]         Watch python changes and reload apps
+                                       automatically, modes: off, sync, lazy
+                                       [default: lazy]
+      --ssl_cert PATH                 SSL certificate file for HTTPS
+      --ssl_key PATH                  SSL key file for HTTPS
+      --errorlog TEXT                 Where to send error logs
+                                       (:stdout|:stderr|tickets_only|{filename})
+                                       [default: :stderr]
+      -L, --logging_level INTEGER     The log level (0 - 50) [default: 30
+                                       (=WARNING)]
+      -D, --debug                     Debug switch
+      -U, --url_prefix TEXT           Prefix to add to all URLs in and out
+      -m, --mode TEXT                 default or development  [default: default]
+      -help, -h, --help               Show this message and exit.
 
 The ``app_names`` option lets you filter which specific apps you want to serve (comma separated). If absent or empty
 all the apps in the APPS_FOLDER will be run.
