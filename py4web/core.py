@@ -1854,7 +1854,7 @@ def install_args(kwargs, reinstall_apps=False):  # pylint: disable=too-many-stat
     with open(session_secret_filename, "r", encoding="utf8") as fp:
         Session.SECRET = fp.read()
 
-    # after everything is etup but before installing apps, init
+    # after everything is setup but before installing apps, init
     error_logger.initialize()
 
     # Reinstall apps from zipped ones in assets
