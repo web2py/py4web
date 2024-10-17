@@ -18,7 +18,6 @@ import http.cookies
 import importlib.machinery
 import importlib.util
 import inspect
-import io
 import json
 import logging
 import numbers
@@ -36,9 +35,9 @@ import urllib.parse
 import uuid
 import zipfile
 from collections import OrderedDict
-from contextlib import redirect_stderr, redirect_stdout
 
 import portalocker
+import psutil
 from watchgod import awatch
 
 # Optional web servers for speed
@@ -1710,7 +1709,15 @@ def start_server(kwargs):
 
     # Catch interrupts like Ctrl-C if needed
     def kill_all(sig, _):
-        os.kill(os.getpid(), signal.SIGKILL)
+        # better way to kill, adapted from: https://stackoverflow.com/a/70565806
+        main_process = psutil.Process()
+        children = main_process.children(recursive=True)
+        for child in children:
+            child.terminate()  # friendly termination
+        _, still_alive = psutil.wait_procs(children, timeout=2)
+        for child in still_alive:
+            child.kill()  # unfriendly termination
+        main_process.terminate()
 
     signal.signal(signal.SIGINT, kill_all)
 
