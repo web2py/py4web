@@ -1553,15 +1553,6 @@ DIRTY_APPS = dict()  # apps that need to be reloaded (lazy watching)
 
 APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
 
-""" Decorator that binds a func as an watchdog handler of non-'.py' files.
-Paths to files must be relative to app, w/o app name(folder).
-
-@app_watch_handler(['static/sass/all.sass', 'static/sass/main.sass'])
-def sass_compile(changed_files):
-    print(changed_files); # paths of files that changed, for info
-    sass.compile()
-"""
-
 
 def app_watch_handler(watched_app_subpaths):
     """Finds files to watch for changes"""
@@ -1718,7 +1709,7 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    def kill_all(sig, grame):
+    def kill_all(sig, _):
         os.kill(os.getpid(), signal.SIGKILL)
 
     signal.signal(signal.SIGINT, kill_all)
@@ -1749,7 +1740,6 @@ def start_server(kwargs):
         log_routes(bottle.default_app().routes)
 
     bottle.run(**params)
-
 
 def check_compatible(py4web_version):
     """To be called by apps to check if module version is compatible with py4web requirements"""
