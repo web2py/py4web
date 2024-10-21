@@ -961,6 +961,84 @@ Fixtures should not in general communicate with each other but nothing
 prevents one fixture to put data in the context and another fixture to
 retrieve that data.
 
+Fixtures with dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If a fixture depends on another fixture, it needs to be passed that fixture in the initializer, 
+and the fixture must be listed in the `__prerequisites__` attribute.
+For example, suppose we want to create a fixture that grants access to a controller only
+to users whose email address is included in an ADMIN_EMAILS list. 
+We can write the following fixture:
+
+.. code:: python
+
+    class AdminAccess(Fixture):
+
+        def __init__(self, auth, admin_list, redirect_url=None):
+            super().__init__()
+            self.admin_list = admin_list
+            self.auth = auth
+            self.__prerequisites__ = [auth]
+            # One thing to note here is that the URL function can only be called in a 
+            # request context (while serving a request).  Thus, we cannot store in the fixture
+            # initialization the full URL to redirect, but only the path. 
+            self.redirect_url = redirect_url or 'index'
+            
+        def on_request(self, context):
+            if ((not self.auth.current_user) 
+                or self.auth.current_user.get('email') not in self.admin_list):
+                redirect(URL(self.redirect_url))
+                     
+        def on_error(self, context):
+            redirect(URL(self.redirect_url))
+
+The fixture can be created and used as follows:
+
+.. code:: python
+
+    admin_access = AdminAccess(auth, ['a@example.com',], 'index')
+
+    @action('/admin-only')
+    @action.uses('admin_only.html', admin_access)
+    def admin_only():
+        return dict()
+
+Using local storage
+~~~~~~~~~~~~~~~~~~~
+
+Fixtures can use a thread-local storage for data they need.  
+Here is an example: 
+
+.. code:: python
+
+    class LocalStorageDemo(Fixture):
+        
+       def __init__(self):
+           super().__init__()
+          
+       def on_request(self, context):
+           Fixture.local_initialize(self) 
+           # We can check whether the local storage is valid. 
+           print(f"is_valid: {self.is_valid()}")
+           content = str(uuid.uuid4())
+           print(f"Storing content: {content}")
+           self.local.my_content = content
+               
+       def on_success(self, context):
+           # The line below is used only to show that the thread-local object is in place.         
+           print(f"Retrieved: {self.local.my_content}")
+
+Notably, the initializer should contain the line: 
+
+.. code:: python
+
+   Fixture.local_initialize(self)
+
+in order to initialize the thread-local storage.
+Once this is done, the thread-local storage can be used to store and retrieve data
+using the the `self.local` object. 
+
+
 Multiple fixtures
 -----------------
 
