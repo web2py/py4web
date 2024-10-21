@@ -1032,7 +1032,7 @@ Notably, the initializer should contain the line:
 
 .. code:: python
 
-   Fixture.local_initialize(self)
+    Fixture.local_initialize(self)
 
 in order to initialize the thread-local storage.
 Once this is done, the thread-local storage can be used to store and retrieve data
