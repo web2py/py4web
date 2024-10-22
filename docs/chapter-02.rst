@@ -103,25 +103,19 @@ to the vscode ``launch.json`` configuration file. Note that if you're using Wind
 forward slash only, like
 "C:/Users/your_name/py4web/py4web.py".
 
-If you have instead **installed py4web from pip,** you need to:
-
-- open the ``apps`` folder with VScode 
-- copy the standard `py4web.py launcher <https://github.com/web2py/py4web/blob/master/py4web.py>`__ inside it, but rename it to ``py4web-start.py`` in
-  order to avoid import errors later:
-
-.. code:: python
-
-  #!/usr/bin/env python3
-  from py4web.core import cli
-  cli()
-
-- create / change the vscode ``launch.json`` configuration file:
+If you have instead **installed py4web from pip,** you need to set the launch.json file to run py4web as a module
 
 ::
 
-  "args": ["run", "."],
-  "program": "your_full_path_to_py4web-start.py",
+  {
+    "name": "py4web apps",
+    "type": "debugpy",
+    "request": "launch",
+    "module": "py4web",
+    "args": ["run", "apps", "-D", "--watch", "lazy"]
+  }
 
+Adjust the `args` to match your apps folder. For example, replace `apps` with `.` if you opened the apps folder itself in VSCode.
 
 .. tip::
 
