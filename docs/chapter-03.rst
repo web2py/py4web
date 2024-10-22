@@ -586,14 +586,15 @@ To use https with the build-in web server (Rocket3) these are the steps:
 
 If you use VSCode to run py4web you may want to update the py4web launch.json file to contain:
 
-.. code:: json   
+.. code:: json
 
     "configurations": [
             {
                 "name": "py4web",
-                "type": "python",
+                "type": "debugpy",
                 "request": "launch",
-                "program": "${workspaceFolder}/py4web.py",
+                "module": "py4web",
+                // or "program": "${workspaceFolder}/py4web.py", if you didn't install py4web as a package
                 "args": [
                     "run",
                     "apps",
