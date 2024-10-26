@@ -145,7 +145,7 @@ The second one forces the login if needed:
    @action.uses(auth.user)
    def index():
        user = auth.get_user()
-       return 'hello {first_name}'.format(**user)'
+       return 'hello {first_name}'.format(**user)
 
 Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.
@@ -153,21 +153,29 @@ a logged in user and should redirect to login if no user is logged in.
 Two Factor Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Two factor authentication (or Two-step verification) is a way of improving authentication security. When activated an extra step is added in the login process. In the first step, users are shown the standard username/password form. If they successfully pass this challenge by submitting the correct username and password, and two factor authentication is enabled for the user, the server will present a second form before logging them in.
+Two factor authentication (or Two-step verification) is a way of improving authentication security.
+When activated an extra step is added in the login process. In the first step, users are shown the
+standard username/password form. If they successfully pass this challenge by submitting the correct 
+username and password, and two factor authentication is enabled for the user, the server will
+present a second form before logging them in.
 
 There are a few Auth settings available to control how two factor authentication works.
 
-The follow can be specified on Auth instantiation:
+The following can be specified on Auth instantiation:
 
-- two_factor_required
-- two_factor_send
+- ``two_factor_required``
+- ``two_factor_send``
+- ``two_factor_validate``
 
 two_factor_required
 ^^^^^^^^^^^^^^^^^^^
 
-When you pass a method name to the two_factor_filter parameter you are telling py4web to call that method to determine whether or not this login should be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, two factor authentication is bypassed for this login.
+When you pass a method name to the ``two_factor_required`` parameter you are telling py4web to call
+that method to determine whether or not this login should be use or bypass two factor authentication.
+If your method returns True, then this login requires two factor.  If it returns False, two factor authentication 
+is bypassed for this login.
 
-Sample two_factor_filter method
+Sample ``two_factor_required`` method
 
 This example shows how to allow users that are on a specific network.
 
@@ -191,7 +199,9 @@ This example shows how to allow users that are on a specific network.
 two_factor_send
 ^^^^^^^^^^^^^^^
 
-When two factor authentication is active, py4web generates a 6 digit code (using random.randint) and sends it to you. How this code is sent, is up to you. The two_factor_send argument to the Auth class allows you to specify the method that sends the two factor code to the user.
+When two factor authentication is active, py4web can generate a 6 digit code (using random.randint) and
+makes it possible to send it to the user. How this code is sent, is up to you. The ``two_factor_send``
+argument to the Auth class allows you to specify the method that sends the two factor code to the user.
 
 This example shows how to send an email with the two factor code:
 
@@ -209,13 +219,69 @@ This example shows how to send an email with the two factor code:
            print(e)
        return code
 
-Notice that this method takes to arguments: the current user, and the code to be sent.
+Notice that this method takes two arguments: the current user, and the code to be sent.
 Also notice this method can override the code and return a new one.
 
 .. code:: python
 
    auth.param.two_factor_required = user_outside_network
    auth.param.two_factor_send = send_two_factor_email
+
+two_factor_validate
+^^^^^^^^^^^^^^^^^^^
+
+By default, py4web will validate the user input in the two factor form by comparing the code entered
+by the user with the code generated and sent using ``two_factor_send``. However, sometimes it may be
+useful to define a custom validation of this user-entered code. For instance, if one would like to use the
+TOTP (or the Time-Based One-Time-Passwords) as the two factor authentication method, the validation
+requires comparing the code entered by the user with the value generated at the same time at the server side.
+Hence, it is not sufficient to generate that value earlier when showing the form (using for instance 
+``two_factor_send`` method), because by the time the user submits the form, the current valid value may
+already be different. Instead, this value should be 
+generated when validating the form submitted by the user. 
+
+To accomplish such custom validation, the ``two_factor_validate`` method is available. It takes two arguments:
+
+  - the current user
+  - the code that was entered by the user into the two factor authentication form
+  
+The primary use-case for this method is validation of time-based passwords.
+
+This example shows how to validate a time-based two factor code:
+
+.. code:: python
+
+   def validate_code(user, code):
+      try:
+         # get the correct code from an external function
+         correct_code = generate_time_based_code(user_id)
+      except Exception as e:
+         # return None to indicate that validation could not be performed
+         return None
+      
+      # compare the value entered in the auth form with the correct code
+      if code == correct_code:
+         return True
+      else:
+         return False
+
+The ``validate_code`` method must return one of three values:
+
+- ``True`` - if the validation succeeded,
+- ``False`` - if the validation failed,
+- ``None`` - if the validation was not possible for any reason
+
+Notice that - if defined - this method is _always_ called to validate the two factor
+authentication form. It is up to you to decide what kind of validation it does. If the returned value is ``True``,
+the user input will be accepted as valid. If the returned value is ``False`` then the user input will be
+rejected as invalid, number of tries will be decreased by one, and user will be asked to try again.
+If the returned value is ``None`` the user input will be checked against the code generated with the use
+of ``two_factor_send`` method and the final result will depend on that comparison. In this case authentication
+will fail if ``two_factor_send`` method was not defined, and hence no code was sent to the user.
+
+.. code:: python
+
+   auth.param.two_factor_validate = validate_code
 
 two_factor_tries
 ^^^^^^^^^^^^^^^^
@@ -231,11 +297,15 @@ Once this is all setup, the flow for two factor authentication is:
 - present the login page
 - upon successful login and user passes two_factor_required
    - redirect to py4web auth/two_factor endpoint
-   - generate 6 digit verification code
-   - call two_factor_send to send the verification code to the user
+   - if ``two_factor_send`` method has been defined:
+      - generate 6 digit verification code 
+      - call ``two_factor_send`` to send the verification code to the user
    - display verification page where user can enter their code
+   - if ``two_factor_validate`` method has been defined - call it to validate the user-entered code
    - upon successful verification, take user to _next_url that was passed to the login page
 
+Important! If you filtered ``ALLOWED_ACTIONS`` in your app, make sure to whitelist the "two_factor" action
+so not to block the two factor API.
 
 
 Auth Plugins
@@ -350,7 +420,8 @@ Authorization using Tags
 
 As already mentioned, authorization is the process of verifying what specific
 applications, files, and data a user has access to. This is accomplished
-in py4web using ``Tags``.
+in py4web using ``Tags``, that we've already discovered on :ref:`Tagging records`
+in the DAL chapter.
 
 
 Tags and Permissions
@@ -376,13 +447,15 @@ from ``pydal.tools``. Then create a Tags object to tag a table:
 .. code:: python
 
    from pydal.tools.tags import Tags
-   groups = Tags(db.auth_user)
+   groups = Tags(db.auth_user, 'groups')
 
-If you look at the database level, a new table will be created with a
-name equals to tagged_db + '_tag' + tagged_name, in this case
-``auth_user_tag_groups``:
+The tail_name parameter is optional and if not specified the 'default' 
+value will be used. If you look at the database level, a new table will
+be created with a name equals to ``tagged_db + '_tag_' + tail_name``,
+in this case ``auth_user_tag_groups``:
 
 .. image:: images/tags_db.png
+
 
 Then you can add one or more tags to records of the table as well as
 remove existing tags:
@@ -427,6 +500,27 @@ tag(s):
    def find(group_name):
        users = db(groups.find([group_name])).select(orderby=db.auth_user.first_name | db.auth_user.last_name)
        return {'users': users}
+
+We've already seen a simple ``requires_membership`` fixture on :ref:``The Condition fixture``. It
+enables the following syntax:
+
+.. code:: python
+
+   groups = Tags(db.auth_user)
+
+   class requires_membership(Fixture):
+       def __init__(self, group):
+           self.__prerequisites__ = [auth.user] # you must have a user before you can check
+           self.group  = group # store the group when action defined
+       def on_request(self, context): # will be called if the action is called
+           if self.group not in groups.get(auth.user_id):
+               raise HTTP(401) # check and do something
+
+   @action('index')
+   @action.uses(requires_membership('teacher'))
+   def index():
+       return 'hello teacher'
+
 
 We leave it to you as an exercise to create a fixture ``has_membership``
 to enable the following syntax:
@@ -500,3 +594,29 @@ Notice here ``permissions.find(permission)`` generates a query for all
 groups with the permission and we further filter those groups for those
 the current user is member of. We count them and if we find any, then
 the user has the permission.
+
+User Impersonation
+~~~~~~~~~~~~~~~~~~
+
+Auth provides API that allow you to impersonate another user.
+Here is an example of an action to start impersonating and stop impersonating another user.
+
+.. code:: python
+
+   @action("impersonate/{user_id:int}", method="GET")
+   @action.uses(auth.user)
+   def start_impersonating(user_id):
+       if (not auth.is_impersonating() and
+           user_id and
+           user_id != auth.user_id and
+           db(db.auth_user.id==user_id).count()):
+           auth.start_impersonating(user_id, URL("index"))
+       raise HTTP(404)
+
+    @action("stop_impersonating", method="GET")
+    @action.uses(auth)
+    def stop_impersonating():
+       if auth and auth.is_impersonating():
+           auth.stop_impersonating(URL("index"))
+       redirect(URL("index"))
+

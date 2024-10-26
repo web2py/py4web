@@ -1,16 +1,19 @@
+import io
 import os
 import unittest
-from py4web.core import Session, DAL, request, HTTP, Field, bottle, _before_request
+import uuid
+
+from py4web.core import DAL, HTTP, Field, Fixture, Session, bottle, request, safely
 from py4web.utils.auth import Auth, AuthAPI
+
+SECRET = str(uuid.uuid4())
 
 
 class TestAuth(unittest.TestCase):
     def setUp(self):
         os.environ["PY4WEB_APPS_FOLDER"] = "apps"
-        _before_request()  # mimic before_request bottle-hook
         self.db = DAL("sqlite:memory")
-        self.session = Session(secret="a", expiration=10)
-        self.session.initialize()
+        self.session = Session(secret=SECRET, expiration=10)
         self.auth = Auth(
             self.session, self.db, define_tables=True, password_complexity=None
         )
@@ -19,30 +22,36 @@ class TestAuth(unittest.TestCase):
         request.app_name = "_scaffold"
 
     def tearDown(self):
+        # this is normally done by @action
+        safely(lambda: Fixture.local_delete(self.session))
         bottle.app.router.remove("/*")
 
     def action(self, name, method, query, data):
         request.environ["REQUEST_METHOD"] = method
         request.environ["ombott.request.query"] = query
         request.environ["ombott.request.json"] = data
+        request.environ["wsgi.input"] = io.BytesIO()
         # we break a symmetry below. should fix in auth.py
         if name.startswith("api/"):
             return getattr(AuthAPI, name[4:])(self.auth)
-        else:
-            return getattr(self.auth.form_source, name)()
+        return getattr(self.auth.form_source, name)()
 
-    def on_request(self, context={}, keep_session=False):
-        storage = self.session._safe_local
-
-        # mimic before_request bottle-hook
-        _before_request()
-
-        # mimic action.uses()
-        self.session.initialize()
+    def on_request(self, context=None, keep_session=False):
+        # store the current session
+        context = context or {}
+        try:
+            storage = self.session.local.__dict__
+        except RuntimeError:
+            storage = None
+        # reinitialize everything
+        safely(lambda: Fixture.local_delete(self.session))
+        safely(lambda: Fixture.local_delete(self.auth.flash))
+        self.session.on_request(context)
         self.auth.flash.on_request(context)
         self.auth.on_request(context)
-        if keep_session:
-            self.session._safe_local = storage
+        # restore the previous session
+        if keep_session and storage:
+            self.session.local.__dict__.update(storage)
 
     def test_extra_fields(self):
         db = DAL("sqlite:memory")
@@ -55,15 +64,16 @@ class TestAuth(unittest.TestCase):
     def test_register_invalid(self):
         self.on_request()
         body = {"email": "pinco.pallino@example.com"}
+        res = self.auth.action("api/register", "POST", {}, body)
         self.assertEqual(
-            self.auth.action("api/register", "POST", {}, body),
+            res,
             {
                 "id": None,
                 "errors": {
-                    "username": "Enter a value",
-                    "password": "Too short",
-                    "first_name": "Enter a value",
-                    "last_name": "Enter a value",
+                    "username": "required",
+                    "password": "required",
+                    "first_name": "required",
+                    "last_name": "required",
                 },
                 "status": "error",
                 "message": "validation errors",
@@ -95,7 +105,6 @@ class TestAuth(unittest.TestCase):
             {"status": "error", "message": "Invalid Credentials", "code": 400},
         )
 
-        self.on_request()
         self.on_request()
         body = {"email": "pinco.pallino@example.com", "password": "123456789"}
         self.assertEqual(
@@ -222,18 +231,6 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(
             self.auth.action("api/change_email", "POST", {}, body),
             {"updated": 1, "status": "success", "code": 200},
-        )
-
-        self.on_request(keep_session=True)
-        body = {"first_name": "Max", "last_name": "Powers", "password": "xyz"}
-        self.assertEqual(
-            self.auth.action("api/profile", "POST", {}, body),
-            {
-                "errors": {"password": "invalid"},
-                "status": "error",
-                "message": "validation errors",
-                "code": 401,
-            },
         )
 
         self.on_request(keep_session=True)

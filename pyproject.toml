@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "py4web"
-version = "1.20230718.1"
+version = "1.20241019.1"
 authors = [{ name="Massimo Di Pierro", email="massimo.dipierro@gmail.com" },]
 description = "A fast, stable, comprehensive web framework"
 readme = "README.rst"
@@ -13,10 +17,10 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = {file = "requirements.txt"}
 
-[tool.setuptools]    
-packages = ["py4web", "py4web.utils", "py4web.utils.auth_plugins",]
+[tool.setuptools]
+packages = ["py4web", "py4web.server_adapters", "py4web.utils", "py4web.utils.auth_plugins"]
 
 [tool.setuptools.package-data]
 py4web = ["assets/*"]

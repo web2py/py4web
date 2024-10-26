@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 1.20230507.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 20240915</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The Database Abstraction Layer (DAL)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dal-introduction">DAL introduction</a><ul>
@@ -68,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#experiment-with-the-py4web-shell">Experimentar com o shell py4web</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-dashboard-app-with-databases">Using the dashboard app with databases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dal-constructor">Construtor DAL</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#dal-signature">Assinatura da DAL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#connection-strings-the-uri-parameter">Strings de conexão (o parâmetro uri)</a></li>
@@ -259,10 +262,10 @@
            <div itemprop="articleBody">
              
   <section id="the-database-abstraction-layer-dal">
-<h1>The Database Abstraction Layer (DAL)<a class="headerlink" href="#the-database-abstraction-layer-dal" title="Permalink to this heading"></a></h1>
+<h1>The Database Abstraction Layer (DAL)<a class="headerlink" href="#the-database-abstraction-layer-dal" title="Link to this heading"></a></h1>
 <section id="dal-introduction">
-<h2>DAL introduction<a class="headerlink" href="#dal-introduction" title="Permalink to this heading"></a></h2>
-<p>py4web rely on a database abstraction layer (DAL), an API that maps
+<h2>DAL introduction<a class="headerlink" href="#dal-introduction" title="Link to this heading"></a></h2>
+<p>py4web rely on a database abstraction layer (<strong>DAL</strong>), an API that maps
 Python objects into database objects such as queries, tables, and
 records. The DAL dynamically generates the SQL in real time using the
 specified dialect for the database back end, so that you do not have to
@@ -272,6 +275,14 @@ of databases.
 The DAL choosen is a pure Python one called <a class="reference external" href="https://github.com/web2py/pydal">pyDAL</a>.
 It was conceived in the web2py project but it’s a standard python module:
 you can use it in any Python context.</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>What makes pyDAL different from most of the other DALs is the syntax: it maps
+records to python dictionaries, which is simpler and closer to SQL.
+Other famous frameworks instead strictly rely on an Object Relational Mapping (<strong>ORM</strong>)
+like the Django ORM or the SQL Alchemy ORM, that maps tables to Python classes
+and rows to Objects.</p>
+</div>
 <p>A little taste of pyDAL features:</p>
 <ul class="simple">
 <li><p>Transactions</p></li>
@@ -280,7 +291,7 @@ you can use it in any Python context.</p>
 <li><p>Nested Selects</p></li>
 </ul>
 <section id="py4web-model">
-<h3>py4web model<a class="headerlink" href="#py4web-model" title="Permalink to this heading"></a></h3>
+<h3>py4web model<a class="headerlink" href="#py4web-model" title="Link to this heading"></a></h3>
 <p>Even if web2py and py4web use the same pyDAL, there are important differences (see
 <a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">De web2py para py4web</span></a> for details). The main caveat is that in py4web only
 the action is executed for every HTTP request, while the code defined outside of
@@ -293,7 +304,7 @@ readable, writable, requires, update, and default.
 All the others are for practical purposes to be considered global and non thread safe.</p>
 </section>
 <section id="supported-databases">
-<h3>Supported databases<a class="headerlink" href="#supported-databases" title="Permalink to this heading"></a></h3>
+<h3>Supported databases<a class="headerlink" href="#supported-databases" title="Link to this heading"></a></h3>
 <p>A partial list of supported databases is show in the table
 below. Please check on the py4web/pyDAL web site and mailing list for more
 recent adapters.</p>
@@ -303,7 +314,7 @@ recent adapters.</p>
 The SQLite driver (sqlite3) is also included: you don’t need to install it.
 Hence this is the most popular database for testing and development.</p>
 </div>
-<p>The Windows and the Mac binary distribution work out of the box with SQLite only.
+<p>The Windows and the Mac binary distribution work out of the box with SQLite and PostgreSQL only.
 To use any other database back end, run a full py4web
 distribution and install the appropriate driver for the required back
 end. Once the proper driver is installed, start py4web and it
@@ -368,7 +379,7 @@ The <a class="reference internal" href="#gotchas">Gotchas</a> section at the end
 about specific databases.</p>
 </section>
 <section id="the-dal-a-quick-tour">
-<h3>The DAL: a quick tour<a class="headerlink" href="#the-dal-a-quick-tour" title="Permalink to this heading"></a></h3>
+<h3>The DAL: a quick tour<a class="headerlink" href="#the-dal-a-quick-tour" title="Link to this heading"></a></h3>
 <p>define py4web as seguintes classes que compõem o DAL:</p>
 <dl>
 <dt>DAL</dt><dd><p>represents a database connection. For example:</p>
@@ -393,7 +404,7 @@ thought of as a list of <code class="docutils literal notranslate"><span class="
 </pre></div>
 </div>
 </dd>
-<dt>Row</dt><dd><p>contains field values.</p>
+<dt>Row</dt><dd><p>contains field values:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">myfield</span><span class="p">)</span>
 </pre></div>
@@ -425,7 +436,7 @@ example.</p>
 </dl>
 </section>
 <section id="using-the-dal-stand-alone">
-<h3>Usando o DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Permalink to this heading"></a></h3>
+<h3>Usando o DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Link to this heading"></a></h3>
 <p>pyDAL is an independent python package. As such, it can be used
 without the web2py/py4web environment; you just need to install
 it with <code class="docutils literal notranslate"><span class="pre">pip</span></code>. Then import the pydal module when needed:</p>
@@ -444,7 +455,7 @@ should better be:</p>
 </div>
 </section>
 <section id="experiment-with-the-py4web-shell">
-<h3>Experimentar com o shell py4web<a class="headerlink" href="#experiment-with-the-py4web-shell" title="Permalink to this heading"></a></h3>
+<h3>Experimentar com o shell py4web<a class="headerlink" href="#experiment-with-the-py4web-shell" title="Link to this heading"></a></h3>
 <p>You can also experiment with the pyDAL API using the py4web shell,
 that is available using the <a class="reference internal" href="chapter-03.html#shell-command-option"><span class="std std-ref">Opção `` comando shell``</span></a>.</p>
 <div class="admonition warning">
@@ -452,15 +463,17 @@ that is available using the <a class="reference internal" href="chapter-03.html#
 <p>Mind that
 database changes may be persistent. So be careful and do NOT hesitate
 to create a new application for doing testing instead of tampering
-with an existing one.</p>
+with an existing one. The only exception is the showcase
+db: in case of problems you can recreate it by simply deleting the
+database folder and restarting py4web. This will re-create the
+database with all the example data.</p>
 </div>
 <p>Note that most of the code snippets that contain the python prompt
 <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> are also directly executable via a py4web shell.</p>
-<p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">examples</span></code> app:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.examples</span> <span class="kn">import</span> <span class="n">db</span>
+<p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">showcase</span></code> app:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.showcase.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">()</span>
-<span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;product&#39;, &#39;thing&#39;]</span>
+<span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;thing&#39;, &#39;user_token&#39;, &#39;dummy&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 <span class="go">&lt;Row {&#39;id&#39;: 1, &#39;tag&#39;: &lt;Set (&quot;tag&quot;.&quot;superhero&quot; = 1)&gt;, &#39;name&#39;: &#39;Superman&#39;, &#39;real_identity&#39;: 1}&gt;</span>
@@ -471,8 +484,21 @@ can use SQLite. Nothing in this discussion changes when you switch the back-end
 engine.</p>
 </section>
 </section>
+<section id="using-the-dashboard-app-with-databases">
+<h2>Using the dashboard app with databases<a class="headerlink" href="#using-the-dashboard-app-with-databases" title="Link to this heading"></a></h2>
+<p>Generally you can use the dashboard app for viewing and modifying the databases
+of a particular app. However this is not bulletproof, so for
+security reason this by default is not applied to the showcase app.
+But if your installation is local (not exposed to public networks), you can enable it
+by simply adding to the file``apps/showcase/__init__.py`` the line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
+</pre></div>
+</div>
+<p>This allow you to look graphically inside the showcase application database:</p>
+<img alt="_images/example_db.png" src="_images/example_db.png" />
+</section>
 <section id="dal-constructor">
-<h2>Construtor DAL<a class="headerlink" href="#dal-constructor" title="Permalink to this heading"></a></h2>
+<h2>Construtor DAL<a class="headerlink" href="#dal-constructor" title="Link to this heading"></a></h2>
 <p>Uso básico:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
 </pre></div>
@@ -492,7 +518,7 @@ engine.</p>
 a uniform resource identifier.</p>
 <p>A DAL permite várias ligações com o mesmo banco de dados ou com diferentes bases de dados, mesmo bases de dados de diferentes tipos. Por enquanto, vamos supor a presença de um único banco de dados uma vez que esta é a situação mais comum.</p>
 <section id="dal-signature">
-<h3>Assinatura da DAL<a class="headerlink" href="#dal-signature" title="Permalink to this heading"></a></h3>
+<h3>Assinatura da DAL<a class="headerlink" href="#dal-signature" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DAL</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;sqlite://dummy.db&#39;</span><span class="p">,</span>
     <span class="n">pool_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -521,7 +547,7 @@ a uniform resource identifier.</p>
 </div>
 </section>
 <section id="connection-strings-the-uri-parameter">
-<h3>Strings de conexão (o parâmetro uri)<a class="headerlink" href="#connection-strings-the-uri-parameter" title="Permalink to this heading"></a></h3>
+<h3>Strings de conexão (o parâmetro uri)<a class="headerlink" href="#connection-strings-the-uri-parameter" title="Link to this heading"></a></h3>
 <p>Uma ligação com o banco de dados é estabelecida através da criação de uma instância do objecto DAL:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
 </pre></div>
@@ -598,7 +624,11 @@ a uniform resource identifier.</p>
 </table>
 <ul class="simple">
 <li><p>in SQLite the database consists of a single file. If it does
-not exist, it is created. This file is locked every time it is accessed.</p></li>
+not exist, it is created. This file is locked every time it is accessed.
+In addition to the file “storage.sqlite” that contains the data, there will
+be also a sql.log file plus one additional file called longhash_tablename.table
+for every table definition. The table definition files are used during migrations;
+in case of problems they could be deleted (they’ll be automatically recreated).</p></li>
 <li><p>in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
 and Informix the database “test” must be created outside py4web. Once
 the connection is established, py4web will create, alter, and drop
@@ -632,7 +662,7 @@ for details. In most of the cases you can use
 <p>Caso contrário, você vai ter bilhetes UnicodeDecodeError.</p>
 </section>
 <section id="connection-pooling">
-<h3>O pool de conexões<a class="headerlink" href="#connection-pooling" title="Permalink to this heading"></a></h3>
+<h3>O pool de conexões<a class="headerlink" href="#connection-pooling" title="Link to this heading"></a></h3>
 <p>Um argumento comum do construtor DAL é a `` pool_size``; o padrão é zero.</p>
 <p>As it is rather slow to establish a new database connection for each
 request, py4web implements a mechanism for connection pooling. Once a
@@ -647,11 +677,11 @@ established.</p>
 <p>O parâmetro `` pool_size`` é ignorado pelo SQLite e Google App Engine. pool de conexão é ignorado para SQLite, uma vez que não daria qualquer benefício.</p>
 </section>
 <section id="connection-failures-attempts-parameter">
-<h3>Falhas de conexão (parâmetro tentativas)<a class="headerlink" href="#connection-failures-attempts-parameter" title="Permalink to this heading"></a></h3>
+<h3>Falhas de conexão (parâmetro tentativas)<a class="headerlink" href="#connection-failures-attempts-parameter" title="Link to this heading"></a></h3>
 <p>Se py4web não consegue se conectar ao banco de dados que espera 1 segundo e por tentativas padrão novamente até 5 vezes antes de declarar um fracasso. No case do pool de conexão, é possível que uma conexão em pool que permanece aberta, mas sem uso por algum tempo está fechado até o final de banco de dados. Graças à py4web recurso repetição tenta restabelecer essas ligações interrompidas. O número de tentativas é definido através do parâmetro tentativas.</p>
 </section>
 <section id="lazy-tables">
-<h3>Tabelas preguiçosos<a class="headerlink" href="#lazy-tables" title="Permalink to this heading"></a></h3>
+<h3>Tabelas preguiçosos<a class="headerlink" href="#lazy-tables" title="Link to this heading"></a></h3>
 <p>Setting <code class="docutils literal notranslate"><span class="pre">lazy_tables</span> <span class="pre">=</span> <span class="pre">True</span></code> provides a major performance boost (but
 not with py4web). It means that table creation is deferred until the
 table is actually referenced.</p>
@@ -662,9 +692,9 @@ no need, and possibly concurrency problems.</p>
 </div>
 </section>
 <section id="model-less-applications">
-<h3>Aplicativos de modelo-less<a class="headerlink" href="#model-less-applications" title="Permalink to this heading"></a></h3>
-<p>In py4web the code defined outside of actions (where normally DAL tables
-are defined) is only executed at startup.</p>
+<h3>Aplicativos de modelo-less<a class="headerlink" href="#model-less-applications" title="Link to this heading"></a></h3>
+<p>Normally in py4web the code that define DAL tables lives in the file
+<code class="docutils literal notranslate"><span class="pre">models.py</span></code>, hence it’s only executed at startup because it’s outside of actions.</p>
 <p>However, it is possible to define DAL tables on demand inside actions.
 This is referred to as “model-less” development by the py4web community.</p>
 <p>To use the “model-less” approach, you take responsibility for doing
@@ -674,7 +704,7 @@ Also, remember maintainability: other py4web developers expect to find
 database definitions in the <code class="docutils literal notranslate"><span class="pre">models.py</span></code> file.</p>
 </section>
 <section id="replicated-databases">
-<h3>Bancos de dados replicados<a class="headerlink" href="#replicated-databases" title="Permalink to this heading"></a></h3>
+<h3>Bancos de dados replicados<a class="headerlink" href="#replicated-databases" title="Link to this heading"></a></h3>
 <p>The first argument of <code class="docutils literal notranslate"><span class="pre">DAL(...)</span></code> can be a list of URIs. In this case
 py4web tries to connect to each of them. The main purpose for this is to
 deal with multiple database servers and distribute the workload among
@@ -685,7 +715,7 @@ them. Here is a typical use case:</p>
 <p>Neste case, as tentativas DAL para conectar-se a primeira e, em case de falha, ele vai tentar o segundo eo terceiro. Isto também pode ser utilizado para distribuir a carga em uma configuração de banco de dados mestre-escravo.</p>
 </section>
 <section id="reserved-keywords">
-<h3>Palavras-chave reservadas<a class="headerlink" href="#reserved-keywords" title="Permalink to this heading"></a></h3>
+<h3>Palavras-chave reservadas<a class="headerlink" href="#reserved-keywords" title="Link to this heading"></a></h3>
 <p>`` Check_reserved`` diz o construtor para verificar nomes de tabela e nomes de coluna contra palavras-chave reservada SQL em bancos de dados de back-end-alvo. `` padrões check_reserved`` a nenhum.</p>
 <p>Esta é uma lista de strings que contêm os nomes de adaptador de banco de dados back-end.</p>
 <p>The adapter name is the same as used in the DAL connection string. So if
@@ -729,7 +759,7 @@ append <code class="docutils literal notranslate"><span class="pre">_nonreserved
 </table>
 </section>
 <section id="database-quoting-and-case-settings">
-<h3>Configurações de quoting e case e do  banco de dados<a class="headerlink" href="#database-quoting-and-case-settings" title="Permalink to this heading"></a></h3>
+<h3>Configurações de quoting e case e do  banco de dados<a class="headerlink" href="#database-quoting-and-case-settings" title="Link to this heading"></a></h3>
 <p>Citando de entidades SQL são ativadas por padrão em DAL, isto é:</p>
 <p>`` Entity_quoting = True``</p>
 <p>Desta forma, os identificadores são automaticamente citado em SQL gerado pelo DAL. No SQL palavras-chave de nível e identificadores não cotadas são maiúsculas e minúsculas, quoting assim uma SQL identificador torna maiúsculas de minúsculas.</p>
@@ -746,7 +776,7 @@ append <code class="docutils literal notranslate"><span class="pre">_nonreserved
 </div>
 </section>
 <section id="making-a-secure-connection">
-<h3>Fazendo uma conexão segura<a class="headerlink" href="#making-a-secure-connection" title="Permalink to this heading"></a></h3>
+<h3>Fazendo uma conexão segura<a class="headerlink" href="#making-a-secure-connection" title="Link to this heading"></a></h3>
 <p>Às vezes é necessário (e recomendado) para se conectar ao seu banco de dados usando conexão segura, especialmente se o seu banco de dados não está no mesmo servidor como a sua aplicação. Neste case, você precisa passar parâmetros adicionais para o driver de banco de dados. Você deve consultar a documentação do driver de banco de dados para obter detalhes.</p>
 <p>Para PostgreSQL com psycopg2 ele deve ser parecido com isto:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;postgres://user_name:user_password@server_addr/db_name&#39;</span><span class="p">,</span>
@@ -757,17 +787,24 @@ append <code class="docutils literal notranslate"><span class="pre">_nonreserved
 <p>onde os parâmetros `` sslrootcert``, `` sslcert`` e `` sslkey`` deve conter o caminho completo para os arquivos. Você deve consultar a documentação do PostgreSQL sobre como configurar o servidor PostgreSQL para aceitar conexões seguras.</p>
 </section>
 <section id="other-dal-constructor-parameters">
-<h3>Outros parâmetros do construtor DAL<a class="headerlink" href="#other-dal-constructor-parameters" title="Permalink to this heading"></a></h3>
+<h3>Outros parâmetros do construtor DAL<a class="headerlink" href="#other-dal-constructor-parameters" title="Link to this heading"></a></h3>
 <section id="database-folder-location">
-<h4>Local de pasta do banco de dados<a class="headerlink" href="#database-folder-location" title="Permalink to this heading"></a></h4>
+<h4>Local de pasta do banco de dados<a class="headerlink" href="#database-folder-location" title="Link to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">folder</span></code> sets the place where migration files will be created (see
-<a class="reference internal" href="#migrations">Migrations</a> for details).
-It is also used for SQLite databases. Automatically set within py4web.
-Set a path when using DAL outside py4web.</p>
+<a class="reference internal" href="#migrations">Migrations</a> for details). By default it’s automatically set within py4web on the same
+folder of the database itself, but you have to specify it when using DAL outside py4web.</p>
+<p>Note that for SQLite databases it’s normally necessary,
+otherwise you’ll implicitly choose an in memory database (where folder and
+migrations don’t have any sense). So these constructors have the same meaning:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span> <span class="c1"># folder parameter not specified</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>           <span class="c1"># in memory database</span>
+</pre></div>
+</div>
 </section>
 <section id="default-migration-settings">
-<h4>Configurações padrão de migração<a class="headerlink" href="#default-migration-settings" title="Permalink to this heading"></a></h4>
-<p>As configurações de migração construtor DAL são booleans que afetam padrões e comportamento global.</p>
+<h4>Configurações padrão de migração<a class="headerlink" href="#default-migration-settings" title="Link to this heading"></a></h4>
+<p>The DAL constructor migration settings are booleans affecting defaults
+and global behaviour (again, see <a class="reference internal" href="#migrations">Migrations</a> for details)</p>
 <p>`` Migrar = True`` define o comportamento de migração padrão para todas as tabelas</p>
 <p>`` Fake_migrate = False`` define o comportamento fake_migrate padrão para todas as tabelas</p>
 <p>`` Migrate_enabled = True`` se definido como desativa falsas todas as migrações</p>
@@ -775,13 +812,13 @@ Set a path when using DAL outside py4web.</p>
 </section>
 </section>
 <section id="commit-and-rollback">
-<h3>`` `` commit`` e rollback``<a class="headerlink" href="#commit-and-rollback" title="Permalink to this heading"></a></h3>
+<h3>`` `` commit`` e rollback``<a class="headerlink" href="#commit-and-rollback" title="Link to this heading"></a></h3>
 <p>The insert, truncate, delete, and update operations aren’t actually
 committed until py4web issues the commit command. The create and drop
 operations may be executed immediately, depending on the database
 engine.</p>
 <p>If you pass <code class="docutils literal notranslate"><span class="pre">db</span></code> in an <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> decorator, you don’t need to call
-commit in the controller, it is done for you.  (Also, if you use
+commit in the controller, it is automatically done for you (also, if you use
 <code class="docutils literal notranslate"><span class="pre">authenticated</span></code> or <code class="docutils literal notranslate"><span class="pre">unauthenticated</span></code> decorator.)</p>
 <div class="admonition tip">
 <p class="admonition-title">Dica</p>
@@ -828,10 +865,10 @@ looks like this (pseudo code):</p>
 </section>
 </section>
 <section id="table-constructor">
-<h2>Construtor Table<a class="headerlink" href="#table-constructor" title="Permalink to this heading"></a></h2>
+<h2>Construtor Table<a class="headerlink" href="#table-constructor" title="Link to this heading"></a></h2>
 <p>As tabelas são definidos na DAL via `` define_table``.</p>
 <section id="define-table-signature">
-<h3>assinatura define_table<a class="headerlink" href="#define-table-signature" title="Permalink to this heading"></a></h3>
+<h3>assinatura define_table<a class="headerlink" href="#define-table-signature" title="Link to this heading"></a></h3>
 <p>A assinatura para o método define_table é:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">define_table</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -845,18 +882,18 @@ looks like this (pseudo code):</p>
 <p>Ele define, lojas e retorna um objeto `` Table`` chamado “pessoa” contendo um campo (coluna) “nome”. Este objeto também pode ser acessado via `` db.person``, assim você não precisa pegar o valor retornado pelo define_table.</p>
 </section>
 <section id="id-notes-about-the-primary-key">
-<h3>`` Id``: Notas sobre a chave primária<a class="headerlink" href="#id-notes-about-the-primary-key" title="Permalink to this heading"></a></h3>
+<h3>`` Id``: Notas sobre a chave primária<a class="headerlink" href="#id-notes-about-the-primary-key" title="Link to this heading"></a></h3>
 <p>Não declare um campo chamado “id”, porque um é criado por py4web de qualquer maneira. Cada tabela tem um campo chamado “id” por padrão. É um campo inteiro de auto-incremento (geralmente a partir de 1) utilizados para referência cruzada e para fazer cada registro original, assim que “id” é uma chave primária. (Nota: o contador id a partir de 1 é específico back-end Por exemplo, isto não se aplica ao Google App Engine NoSQL..)</p>
 <p>Opcionalmente, você pode definir um campo de “type =” id”`` <cite>e py4web usará este campo como campo id auto-incremento. Isso não é recomendado, exceto quando acessar as tabelas de banco de dados legado que têm uma chave primária com um nome diferente. Com alguma limitação, você também pode usar diferentes chaves primárias usando o parâmetro `</cite> primarykey``.</p>
 </section>
 <section id="plural-and-singular">
-<h3>`` `` Plural`` e singular``<a class="headerlink" href="#plural-and-singular" title="Permalink to this heading"></a></h3>
+<h3>`` `` Plural`` e singular``<a class="headerlink" href="#plural-and-singular" title="Link to this heading"></a></h3>
 <p>As pyDAL is a general DAL, it includes plural and singular attributes to
 refer to the table names so that external elements can use the proper
 name for a table.</p>
 </section>
 <section id="redefine">
-<h3>`` Redefine``<a class="headerlink" href="#redefine" title="Permalink to this heading"></a></h3>
+<h3>`` Redefine``<a class="headerlink" href="#redefine" title="Link to this heading"></a></h3>
 <p>As tabelas podem ser definidas apenas uma vez, mas você pode forçar py4web redefinir uma tabela existente:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">redefine</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -865,7 +902,7 @@ name for a table.</p>
 <p>A redefinição pode provocar uma migração se definição tabela muda.</p>
 </section>
 <section id="format-record-representation">
-<h3>`` Format``: representação da ficha<a class="headerlink" href="#format-record-representation" title="Permalink to this heading"></a></h3>
+<h3>`` Format``: representação da ficha<a class="headerlink" href="#format-record-representation" title="Link to this heading"></a></h3>
 <p>É opcional, mas recomendado para especificar uma representação formato para registros com o parâmetro `` format``.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
@@ -889,7 +926,7 @@ representation instead.</p></li>
 </ul>
 </section>
 <section id="rname-real-name">
-<h3>`` Rname``: nome real<a class="headerlink" href="#rname-real-name" title="Permalink to this heading"></a></h3>
+<h3>`` Rname``: nome real<a class="headerlink" href="#rname-real-name" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">rname</span></code> sets a database backend name for the table. This makes the
 py4web table name an alias, and <code class="docutils literal notranslate"><span class="pre">rname</span></code> is the real name used when
 constructing the query for the backend. To illustrate just one use,
@@ -898,17 +935,17 @@ accessing tables belonging to other databases on the server:
 <code class="docutils literal notranslate"><span class="pre">rname</span> <span class="pre">=</span> <span class="pre">'db1.dbo.table1'</span></code></p>
 </section>
 <section id="primarykey-support-for-legacy-tables">
-<h3>`` Primarykey``: Suporte para tabelas legadas<a class="headerlink" href="#primarykey-support-for-legacy-tables" title="Permalink to this heading"></a></h3>
+<h3>`` Primarykey``: Suporte para tabelas legadas<a class="headerlink" href="#primarykey-support-for-legacy-tables" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">primarykey</span></code> helps support legacy tables with existing primary keys,
 even multi-part. See <a class="reference internal" href="#legacy-databases-and-keyed-tables">Legacy databases and keyed tables</a>.</p>
 </section>
 <section id="migrate-fake-migrate">
-<h3>`` Migrate``, `` fake_migrate``<a class="headerlink" href="#migrate-fake-migrate" title="Permalink to this heading"></a></h3>
+<h3>`` Migrate``, `` fake_migrate``<a class="headerlink" href="#migrate-fake-migrate" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">migrate</span></code> sets migration options for the table. Refer to
 <a class="reference internal" href="#migrations">Migrations</a> for details.</p>
 </section>
 <section id="table-class">
-<h3>`` Table_class``<a class="headerlink" href="#table-class" title="Permalink to this heading"></a></h3>
+<h3>`` Table_class``<a class="headerlink" href="#table-class" title="Link to this heading"></a></h3>
 <p>If you define your own table class as a sub-class of
 pydal.objects.Table, you can provide it here; this allows you to extend
 and override methods. Example:</p>
@@ -922,22 +959,22 @@ and override methods. Example:</p>
 </div>
 </section>
 <section id="sequence-name">
-<h3>`` Sequence_name``<a class="headerlink" href="#sequence-name" title="Permalink to this heading"></a></h3>
+<h3>`` Sequence_name``<a class="headerlink" href="#sequence-name" title="Link to this heading"></a></h3>
 <p>O nome de uma seqüência tabela personalizada (se suportado pelo banco de dados). Pode criar uma seqüência (a partir de 1 e incrementando por 1) ou usar isso para tabelas legadas com seqüências personalizadas.</p>
 <blockquote>
 <div><p>Observe que, quando necessário, py4web vai criar seqüências automaticamente por padrão.</p>
 </div></blockquote>
 </section>
 <section id="trigger-name">
-<h3>`` Trigger_name``<a class="headerlink" href="#trigger-name" title="Permalink to this heading"></a></h3>
+<h3>`` Trigger_name``<a class="headerlink" href="#trigger-name" title="Link to this heading"></a></h3>
 <p>Refere-se a `` sequence_name``. Relevante para alguns backends que não suportam campos numéricos auto-incremento.</p>
 </section>
 <section id="polymodel">
-<h3>`` polymodel``<a class="headerlink" href="#polymodel" title="Permalink to this heading"></a></h3>
+<h3>`` polymodel``<a class="headerlink" href="#polymodel" title="Link to this heading"></a></h3>
 <p>For use with Google App Engine.</p>
 </section>
 <section id="on-define">
-<h3>`` On_define``<a class="headerlink" href="#on-define" title="Permalink to this heading"></a></h3>
+<h3>`` On_define``<a class="headerlink" href="#on-define" title="Link to this heading"></a></h3>
 <p>`` On_define`` é uma chamada de retorno acionado quando um lazy_table é instanciado, embora ela é chamada de qualquer maneira, se a tabela não é preguiçoso. Isso permite que mudanças dinâmicas para a mesa sem perder as vantagens de instanciação adiada.</p>
 <p>Exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="n">lazy_tables</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -952,7 +989,7 @@ and override methods. Example:</p>
 <p>Nota Este exemplo mostra como usar `` on_define`` mas não é realmente necessário. O simples `` valores requires`` poderiam ser adicionados às definições de campo ea mesa ainda seria preguiçoso. No entanto, `` requires`` que tomar um objeto definido como o primeiro argumento, como IS_IN_DB, vai fazer uma consulta como `` db.sometable.somefield == some_value`` que causaria `` sometable`` a ser definido no início . Esta é a situação salvos por `` on_define``.</p>
 </section>
 <section id="adding-attributes-to-fields-and-tables">
-<h3>Adicionando atributos para campos e tabelas<a class="headerlink" href="#adding-attributes-to-fields-and-tables" title="Permalink to this heading"></a></h3>
+<h3>Adicionando atributos para campos e tabelas<a class="headerlink" href="#adding-attributes-to-fields-and-tables" title="Link to this heading"></a></h3>
 <p>Se você precisa adicionar atributos personalizados aos campos, você pode simplesmente fazer isso: `` db.table.field.extra = {} ``</p>
 <p>“extra” is not a keyword; it’s a custom attribute now attached to the
 field object. You can do it with tables too but they must be preceded by
@@ -962,7 +999,7 @@ an underscore to avoid naming conflicts with fields:</p>
 </div>
 </section>
 <section id="legacy-databases-and-keyed-tables">
-<h3>Bancos de dados legados e tabelas com chave<a class="headerlink" href="#legacy-databases-and-keyed-tables" title="Permalink to this heading"></a></h3>
+<h3>Bancos de dados legados e tabelas com chave<a class="headerlink" href="#legacy-databases-and-keyed-tables" title="Link to this heading"></a></h3>
 <p>py4web pode se conectar a bancos de dados legados sob algumas condições.</p>
 <p>The easiest way is when these conditions are met:</p>
 <ul class="simple">
@@ -970,7 +1007,10 @@ an underscore to avoid naming conflicts with fields:</p>
 <li><p>Records must be referenced exclusively using the “id” field.</p></li>
 </ul>
 <p>Ao acessar uma tabela existente, isto é, uma tabela não criado por py4web no aplicativo atual, sempre definir `` migrar = False``.</p>
-<p>Se a tabela de legado tem um campo inteiro de auto-incremento, mas não é chamado de “id”, py4web ainda pode acessá-lo, mas a definição da tabela deve declarar o campo de incremento automático com o tipo de “id” (que está usando campo `` (” … “, “id”) <a href="#id1"><span class="problematic" id="id2">``</span></a>).</p>
+<p>If the legacy table has an auto-increment integer field but it is not
+called “id”, py4web can still access it but the table definition must
+declare the auto-increment field with ‘id’ type (that is using
+<code class="docutils literal notranslate"><span class="pre">Field('...',</span> <span class="pre">'id')</span></code>).</p>
 <p>Finalmente se a tabela de legado usa uma chave primária que não é um campo id auto-incremento é possível usar uma “mesa com chave”, por exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;account&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;accnum&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">),</span>
@@ -994,7 +1034,7 @@ an underscore to avoid naming conflicts with fields:</p>
 </section>
 </section>
 <section id="field-constructor">
-<h2>Construtor Field<a class="headerlink" href="#field-constructor" title="Permalink to this heading"></a></h2>
+<h2>Construtor Field<a class="headerlink" href="#field-constructor" title="Link to this heading"></a></h2>
 <p>Estes são os valores padrão de um construtor de campo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">,</span>
       <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">,</span>
@@ -1080,7 +1120,7 @@ should only be set globally for an app. The following are guaranteed to be
 thread safe and be set/reset in any action:
 <code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">readable</span></code>, <code class="docutils literal notranslate"><span class="pre">writable</span></code>, <code class="docutils literal notranslate"><span class="pre">requires</span></code>.</p>
 <section id="field-types-and-validators">
-<h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Permalink to this heading"></a></h3>
+<h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Link to this heading"></a></h3>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type</p></th>
@@ -1171,7 +1211,7 @@ making the communication independent of the back-end specific escaping
 conventions.</p>
 </section>
 <section id="run-time-field-and-table-modification">
-<h3>modificação da tabela e campo em tempo de execução<a class="headerlink" href="#run-time-field-and-table-modification" title="Permalink to this heading"></a></h3>
+<h3>modificação da tabela e campo em tempo de execução<a class="headerlink" href="#run-time-field-and-table-modification" title="Link to this heading"></a></h3>
 <p>A maioria dos atributos de campos e tabelas podem ser modificados depois que eles são definidos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="go">&lt;Table person (id, name)&gt;</span>
@@ -1235,7 +1275,7 @@ conventions.</p>
 <p>que retorna um tuplo `` (valor, erro) <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">``</span> <span class="pre">``</span> <span class="pre">Error</span></code> é None`` se a entrada passa a validação.</p>
 </section>
 <section id="more-on-uploads">
-<h3>Mais sobre envios<a class="headerlink" href="#more-on-uploads" title="Permalink to this heading"></a></h3>
+<h3>Mais sobre envios<a class="headerlink" href="#more-on-uploads" title="Link to this heading"></a></h3>
 <p>Considere o seguinte modelo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;myfile&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;path/to/file&#39;</span><span class="p">))</span>
@@ -1293,7 +1333,7 @@ conventions.</p>
 </section>
 </section>
 <section id="migrations">
-<h2>Migrações<a class="headerlink" href="#migrations" title="Permalink to this heading"></a></h2>
+<h2>Migrações<a class="headerlink" href="#migrations" title="Link to this heading"></a></h2>
 <p>With our example table definition:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1346,7 +1386,7 @@ changes in attributes such as changes in the values of <code class="docutils lit
 Only one of the two apps should perform migrations, the other should
 disable them.</p>
 <section id="fixing-broken-migrations">
-<h3>Fixação migrações quebrados<a class="headerlink" href="#fixing-broken-migrations" title="Permalink to this heading"></a></h3>
+<h3>Fixação migrações quebrados<a class="headerlink" href="#fixing-broken-migrations" title="Link to this heading"></a></h3>
 <p>Há dois problemas comuns com as migrações e existem formas de recuperar a partir deles.</p>
 <p>Um problema é específico com SQLite. SQLite não impor tipos de coluna e não pode soltar colunas. Isto significa que se você tiver uma coluna do tipo string e você removê-lo, não é realmente removido. Se você adicionar a coluna novamente com um tipo diferente (por exemplo, data e hora) você acaba com uma coluna de data e hora que contém strings (lixo para fins práticos). não py4web não reclamar sobre isso, porque ele não sabe o que está no banco de dados, até que ele tenta recuperar registros e falha.</p>
 <p>Se py4web retorna um erro em alguma função de análise ao selecionar registros, muito provavelmente isso é devido a dados corrompidos em uma coluna por causa da questão acima.</p>
@@ -1366,7 +1406,7 @@ of “yourapp/databases/*.table” files.</p>
 <p>Isso também falhará se o modelo descreve tabelas que não existem no banco de dados, mas pode ajudar a estreitar o problema.</p>
 </section>
 <section id="migration-control-summary">
-<h3>Migração resumo controle<a class="headerlink" href="#migration-control-summary" title="Permalink to this heading"></a></h3>
+<h3>Migração resumo controle<a class="headerlink" href="#migration-control-summary" title="Link to this heading"></a></h3>
 <p>A lógica dos vários argumentos de migração estão resumidos neste pseudo-código:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">DAL</span><span class="o">.</span><span class="n">migrate_enabled</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">migrate</span><span class="p">:</span>
    <span class="k">if</span> <span class="n">DAL</span><span class="o">.</span><span class="n">fake_migrate_all</span> <span class="ow">or</span> <span class="n">table</span><span class="o">.</span><span class="n">fake_migrate</span><span class="p">:</span>
@@ -1378,9 +1418,9 @@ of “yourapp/databases/*.table” files.</p>
 </section>
 </section>
 <section id="table-methods">
-<h2>Table methods<a class="headerlink" href="#table-methods" title="Permalink to this heading"></a></h2>
+<h2>Table methods<a class="headerlink" href="#table-methods" title="Link to this heading"></a></h2>
 <section id="insert">
-<h3>`` Insert``<a class="headerlink" href="#insert" title="Permalink to this heading"></a></h3>
+<h3>`` Insert``<a class="headerlink" href="#insert" title="Link to this heading"></a></h3>
 <p>Dada uma tabela, você pode inserir registros</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alex&quot;</span><span class="p">)</span>
 <span class="go">1</span>
@@ -1411,7 +1451,7 @@ of “yourapp/databases/*.table” files.</p>
 <p>É preciso uma lista de dicionários de campos a serem inseridas e executa várias inserções ao mesmo tempo. Ele retorna a lista de valores “id” dos registros inseridos. Nos bancos de dados relacionais suportadas não há nenhuma vantagem em usar esta função ao invés de looping e realizando inserções individuais, mas no Google App Engine NoSQL, há uma grande vantagem de velocidade.</p>
 </section>
 <section id="query-set-rows">
-<h3>`` Query``, `` Set``, `` Rows``<a class="headerlink" href="#query-set-rows" title="Permalink to this heading"></a></h3>
+<h3>`` Query``, `` Set``, `` Rows``<a class="headerlink" href="#query-set-rows" title="Link to this heading"></a></h3>
 <p>Vamos considerar novamente a tabela definida (e caiu) anteriormente e inserir três registros:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 <span class="go">&lt;Table person (id, name)&gt;</span>
@@ -1442,7 +1482,7 @@ of “yourapp/databases/*.table” files.</p>
 <p>Observe que nenhuma consulta de banco de dados foi realizada até agora. DAL + consulta simplesmente definir um conjunto de registros neste db que correspondem a consulta. py4web determina a partir da consulta que tabela (ou tabelas) estão envolvidos e, de fato, não há necessidade de especificar isso.</p>
 </section>
 <section id="update-or-insert">
-<h3>`` Update_or_insert``<a class="headerlink" href="#update-or-insert" title="Permalink to this heading"></a></h3>
+<h3>`` Update_or_insert``<a class="headerlink" href="#update-or-insert" title="Link to this heading"></a></h3>
 <p>Algumas vezes você precisa executar uma inserção somente se não há nenhum registro com os mesmos valores como aqueles que estão sendo inseridos. Isso pode ser feito com</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -1468,7 +1508,7 @@ of “yourapp/databases/*.table” files.</p>
 </div>
 </section>
 <section id="validate-and-insert-validate-and-update">
-<h3>`` Validate_and_insert``, `` validate_and_update``<a class="headerlink" href="#validate-and-insert-validate-and-update" title="Permalink to this heading"></a></h3>
+<h3>`` Validate_and_insert``, `` validate_and_update``<a class="headerlink" href="#validate-and-insert-validate-and-update" title="Link to this heading"></a></h3>
 <p>A função</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">validate_and_insert</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1477,7 +1517,14 @@ of “yourapp/databases/*.table” files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>exceto que ele chama os validadores para os campos antes de realizar a inserção e fianças se a validação não passa. Se a validação não passa os erros podem ser encontradas em `` ret.errors``. `` Ret.errors`` mantém um mapeamento de valores-chave, onde cada chave é o nome do campo cuja validação falhou, e o valor da chave é o resultado do erro de validação (muito parecido com `` form.errors``). Se passar, o ID do novo registro é em `` ret.id``. Mente que normalmente validação é feita pela lógica de processamento de formulário para essa função é raramente necessária.</p>
+<p>except that it calls the validators for the fields before performing the
+insert and bails out if the validation does not pass. If validation does
+not pass the errors can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>. <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code> holds
+a key-value mapping where each key is the field name whose validation
+failed, and the value of the key is the result from the validation error
+(much like <code class="docutils literal notranslate"><span class="pre">form[&quot;errors&quot;]</span></code>). If it passes, the id of the new record is
+in <code class="docutils literal notranslate"><span class="pre">ret[&quot;id&quot;]</span></code>. Mind that normally validation is done by the form
+processing logic so this function is rarely needed.</p>
 <p>Similarmente</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">validate_and_update</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1486,26 +1533,29 @@ of “yourapp/databases/*.table” files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>exceto que ele chama os validadores para os campos antes de realizar a atualização. Note que ele só funciona se consulta envolve uma única tabela. O número de registros atualizados podem ser encontrados em `` ret.updated`` e erros será no `` ret.errors``.</p>
+<p>except that it calls the validators for the fields before performing the
+update. Notice that it only works if query involves a single table. The
+number of updated records can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;updated&quot;]</span></code> and errors
+will be in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>.</p>
 </section>
 <section id="drop">
-<h3>`` Drop``<a class="headerlink" href="#drop" title="Permalink to this heading"></a></h3>
+<h3>`` Drop``<a class="headerlink" href="#drop" title="Link to this heading"></a></h3>
 <p>Finalmente, você pode soltar tabelas e todos os dados serão perdidos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="tagging-records">
-<h3>Marcação de registros<a class="headerlink" href="#tagging-records" title="Permalink to this heading"></a></h3>
+<h3>Marcação de registros<a class="headerlink" href="#tagging-records" title="Link to this heading"></a></h3>
 <p>Etiquetas permite adicionar ou encontrar propriedades anexadas aos registros em seu banco de dados.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;sqlite:memory&quot;</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s2">&quot;thing&quot;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span>
-<span class="n">properties</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 <span class="n">id1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;chair&quot;</span><span class="p">)</span>
 <span class="n">id2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
+<span class="n">properties</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="s2">&quot;color/red&quot;</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="s2">&quot;style/modern&quot;</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id2</span><span class="p">,</span> <span class="s2">&quot;color/green&quot;</span><span class="p">)</span>
@@ -1524,19 +1574,19 @@ of “yourapp/databases/*.table” files.</p>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p>It is internally implemented as a table, which in
+<p><code class="docutils literal notranslate"><span class="pre">Tags</span></code> are hierarchical. Then <code class="docutils literal notranslate"><span class="pre">find([“color”])</span></code> would return id1 and id2
+because both records have tags with “color”.</p>
+<p>It is internally implemented with the creation of an additional table, which in
 this example would be db.thing_tags_default, because no tail was
-specified on the Tags(table, tail=“default”) constructor.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">find</span></code> method is doing a search by <code class="docutils literal notranslate"><span class="pre">startswith</span></code> of the
-parameter. Then find([“color”]) would return id1 and id2
-because both records have tags starting with “color”. py4web uses tags as a
-flexible mechanism to manage permissions.</p>
+specified on the <code class="docutils literal notranslate"><span class="pre">Tags(table,</span> <span class="pre">tail=“default”)</span></code> constructor.</p>
+<p>py4web uses <code class="docutils literal notranslate"><span class="pre">Tags</span></code> as a flexible mechanism to manage permissions, we’ll see
+all the details later on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter.</p>
 </section>
 </section>
 <section id="raw-sql">
-<h2>Raw SQL<a class="headerlink" href="#raw-sql" title="Permalink to this heading"></a></h2>
+<h2>Raw SQL<a class="headerlink" href="#raw-sql" title="Link to this heading"></a></h2>
 <section id="executesql">
-<h3>`` executesql``<a class="headerlink" href="#executesql" title="Permalink to this heading"></a></h3>
+<h3>`` executesql``<a class="headerlink" href="#executesql" title="Link to this heading"></a></h3>
 <p>A DAL permite emitir explicitamente instruções SQL.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">executesql</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM person;&#39;</span><span class="p">)</span>
 <span class="go">[(1, u&#39;Massimo&#39;), (2, u&#39;Massimo&#39;)]</span>
@@ -1563,7 +1613,7 @@ those returned when applying as_list() to a normal select:</p>
 <p>Observe, a Tabela DAL objectos referidos por `` fields`` ou `` colnames`` pode ser fictícios mesas e não têm para representar todas as tabelas reais no banco de dados. Além disso, nota que o `` fields`` e `` colnames`` devem estar na mesma ordem que os campos nos resultados cursor retornado do DB.</p>
 </section>
 <section id="lastsql">
-<h3>`` _Lastsql``<a class="headerlink" href="#lastsql" title="Permalink to this heading"></a></h3>
+<h3>`` _Lastsql``<a class="headerlink" href="#lastsql" title="Link to this heading"></a></h3>
 <p>Se SQL foi executado manualmente usando ExecuteSQL ou foi SQL gerado pelo DAL, você sempre pode encontrar o código SQL em `` db._lastsql``. Isso é útil para fins de depuração:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">_lastsql</span>
@@ -1576,14 +1626,14 @@ always explicit when selecting fields.</p>
 </div></blockquote>
 </section>
 <section id="timing-queries">
-<h3>Temporização de consultas<a class="headerlink" href="#timing-queries" title="Permalink to this heading"></a></h3>
+<h3>Temporização de consultas<a class="headerlink" href="#timing-queries" title="Link to this heading"></a></h3>
 <p>All queries are automatically timed by py4web. The variable
 <code class="docutils literal notranslate"><span class="pre">db._timings</span></code> is a list of tuples. Each tuple contains the raw SQL
 query as passed to the database driver and the time it took to execute
 in seconds.</p>
 </section>
 <section id="indexes">
-<h3>Índices<a class="headerlink" href="#indexes" title="Permalink to this heading"></a></h3>
+<h3>Índices<a class="headerlink" href="#indexes" title="Link to this heading"></a></h3>
 <p>Atualmente, a API DAL não fornece um comando para criar índices em tabelas, mas isso pode ser feito usando o comando `` executesql``. Isso ocorre porque a existência de índices pode fazer migrações complexa, e é melhor para lidar com eles de forma explícita. Os índices podem ser necessários para esses campos que são usados ​​em consultas recorrentes.</p>
 <p>Aqui está um exemplo de como:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
@@ -1594,7 +1644,7 @@ in seconds.</p>
 <p>Outros dialetos banco de dados têm sintaxes muito semelhantes, mas pode não suportar o opcional “SE NÃO EXISTE” directiva.</p>
 </section>
 <section id="generating-raw-sql">
-<h3>Generating raw SQL<a class="headerlink" href="#generating-raw-sql" title="Permalink to this heading"></a></h3>
+<h3>Generating raw SQL<a class="headerlink" href="#generating-raw-sql" title="Link to this heading"></a></h3>
 <p>Às vezes você precisa para gerar o SQL, mas não executá-lo. Isso é fácil de fazer com py4web uma vez que cada comando que executa banco de dados IO tem um comando equivalente que não, e simplesmente retorna o SQL que teriam sido executados. Estes comandos têm os mesmos nomes e sintaxe como os funcionais, mas eles começam com um sublinhado:</p>
 <p>Aqui é `` _insert``</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Alex&#39;</span><span class="p">))</span>
@@ -1627,7 +1677,7 @@ in seconds.</p>
 </section>
 </section>
 <section id="select-command">
-<h2>`` Comando SELECT``<a class="headerlink" href="#select-command" title="Permalink to this heading"></a></h2>
+<h2>`` Comando SELECT``<a class="headerlink" href="#select-command" title="Link to this heading"></a></h2>
 <p>Dado um conjunto, `` s``, você pode buscar os registros com o comando `` SELECT``:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 </pre></div>
@@ -1717,7 +1767,7 @@ instead of a column. We will show this later.</p>
 </pre></div>
 </div>
 <section id="using-an-iterator-based-select-for-lower-memory-use">
-<h3>Usando um seleto para uso de memória inferior à base de iterador<a class="headerlink" href="#using-an-iterator-based-select-for-lower-memory-use" title="Permalink to this heading"></a></h3>
+<h3>Usando um seleto para uso de memória inferior à base de iterador<a class="headerlink" href="#using-an-iterator-based-select-for-lower-memory-use" title="Link to this heading"></a></h3>
 <p>Python “iterators” são um tipo de “preguiçoso-avaliação”. Eles dados ‘alimentar’ um passo de tempo; laços tradicionais Python criar todo o conjunto de dados na memória antes de looping.</p>
 <p>O uso tradicional de selecionar é:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
@@ -1732,7 +1782,7 @@ instead of a column. We will show this later.</p>
 <p>Testes mostram que  isto é de cerca de 10% mais rápido, mesmo em máquinas com muita RAM.</p>
 </section>
 <section id="rendering-rows-using-represent">
-<h3>Renderizando Rows com represent<a class="headerlink" href="#rendering-rows-using-represent" title="Permalink to this heading"></a></h3>
+<h3>Renderizando Rows com represent<a class="headerlink" href="#rendering-rows-using-represent" title="Link to this heading"></a></h3>
 <p>Você pode querer reescrever linhas retornadas por seleção para tirar proveito de informações de formatação contida na representa a criação dos campos.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="n">repr_row</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -1756,7 +1806,7 @@ instead of a column. We will show this later.</p>
 update_record (which you wouldn’t want anyway) or delete_record.</p>
 </section>
 <section id="shortcuts">
-<h3>Atalhos<a class="headerlink" href="#shortcuts" title="Permalink to this heading"></a></h3>
+<h3>Atalhos<a class="headerlink" href="#shortcuts" title="Link to this heading"></a></h3>
 <p>A DAL suporta vários atalhos-simplificando código. Em particular:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">myrecord</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 </pre></div>
@@ -1797,7 +1847,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 <p>e atualiza um registro existente com os valores dos campos especificados pelo dicionário sobre o lado direito.</p>
 </section>
 <section id="fetching-a-row">
-<h3>A obtenção de um `` row``<a class="headerlink" href="#fetching-a-row" title="Permalink to this heading"></a></h3>
+<h3>A obtenção de um `` row``<a class="headerlink" href="#fetching-a-row" title="Link to this heading"></a></h3>
 <p>No entanto, outra sintaxe conveniente é o seguinte:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 <span class="n">record</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">)</span>
@@ -1807,7 +1857,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 <p>Aparentemente semelhante a `` db.mytable [id] `` a sintaxe acima é mais flexível e mais seguro. Antes de tudo, verifica se `` id`` é um int (ou `` str (id) `` é um int) e retorna `` None`` se não (nunca levanta uma exceção). Ele também permite especificar várias condições que o registro deve atender. Se eles não forem atendidas, ele também retorna `` None``.</p>
 </section>
 <section id="recursive-selects">
-<h3>Recursivas `` s SELECT``<a class="headerlink" href="#recursive-selects" title="Permalink to this heading"></a></h3>
+<h3>Recursivas `` s SELECT``<a class="headerlink" href="#recursive-selects" title="Link to this heading"></a></h3>
 <p>Considere a pessoa tabela anterior e uma nova tabela “coisa” fazendo referência a uma “pessoa”:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -1842,10 +1892,10 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 <p>isto é, o conjunto de thing`` `` s referenciados pelos actuais `` Person``. Esta sintaxe se decompõe se a tabela referenciando tem várias referências à tabela referenciada. Neste case é preciso ser mais explícito e usar uma consulta completa.</p>
 </section>
 <section id="orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache">
-<span id="orderby-groupby-limitby"></span><h3>`` Orderby``, `` groupby``, `` limitby``, `` distinct``, `` having``, `` orderby_on_limitby``, `` join``, `` left``, `` cache``<a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Permalink to this heading"></a></h3>
+<span id="orderby-groupby-limitby"></span><h3>`` Orderby``, `` groupby``, `` limitby``, `` distinct``, `` having``, `` orderby_on_limitby``, `` join``, `` left``, `` cache``<a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Link to this heading"></a></h3>
 <p>O comando `` SELECT`` leva uma série de argumentos opcionais.</p>
 <section id="orderby">
-<h4>ordenar por<a class="headerlink" href="#orderby" title="Permalink to this heading"></a></h4>
+<h4>ordenar por<a class="headerlink" href="#orderby" title="Link to this heading"></a></h4>
 <p>Você pode buscar os registros classificados pelo nome:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -1891,7 +1941,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 </div>
 </section>
 <section id="groupby-having">
-<h4>groupby, tendo<a class="headerlink" href="#groupby-having" title="Permalink to this heading"></a></h4>
+<h4>groupby, tendo<a class="headerlink" href="#groupby-having" title="Link to this heading"></a></h4>
 <p>Usando `` groupby`` juntamente com `` orderby``, você pode agrupar registros com o mesmo valor para o campo especificado (isto é back-end específico, e não é sobre o Google NoSQL):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
 <span class="gp">... </span>                       <span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -1910,7 +1960,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 <p>Observe que os registros filtros Consulta1 a ser exibido, registros filtros Query2 ser agrupados.</p>
 </section>
 <section id="distinct">
-<h4>distinto<a class="headerlink" href="#distinct" title="Permalink to this heading"></a></h4>
+<h4>distinto<a class="headerlink" href="#distinct" title="Link to this heading"></a></h4>
 <p>Com o argumento `` distinta = True``, você pode especificar que você só quer selecionar registros distintos. Isto tem o mesmo efeito que o agrupamento usando todos os campos especificados, exceto que ele não necessita de classificação. Ao usar distinta é importante não para selecionar todos os campos, e em particular para não selecionar o campo “id”, senão todos os registros serão sempre distintas.</p>
 <p>Aqui está um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">distinct</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1932,7 +1982,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 </div>
 </section>
 <section id="limitby">
-<h4>limitby<a class="headerlink" href="#limitby" title="Permalink to this heading"></a></h4>
+<h4>limitby<a class="headerlink" href="#limitby" title="Link to this heading"></a></h4>
 <p>Com `` limitby = (min, max) <a href="#id1"><span class="problematic" id="id2">``</span></a>, pode seleccionar um subconjunto dos registos de deslocamento = min, mas não incluindo offset = máx. No próximo exemplo nós selecionamos os dois primeiros registros a partir de zero:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">limitby</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -1943,25 +1993,25 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 </div>
 </section>
 <section id="orderby-on-limitby">
-<h4>orderby_on_limitby<a class="headerlink" href="#orderby-on-limitby" title="Permalink to this heading"></a></h4>
+<h4>orderby_on_limitby<a class="headerlink" href="#orderby-on-limitby" title="Link to this heading"></a></h4>
 <p>Note-se que os padrões DAL de adicionar implicitamente um orderby ao usar um limitby. Isso garante a mesma consulta retorna os mesmos resultados de cada vez, importante para a paginação. Mas pode causar problemas de desempenho. use `` orderby_on_limitby = False`` para mudar isso (isso o padrão é True).</p>
 </section>
 <section id="join-left">
-<h4>juntar-se, deixou<a class="headerlink" href="#join-left" title="Permalink to this heading"></a></h4>
+<h4>juntar-se, deixou<a class="headerlink" href="#join-left" title="Link to this heading"></a></h4>
 <p>These are involved in managing <a class="reference internal" href="#one-to-many-relation">One to many relation</a>. They are
 described in <a class="reference internal" href="#inner-join">Inner join</a> and <a class="reference internal" href="#left-outer-join">Left outer join</a> sections respectively.</p>
 </section>
 <section id="cache-cacheable">
-<h4>cache, em cache<a class="headerlink" href="#cache-cacheable" title="Permalink to this heading"></a></h4>
+<h4>cache, em cache<a class="headerlink" href="#cache-cacheable" title="Link to this heading"></a></h4>
 <p>An example use which gives much faster selects is:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Look at <a class="reference internal" href="#caching-selects">Caching selects</a>, to understand what the trade-offs are.</p>
 </section>
 </section>
 <section id="logical-operators">
-<h3>Operadores lógicos<a class="headerlink" href="#logical-operators" title="Permalink to this heading"></a></h3>
+<h3>Operadores lógicos<a class="headerlink" href="#logical-operators" title="Link to this heading"></a></h3>
 <p>As consultas podem ser combinados usando o binário operador AND “` <cite>&amp;</cite> <a href="#id1"><span class="problematic" id="id2">`</span></a>”:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">((</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s1">&#39;Alex&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">print</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">name</span>
@@ -2000,7 +2050,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 </div>
 </section>
 <section id="count-isempty-delete-update">
-<h3>`` Count``, `` isempty``, `` DELETE``, `` update``<a class="headerlink" href="#count-isempty-delete-update" title="Permalink to this heading"></a></h3>
+<h3>`` Count``, `` isempty``, `` DELETE``, `` update``<a class="headerlink" href="#count-isempty-delete-update" title="Link to this heading"></a></h3>
 <p>Você pode contar registros em um conjunto:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;William&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 <span class="go">3</span>
@@ -2026,7 +2076,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 <p>O método <cite>update`</cite> retorna o número de registros que foram atualizados.</p>
 </section>
 <section id="expressions">
-<h3>Expressões<a class="headerlink" href="#expressions" title="Permalink to this heading"></a></h3>
+<h3>Expressões<a class="headerlink" href="#expressions" title="Link to this heading"></a></h3>
 <p>O valor atribuído uma instrução de atualização pode ser uma expressão. Por exemplo, considere este modelo</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -2046,7 +2096,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 </div>
 </section>
 <section id="case">
-<h3>`` case``<a class="headerlink" href="#case" title="Permalink to this heading"></a></h3>
+<h3>`` case``<a class="headerlink" href="#case" title="Link to this heading"></a></h3>
 <p>Uma expressão pode conter uma cláusula case, por exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">condition</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">yes_or_no</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">,</span> <span class="s1">&#39;No&#39;</span><span class="p">)</span>
@@ -2060,7 +2110,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 </div>
 </section>
 <section id="update-record">
-<h3>`` Update_record``<a class="headerlink" href="#update-record" title="Permalink to this heading"></a></h3>
+<h3>`` Update_record``<a class="headerlink" href="#update-record" title="Link to this heading"></a></h3>
 <p>py4web também permite actualizar um único registro que já está na memória usando `` update_record``</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">row</span><span class="o">.</span><span class="n">update_record</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Curt&#39;</span><span class="p">)</span>
@@ -2092,7 +2142,7 @@ tables that include <code class="docutils literal notranslate"><span class="pre"
 <p>O método <cite>update_record`</cite> está disponível apenas se campo` <cite>id`</cite> da tabela está incluído no seleto, e` <cite>cacheable`</cite> não está definido para` <cite>True`</cite>.</p>
 </section>
 <section id="inserting-and-updating-from-a-dictionary">
-<h3>Inserir e atualizar a partir de um dicionário<a class="headerlink" href="#inserting-and-updating-from-a-dictionary" title="Permalink to this heading"></a></h3>
+<h3>Inserir e atualizar a partir de um dicionário<a class="headerlink" href="#inserting-and-updating-from-a-dictionary" title="Link to this heading"></a></h3>
 <p>Um problema comum é composto de precisar inserir ou atualizar registros em uma tabela onde o nome da tabela, o campo para ser atualizado, eo valor para o campo são armazenados em variáveis. Por exemplo: `` tablename``, `` fieldname``, e `` value``.</p>
 <p>A inserção pode ser feito usando a seguinte sintaxe:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">[</span><span class="n">tablename</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">fieldname</span><span class="p">:</span><span class="n">value</span><span class="p">})</span>
@@ -2105,7 +2155,7 @@ tables that include <code class="docutils literal notranslate"><span class="pre"
 <p>Observe que usamos `` table._id`` ao invés de `` table.id``. Desta forma, a consulta funciona mesmo para tabelas com um campo de chave primária com o tipo diferente de “id”.</p>
 </section>
 <section id="first-and-last">
-<h3>`` `` First`` e last``<a class="headerlink" href="#first-and-last" title="Permalink to this heading"></a></h3>
+<h3>`` `` First`` e last``<a class="headerlink" href="#first-and-last" title="Link to this heading"></a></h3>
 <p>Dado um objecto linhas contendo registos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="n">first_row</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -2120,7 +2170,7 @@ tables that include <code class="docutils literal notranslate"><span class="pre"
 <p>Observe, `` primeiro () `` e `` última () `` permitem obter, obviamente, o primeiro e último registro presente em sua consulta, mas isso não significa que esses registros estão indo para ser o primeiro ou o último inserido registros. No case de pretender o primeiro ou último registro inserido em uma determinada tabela não se esqueça de usar `` orderby = db.table_name.id``. Se você esquecer você só vai conseguir o primeiro eo último registro retornado pela consulta, que são muitas vezes em uma ordem aleatória determinada pelo otimizador de consulta backend.</p>
 </section>
 <section id="as-dict-and-as-list">
-<h3>`` `` As_dict`` e as_list``<a class="headerlink" href="#as-dict-and-as-list" title="Permalink to this heading"></a></h3>
+<h3>`` `` As_dict`` e as_list``<a class="headerlink" href="#as-dict-and-as-list" title="Link to this heading"></a></h3>
 <p>Fila objecto pode ser serializados em um dicionário normal usando a `` as_dict () `` método e um objecto de linhas pode ser serializados em uma lista de dicionários usando a `` as_list () `` método. aqui estão alguns exemplos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="n">rows_list</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
@@ -2137,7 +2187,7 @@ serialized because they contain a reference to an open DB connection):</p>
 </div>
 </section>
 <section id="combining-rows">
-<h3>Combinando Rows<a class="headerlink" href="#combining-rows" title="Permalink to this heading"></a></h3>
+<h3>Combinando Rows<a class="headerlink" href="#combining-rows" title="Link to this heading"></a></h3>
 <p>Fileiras objectos podem ser combinadas no nível Python. Aqui assumimos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rows1</span><span class="p">)</span>
 <span class="go">person.name</span>
@@ -2178,7 +2228,7 @@ serialized because they contain a reference to an open DB connection):</p>
 </div>
 </section>
 <section id="find-exclude-sort">
-<h3>`` Find``, `` exclude``, `` sort``<a class="headerlink" href="#find-exclude-sort" title="Permalink to this heading"></a></h3>
+<h3>`` Find``, `` exclude``, `` sort``<a class="headerlink" href="#find-exclude-sort" title="Link to this heading"></a></h3>
 <p>Algumas vezes você precisa executar duas seleciona e um contém um subconjunto de um seleto anterior. Neste case, é inútil para acessar o banco de dados novamente. Os `` find``, `` exclude`` e `` objetos sort`` permitem manipular fileiras objeto e gerar outro sem acessar o banco de dados. Mais especificamente: - `` retorna find`` um novo conjunto de linhas filtradas por uma condição e deixa o inalterados originais. - `` retornos exclude`` um novo conjunto de linhas filtrados por uma condição e remove-los das linhas originais. - `` retorna sort`` um novo conjunto de linhas classificadas por uma condição e deixa o inalterados originais.</p>
 <p>Todos estes métodos dar um único argumento, uma função que age em cada linha individual.</p>
 <p>Aqui está um exemplo de uso:</p>
@@ -2224,11 +2274,16 @@ serialized because they contain a reference to an open DB connection):</p>
 <p>O método <cite>find`</cite> tem um argumento` <cite>limitby`</cite> opcional com a mesma sintaxe e funcionalidade como o conjunto` <cite>método SELECT`</cite>.</p>
 </section>
 <section id="caching-selects">
-<h3>Selects com cache<a class="headerlink" href="#caching-selects" title="Permalink to this heading"></a></h3>
-<p>O método de seleção também leva um argumento cache`` <code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">cujo</span> <span class="pre">padrão</span> <span class="pre">é</span> <span class="pre">None.</span> <span class="pre">Para</span> <span class="pre">fins</span> <span class="pre">de</span> <span class="pre">armazenamento</span> <span class="pre">em</span> <span class="pre">cache,</span> <span class="pre">deve</span> <span class="pre">ser</span> <span class="pre">definido</span> <span class="pre">como</span> <span class="pre">um</span> <span class="pre">tuplo</span> <span class="pre">em</span> <span class="pre">que</span> <span class="pre">o</span> <span class="pre">primeiro</span> <span class="pre">elemento</span> <span class="pre">é</span> <span class="pre">o</span> <span class="pre">modelo</span> <span class="pre">do</span> <span class="pre">cache</span> <span class="pre">(</span> <span class="pre">``</span> <span class="pre">cache.ram</span></code>, `` cache.disk``, etc), e o segundo elemento é o tempo de validade em segundo .</p>
+<h3>Selects com cache<a class="headerlink" href="#caching-selects" title="Link to this heading"></a></h3>
+<p>The select method also takes a <code class="docutils literal notranslate"><span class="pre">cache</span></code> argument, which defaults to
+None. For caching purposes, it should be set to a tuple where the first
+element is the cache function with signature <cite>(key, callback, expiration)</cite>
+(for example <code class="docutils literal notranslate"><span class="pre">cache.get</span></code> assuming <code class="docutils literal notranslate"><span class="pre">cache</span></code>
+is an instance of the py4web cache object), and
+the second element is the expiration time in seconds.</p>
 <p>No exemplo a seguir, você vê um controlador que armazena em cache um seleto sobre a mesa db.log previamente definido. As buscas reais dados selecionados do banco de dados back-end não mais do que uma vez a cada 60 segundos e armazena o resultado na memória. Se a próxima chamada para este controlador ocorre em menos de 60 segundos desde o último banco de dados IO, ele simplesmente vai buscar os dados anteriores da memória.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cache_db_select</span><span class="p">():</span>
-    <span class="n">logs</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">logs</span><span class="o">=</span><span class="n">logs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2238,15 +2293,15 @@ serialized because they contain a reference to an open DB connection):</p>
 </pre></div>
 </div>
 <p>Quando o argumento `` cache`` está definido, mas `` cacheable = False`` (default), apenas os resultados de banco de dados são armazenados em cache, não as linhas reais objeto. Quando o argumento `` cache`` é usado em conjunto com `` cacheável = True`` as linhas inteiras objecto é cache e isso resulta em muito mais rápido cache:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="computed-and-virtual-fields">
-<h2>Computed and Virtual fields<a class="headerlink" href="#computed-and-virtual-fields" title="Permalink to this heading"></a></h2>
+<h2>Computed and Virtual fields<a class="headerlink" href="#computed-and-virtual-fields" title="Link to this heading"></a></h2>
 <section id="computed-fields">
-<h3>Campos computados<a class="headerlink" href="#computed-fields" title="Permalink to this heading"></a></h3>
+<h3>Campos computados<a class="headerlink" href="#computed-fields" title="Link to this heading"></a></h3>
 <p>Campos DAL podem ter um atributo `` compute``. Esta deve ser uma função (ou lambda) que recebe um objeto Row e retorna um valor para o campo. Quando um novo registo é modificado, incluindo inserções e atualizações, se um valor para o campo não é fornecido, py4web tenta calcular a partir dos outros valores de campo utilizando a função `` compute``. Aqui está um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;unit_price&#39;</span><span class="p">,</span> <span class="s1">&#39;double&#39;</span><span class="p">),</span>
@@ -2272,11 +2327,11 @@ the table definition. A computed field can refer to previously defined
 computed fields.</p>
 </section>
 <section id="virtual-fields">
-<h3>Campos virtuais<a class="headerlink" href="#virtual-fields" title="Permalink to this heading"></a></h3>
+<h3>Campos virtuais<a class="headerlink" href="#virtual-fields" title="Link to this heading"></a></h3>
 <p>Campos virtuais também são computados campos (como na subseção anterior), mas eles diferem daquelas porque são * * virtual no sentido de que não são armazenadas no db e eles são calculados a cada vez registros são extraídos do banco de dados. Eles podem ser usados ​​para simplificar o código do usuário sem usar armazenamento adicional, mas eles não podem ser usados ​​para pesquisa.</p>
 </section>
 <section id="new-style-virtual-fields-experimental">
-<h3>Campos virtuais novo estilo (experimental)<a class="headerlink" href="#new-style-virtual-fields-experimental" title="Permalink to this heading"></a></h3>
+<h3>Campos virtuais novo estilo (experimental)<a class="headerlink" href="#new-style-virtual-fields-experimental" title="Link to this heading"></a></h3>
 <p>py4web fornece uma nova e mais fácil maneira de definir campos virtuais e campos virtuais preguiçosos. Esta seção é marcado experimental porque as APIs ainda podem mudar um pouco do que é descrito aqui.</p>
 <p>Aqui vamos considerar o mesmo exemplo na subseção anterior. Em particular, considere o seguinte modelo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">,</span>
@@ -2324,7 +2379,7 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </div></blockquote>
 </section>
 <section id="old-style-virtual-fields">
-<h3>Campos virtuais velho antigo<a class="headerlink" href="#old-style-virtual-fields" title="Permalink to this heading"></a></h3>
+<h3>Campos virtuais velho antigo<a class="headerlink" href="#old-style-virtual-fields" title="Link to this heading"></a></h3>
 <p>A fim de definir um ou mais virtuais campos, você também pode definir uma classe de contêiner, instanciá-lo e vinculá-lo a uma tabela ou a um seleto. Por exemplo, considere a seguinte tabela:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;unit_price&#39;</span><span class="p">,</span> <span class="s1">&#39;double&#39;</span><span class="p">),</span>
@@ -2413,9 +2468,9 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </section>
 </section>
 <section id="joins-and-relations">
-<h2>Joins and Relations<a class="headerlink" href="#joins-and-relations" title="Permalink to this heading"></a></h2>
+<h2>Joins and Relations<a class="headerlink" href="#joins-and-relations" title="Link to this heading"></a></h2>
 <section id="one-to-many-relation">
-<h3>Um para muitos relação<a class="headerlink" href="#one-to-many-relation" title="Permalink to this heading"></a></h3>
+<h3>Um para muitos relação<a class="headerlink" href="#one-to-many-relation" title="Link to this heading"></a></h3>
 <p>Para ilustrar como implementar um para muitos relação com a DAL, definir outra mesa “coisa” que refere-se à mesa “pessoa” que redefinir aqui:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
@@ -2472,7 +2527,7 @@ specified in two equivalent ways, either:
 </div>
 </section>
 <section id="inner-join">
-<h3>Inner join<a class="headerlink" href="#inner-join" title="Permalink to this heading"></a></h3>
+<h3>Inner join<a class="headerlink" href="#inner-join" title="Link to this heading"></a></h3>
 <p>Outra forma de conseguir um resultado semelhante é usando uma junção, especificamente um INNER JOIN. executa py4web junta-se automaticamente e de forma transparente quando a consulta liga dois ou mais tabelas como no exemplo a seguir:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
@@ -2519,7 +2574,7 @@ specified in two equivalent ways, either:
 <p>O valor de `` join`` pode ser lista de `` db.table.on (…) `` para participar.</p>
 </section>
 <section id="left-outer-join">
-<h3>Left outer join<a class="headerlink" href="#left-outer-join" title="Permalink to this heading"></a></h3>
+<h3>Left outer join<a class="headerlink" href="#left-outer-join" title="Link to this heading"></a></h3>
 <p>Observe que Carl não aparecer na lista acima, porque ele não tem as coisas. Se você pretende selecionar sobre as pessoas (se eles têm coisas ou não) e as suas coisas (se tiver algum), então você precisa para realizar um LEFT OUTER JOIN. Isso é feito usando o argumento de “esquerda” da seleção. Aqui está um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">left</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">))</span>
@@ -2540,7 +2595,7 @@ specified in two equivalent ways, either:
 <p>Multiple esquerda junções podem ser combinados, passando uma lista ou tupla de `` db.mytable.on (…) `` para o parâmetro `` left``.</p>
 </section>
 <section id="grouping-and-counting">
-<h3>Agrupamento e contando<a class="headerlink" href="#grouping-and-counting" title="Permalink to this heading"></a></h3>
+<h3>Agrupamento e contando<a class="headerlink" href="#grouping-and-counting" title="Link to this heading"></a></h3>
 <p>Ao fazer junta-se, às vezes você quer agrupar linhas de acordo com certos critérios e contá-los. Por exemplo, contar o número de coisas pertencentes a cada pessoa. py4web permite isso também. Primeiro, você precisa de um operador de contagem. Em segundo lugar, você quer se juntar a tabela a pessoa com o quadro de coisa pelo proprietário. Terceiro, você quer selecionar todas as linhas (pessoa + coisa), agrupá-los por pessoa, e contá-los enquanto agrupamento:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span>
@@ -2555,7 +2610,7 @@ specified in two equivalent ways, either:
 <p>O método <cite>count`</cite> do objeto campo tem um argumento` <cite>distinct`</cite> opcional. Quando ajustado para `` True`` especifica que apenas os valores distintos de campo em questão estão a ser contadas.</p>
 </section>
 <section id="many-to-many-relation">
-<h3>Many to many relation<a class="headerlink" href="#many-to-many-relation" title="Permalink to this heading"></a></h3>
+<h3>Many to many relation<a class="headerlink" href="#many-to-many-relation" title="Link to this heading"></a></h3>
 <p>Nos exemplos anteriores, que permitiram uma coisa para ter um proprietário, mas uma pessoa pode ter muitas coisas. E se barco era propriedade de Alex e Curt? Isso requer uma relação muitos-para-muitos, e é realizada através de uma tabela intermediária que liga uma pessoa a uma coisa através de uma relação de propriedade.</p>
 <p>Aqui está como fazê-lo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
@@ -2619,10 +2674,12 @@ specified in two equivalent ways, either:
 <span class="go">Curt</span>
 </pre></div>
 </div>
-<p>Uma alternativa mais leve para muitos-para-muitos relações é a marcação, encontram-se um exemplo disso na próxima seção. Marcação de obras, mesmo em backends de banco de dados que não suportam JOINs como o Google App Engine NoSQL.</p>
+<p>A lighter alternative to many-to-many relations is tagging, see the
+<a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter. Tagging works even on database backends
+that do not support JOINs like the Google App Engine NoSQL.</p>
 </section>
 <section id="self-reference-and-aliases">
-<h3>A auto-referência e aliases<a class="headerlink" href="#self-reference-and-aliases" title="Permalink to this heading"></a></h3>
+<h3>A auto-referência e aliases<a class="headerlink" href="#self-reference-and-aliases" title="Link to this heading"></a></h3>
 <p>É possível definir tabelas com campos que se referem a si mesmos, aqui está um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -2688,7 +2745,7 @@ specified in two equivalent ways, either:
 </section>
 </section>
 <section id="other-operators">
-<h2>Outros operadores<a class="headerlink" href="#other-operators" title="Permalink to this heading"></a></h2>
+<h2>Outros operadores<a class="headerlink" href="#other-operators" title="Link to this heading"></a></h2>
 <p>py4web tem outros operadores que fornecem uma API para operadores SQL equivalentes de acesso. Vamos definir outra mesa “log” para eventos loja de segurança, sua event_time e gravidade, onde a gravidade é um número inteiro.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">),</span>
 <span class="gp">... </span>                       <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;event_time&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">),</span>
@@ -2708,7 +2765,7 @@ specified in two equivalent ways, either:
 </pre></div>
 </div>
 <section id="like-ilike-regexp-startswith-endswith-contains-upper-lower">
-<h3>`` Like``, `` ilike``, `` regexp``, `` startswith``, `` endswith``, `` contains``, `` upper``, `` lower``<a class="headerlink" href="#like-ilike-regexp-startswith-endswith-contains-upper-lower" title="Permalink to this heading"></a></h3>
+<h3>`` Like``, `` ilike``, `` regexp``, `` startswith``, `` endswith``, `` contains``, `` upper``, `` lower``<a class="headerlink" href="#like-ilike-regexp-startswith-endswith-contains-upper-lower" title="Link to this heading"></a></h3>
 <p>Campos tem um `` operador like`` que você pode usar para combinar strings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="s1">&#39;port%&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
@@ -2757,7 +2814,7 @@ fields, as discussed in <a class="reference internal" href="#list-type-and-conta
 </div>
 </section>
 <section id="year-month-day-hour-minutes-seconds">
-<h3>`` Year``, `` month``, `` day``, `` hour``, `` minutes``, `` seconds``<a class="headerlink" href="#year-month-day-hour-minutes-seconds" title="Permalink to this heading"></a></h3>
+<h3>`` Year``, `` month``, `` day``, `` hour``, `` minutes``, `` seconds``<a class="headerlink" href="#year-month-day-hour-minutes-seconds" title="Link to this heading"></a></h3>
 <p>A data ea data e hora campos têm `` day``, `` month`` e `` métodos year``. Os campos de data e hora e de tempo têm `` hour``, `` `` minutes`` e métodos seconds``. Aqui está um exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">event_time</span><span class="o">.</span><span class="n">year</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2018</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
@@ -2769,7 +2826,7 @@ fields, as discussed in <a class="reference internal" href="#list-type-and-conta
 </div>
 </section>
 <section id="belongs">
-<h3>`` Belongs``<a class="headerlink" href="#belongs" title="Permalink to this heading"></a></h3>
+<h3>`` Belongs``<a class="headerlink" href="#belongs" title="Link to this heading"></a></h3>
 <p>O operador IN SQL é realizado através do método <cite>belongs`</cite> que devolve verdadeiro quando o valor do campo pertence ao conjunto especificado (lista ou tuplos):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">belongs</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
@@ -2807,7 +2864,7 @@ fields, as discussed in <a class="reference internal" href="#list-type-and-conta
 <p>Neste case, `` lazy`` é uma expressão aninhada que calcula o `` id`` de pessoa “Jonathan”. As duas linhas resultar em uma consulta SQL única.</p>
 </section>
 <section id="sum-avg-min-max-and-len">
-<h3>`` Sum``, `` avg``, `` min``, `` `` max`` e len``<a class="headerlink" href="#sum-avg-min-max-and-len" title="Permalink to this heading"></a></h3>
+<h3>`` Sum``, `` avg``, `` min``, `` `` max`` e len``<a class="headerlink" href="#sum-avg-min-max-and-len" title="Link to this heading"></a></h3>
 <p>Anteriormente, você usou o `` operador count`` para contar registros. Da mesma forma, você pode usar o `` operador sum`` para adicionar (soma) os valores de um campo específico de um grupo de registros. Tal como no case de contagem, o resultado de uma soma é recuperado através do objecto de armazenamento:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()[</span><span class="nb">sum</span><span class="p">])</span>
@@ -2835,14 +2892,14 @@ fields, as discussed in <a class="reference internal" href="#list-type-and-conta
 </div>
 </section>
 <section id="substrings">
-<h3>Substrings<a class="headerlink" href="#substrings" title="Permalink to this heading"></a></h3>
+<h3>Substrings<a class="headerlink" href="#substrings" title="Link to this heading"></a></h3>
 <p>Pode-se construir uma expressão para se referir a uma substring. Por exemplo, podemos agrupar as coisas cujo nome começa com os mesmos três personagens e selecione apenas um de cada grupo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">distinct</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
 <section id="default-values-with-coalesce-and-coalesce-zero">
-<h3>Os valores por defeito com `` `` coalesce`` e coalesce_zero``<a class="headerlink" href="#default-values-with-coalesce-and-coalesce-zero" title="Permalink to this heading"></a></h3>
+<h3>Os valores por defeito com `` `` coalesce`` e coalesce_zero``<a class="headerlink" href="#default-values-with-coalesce-and-coalesce-zero" title="Link to this heading"></a></h3>
 <p>Há momentos em que você precisa para puxar um valor de banco de dados, mas também precisa de valores padrão se o valor para um registro é definido como NULL. Em SQL existe uma função, `` COALESCE``, para isso. py4web tem um método <cite>coalesce`</cite> equivalente:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;sysuser&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;fullname&#39;</span><span class="p">))</span>
 <span class="go">&lt;Table sysuser (id, username, fullname)&gt;</span>
@@ -2877,9 +2934,9 @@ fields, as discussed in <a class="reference internal" href="#list-type-and-conta
 </section>
 </section>
 <section id="exporting-and-importing-data">
-<h2>Exportar e importar dados<a class="headerlink" href="#exporting-and-importing-data" title="Permalink to this heading"></a></h2>
+<h2>Exportar e importar dados<a class="headerlink" href="#exporting-and-importing-data" title="Link to this heading"></a></h2>
 <section id="csv-one-table-at-a-time">
-<h3>CSV (uma tabela de cada vez)<a class="headerlink" href="#csv-one-table-at-a-time" title="Permalink to this heading"></a></h3>
+<h3>CSV (uma tabela de cada vez)<a class="headerlink" href="#csv-one-table-at-a-time" title="Link to this heading"></a></h3>
 <p>Quando um objeto linhas é convertido para uma string é automaticamente serializado na CSV:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
@@ -2929,7 +2986,7 @@ ignores the “person.” prefix, and it ignores the “id” fields. Then all
 records are appended and assigned new ids.</p>
 </section>
 <section id="csv-all-tables-at-once">
-<h3>CSV (todas as tabelas ao mesmo tempo)<a class="headerlink" href="#csv-all-tables-at-once" title="Permalink to this heading"></a></h3>
+<h3>CSV (todas as tabelas ao mesmo tempo)<a class="headerlink" href="#csv-all-tables-at-once" title="Link to this heading"></a></h3>
 <p>Em py4web, você pode backup / restaurar um banco de dados inteiro com dois comandos:</p>
 <p>Exportar:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;somefile.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dumpfile</span><span class="p">:</span>
@@ -2956,7 +3013,7 @@ field1,field2,field3,...
 <p>Se uma tabela contém um campo chamado `` uuid``, este campo será utilizado para identificar duplicatas. Além disso, se um registro importado tem o mesmo `` uuid`` como um registro existente, o recorde anterior será atualizada.</p>
 </section>
 <section id="csv-and-remote-database-synchronization">
-<h3>CSV e sincronização de banco de dados remoto<a class="headerlink" href="#csv-and-remote-database-synchronization" title="Permalink to this heading"></a></h3>
+<h3>CSV e sincronização de banco de dados remoto<a class="headerlink" href="#csv-and-remote-database-synchronization" title="Link to this heading"></a></h3>
 <p>Considere mais uma vez o seguinte modelo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
@@ -3038,7 +3095,7 @@ field1,field2,field3,...
 <p>Se os registros referência a arquivos enviados, você também precisa exportar / importar o conteúdo da pasta uploads. Observe que os arquivos nele já são rotulados por UUIDs para que você não precisa se preocupar com conflitos de nomes e referências.</p>
 </section>
 <section id="html-and-xml-one-table-at-a-time">
-<h3>HTML e XML (uma tabela de cada vez)<a class="headerlink" href="#html-and-xml-one-table-at-a-time" title="Permalink to this heading"></a></h3>
+<h3>HTML e XML (uma tabela de cada vez)<a class="headerlink" href="#html-and-xml-one-table-at-a-time" title="Link to this heading"></a></h3>
 <p>Linhas objetos também têm um método <cite>xml`</cite> (como ajudantes) que serializa-lo para XML / HTML:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="o">.</span><span class="n">xml</span><span class="p">())</span>
@@ -3073,7 +3130,7 @@ field1,field2,field3,...
 </pre></div>
 </div>
 <p>If you need to serialize the Rows in any other XML format with custom
-tags, you can easily do that using the universal <a class="reference internal" href="chapter-10.html#tag"><span class="std std-ref">`` TAG``</span></a> helper
+tags, you can easily do that using the universal <code class="docutils literal notranslate"><span class="pre">TAG</span></code> XML helper
 that we’ll see later and the Python syntax
 <code class="docutils literal notranslate"><span class="pre">*&lt;iterable&gt;</span></code> allowed in function calls:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -3087,9 +3144,15 @@ that we’ll see later and the Python syntax
 <span class="nt">&lt;/result&gt;</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>Do not confuse the <cite>TAG</cite> XML helper used here (see the <a class="reference internal" href="chapter-10.html#tag"><span class="std std-ref">`` TAG``</span></a>
+chapter) with the <code class="docutils literal notranslate"><span class="pre">Tags</span></code> method that will be extensively explained
+on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter.</p>
+</div>
 </section>
 <section id="data-representation">
-<h3>Representação de dados<a class="headerlink" href="#data-representation" title="Permalink to this heading"></a></h3>
+<h3>Representação de dados<a class="headerlink" href="#data-representation" title="Link to this heading"></a></h3>
 <p>O método <cite>Rows.export_to_csv_file`</cite> aceita um argumento de palavra-chave chamada` <cite>represent`</cite>. Quando `` True`` ele usará as colunas função `` represent`` ao exportar os dados, em vez dos dados brutos.</p>
 <p>A função também aceita um argumento de palavra-chave chamada `` colnames`` que deve conter uma lista de nomes de colunas um desejo para exportação. O padrão é todas as colunas.</p>
 <p>Ambos `` export_to_csv_file`` e `` import_from_csv_file`` aceitar argumentos de palavra-chave que contam o analisador CSV o formato para salvar / carregar os arquivos: - `` delimiter``: delimitador para separar valores (padrão “”) - `` quotechar <code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">personagem</span> <span class="pre">para</span> <span class="pre">usar</span> <span class="pre">para</span> <span class="pre">citar</span> <span class="pre">valores</span> <span class="pre">String</span> <span class="pre">(default</span> <span class="pre">para</span> <span class="pre">aspas)</span> <span class="pre">-</span> <span class="pre">``</span> <span class="pre">quoting</span></code>: sistema de cotação (padrão `` csv.QUOTE_MINIMAL``)</p>
@@ -3111,9 +3174,9 @@ that we’ll see later and the Python syntax
 </section>
 </section>
 <section id="advanced-features">
-<h2>Características avançadas<a class="headerlink" href="#advanced-features" title="Permalink to this heading"></a></h2>
+<h2>Características avançadas<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
 <section id="list-type-and-contains">
-<span id="id1"></span><h3>`` Lista: &lt;type&gt; `` e `` contains``<a class="headerlink" href="#list-type-and-contains" title="Permalink to this heading"></a></h3>
+<span id="id1"></span><h3>`` Lista: &lt;type&gt; `` e `` contains``<a class="headerlink" href="#list-type-and-contains" title="Link to this heading"></a></h3>
 <p>py4web fornece os seguintes tipos de campos especiais:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">:</span><span class="n">string</span>
 <span class="nb">list</span><span class="p">:</span><span class="n">integer</span>
@@ -3179,7 +3242,7 @@ that we’ll see later and the Python syntax
 </div></blockquote>
 </section>
 <section id="table-inheritance">
-<h3>Herança de tabela<a class="headerlink" href="#table-inheritance" title="Permalink to this heading"></a></h3>
+<h3>Herança de tabela<a class="headerlink" href="#table-inheritance" title="Link to this heading"></a></h3>
 <p>É possível criar uma tabela que contém todos os campos de outra tabela. É suficiente para passar a outra tabela no lugar de um campo para `` define_table``. Por exemplo</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;gender&#39;</span><span class="p">))</span>
 <span class="go">&lt;Table person (id, name, gender)&gt;</span>
@@ -3209,7 +3272,7 @@ that we’ll see later and the Python syntax
 <p>Ao usar herança de tabela, se você deseja que a tabela herdar a validadores herdar, certifique-se de definir os validadores de tabela pai antes de definir a tabela herdar.</p>
 </section>
 <section id="filter-in-and-filter-out">
-<span id="id2"></span><h3>`` `` Filter_in`` e filter_out``<a class="headerlink" href="#filter-in-and-filter-out" title="Permalink to this heading"></a></h3>
+<span id="id2"></span><h3>`` `` Filter_in`` e filter_out``<a class="headerlink" href="#filter-in-and-filter-out" title="Link to this heading"></a></h3>
 <p>É possível definir um filtro para cada campo a ser chamada antes de um valor é inserido na banco de dados para esse campo e depois de um valor é recuperado a partir da banco de dados.</p>
 <p>Imagine for example that you want to store a serializable Python data
 structure in a field in the JSON format. Here is how it could be
@@ -3232,7 +3295,7 @@ accomplished:</p>
 <code class="docutils literal notranslate"><span class="pre">SQLCustomType</span></code>, as discussed in <a class="reference internal" href="#custom-field-types"><span class="std std-ref">Personalizados `` tipos Field``</span></a>.</p>
 </section>
 <section id="callbacks-on-record-insert-delete-and-update">
-<h3>retornos de chamada no registro de inserção, exclusão e atualização<a class="headerlink" href="#callbacks-on-record-insert-delete-and-update" title="Permalink to this heading"></a></h3>
+<h3>retornos de chamada no registro de inserção, exclusão e atualização<a class="headerlink" href="#callbacks-on-record-insert-delete-and-update" title="Link to this heading"></a></h3>
 <p>PY4WEB fornece um mecanismo para registrar retornos de chamada para ser chamado antes e / ou após a inserção, atualização e exclusão de registros.</p>
 <p>Cada tabela armazena seis listas de chamadas de retorno:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>db.mytable._before_insert
@@ -3275,7 +3338,7 @@ db.mytable._after_delete
 <p>Algumas vezes uma chamada de retorno pode precisar executar uma atualização na mesma ou em uma tabela diferente e se quer evitar disparar outras chamadas de retorno, o que poderia causar um loop infinito.</p>
 <p>Para este efeito, há os objetos `` Set`` tem um método <cite>update_naive`</cite> que funciona como` <cite>update`</cite> mas ignora antes e depois de retornos de chamada.</p>
 <section id="database-cascades">
-<h4>Cascades no banco de dados<a class="headerlink" href="#database-cascades" title="Permalink to this heading"></a></h4>
+<h4>Cascades no banco de dados<a class="headerlink" href="#database-cascades" title="Link to this heading"></a></h4>
 <p>Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
 record is deleted due to a cascade. So no *_delete callback will ever
@@ -3283,7 +3346,7 @@ be called as consequence of a cascade-deletion.</p>
 </section>
 </section>
 <section id="record-versioning">
-<h3>versionamento recorde<a class="headerlink" href="#record-versioning" title="Permalink to this heading"></a></h3>
+<h3>versionamento recorde<a class="headerlink" href="#record-versioning" title="Link to this heading"></a></h3>
 <p>É possível pedir py4web para salvar cada cópia de um registro quando o registro é modificado individualmente. Existem diferentes maneiras de fazer isso e que pode ser feito para todas as tabelas ao mesmo tempo usando a sintaxe:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">enable_record_versioning</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 </pre></div>
@@ -3314,7 +3377,7 @@ be called as consequence of a cascade-deletion.</p>
 <p>Quando os registros são excluídos, eles não são realmente excluídos. Um registro excluído é copiado na tabela `` stored_item_archive`` (como quando ele é modificado) e do campo `` is_active`` é definido como False. Ao permitir gravar versões conjuntos py4web um `` common_filter`` nesta tabela que esconde todos os registros na tabela `` stored_item`` onde o campo `` is_active`` é definida como falsa. O parâmetro `` is_active`` no método <cite>_enable_record_versioning`</cite> permite especificar o nome do campo usado pelo` <cite>common_filter`</cite> para determinar se o campo foi excluído ou não.</p>
 </section>
 <section id="common-filters">
-<h3>filtros comuns<a class="headerlink" href="#common-filters" title="Permalink to this heading"></a></h3>
+<h3>filtros comuns<a class="headerlink" href="#common-filters" title="Link to this heading"></a></h3>
 <p>Um filtro comum é uma generalização da ideia multi-tenancy acima. Ele fornece uma maneira fácil de evitar a repetição da mesma consulta. Considere, por exemplo, a tabela a seguir:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;blog_post&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;subject&#39;</span><span class="p">),</span>
@@ -3341,7 +3404,7 @@ be called as consequence of a cascade-deletion.</p>
 </div></blockquote>
 </section>
 <section id="custom-field-types">
-<span id="id3"></span><h3>Personalizados `` tipos Field``<a class="headerlink" href="#custom-field-types" title="Permalink to this heading"></a></h3>
+<span id="id3"></span><h3>Personalizados `` tipos Field``<a class="headerlink" href="#custom-field-types" title="Link to this heading"></a></h3>
 <p>Além de usar o `` filter_in`` e `` filter_out``, é possível definir novos tipos de campos / personalizados. Por exemplo, suponha que você deseja definir um tipo personalizado para armazenar um endereço IP:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">ip2int</span><span class="p">(</span><span class="n">sv</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="s2">&quot;Convert an IPV4 to an integer.&quot;</span>
@@ -3391,7 +3454,7 @@ portable across database engines.</p>
 <p>Ele não funciona no Google App Engine NoSQL.</p>
 </section>
 <section id="using-dal-without-define-tables">
-<h3>Usando DAL sem definir tabelas<a class="headerlink" href="#using-dal-without-define-tables" title="Permalink to this heading"></a></h3>
+<h3>Usando DAL sem definir tabelas<a class="headerlink" href="#using-dal-without-define-tables" title="Link to this heading"></a></h3>
 <p>A DAL pode ser usado a partir de qualquer programa Python simplesmente fazendo isso:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;path/to/app/databases&#39;</span><span class="p">)</span>
@@ -3407,7 +3470,7 @@ portable across database engines.</p>
 <p>Isso nos permite acessar qualquer db.table sem necessidade de re definir-lo.</p>
 </section>
 <section id="distributed-transaction">
-<h3>Transação distribuída<a class="headerlink" href="#distributed-transaction" title="Permalink to this heading"></a></h3>
+<h3>Transação distribuída<a class="headerlink" href="#distributed-transaction" title="Link to this heading"></a></h3>
 <blockquote>
 <div><p>No momento da escrita deste recurso só é suportado pelo PostgreSQL, MySQL e Firebird, uma vez que expõem API para commits de duas fases.</p>
 </div></blockquote>
@@ -3424,7 +3487,7 @@ portable across database engines.</p>
 <p>Em controladores, quando uma ação retornos, se você tiver duas ligações distintas e você não chamar a função acima, py4web compromete-los separadamente. Isto significa que há uma possibilidade de que um dos commits sucede e uma falha. A transação distribuída impede que isso aconteça.</p>
 </section>
 <section id="copy-data-from-one-db-into-another">
-<h3>Copiar dados de um para outro db<a class="headerlink" href="#copy-data-from-one-db-into-another" title="Permalink to this heading"></a></h3>
+<h3>Copiar dados de um para outro db<a class="headerlink" href="#copy-data-from-one-db-into-another" title="Link to this heading"></a></h3>
 <p>Considere a situação em que você estiver usando o seguinte banco de dados:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
 </pre></div>
@@ -3437,9 +3500,9 @@ portable across database engines.</p>
 </section>
 </section>
 <section id="gotchas">
-<h2>Pegadinhas<a class="headerlink" href="#gotchas" title="Permalink to this heading"></a></h2>
+<h2>Pegadinhas<a class="headerlink" href="#gotchas" title="Link to this heading"></a></h2>
 <section id="note-on-new-dal-and-adapters">
-<h3>Nota sobre novo DAL e adaptadores<a class="headerlink" href="#note-on-new-dal-and-adapters" title="Permalink to this heading"></a></h3>
+<h3>Nota sobre novo DAL e adaptadores<a class="headerlink" href="#note-on-new-dal-and-adapters" title="Link to this heading"></a></h3>
 <p>O código fonte do Banco de Dados Camada de Abstração foi completamente reescrito em 2010. Enquanto ele permanece compatível com versões anteriores, a reescrita tornou mais modular e mais fácil de estender. Aqui nós explicamos a lógica principal.</p>
 <p>The module “dal.py” defines, among other, the following classes.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ConnectionPool
@@ -3704,7 +3767,7 @@ globally (not thread safe):</p>
 </div>
 </section>
 <section id="sqlite">
-<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this heading"></a></h3>
+<h3>SQLite<a class="headerlink" href="#sqlite" title="Link to this heading"></a></h3>
 <p>SQLite does not support dropping and altering columns. That means that
 py4web migrations will work up to a point. If you delete a field from a
 table, the column will remain in the database but will be invisible to
@@ -3719,7 +3782,7 @@ this may cause problem when you try to extract the data.</p>
 <p>SQLite não tem um tipo booleano. py4web mapeia internamente booleans para uma strings de 1 carácter, com ‘T’ e ‘F’ representar Verdadeiro e Falso. A DAL lida com isso completamente; a abstração de um verdadeiro valor booleano funciona bem. Mas se você estiver atualizando a tabela SQLite com o SQL diretamente, estar ciente da implementação py4web, e evitar o uso de 0 e 1 valores.</p>
 </section>
 <section id="mysql">
-<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this heading"></a></h3>
+<h3>MySQL<a class="headerlink" href="#mysql" title="Link to this heading"></a></h3>
 <p>MySQL does not support multiple ALTER TABLE within a single transaction.
 This means that any migration process is broken into multiple commits.
 If something happens that causes a failure it is possible to break a
@@ -3732,7 +3795,7 @@ has been rebuilt, set <code class="docutils literal notranslate"><span class="pr
 again).</p>
 </section>
 <section id="google-sql">
-<h3>Google SQL<a class="headerlink" href="#google-sql" title="Permalink to this heading"></a></h3>
+<h3>Google SQL<a class="headerlink" href="#google-sql" title="Link to this heading"></a></h3>
 <p>Google SQL has the same problems as MySQL and more. In particular table
 metadata itself must be stored in the database in a table that is not
 migrated by py4web. This is because Google App Engine has a read-only
@@ -3745,7 +3808,7 @@ dashboard and deleting any corrupted entry from the table called
 <code class="docutils literal notranslate"><span class="pre">py4web_filesystem</span></code>.</p>
 </section>
 <section id="mssql-microsoft-sql-server">
-<h3>MSSQL (Microsoft SQL Server)<a class="headerlink" href="#mssql-microsoft-sql-server" title="Permalink to this heading"></a></h3>
+<h3>MSSQL (Microsoft SQL Server)<a class="headerlink" href="#mssql-microsoft-sql-server" title="Link to this heading"></a></h3>
 <p>não MSSQL &lt;2012 não suporta o SQL OFFSET palavra-chave. Portanto, o banco de dados não pode fazer a paginação. Ao fazer um `` limitby = (a, b) `` py4web vai buscar a primeira `` a + b`` linhas e descartar o primeiro `` a``. Isto pode resultar numa sobrecarga considerável quando comparado com outros bancos de dados. Se você estiver usando MSSQL&gt; = 2005, o prefixo recomendado para uso é `` mssql3: // `` que fornece um método para evitar o problema de buscar todo o conjunto de resultados não-paginado. Se você estiver em MSSQL&gt; = 2012, use `` mssql4: // `` que usa o `` OFFSET … ROWS … FETCH PRÓXIMO … ROWS ONLY`` construção para apoiar a paginação nativamente, sem sucessos de desempenho como outros backends. O `` mssql: // `` uri também reforça (por razões históricas) o uso de `` colunas text``, que são superseeded em versões mais recentes (a partir de 2005) por `` varchar (max) <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">``</span> <span class="pre">Mssql3:</span> <span class="pre">//</span> <span class="pre">``</span> <span class="pre">e</span> <span class="pre">``</span> <span class="pre">mssql4:</span> <span class="pre">//</span> <span class="pre">``</span> <span class="pre">deve</span> <span class="pre">ser</span> <span class="pre">usado</span> <span class="pre">se</span> <span class="pre">você</span> <span class="pre">não</span> <span class="pre">quer</span> <span class="pre">enfrentar</span> <span class="pre">algumas</span> <span class="pre">limitações</span> <span class="pre">do</span> <span class="pre">-</span> <span class="pre">oficialmente</span> <span class="pre">obsoleto</span> <span class="pre">-</span> <span class="pre">``</span> <span class="pre">colunas</span> <span class="pre">text</span></code>.</p>
 <p>MSSQL tem problemas com referências circulares em tabelas que têm onDelete CASCADE. Este é um bug MSSQL e você trabalhar em torno dele, definindo o atributo onDelete para todos os campos de referência a “nenhuma acção”. Você também pode fazê-lo uma vez por todas, antes de definir tabelas:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;mssql://....&#39;</span><span class="p">)</span>
@@ -3764,11 +3827,11 @@ dashboard and deleting any corrupted entry from the table called
 </div>
 </section>
 <section id="oracle">
-<h3>Oráculo<a class="headerlink" href="#oracle" title="Permalink to this heading"></a></h3>
+<h3>Oráculo<a class="headerlink" href="#oracle" title="Link to this heading"></a></h3>
 <p>A Oracle também não suporta a paginação. Ele não suporta nem a OFFSET nem as palavras-chave limite. PY4WEB alcança a paginação, traduzindo um `` db (…). Select (limitby = (a, b)) `` em um complexo de três vias SELECT aninhada (como sugerido por documentação oficial Oracle). Isso funciona para simples escolha, mas pode quebrar para seleciona complexos envolvendo campos e ou junta alias.</p>
 </section>
 <section id="google-nosql-datastore">
-<h3>Google NoSQL (Datastore)<a class="headerlink" href="#google-nosql-datastore" title="Permalink to this heading"></a></h3>
+<h3>Google NoSQL (Datastore)<a class="headerlink" href="#google-nosql-datastore" title="Link to this heading"></a></h3>
 <p>Google NoSQL (Datastore) não permite que se junta, deixou junta, agregados, expressão ou envolvendo mais de uma tabela, o ‘como’ pesquisas operador em campos “texto”.</p>
 <p>As transações são limitados e não fornecida automaticamente pelo py4web (você precisa usar a API do Google `` run_in_transaction`` que você pode procurar na documentação do Google App Engine online).</p>
 <p>O Google também limita o número de registros que você pode recuperar em cada uma consulta (1000, no momento da escrita). No Google armazenamento de dados IDs de registro são inteiro, mas eles não são seqüenciais. Enquanto em SQL “lista: string” tipo é mapeado em um tipo de “texto”, no Google Datastore é mapeado em um `` ListStringProperty``. Da mesma forma “lista: número inteiro” e “lista: referência” são mapeados para `` ListProperty``. Isso faz buscas por conteúdo dentro desses campos tipos mais eficientes no Google NoSQL que em bancos de dados SQL.</p>
@@ -3787,7 +3850,7 @@ dashboard and deleting any corrupted entry from the table called
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -3812,7 +3875,7 @@ dashboard and deleting any corrupted entry from the table called
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

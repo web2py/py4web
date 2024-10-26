@@ -1,0 +1,39 @@
+[[extend 'layout.html']]
+
+<style>
+  .tag { font-size: 0.8em; margin: 0 5px 5px 0; padding: 2px 4px; background-color: #666; border-radius: 5px; color: white;}
+  .tag.selected { background-color: black; }
+  .post_item { padding: 5px 10px; background: #d1d1d1; border-radius:10px; }
+  .post_item ~ .post_item { margin-top: 10px; }
+  .post_item span { font-size: 0.8em; }
+  .clickable { cursor: pointer; }
+</style>
+
+<div class="section" id="app">
+  <div class="columns">
+    <div class="c75">      
+      <textarea class="post-content" v-model="content" placeholder="Have something to say?"></textarea>
+      <button class="submit-content" v-on:click="submit">Post</button>
+      <h4>Filtered Posts</h4>
+      <div class="feed">
+        <div class="post_item" v-for="item in posts">
+          <p>{{item.content}}</p>
+          <span>posted on {{prettydate(item.created_on)}} by {{users[item.created_by]}}</span>          
+          <span style="float:right" class="clickable" v-if="item.created_by=[[=user.get('id')]]" v-on:click="remove(item)">🗑</span>
+        </div>
+      </div>
+    </div>
+    <div class="c25">
+      <h4>Filter by Tags</h4>
+      <div class="tags">
+        <span v-bind:class="{'tag': true, 'clickable': true, 'selected':tag in selected_tags}" v-for="tag in tags" v-on:click="toggle(tag)">{{tag}}</span>
+      </div>
+    </div>
+ </div>
+</div>
+
+[[block page_scripts]]
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
+<script src="[[=URL('static/js/index.js')]]"></script>
+[[end]]

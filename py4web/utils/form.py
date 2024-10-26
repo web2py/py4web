@@ -7,7 +7,6 @@ import uuid
 import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
-from pydal.validators import Validator
 from yatl.helpers import (
     CAT,
     DIV,
@@ -17,10 +16,7 @@ from yatl.helpers import (
     OPTION,
     SELECT,
     SPAN,
-    TABLE,
-    TD,
     TEXTAREA,
-    TR,
     XML,
     A,
     P,
@@ -56,7 +52,7 @@ def get_options(validators):
                 options = item.options
                 break
         if callable(options):
-            options = options()
+            options = options(zero=True)
     return options
 
 
@@ -69,7 +65,6 @@ def join_classes(*args):
 
 
 class Widget:
-
     """Prototype widget object for all form widgets"""
 
     type_map = {
@@ -131,7 +126,7 @@ class CheckboxWidget:
             _value="ON",
             _checked=value,
             _readonly=readonly,
-            **attrs
+            **attrs,
         )
 
 
@@ -176,7 +171,7 @@ class SelectWidget:
         value = list(map(str, value if isinstance(value, list) else [value]))
 
         field_options = [
-            [k, v, (not k is None and k in value)]
+            [k, v, (k is not None and k in value)]
             for k, v in get_options(field.requires)
         ]
         option_tags = [
@@ -190,7 +185,7 @@ class SelectWidget:
             _name=field.name,
             _multiple=multiple,
             _title=title,
-            _readonly=readonly
+            _readonly=readonly,
         )
 
         return control
@@ -202,24 +197,21 @@ class RadioWidget:
         field_id = to_id(field)
         value = list(map(str, value if isinstance(value, list) else [value]))
         field_options = [
-            [k, v, (not k is None and k in value)]
+            [k, v, (k is not None and k in value)]
             for k, v in get_options(field.requires)
             if k != ""
         ]
         for k, v, selected in field_options:
-            _id = "%s%s" % (field_id, k)
-            control.append(
-                INPUT(
-                    v,
-                    _id=_id,
-                    _value=k,
-                    _label=v,
-                    _name=field.name,
-                    _type="radio",
-                    _checked=selected,
-                )
+            _id = "%s-%s" % (field_id, k)
+            inp = INPUT(
+                _id=_id,
+                _value=k,
+                _label=v,
+                _name=field.name,
+                _type="radio",
+                _checked=selected,
             )
-            control.append(LABEL(v, _for=_id))
+            control.append(LABEL(inp, " ", v))
         return control
 
 
@@ -335,20 +327,19 @@ class FormStyleFactory:
             form_method=form_method,
             form_action=form_action,
             form_enctype=form_enctype,
-            **kwargs
+            **kwargs,
         )
 
-        class_label = self.classes["label"]
-        class_outer = self.classes["outer"]
-        class_inner = self.classes["inner"]
-        class_error = self.classes["error"]
-        class_info = self.classes["info"]
+        class_label = self.classes.get("label") or None
+        class_outer = self.classes.get("outer") or None
+        class_inner = self.classes.get("inner") or None
+        class_error = self.classes.get("error") or None
+        class_info = self.classes.get("info") or None
 
         all_fields = [x for x in table]
         if "_virtual_fields" in dir(table):
             all_fields += table._virtual_fields
         for field in all_fields:
-
             is_virtual = isinstance(field, FieldVirtual)
 
             # only display field if readable or writable
@@ -388,11 +379,12 @@ class FormStyleFactory:
             field_value = None
 
             field_name = field.name
-            field_type = field.type
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = to_id(field)
-            default = field.default() if callable(field.default) else field.default
+            default = getattr(field, "default", None)
+            if callable(default):
+                default = default()
             value = vars.get(field.name, default) if not is_virtual else None
 
             error = errors.get(field.name)
@@ -408,7 +400,6 @@ class FormStyleFactory:
             if readonly or not field.writable or field.type == "id" or is_virtual:
                 # for boolean readonly we use a readonly checbox
                 if field.type == "boolean":
-
                     control = CheckboxWidget().make(
                         field, value, error, title, readonly=True
                     )
@@ -418,7 +409,6 @@ class FormStyleFactory:
                         field_value = field.f(vars)
                     else:
                         field_value = compat_represent(field, value, vars)
-                    field_type = "represent"
                     control = DIV(field_value)
 
                 field_disabled = True
@@ -481,6 +471,8 @@ class FormStyleFactory:
             controls["titles"][field_name] = title
             controls["placeholders"][field_name] = placeholder
 
+            field_type = str(field.type).replace(" ", "-")
+
             # Set the remain json field attributes.
             field_attributes["_title"] = title
             field_attributes["_label"] = field_label
@@ -488,7 +480,7 @@ class FormStyleFactory:
             field_attributes["_id"] = to_id(field)
             field_attributes["_class"] = field_class
             field_attributes["_name"] = field.name
-            field_attributes["_type"] = field.type
+            field_attributes["_type"] = field_type
             field_attributes["_placeholder"] = placeholder
             field_attributes["_error"] = error
             field_attributes["_disabled"] = field_disabled
@@ -538,7 +530,6 @@ class FormStyleFactory:
             form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
 
         if deletable:
-
             deletable_record_attributes = dict()
 
             deletable_field_name = "_delete"
@@ -567,7 +558,7 @@ class FormStyleFactory:
                     SPAN(
                         controls["delete"],
                         _class=class_inner,
-                        _stye="vertical-align: middle;",
+                        _style="vertical-align: middle;",
                     ),
                     P(
                         deletable_record_attributes["_label"],
@@ -660,7 +651,6 @@ FormStyleBootstrap4.classes.update(
     }
 )
 
-
 # ################################################################
 # Form object (replaced SQLFORM)
 # ################################################################
@@ -714,8 +704,8 @@ class Form(object):
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
-        show_id=True,
-        **kwargs
+        show_id=False,
+        **kwargs,
     ):
         self.param = Param(
             formstyle=formstyle,
@@ -836,23 +826,26 @@ class Form(object):
                                 self.record and self.record.get(field_name) or None
                             )
                     self.vars.update(validated_vars)
-                    if validation:
-                        validation(self)
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
+                    if validation:
+                        validation(self)
                     if not self.errors:
+                        """
                         for file in uploaded_files:
-                            field, value = file
-                            value = field.store(
-                                value.file, value.filename, field.uploadfolder
-                            )
-                            if value is not None:
-                                validated_vars[field.name] = value
+                            if field.name not in self.vars:
+                                field, value = file
+                                value = field.store(
+                                    value.file, value.filename, field.uploadfolder
+                                )
+                                if value is not None:
+                                    self.vars[field.name] = value
+                        """
                         self.accepted = True
-                        self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
                 elif dbio:
+                    self.accepted = True
                     self.deleted = True
                     self.record.delete_record()
             elif self.record:
@@ -908,7 +901,7 @@ class Form(object):
         try:
             jwt.decode(token, key, algorithms=["HS256"])
             return True
-        except:
+        except Exception:
             return False
 
     def update_or_insert(self, validated_vars):

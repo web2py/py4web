@@ -1,8 +1,6 @@
-import random
-import time
 import unittest
 
-from py4web import request, URL
+from py4web import URL, request
 
 
 class TestURL(unittest.TestCase):
@@ -12,3 +10,7 @@ class TestURL(unittest.TestCase):
         request.app_name = "app"
         self.assertEqual(URL("index"), "/app/index")
         self.assertEqual(URL("a", "b", vars=dict(x=1), hash="y"), "/app/a/b?x=1#y")
+
+
+if __name__ == "__main__":
+    unittest.main()

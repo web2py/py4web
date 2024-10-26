@@ -2,7 +2,7 @@ import os
 from py4web import action, request, DAL, Field, Session, Cache, Condition
 
 # define session and cache objects
-session = Session(secret="some secret")
+session = Session()
 cache = Cache(size=1000)
 
 # define database and tables
@@ -27,7 +27,7 @@ def index():
 # example of GET/POST/DELETE RESTful APIs
 
 
-@action("api")  # a GET API function
+@action("api", method="GET")  # a GET API function
 @action.uses(session, db)  # we load the session and db
 @action.uses(user_in_session)  # then check we have a valid user in session
 def todo():

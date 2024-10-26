@@ -6,7 +6,7 @@ class DBStore:
         self.__prerequisites__ = [db]
         Field = db.Field
         self.db = db
-        if not name in db.tables:
+        if name not in db.tables:
             db.define_table(
                 name,
                 Field("rkey", "string"),

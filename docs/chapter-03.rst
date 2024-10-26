@@ -9,8 +9,8 @@ Before everything else it is important to understand that unlike other web frame
 is not only a python module that can be imported by apps. It is also a program that
 is in charge of starting some apps. For this reason you need two things:
 
--  the py4web module (which you download from our web site, from pypi, from github)
--  one or more folders containing collections of apps you want to run.
+-  The py4web module (which you download from our web site, from pypi or from github)
+-  One or more folders containing collections of apps you want to run.
 
 py4web has command line options to create a folder with some example apps,
 to initialize an existing folder, and to add scaffolding apps to that folder.
@@ -21,48 +21,69 @@ An apps folder is a python module, and each app is also a python module.
 Supported platforms and prerequisites
 -------------------------------------
 
-PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
+py4web runs fine on Windows, MacOS and Linux. Its only prerequisite is
 Python 3.7+, which must be installed in advance (except if you use binaries).
 
 
 Setup procedures
 ----------------
 
-There are four alternative ways of running py4web, with different level
-of difficulty and flexibility. Let’s look at the pros and cons.
-
-Installing from binaries
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-This is not a real installation, because you just copy a bunch of files
-on your system without modifying it anyhow. Hence this is the simplest
-solution, especially for newbies or students, because it does not
-require Python pre-installed on your system nor administrative rights.
-On the other hand, it’s experimental, it could contain an old py4web
-release and it is quite difficult to add other functionalities to it.
-
-In order to use it you just need to download the latest Windows or MacOS
-ZIP file from
-`this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__.
-Unzip it on a local folder and open a command line there. Finally run
-
-::
-
-   py4web-start set_password
-   py4web-start run apps
-
-With this type of installation, remember to always use **py4web-start**
-instead of ‘py4web’ or ‘py4web.py’ in the following documentation.
-
-Notice the binaries many not correspond to the latest master
-or the latest stable branch of py4web although we do our best to
-keep them up to date.
+There are four alternative ways of installing py4web, we will guide 
+you through each of them and if you get stuck, reach 
+`out to us. <https://py4web.com/_documentation/static/en/chapter-02.html>`__
 
 
-Installing from pip
-~~~~~~~~~~~~~~~~~~~
+Installing from pip, using a virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Using *pip* is the standard installation procedure for py4web, since it will
+A full installation of any complex python application like py4web will
+surely modify the python environment of your system. In order to prevent
+any unwanted change, it’s a good habit to use a python virtual
+environment (also called **virtualenv**, see
+`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
+introduction). This is a standard python feature; if you still don’t
+know virtualenv it’s a good time to start its discovery!
+
+Here are the instructions for creating the virtual environment, activating it,
+and installing py4web in it:
+
+.. tabs::
+
+   .. group-tab:: Linux and MacOS
+
+      ::
+
+         python3 -m venv venv
+         . venv/bin/activate
+         python -m pip install --upgrade py4web --no-cache-dir
+         python py4web setup apps
+         python py4web set_password
+         python py4web run apps
+
+      Starting py4web is same with or without a virtual environment
+      python py4web run apps
+
+   .. group-tab:: Windows
+
+      ::
+
+         run cmd.exe
+         In e.g. folder c:\py4web
+         python3 -m venv venv
+         "C:\py4web\venv\Scripts\activate.bat"
+         python -m pip install --upgrade py4web --no-cache-dir
+         cd venv\scripts
+         py4web.exe setup apps
+         py4web.exe set_password
+         py4web.exe run apps
+		 
+      You can also find power shell scripts in the same folder. Starting py4web is same with or without a virtual environment
+      python py4web run apps
+
+Installing from pip, without virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*pip* is the basic installation procedure for py4web, it will
 quickly install the latest stable release of py4web.
 
 From the command line
@@ -87,29 +108,14 @@ on any given working folder with
 If the command py4web is not accepted, it means it’s not in the system’s
 path. On Windows, a special py4web.exe file (pointing to py4web.py) will
 be created by *pip* on the system’s path, but not if you type the
-*–user* option by mistake.
-
-Installing using a virtual environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-A full installation of any complex python application like py4web will
-surely modify the python environment of your system. In order to prevent
-any unwanted change, it’s a good habit to use a python virtual
-environment (also called **virtualenv**, see
-`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
-introduction). This is a standard python feature; if you still don’t
-know virtualenv it’s a good time to start its discovery!
-
-Here are the instructions for creating the virtual environment, activating it,
-and installing py4web in it:
+*–user* option by mistake, then you can run the needed commands like this
 
 ::
 
-   python3 -m venv venv
-   . venv/bin/activate
-   python -m pip install --upgrade py4web --no-cache-dir
+   python3 py4web.py setup apps
+   python3 py4web.py set_password
+   python3 py4web.py run apps
 
-The instructions for starting and running py4web are the same with or without a virtual environment.
 
 
 Installing from source (globally)
@@ -128,6 +134,8 @@ folder
    make assets
    make test
    make install
+   py4web setup apps
+   py4web set_password
    py4web run apps
 
 Also notice that when installing in this way the content of
@@ -169,7 +177,7 @@ Once installed, you should always start it from there with:
          ./py4web.py run apps
 
       If you have installed py4web both globally and locally, notice the
-      **./** ; it forces the run of the local folder’s py4web and not the
+      **./** ; it forces the run of the local folder's py4web and not the
       globally installed one.
 
    .. group-tab:: Windows
@@ -185,7 +193,31 @@ Once installed, you should always start it from there with:
       But running .py files directly it’s not usual and you’ll need an explicit
       python3/python command.
 
-      
+Installing from binaries
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is not a real installation, because you just copy a bunch of files
+on your system without modifying it anyhow. Hence this is the simplest
+solution, especially for beginners or students, because it does not
+require Python pre-installed on your system nor administrative rights.
+On the other hand, it’s experimental, it could contain an old py4web
+release, DAL support is limited and it is quite difficult to add other functionalities to it.
+
+In order to use it you just need to download the latest Windows or MacOS
+ZIP file from
+`this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__.
+Unzip it on a local folder and open a command line there. Finally run
+
+::
+
+   ./py4web set_password
+   ./py4web run apps
+
+(omit './' if you're using Windows).
+
+Notice: the binaries many not correspond to the latest master
+or the latest stable branch of py4web although we do our best to
+keep them up to date.      
 
 Upgrading
 ---------
@@ -204,7 +236,7 @@ If you installed py4web from pip you can simple upgrade it with
 
    ::
 
-      py4web setup apps
+      py4web setup <path to apps_folder>
 
    in order to re-install them. This is a safety precaution, in case you
    made changes to those apps.
@@ -219,10 +251,7 @@ First run
 
 Running py4web using any of the previous procedure should produce an
 output like this:
-
-::
-
-   py4web run apps
+  
 
 .. image:: images/first_run.png
    :class: with-shadow
@@ -245,7 +274,7 @@ two apps in this folder: **Dashboard** (``_dashboard``) and **Default**
    to avoid conflicts with apps created by you.
 
 Once py4web is running you can access a specific app at the following
-urls:
+urls from the local machine:
 
 ::
 
@@ -265,7 +294,7 @@ For all apps the trailing ``/index`` is also optional.
 .. warning::
 
    For Windows: it could be that ``Ctrl-C`` does not work in order to stop py4web.
-   In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``.
+   In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``\.
    
    
 Command line options
@@ -345,38 +374,50 @@ This currently gives an error on binaries installations and from source installa
    # py4web run -h
    Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
-     Run all the applications on apps_folder
+     Run the applications on apps_folder
 
    Options:
-     -Y, --yes                     No prompt, assume yes to questions
-                                   [default: False]
+      -Y, --yes                       No prompt, assume yes to questions
+      -H, --host TEXT                 Host listening IP  [default: 127.0.0.1]
+      -P, --port INTEGER              Port number  [default: 8000]
+      -A, --app_names TEXT            List of apps to run, comma separated (all if
+                                       omitted or empty)
+      -p, --password_file TEXT        File for the encrypted password  [default:
+                                       password.txt]
+      -Q, --quiet                     Suppress server output
+      -R, --routes                    Write apps routes to file
+      -s, --server [default|wsgiref|tornado|wsgiref+threaded|rocket|waitress|gunicorn|gevent|gunicorn+gevent|gevent+websockets]
+                                       Web server to use (unavailable: waitress,
+                                       gunicorn, gevent, gunicorn+gevent,
+                                       gevent+websockets)
+      -w, --number_workers INTEGER    Number of workers  [default: 0]
+      -d, --dashboard_mode TEXT       Dashboard mode: demo, readonly, full, none
+                                       [default: full]
+      --watch [off|sync|lazy]         Watch python changes and reload apps
+                                       automatically, modes: off, sync, lazy
+                                       [default: lazy]
+      --ssl_cert PATH                 SSL certificate file for HTTPS
+      --ssl_key PATH                  SSL key file for HTTPS
+      --errorlog TEXT                 Where to send error logs
+                                       (:stdout|:stderr|tickets_only|{filename})
+                                       [default: :stderr]
+      -L, --logging_level INTEGER     The log level (0 - 50) [default: 30
+                                       (=WARNING)]
+      -D, --debug                     Debug switch
+      -U, --url_prefix TEXT           Prefix to add to all URLs in and out
+      -m, --mode TEXT                 default or development  [default: default]
+      -help, -h, --help               Show this message and exit.
 
-     -H, --host TEXT               Host name  [default: 127.0.0.1]
-     -P, --port INTEGER            Port number  [default: 8000]
-     -p, --password_file TEXT      File for the encrypted password  [default:
-                                   password.txt]
+The ``app_names`` option lets you filter which specific apps you want to serve (comma separated). If absent or empty
+all the apps in the APPS_FOLDER will be run.
 
-     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
-                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
-                                   server to use  [default: default]
-     -w, --number_workers INTEGER  Number of workers  [default: 0]
-     -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
-                                   [default: full]
+By default (for security reasons) the py4web framework will listen only on 127.0.0.1, i.e. localhost.
+If you need to reach it from other machines you must specify the host option,
+like ``py4web run --host 0.0.0.0 apps``.
 
-     --watch [off|sync|lazy]       Watch python changes and reload apps
-                                   automatically, modes: off, sync, lazy
-                                   [default: lazy]
-
-     --ssl_cert PATH               SSL certificate file for HTTPS
-     --ssl_key PATH                SSL key file for HTTPS
-     --errorlog TEXT               Where to send error logs
-                                   (:stdout|:stderr|tickets_only|{filename})
-                                   [default: :stderr]
-     -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
-                                   (=WARNING)]
-     -D, --debug                   Debug switch  [default: False]
-     -help, -h, --help             Show this message and exit.
-
+The ``url_prefix`` option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
+running on different ports as long as the url_prefix and port match the location. For example
+``py4web run --url_prefix=/abracadabra --port 8000 apps``.
 
 By default py4web will automatically reload an application upon any changes to the python files of that application.
 The reloading will occur on any first incoming request to the application that has
@@ -660,7 +701,8 @@ Deployment on Docker/Podman
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On ``deployment_tools/docker`` there is a simple Dockerfile for quickly running a py4web container. There is also
-a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.
+a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL. 
+A ready docker example based on the Scaffold application can be cloned from this repository <https://github.com/macneiln/docker-py4web-scaffold>
 
 Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
 running any background daemon.

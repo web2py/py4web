@@ -3,7 +3,7 @@ import uuid
 
 import jwt
 
-from py4web.core import DAL, HTTP, Field, request
+from py4web.core import HTTP, Field, request
 
 
 class OAuthServer(object):

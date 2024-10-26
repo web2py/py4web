@@ -21,7 +21,8 @@ save the session back in the database if data has changed.
 PY4WEB fixtures provide a mechanism to specify what an action needs so
 that py4web can accomplish the required tasks (and skip non required
 ones) in the most efficient manner. Fixtures make the code efficient and
-reduce the need for boilerplate code.
+reduce the need for boilerplate code. Think of fixtures as per action
+(as opposed to per app) middleware.
 
 PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin
 except that they apply to individual actions, not to all of them, and
@@ -155,6 +156,7 @@ templates. Here is a simple example:
 
 .. code:: python
 
+   from py4web.utils.factories import Inject
    my_var = "Example variable to be passed to a Template"
 
    ...
@@ -212,6 +214,28 @@ action with a counter that counts “visits”.
        session['counter'] = counter
        return str(T("You have been here {n} times").format(n=counter))
 
+
+If the `T` fixture is to be used from inside a template you may want to pass it to the template:
+
+.. code:: python
+
+   @action('index')
+   @action.uses("index.html", session, T)
+   def index():
+       return dict(T=T)
+
+Or perhaps inject (same effect as above)
+
+.. code:: python
+
+   from py4web.utils.factories import Inject
+
+   @action('index')
+   @action.uses("index.html", session, Inject(T=T)
+   def index():
+       return dict()
+
+
 Now create the following translation file ``translations/en.json``:
 
 .. code:: json
@@ -257,6 +281,40 @@ Now try create a file called ``translations/it.json`` which contains:
 Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.
 
+Notice there is an UI in the Dashboard for creating, updating, and updating translation files. 
+It can be easily reached via the button ``i18n+p11n``:
+
+.. image:: images/dashboard_i18n_btn.png
+
+that leads to the following interface:
+
+.. image:: images/dashboard_i18n_ui.png
+
+More details can be found here: https://github.com/web2py/pluralize 
+
+
+If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:
+
+.. code:: python
+
+   @action('index')
+   @action.uses("index.html", session, T)
+   def index():
+       T.select(session.get("lang", "it"))
+       return dict(T=T)
+
+If you want all of your action to use the same pre-defined language and ignore browser preferences,
+you have to redefine the select method for the T instance:
+
+.. code:: python
+
+   T.on_request = lambda *_: T.local.__dict__.update(tag="it", language=T.languages["it"])
+
+This is to be done outside any action and will apply to all actions. Action will still need to declare 
+`action.uses(T)` else the behavior is undefined.
+
+
+
 The Flash fixture
 -----------------
 
@@ -287,13 +345,7 @@ and in the template:
 
 .. code:: html
 
-   ...
-   <div id="py4web-flash"></div>
-   ...
-   <script src="js/utils.js"></script>
-   [[if globals().get('flash'):]]
-   <script>utils.flash([[=XML(flash)]]);</script>
-   [[pass]]
+   <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
 
 By setting the value of the message in the flash helper, a flash
 variable is returned by the action and this triggers the JS in the
@@ -311,7 +363,7 @@ The client can also set/add flash messages by calling:
 
 ::
 
-   utils.flash({'message': 'hello world', 'class': 'info'});
+   Q.flash({'message': 'hello world', 'class': 'info'});
 
 py4web defaults to an alert class called ``info`` and most CSS
 frameworks define classes for alerts called ``success``, ``error``,
@@ -409,9 +461,14 @@ Client-side session in cookies
 By default the session object is stored inside a cookie called
 ``appname_session``. It's a JWT, hence encoded in a URL-friendly string
 format and signed using the provided secret for preventing tampering.
-Notice that it's not encrypted (in fact it's quite trivial to read its
-content from http communications or from disk), so do not place any
-sensitive information inside, and use a complex secret.
+
+.. warning::
+
+   Data embedded in cookies is signed, not encrypted! In fact it's quite
+   trivial to read its content from http communications or from disk, so
+   do not place any sensitive information inside, and use a complex secret.
+
+
 If the secret changes existing sessions are invalidated.
 If the user switches from HTTP to HTTPS or
 vice versa, the user session is also invalidated. Session in cookies have a
@@ -512,16 +569,20 @@ inefficient and does not scale well.
 Sharing sessions
 ~~~~~~~~~~~~~~~~
 
-Imagine you have an app "app1" which uses a session and an app "app2" that wants to share a session with app1. Assuming they use sessons in cookies, "app2" would use:
+Imagine you have an app "app1" which uses a session and an app "app2" that wants to share a session with app1. Assuming they use sessions in cookies, 
+"app2" would use:
 
 .. code:: python
 
    session = Session(secret=settings.SESSION_SECRET_KEY,
                      name="app1_session")
    
-The name tells app2 to use the cookie "app1_session" from app1. Notice it is important that the secret is the same as app1's secret. If using a session in db, then app2 must be using the same db as app1. It is up to the user to make sure that the data stored in the session and shared between the two apps are consistent and we strongly recommend that only app1 writes to the session, unless the share one and the same database.
+The name tells app2 to use the cookie "app1_session" from app1. Notice it is important that the secret is the same as app1's secret. If using a session 
+in db, then app2 must be using the same db as app1. It is up to the user to make sure that the data stored in the session and shared between the two apps 
+are consistent and we strongly recommend that only app1 writes to the session, unless the share one and the same database.
 
-Notice that it is possible for one app to handle multiple sessions. For example one session may be its own, and another may be used exclusively to read data from another app (app1) running on the same server:
+Notice that it is possible for one app to handle multiple sessions. For example one session may be its own, and another may be used exclusively to read 
+data from another app (app1) running on the same server:
 
 .. code:: python
 
@@ -535,7 +596,7 @@ Notice that it is possible for one app to handle multiple sessions. For example 
 The Condition fixture
 ---------------------
 
-Some times you want to restrict access to an action based on a
+Sometimes you want to restrict access to an action based on a
 given condition. For example to enforce a workflow:
 
 .. code:: python
@@ -581,22 +642,18 @@ for example, to redirect to another page:
 
    Condition(cond, on_false=lambda: redirect(URL('step1')))
 
-You can use condition to check permissions. For example, assuming you are using
-`Tags` as explained in chapter 13 and you are giving group memberships to users,
-then you can require that users action have specific group membership:
+You can use condition to check permissions. For example, if you
+are giving group memberships to users using `Tags` (it will be explained
+later on the :ref:`Authorization using Tags` chapter), then you can
+require that users action have specific group membership:
 
 .. code:: python
 
    groups = Tags(db.auth_user)
 
-   def requires_membership(group_name):
-       return Condition(
-          lambda: group_name in groups.get(auth.user_id),
-          exception=HTTP(404)
-       )
-
    @action("payroll")
-   @action.uses(auth, requires_membership("employees"))
+   @action.uses(auth, 
+                Condition(lambda: 'employees' in groups.get(auth.user_id), on_false=lambda: redirect('index')))
    def payroll():
        return
 
@@ -695,6 +752,23 @@ with the following fields: username, email, password, first_name,
 last_name, sso_id, and action_token (the last two are mostly for
 internal use).
 
+If a ``auth_user`` table is defined before calling ``auth.enable()``
+the provided table will be used.
+
+It is also possible to add ``extra_fields`` to the ``auth_user`` table,
+for example:
+
+.. code:: python
+
+   extra_fields = [
+      Field("favorite_color"),
+   ]
+   auth = Auth(session, db, extra_fields=extra_fields)
+
+In any case, we recommend not to pollute the ``auth_user`` table with
+extra fields but, instead, to use one of more additional custom
+tables that reference users and store the required information.
+   
 The ``auth`` object exposes the method:``auth.enable()`` which
 registers multiple actions including ``{appname}/auth/login``.
 It requires the presence of the ``auth.html`` template and the

@@ -7,14 +7,12 @@ from .make_up_data import make
 # Convenience functions
 #
 
-authenticated_api = action.uses(session, db, auth.user)
-
 
 def check_liked(items):
     """add a liked attributed to each item"""
     query = db.item_like.created_by == auth.user_id
-    query &= db.item_like.item_id.belongs(items.as_dict().keys())
-    liked_ids = [row.item_id for row in db(query).select(db.item_like.item_id)]
+    query &= db.item_like.item_id.belongs([item.id for item in items])
+    liked_ids = set(row.item_id for row in db(query).select(db.item_like.item_id))
     for item in items:
         item["liked"] = "true" if item.id in liked_ids else "false"
 
@@ -27,8 +25,8 @@ def friend_ids(user_id):
     )
     rows = db(query).select()
     return (
-        set([user_id]) 
-        |set(row.from_user for row in rows)
+        set([user_id])
+        | set(row.from_user for row in rows)
         | set(row.to_user for row in rows)
     )
 
@@ -116,18 +114,18 @@ def friends():
 
 
 @action("like/<item_id:int>", method=["POST"])
-@authenticated_api
+@action.uses(auth.user)
 def like(item_id):
     # try unlike
     if db(db.item_like.item_id == item_id).delete():
-        return dict(liked="false")
+        return dict(liked=False)
     # else like
     db.item_like.insert(item_id=item_id)
-    return dict(liked="true")
+    return dict(liked=True)
 
 
 @action("friendship/request/<user_id:int>", method=["POST"])
-@authenticated_api
+@action.uses(auth.user)
 def friendship_request(user_id):
     # if request does not exist already, create it
     query = (db.friend_request.to_user == user_id) & (
@@ -141,8 +139,9 @@ def friendship_request(user_id):
             from_user=auth.user_id, to_user=user_id, status="pending"
         )
 
+
 @action("friendship/<id:int>/accept", method=["POST"])
-@authenticated_api
+@action.uses(auth.user)
 def friendship_accept(id):
     # the target user can accept the request
     db(
@@ -152,7 +151,7 @@ def friendship_accept(id):
 
 # make a button factory to reject frindship
 @action("friendship/<id:int>/reject", method=["POST"])
-@authenticated_api
+@action.uses(auth.user)
 def friendship_reject(id):
     # both origin and target users can delete a request
     db(db.friend_request.id == id).delete()

@@ -40,11 +40,12 @@ class EmailAuthPlugin:
             server.login(email, password)
             server.quit()
             return True
-        except:
+        except Exception:
             logging.exception("email_auth() failed")
             if server:
                 try:
                     server.quit()
-                except:  # server might already close connection after error
+                except Exception:
+                    # server might already close connection after error
                     pass
             return False

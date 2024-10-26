@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forumlários &mdash; Documentação py4web 1.20230507.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Forumlários &mdash; Documentação py4web 20240915</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -91,6 +93,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#is-match"><code class="docutils literal notranslate"><span class="pre">IS_MATCH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-length"><code class="docutils literal notranslate"><span class="pre">IS_LENGTH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-url"><code class="docutils literal notranslate"><span class="pre">IS_URL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-safe"><code class="docutils literal notranslate"><span class="pre">IS_SAFE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-slug"><code class="docutils literal notranslate"><span class="pre">IS_SLUG</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-json"><code class="docutils literal notranslate"><span class="pre">IS_JSON</span></code></a></li>
 </ul>
@@ -182,13 +185,64 @@
            <div itemprop="articleBody">
              
   <section id="forms">
-<h1>Forumlários<a class="headerlink" href="#forms" title="Permalink to this heading"></a></h1>
+<h1>Forumlários<a class="headerlink" href="#forms" title="Link to this heading"></a></h1>
 <p>The Form class provides a high-level API for quickly building CRUD (create, update and delete) forms,
 especially for working on an existing database table. It can generate and process a form from a
-list of desired fields and/or from an existing database table.
-It is a pretty much equivalent to web2py’s <code class="docutils literal notranslate"><span class="pre">SQLFORM</span></code>.</p>
+list of desired fields and/or from an existing database table.</p>
+<p>There are 3 types of forms:</p>
+<p>CRUD Create forms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;create_thing&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_thing</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record created&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>CRUD Update forms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;update_thing/&lt;thing_id:int&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update_thing</span><span class="p">(</span><span class="n">thing_id</span><span class="p">):</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">thing_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record updated&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Non-CRUD forms (not associated to a database):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;some_form&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">some_form</span><span class="p">():</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="s2">&quot;green&quot;</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;information recorded&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The use of flash is optional. <code class="docutils literal notranslate"><span class="pre">flash</span></code> is defined in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>
+in the scaffolding application. It simply stores a message in a cookie
+so it can be recovered and displayed after redirection.
+This is done in the default layout.</p>
+<p>In this chapter from now on we will assume the following model and
+an app derived from the scaffolding app:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+    <span class="s1">&#39;thing&#39;</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">])),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="n">download_url</span><span class="o">=</span><span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;download&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <section id="the-form-constructor">
-<h2>The Form constructor<a class="headerlink" href="#the-form-constructor" title="Permalink to this heading"></a></h2>
+<h2>The Form constructor<a class="headerlink" href="#the-form-constructor" title="Link to this heading"></a></h2>
 <p>O `` construtor Form`` aceita os seguintes argumentos:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
      <span class="n">table</span><span class="p">,</span>
@@ -227,43 +281,39 @@ FormStyleBulma or FormStyleBootstrap4</p></li>
 </ul>
 </section>
 <section id="a-minimal-form-example-without-a-database">
-<h2>A minimal form example without a database<a class="headerlink" href="#a-minimal-form-example-without-a-database" title="Permalink to this heading"></a></h2>
+<h2>A minimal form example without a database<a class="headerlink" href="#a-minimal-form-example-without-a-database" title="Link to this heading"></a></h2>
 <p>Let’s start with a minimal working form example.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_minimal</span></code> :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_minimal/__init__.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span>
-
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_minimal.html&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">),</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-        <span class="p">])</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
-        <span class="c1"># Do something with form.vars[&#39;product_name&#39;] and form.vars[&#39;product_quantity&#39;]</span>
+        <span class="c1"># Do something with form.vars[&#39;name&#39;] and form.vars[&#39;color&#39;]</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;accepted&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
-        <span class="c1"># display message error</span>
-        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;not_accepted&#39;</span><span class="p">))</span>
+        <span class="c1"># do something</span>
+        <span class="o">...</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;accepted&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">accepted</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;form_example accepted&quot;</span>
-
-
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;not_accepted&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">not_accepted</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s2">&quot;form_example NOT accepted&quot;</span>
 </pre></div>
 </div>
 <p>Also, you need to create a file inside the app called <code class="docutils literal notranslate"><span class="pre">templates/form_minimal.html</span></code>
 that just contains the line:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=form]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+[[=form]]
 </pre></div>
 </div>
 <p>Then reload py4web and visit <a class="reference external" href="http://127.0.0.1:8000/form_minimal">http://127.0.0.1:8000/form_minimal</a> - you’ll get the Form page:</p>
@@ -280,44 +330,32 @@ the form is contained</p></li>
 The next example will.</p>
 </section>
 <section id="basic-form-example">
-<h2>Basic form example<a class="headerlink" href="#basic-form-example" title="Permalink to this heading"></a></h2>
-<p>In this next basic example we generate a form from a database.
+<h2>Basic form example<a class="headerlink" href="#basic-form-example" title="Link to this heading"></a></h2>
+<p>In this next basic example we generate a CRUD create form from a database.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_basic</span></code> :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_basic/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_basic.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Because this is a dual purpose form, in case an <code class="docutils literal notranslate"><span class="pre">id</span></code> is passed, we also validate it
-by checking if the corresponding record exists and raise 404 if not.</p>
 <p>Note the import of two simple validators on top, in order to be used later
 with the <code class="docutils literal notranslate"><span class="pre">requires</span></code> parameter. We’ll fully explain them
 on the <a class="reference internal" href="#form-validation"><span class="std std-ref">Validação de formulário</span></a> paragraph.</p>
 <p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_basic.html</span></code> that
 contains, for example, the following code:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Basic example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &quot;layout.html&quot;]]
+
+<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Basic example: My Things<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
 
 [[=form]]
 
@@ -325,56 +363,46 @@ contains, for example, the following code:</p>
 
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
 [[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.name]] has color [[=row.color]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
 [[pass]]
 <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>Reload py4web and visit <a class="reference external" href="http://127.0.0.1:8000/form_basic">http://127.0.0.1:8000/form_basic</a> :
+<p>Reload py4web and visit <a class="reference external" href="http://127.0.0.1:8000/create_form">http://127.0.0.1:8000/create_form</a> :
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:</p>
 <img alt="_images/form2.png" src="_images/form2.png" />
 <p>This is a simple example and you cannot change nor delete existing records. But if you’d
 like to experiment, the database content can be fully seen and changed with the Dashboard app.</p>
-<p>Notice that py4web by default let you choose the value of the <cite>universe</cite> field using
-a dropdown menu:</p>
-<img alt="_images/form3.png" src="_images/form3.png" />
-<p>The basic form usage is quite useful for rapid prototyping of programs, since you don’t need
-to specify the layout of the form. On the other hand, you cannot change its default behaviour.</p>
+<p>You can turn a create form into a CRUD update form by passing a record or a record id
+it second argument:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span># controllers definition
+@action(&quot;update_form/<span class="p">&lt;</span><span class="nt">thing_id:int</span><span class="p">&gt;</span>&quot;, method=[&quot;GET&quot;, &quot;POST&quot;])
+@action.uses(&quot;form_basic.html&quot;, db)
+def update_form():
+    form = Form(db.thing, thing_id)
+    rows = db(db.thing).select()
+    return dict(form=form, rows=rows)
+</pre></div>
+</div>
 <section id="file-upload-field">
-<h3>File upload field<a class="headerlink" href="#file-upload-field" title="Permalink to this heading"></a></h3>
+<h3>File upload field<a class="headerlink" href="#file-upload-field" title="Link to this heading"></a></h3>
+<p>We can make a minor modification to our reference model and an upload type file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+    <span class="s1">&#39;thing&#39;</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">])),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="n">download_url</span><span class="o">=</span><span class="k">lambda</span> <span class="n">image</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;download&#39;</span><span class="p">,</span> <span class="n">image</span><span class="p">)),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <p>The file upload field is quite particular. The standard way to use it (as in the _scaffold app)
 is to have the UPLOAD_FOLDER defined in the common.py file. But if you don’t specify it, then the
 default value of  <code class="docutils literal notranslate"><span class="pre">your_app/upload</span></code> folder will be used (and the folder will also be created if needed).
-Let’s look at a simple example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_upload/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">required_folder</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s2">&quot;upload&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Superhero Image&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-<span class="p">)</span>
-
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_upload.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>And in templates/form_upload.html :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form upload example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<code class="docutils literal notranslate"><span class="pre">download_url</span></code> is a callback that given the image name, generated the URL to download. The <code class="docutils literal notranslate"><span class="pre">download</span></code>
+url is predefined in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>.</p>
+<p>We can modify <code class="docutils literal notranslate"><span class="pre">form_basic.html</span></code> to display the uploaded images:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form upload example: My Things<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
 
 [[=form]]
 
@@ -382,22 +410,21 @@ Let’s look at a simple example:</p>
 
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
 [[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] = [[=row.image]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.name]] has color [[=row.color]]
+    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;download&#39;, row.image)]]&quot;</span> <span class="p">/&gt;</span>
 [[pass]]
 <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>This gives a result like the following:</p>
-<img alt="_images/form6.png" src="_images/form6.png" />
-<p>Note that the uploaded files will be saved on the UPLOAD_FOLDER folder with their name hashed.
+<p>The uploaded files (the thing images) are saved on the UPLOAD_FOLDER folder with their name hashed.
 Other details on the upload fields can be found on <a class="reference internal" href="chapter-07.html#field-constructor"><span class="std std-ref">Construtor Field</span></a> paragraph, including
 a way to save the files inside the database itself.</p>
 </section>
 </section>
 <section id="widgets">
-<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this heading"></a></h2>
+<h2>Widgets<a class="headerlink" href="#widgets" title="Link to this heading"></a></h2>
 <section id="standard-widgets">
-<h3>Standard widgets<a class="headerlink" href="#standard-widgets" title="Permalink to this heading"></a></h3>
+<h3>Standard widgets<a class="headerlink" href="#standard-widgets" title="Link to this heading"></a></h3>
 <p>Py4web provides many widgets in the py4web.utility.form library. They are simple plugins
 that easily allow you to specify the type of the input elements in a form, along with
 some of their properties.</p>
@@ -413,31 +440,19 @@ some of their properties.</p>
 <li><p>TextareaWidget</p></li>
 </ul>
 <p>This is an improved “Basic Form Example” with a radio button widget:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_widgets/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
+    <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -445,58 +460,27 @@ some of their properties.</p>
 beginning of the chapter:</p>
 <ul>
 <li><p>you need to import the widget from the py4web.utils.form library</p></li>
-<li><p>before the form definition, you define the <code class="docutils literal notranslate"><span class="pre">universe</span></code> field form style with the line:</p>
+<li><p>before the form definition, you define the <code class="docutils literal notranslate"><span class="pre">color</span></code> field form style with the line:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></blockquote>
 </li>
 </ul>
-<p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_widgets.html</span></code> that
-contains the following code (as the form_basic.html) :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Widget example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-[[=form]]
-
-<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Rows<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-[[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-[[pass]]
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-</pre></div>
-</div>
 <p>The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!</p>
-<img alt="_images/form4.png" src="_images/form4.png" />
 <p>Using widgets in forms is quite easy, and they’ll let you have more control on its pieces.</p>
 </section>
 <section id="custom-widgets">
-<h3>Custom widgets<a class="headerlink" href="#custom-widgets" title="Permalink to this heading"></a></h3>
+<h3>Custom widgets<a class="headerlink" href="#custom-widgets" title="Link to this heading"></a></h3>
 <p>You can also customize the widgets properties by subclassing the FormStyleDefault class. Let’s have a quick look,
 improving again our Superhero example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
-<span class="c1"># in form_custom_widgets/__init__.py</span>
-<span class="c1">#</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">DIV</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># custom widget class definition</span>
 <span class="k">class</span> <span class="nc">MyCustomWidget</span><span class="p">:</span>
@@ -515,45 +499,28 @@ improving again our Superhero example:</p>
         <span class="k">return</span> <span class="n">control</span>
 
 <span class="c1"># controllers definition</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_custom_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
     <span class="n">MyStyle</span> <span class="o">=</span> <span class="n">FormStyleDefault</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">classes</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;superhero&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;realname&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
+    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
 
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">MyStyle</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">MyStyle</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_custom_widgets.html</span></code> that
-contains the following code (as the form_basic.html) :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Custom Widgets example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-[[=form]]
-
-<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Rows<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-[[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]]  ([[=row.realname]]) from [[=row.universe]] <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-[[pass]]
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-</pre></div>
-</div>
 <p>The result is similar to the previous ones, but now we have a custom input field,
-with foreground color red and background color black:</p>
-<img alt="_images/form5.png" src="_images/form5.png" />
+with foreground color red and background color black,</p>
 <p>Even the radio button widget has changed, from red to blue.</p>
 </section>
 </section>
 <section id="advanced-form-design">
-<h2>Advanced form design<a class="headerlink" href="#advanced-form-design" title="Permalink to this heading"></a></h2>
+<h2>Advanced form design<a class="headerlink" href="#advanced-form-design" title="Link to this heading"></a></h2>
 <section id="form-structure-manipulation">
-<h3>Form structure manipulation<a class="headerlink" href="#form-structure-manipulation" title="Permalink to this heading"></a></h3>
+<h3>Form structure manipulation<a class="headerlink" href="#form-structure-manipulation" title="Link to this heading"></a></h3>
 <p>In py4web a form is rendered by YATL helpers. This means the tree structure of a form
 can be manipulated before the form is serialized in HTML.
 Here is an example of how to manipulate the generate HTML structure:</p>
@@ -568,7 +535,7 @@ there is a single match <code class="docutils literal notranslate"><span class="
 must be preceded by an underscore.</p>
 </section>
 <section id="custom-forms">
-<h3>Custom forms<a class="headerlink" href="#custom-forms" title="Permalink to this heading"></a></h3>
+<h3>Custom forms<a class="headerlink" href="#custom-forms" title="Link to this heading"></a></h3>
 <p>Custom forms allow you to granulary control how the form is processed. In the template file, you can execute specific
 instructions before the form is displayed or after its data submission by inserting code among the following statements:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=form.custom.begin ]]
@@ -577,7 +544,8 @@ instructions before the form is displayed or after its data submission by insert
 </pre></div>
 </div>
 <p>For example you could use it to avoid displaying the <code class="docutils literal notranslate"><span class="pre">id</span></code> field while editing a record in your form:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=form.custom.begin ]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+[[=form.custom.begin ]]
     [[for field in DETAIL_FIELDS: ]]
         [[ if field not in [&#39;id&#39;]: ]]
             <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;select&quot;</span><span class="p">&gt;</span>
@@ -589,8 +557,6 @@ instructions before the form is displayed or after its data submission by insert
 [[=form.custom.end ]]
 </pre></div>
 </div>
-<p>Custom forms are also frequently used for avoiding code redundancy; you can use a single template file for
-multiple form types, and programmatically change the fields contained and how to render them.</p>
 <p>Note: “custom” is just a convention, it could be any name that does not clash with already defined objects.</p>
 <div class="admonition warning">
 <p class="admonition-title">Aviso</p>
@@ -602,9 +568,33 @@ that might be needed based on your css framework.  For example, if you’re usin
 your css framework, you’ll have to add an outer DIV in order to get select controls to
 appear correctly.</p>
 </div>
+<p>You can also be more creative and use your HTML in the template instead of using widgets:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="o">[[</span><span class="nt">extend</span><span class="w"> </span><span class="s1">&#39;layout.html&#39;</span><span class="o">]]</span>
+
+<span class="o">[[</span><span class="nt">for</span><span class="w"> </span><span class="nt">field</span><span class="o">,</span><span class="w"> </span><span class="nt">error</span><span class="w"> </span><span class="nt">form</span><span class="p">.</span><span class="nc">errors</span><span class="p">.</span><span class="nc">items</span><span class="o">:]]</span>
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="o">&gt;</span><span class="nt">Field</span><span class="w"> </span><span class="o">[[=</span><span class="nt">field</span><span class="o">]]</span><span class="w"> </span><span class="o">[[=</span><span class="nt">error</span><span class="o">]]&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
+
+<span class="o">[[=</span><span class="nt">form</span><span class="p">.</span><span class="nc">custom</span><span class="p">.</span><span class="nc">begin</span><span class="w"> </span><span class="o">]]</span>
+
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="o">&gt;</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">name</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;form.vars.get(&#39;name&#39;, &#39;&#39;)&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="o">&gt;</span>
+<span class="o">[[</span><span class="nt">for</span><span class="w"> </span><span class="nt">color</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;red&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;blue&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;green&#39;</span><span class="o">]:]]</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">label</span><span class="o">&gt;[[=</span><span class="nt">color</span><span class="o">]]&lt;/</span><span class="nt">label</span><span class="o">&gt;</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">name</span><span class="o">=</span><span class="s2">&quot;color&quot;</span><span class="w"> </span><span class="nt">type</span><span class="o">=</span><span class="s2">&quot;radio&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;[[=color]]&quot;</span>
+<span class="w">                </span><span class="o">[[</span><span class="nt">if</span><span class="w"> </span><span class="nt">form</span><span class="p">.</span><span class="nc">vars</span><span class="p">.</span><span class="nc">get</span><span class="o">(</span><span class="s1">&#39;color&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nt">color</span><span class="o">:]]</span><span class="nt">checked</span><span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
+<span class="w">     </span><span class="o">/&gt;</span>
+<span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
+<span class="o">&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="o">/&gt;</span>
+<span class="o">[[=</span><span class="nt">form</span><span class="p">.</span><span class="nc">custom</span><span class="p">.</span><span class="nc">end</span><span class="w"> </span><span class="o">]]</span>
+</pre></div>
+</div>
 </section>
 <section id="the-sidecar-parameter">
-<h3>The sidecar parameter<a class="headerlink" href="#the-sidecar-parameter" title="Permalink to this heading"></a></h3>
+<h3>The sidecar parameter<a class="headerlink" href="#the-sidecar-parameter" title="Link to this heading"></a></h3>
 <p>The sidecar is the stuff injected in the form along with the submit button.</p>
 <p>For example, you can inject a simple <code class="docutils literal notranslate"><span class="pre">click</span> <span class="pre">me</span></code> button in your form with the following
 code:</p>
@@ -622,7 +612,7 @@ code:</p>
 </section>
 </section>
 <section id="form-validation">
-<h2>Validação de formulário<a class="headerlink" href="#form-validation" title="Permalink to this heading"></a></h2>
+<h2>Validação de formulário<a class="headerlink" href="#form-validation" title="Link to this heading"></a></h2>
 <p>Validators are classes used to validate input fields (including forms generated from database tables).
 They are normally assigned using the <code class="docutils literal notranslate"><span class="pre">requires</span></code> attribute of a table <code class="docutils literal notranslate"><span class="pre">Field</span></code> object, as already
 shown on the <a class="reference internal" href="chapter-07.html#field-constructor"><span class="std std-ref">Construtor Field</span></a> paragraph of the DAL chapter. Also, you can use advanced validators
@@ -711,37 +701,37 @@ For example:</p>
 </div>
 </div>
 <section id="text-format-validators">
-<h3>Text format validators<a class="headerlink" href="#text-format-validators" title="Permalink to this heading"></a></h3>
+<h3>Text format validators<a class="headerlink" href="#text-format-validators" title="Link to this heading"></a></h3>
 <section id="is-alphanumeric">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_ALPHANUMERIC</span></code><a class="headerlink" href="#is-alphanumeric" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_ALPHANUMERIC</span></code><a class="headerlink" href="#is-alphanumeric" title="Link to this heading"></a></h4>
 <p>This validator checks that a field value contains only characters in the ranges a-z, A-Z, 0-9, and underscores.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_ALPHANUMERIC</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;must be alphanumeric!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="is-lower">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_LOWER</span></code><a class="headerlink" href="#is-lower" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_LOWER</span></code><a class="headerlink" href="#is-lower" title="Link to this heading"></a></h4>
 <p>This validator never returns an error. It just converts the value to lower case.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_LOWER</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="is-upper">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_UPPER</span></code><a class="headerlink" href="#is-upper" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_UPPER</span></code><a class="headerlink" href="#is-upper" title="Link to this heading"></a></h4>
 <p>This validator never returns an error. It converts the value to upper case.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_UPPER</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="is-email">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_EMAIL</span></code><a class="headerlink" href="#is-email" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_EMAIL</span></code><a class="headerlink" href="#is-email" title="Link to this heading"></a></h4>
 <p>It checks that the field value looks like an email address. It does not try to send email to confirm.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_EMAIL</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;invalid email!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="is-match">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_MATCH</span></code><a class="headerlink" href="#is-match" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_MATCH</span></code><a class="headerlink" href="#is-match" title="Link to this heading"></a></h4>
 <p>This validator matches the value against a regular expression and returns an error if it does not match.
 Here is an example of usage to validate a US zip code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_MATCH</span><span class="p">(</span><span class="s1">&#39;^\d</span><span class="si">{5}</span><span class="s1">(-\d</span><span class="si">{4}</span><span class="s1">)?$&#39;</span><span class="p">,</span>
@@ -771,7 +761,7 @@ Here is an example of usage to validate a US zip code:</p>
 substring rather than the original value.</p>
 </section>
 <section id="is-length">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_LENGTH</span></code><a class="headerlink" href="#is-length" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_LENGTH</span></code><a class="headerlink" href="#is-length" title="Link to this heading"></a></h4>
 <p>Checks if length of field’s value fits between given boundaries. Works
 for both text and file inputs.</p>
 <p>Its arguments are:</p>
@@ -800,7 +790,7 @@ In the case of files, the value is a <code class="docutils literal notranslate">
 length of the data in the file, which is the behavior one might intuitively expect.</p>
 </section>
 <section id="is-url">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_URL</span></code><a class="headerlink" href="#is-url" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_URL</span></code><a class="headerlink" href="#is-url" title="Link to this heading"></a></h4>
 <p>Rejects a URL string if any of the following is true:</p>
 <ul class="simple">
 <li><p>The string is empty or None</p></li>
@@ -845,8 +835,19 @@ will become “%4e%86”.</p>
 </pre></div>
 </div>
 </section>
+<section id="is-safe">
+<h4><code class="docutils literal notranslate"><span class="pre">IS_SAFE</span></code><a class="headerlink" href="#is-safe" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;Unsafe Content&#39;</span><span class="p">)</span>
+<span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;sanitize&quot;</span><span class="p">)</span>
+<span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">sanitizer</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>This validators is for text fields that should contain HTML and may contain invalid tags (script, ember, object, iframe).
+It works by trying to sanitize the content and either provide an error (mode=»error») or replacing the content
+with the sanitized one (mode=»sanitize»). You can specify the error message, the mode, and provide your own sanitizer.</p>
+</section>
 <section id="is-slug">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_SLUG</span></code><a class="headerlink" href="#is-slug" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_SLUG</span></code><a class="headerlink" href="#is-slug" title="Link to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SLUG</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;must be slug&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -854,7 +855,7 @@ will become “%4e%86”.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">check</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> (default) it converts the input value to a slug.</p>
 </section>
 <section id="is-json">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_JSON</span></code><a class="headerlink" href="#is-json" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_JSON</span></code><a class="headerlink" href="#is-json" title="Link to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_JSON</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;Invalid json&#39;</span><span class="p">,</span> <span class="n">native_json</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -863,16 +864,16 @@ will become “%4e%86”.</p>
 </section>
 </section>
 <section id="date-and-time-validators">
-<h3>Date and time validators<a class="headerlink" href="#date-and-time-validators" title="Permalink to this heading"></a></h3>
+<h3>Date and time validators<a class="headerlink" href="#date-and-time-validators" title="Link to this heading"></a></h3>
 <section id="is-time">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_TIME</span></code><a class="headerlink" href="#is-time" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_TIME</span></code><a class="headerlink" href="#is-time" title="Link to this heading"></a></h4>
 <p>This validator checks that a field value contains a valid time in the specified format.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_TIME</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;must be HH:MM:SS!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="is-date">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_DATE</span></code><a class="headerlink" href="#is-date" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_DATE</span></code><a class="headerlink" href="#is-date" title="Link to this heading"></a></h4>
 <p>This validator checks that a field value contains a valid date in the specified format. It is good practice to specify the format using the translation operator, in order to support different formats in different locales.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_DATE</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span>
     <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;must be YYYY-MM-DD!&#39;</span><span class="p">)</span>
@@ -881,7 +882,7 @@ will become “%4e%86”.</p>
 <p>For the full description on % directives look under the IS_DATETIME validator.</p>
 </section>
 <section id="is-datetime">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_DATETIME</span></code><a class="headerlink" href="#is-datetime" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_DATETIME</span></code><a class="headerlink" href="#is-datetime" title="Link to this heading"></a></h4>
 <p>This validator checks that a field value contains a valid datetime in the specified format. It is good practice to specify the format using the translation operator, in order to support different formats in different locales.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_DATETIME</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span>
                    <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;must be YYYY-MM-DD HH:MM:SS!&#39;</span><span class="p">)</span>
@@ -903,7 +904,7 @@ will become “%4e%86”.</p>
 </div>
 </section>
 <section id="is-date-in-range">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_DATE_IN_RANGE</span></code><a class="headerlink" href="#is-date-in-range" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_DATE_IN_RANGE</span></code><a class="headerlink" href="#is-date-in-range" title="Link to this heading"></a></h4>
 <p>Works very much like the previous validator but allows to specify a range:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_DATE_IN_RANGE</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">),</span>
                 <span class="n">minimum</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -914,7 +915,7 @@ will become “%4e%86”.</p>
 <p>For the full description on % directives look under the IS_DATETIME validator.</p>
 </section>
 <section id="is-datetime-in-range">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_DATETIME_IN_RANGE</span></code><a class="headerlink" href="#is-datetime-in-range" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_DATETIME_IN_RANGE</span></code><a class="headerlink" href="#is-datetime-in-range" title="Link to this heading"></a></h4>
 <p>Works very much like the previous validator but allows to specify a range:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_DATETIME_IN_RANGE</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">),</span>
                     <span class="n">minimum</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
@@ -926,9 +927,9 @@ will become “%4e%86”.</p>
 </section>
 </section>
 <section id="range-set-and-equality-validators">
-<h3>Range, set and equality validators<a class="headerlink" href="#range-set-and-equality-validators" title="Permalink to this heading"></a></h3>
+<h3>Range, set and equality validators<a class="headerlink" href="#range-set-and-equality-validators" title="Link to this heading"></a></h3>
 <section id="is-equal-to">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_EQUAL_TO</span></code><a class="headerlink" href="#is-equal-to" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_EQUAL_TO</span></code><a class="headerlink" href="#is-equal-to" title="Link to this heading"></a></h4>
 <p>Checks whether the validated value is equal to a given value (which can be a variable):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_EQUAL_TO</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
                     <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;passwords do not match&#39;</span><span class="p">)</span>
@@ -936,7 +937,7 @@ will become “%4e%86”.</p>
 </div>
 </section>
 <section id="is-not-empty">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_NOT_EMPTY</span></code><a class="headerlink" href="#is-not-empty" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_NOT_EMPTY</span></code><a class="headerlink" href="#is-not-empty" title="Link to this heading"></a></h4>
 <p>This validator checks that the content of the field value is neither None nor an empty string nor an empty list. A string value is checked for after a <code class="docutils literal notranslate"><span class="pre">.strip()</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_NOT_EMPTY</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;cannot be empty!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -947,11 +948,11 @@ will become “%4e%86”.</p>
 </div>
 </section>
 <section id="is-null-or">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_NULL_OR</span></code><a class="headerlink" href="#is-null-or" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_NULL_OR</span></code><a class="headerlink" href="#is-null-or" title="Link to this heading"></a></h4>
 <p>Deprecated, an alias for <code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</span></code> described below.</p>
 </section>
 <section id="is-empty-or">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</span></code><a class="headerlink" href="#is-empty-or" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</span></code><a class="headerlink" href="#is-empty-or" title="Link to this heading"></a></h4>
 <p>Sometimes you need to allow empty values on a field along with other requirements. For example a field may be a date but it can also be empty.
 The <code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</span></code> validator allows this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_EMPTY_OR</span><span class="p">(</span><span class="n">IS_DATE</span><span class="p">())</span>
@@ -965,7 +966,7 @@ The <code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</sp
 </div>
 </section>
 <section id="is-expr">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_EXPR</span></code><a class="headerlink" href="#is-expr" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_EXPR</span></code><a class="headerlink" href="#is-expr" title="Link to this heading"></a></h4>
 <p>This validator let you express a general condition by means of a callable which takes a value to validate and returns the error message or <code class="docutils literal notranslate"><span class="pre">None</span></code> to accept the input value.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_EXPR</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;not divisible by 3&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
@@ -983,7 +984,7 @@ The <code class="docutils literal notranslate"><span class="pre">IS_EMPTY_OR</sp
 </div>
 </section>
 <section id="is-decimal-in-range">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_DECIMAL_IN_RANGE</span></code><a class="headerlink" href="#is-decimal-in-range" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_DECIMAL_IN_RANGE</span></code><a class="headerlink" href="#is-decimal-in-range" title="Link to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_DECIMAL_IN_RANGE</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">dot</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -995,7 +996,7 @@ respectively.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dot</span></code> argument is optional and allows you to internationalize the symbol used to separate the decimals.</p>
 </section>
 <section id="is-float-in-range">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_FLOAT_IN_RANGE</span></code><a class="headerlink" href="#is-float-in-range" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_FLOAT_IN_RANGE</span></code><a class="headerlink" href="#is-float-in-range" title="Link to this heading"></a></h4>
 <p>Checks that the field value is a floating point number within a definite range, <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">value</span> <span class="pre">&lt;=</span> <span class="pre">100</span></code> in the following example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_FLOAT_IN_RANGE</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">dot</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span>
                             <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;negative or too large!&#39;</span><span class="p">)</span>
@@ -1004,7 +1005,7 @@ respectively.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dot</span></code> argument is optional and allows you to internationalize the symbol used to separate the decimals.</p>
 </section>
 <section id="is-int-in-range">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_INT_IN_RANGE</span></code><a class="headerlink" href="#is-int-in-range" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_INT_IN_RANGE</span></code><a class="headerlink" href="#is-int-in-range" title="Link to this heading"></a></h4>
 <dl>
 <dt>Checks that the field value is an integer number within a definite range,</dt><dd><p><code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">value</span> <span class="pre">&lt;</span> <span class="pre">100</span></code> in the following example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_INT_IN_RANGE</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span>
@@ -1015,7 +1016,7 @@ respectively.</p>
 </dl>
 </section>
 <section id="is-in-set">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code><a class="headerlink" href="#is-in-set" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code><a class="headerlink" href="#is-in-set" title="Link to this heading"></a></h4>
 <p>This validator will automatically set the form field to an option field (ie, with a drop-down menu).</p>
 <p><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> checks that the field values are in a set:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">zero</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;choose one&#39;</span><span class="p">),</span>
@@ -1033,14 +1034,14 @@ Doing so will force conversion by the last validator to the numerical type. So, 
 </div>
 </section>
 <section id="checkbox-validation">
-<h4>Checkbox validation<a class="headerlink" href="#checkbox-validation" title="Permalink to this heading"></a></h4>
+<h4>Checkbox validation<a class="headerlink" href="#checkbox-validation" title="Link to this heading"></a></h4>
 <p>To force a filled-in form checkbox (such as an acceptance of terms and conditions), use this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;on&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;ON&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
 <section id="dictionaries-and-tuples-with-is-in-set">
-<h4>Dictionaries and tuples with IS_IN_SET<a class="headerlink" href="#dictionaries-and-tuples-with-is-in-set" title="Permalink to this heading"></a></h4>
+<h4>Dictionaries and tuples with IS_IN_SET<a class="headerlink" href="#dictionaries-and-tuples-with-is-in-set" title="Link to this heading"></a></h4>
 <p>You may also use a dictionary or a list of tuples to make the drop down list more descriptive:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dictionary example:</span>
 <span class="n">requires</span> <span class="o">=</span> <span class="n">IS_IN_SET</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="s1">&#39;Apple&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span><span class="s1">&#39;Banana&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="s1">&#39;Cherry&#39;</span><span class="p">},</span> <span class="n">zero</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -1051,16 +1052,16 @@ Doing so will force conversion by the last validator to the numerical type. So, 
 </div>
 </section>
 <section id="sorted-options">
-<h4>Sorted options<a class="headerlink" href="#sorted-options" title="Permalink to this heading"></a></h4>
+<h4>Sorted options<a class="headerlink" href="#sorted-options" title="Link to this heading"></a></h4>
 <p>To keep the options alphabetically sorted by their labels into the drop down list, use the <code class="docutils literal notranslate"><span class="pre">sort</span></code> argument with IS_IN_SET.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IS_IN_SET</span><span class="p">([(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;Hulk&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;Superman&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;Batman&#39;</span><span class="p">)],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="is-in-set-and-tagging">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> and Tagging<a class="headerlink" href="#is-in-set-and-tagging" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> and Tagging<a class="headerlink" href="#is-in-set-and-tagging" title="Link to this heading"></a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> validator has an optional attribute <code class="docutils literal notranslate"><span class="pre">multiple=False</span></code>. If set to True, multiple values can be stored in one
-field. The field should be of type <code class="docutils literal notranslate"><span class="pre">list:integer</span></code> or <code class="docutils literal notranslate"><span class="pre">list:string</span></code> as discussed in [[Chapter 6 ../06#list-type-and-contains]].
+field. The field should be of type <code class="docutils literal notranslate"><span class="pre">list:integer</span></code> or <code class="docutils literal notranslate"><span class="pre">list:string</span></code> as discussed in <a class="reference internal" href="chapter-07.html#list-type-and-contains"><span class="std std-ref">`` Lista: &lt;type&gt; `` e `` contains``</span></a>.
 An explicit example of tagging is discussed there. We strongly suggest using the jQuery multiselect plugin to render multiple fields.</p>
 <p><strong>Note</strong> that when <code class="docutils literal notranslate"><span class="pre">multiple=True</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> will accept zero or more values, i.e. it will accept the field when nothing has been selected.
 <code class="docutils literal notranslate"><span class="pre">multiple</span></code> can also be a tuple of the form <code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b)</span></code> where <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are the minimum and (exclusive) maximum number of items
@@ -1068,9 +1069,9 @@ that can be selected respectively.</p>
 </section>
 </section>
 <section id="complexity-and-security-validators">
-<h3>Complexity and security validators<a class="headerlink" href="#complexity-and-security-validators" title="Permalink to this heading"></a></h3>
+<h3>Complexity and security validators<a class="headerlink" href="#complexity-and-security-validators" title="Link to this heading"></a></h3>
 <section id="is-strong">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_STRONG</span></code><a class="headerlink" href="#is-strong" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_STRONG</span></code><a class="headerlink" href="#is-strong" title="Link to this heading"></a></h4>
 <p>Enforces complexity requirements on a field (usually a password field).</p>
 <p>Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_STRONG</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">special</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -1100,7 +1101,7 @@ that can be selected respectively.</p>
 <span class="pre">number</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">special</span> <span class="pre">=</span> <span class="pre">1</span></code> which otherwise are all sets to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </section>
 <section id="crypt">
-<h4><code class="docutils literal notranslate"><span class="pre">CRYPT</span></code><a class="headerlink" href="#crypt" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">CRYPT</span></code><a class="headerlink" href="#crypt" title="Link to this heading"></a></h4>
 <p>This is also a filter. It performs a secure hash on the input and it is used to prevent passwords from being passed in the clear to the database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">CRYPT</span><span class="p">()</span>
 </pre></div>
@@ -1132,9 +1133,9 @@ invalidating previous hashes. The key, however, must remain the same.</p>
 </section>
 </section>
 <section id="special-type-validators">
-<h3>Special type validators<a class="headerlink" href="#special-type-validators" title="Permalink to this heading"></a></h3>
+<h3>Special type validators<a class="headerlink" href="#special-type-validators" title="Link to this heading"></a></h3>
 <section id="is-list-of">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_LIST_OF</span></code><a class="headerlink" href="#is-list-of" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_LIST_OF</span></code><a class="headerlink" href="#is-list-of" title="Link to this heading"></a></h4>
 <p>This validator helps you to ensure length limits on values of type list, for this purpose use its <code class="docutils literal notranslate"><span class="pre">minimum</span></code>, <code class="docutils literal notranslate"><span class="pre">maximum</span></code>, and <code class="docutils literal notranslate"><span class="pre">error_message</span></code>
 arguments, for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_LIST_OF</span><span class="p">(</span><span class="n">minimum</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -1153,7 +1154,7 @@ A typical usage is validation of a <code class="docutils literal notranslate"><s
 </div>
 </section>
 <section id="is-list-of-emails">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_LIST_OF_EMAILS</span></code><a class="headerlink" href="#is-list-of-emails" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_LIST_OF_EMAILS</span></code><a class="headerlink" href="#is-list-of-emails" title="Link to this heading"></a></h4>
 <p>This validator is specifically designed to work with the following field:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;list:string&#39;</span><span class="p">,</span>
       <span class="n">widget</span><span class="o">=</span><span class="n">SQLFORM</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span>
@@ -1179,7 +1180,7 @@ or <code class="docutils literal notranslate"><span class="pre">validate</span><
 <p>The effect of the <code class="docutils literal notranslate"><span class="pre">represent</span></code> argument (at lines 6 and 7) is to add a «mailto:…» link to each email address when the record is rendered in HTML pages.</p>
 </section>
 <section id="any-of">
-<h4><code class="docutils literal notranslate"><span class="pre">ANY_OF</span></code><a class="headerlink" href="#any-of" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">ANY_OF</span></code><a class="headerlink" href="#any-of" title="Link to this heading"></a></h4>
 <p>This validator takes a list of validators and accepts a value if any of the validators in the list does (i.e. it acts like a logical
 OR with respect to given validators).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">ANY_OF</span><span class="p">([</span><span class="n">IS_ALPHANUMERIC</span><span class="p">(),</span> <span class="n">IS_EMAIL</span><span class="p">()])</span>
@@ -1196,7 +1197,7 @@ can customize the error message as usual:</p>
 </div>
 </section>
 <section id="is-image">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IMAGE</span></code><a class="headerlink" href="#is-image" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IMAGE</span></code><a class="headerlink" href="#is-image" title="Link to this heading"></a></h4>
 <p>This validator checks if a file uploaded through the file input was saved in one of the selected image formats and has dimensions (width and height)
 within given limits.</p>
 <p>It does not check for maximum file size (use IS_LENGTH for that). It returns
@@ -1231,7 +1232,7 @@ would cause the validation to fail. To display the <code class="docutils literal
 </div>
 </section>
 <section id="is-file">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_FILE</span></code><a class="headerlink" href="#is-file" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_FILE</span></code><a class="headerlink" href="#is-file" title="Link to this heading"></a></h4>
 <p>Checks if name and extension of file uploaded through file input matches given criteria.</p>
 <p>Does <em>not</em> ensure the file type in any way. Returns validation failure if no data was uploaded.</p>
 <p>Its arguments are:</p>
@@ -1271,7 +1272,7 @@ Check if file has a pdf extension (case insensitive):</p>
 </div>
 </section>
 <section id="is-upload-filename">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_UPLOAD_FILENAME</span></code><a class="headerlink" href="#is-upload-filename" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_UPLOAD_FILENAME</span></code><a class="headerlink" href="#is-upload-filename" title="Link to this heading"></a></h4>
 <p>This is the older implementation for checking files, included for backwards compatibility.  For new applications, use <code class="docutils literal notranslate"><span class="pre">IS_FILE()</span></code>.</p>
 <p>This validator checks if the name and extension of a file uploaded through the file input matches the given criteria.</p>
 <p>It does not ensure the file type in any way. Returns validation failure
@@ -1300,7 +1301,7 @@ broken in «file.tar» + «gz») while <code class="docutils literal notranslate
 </div>
 </section>
 <section id="is-ipv4">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IPV4</span></code><a class="headerlink" href="#is-ipv4" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IPV4</span></code><a class="headerlink" href="#is-ipv4" title="Link to this heading"></a></h4>
 <p>This validator checks if a field’s value is an IP version 4 address in decimal form. Can
 be set to force addresses from a certain range.</p>
 <p>IPv4 regex taken from <code class="docutils literal notranslate"><span class="pre">regexlib</span></code>. The signature for the <code class="docutils literal notranslate"><span class="pre">IS_IPV4</span></code> constructor is the following:</p>
@@ -1348,7 +1349,7 @@ is determined by the shorter of the iterables passed to <code class="docutils li
 </div>
 </section>
 <section id="is-ipv6">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IPV6</span></code><a class="headerlink" href="#is-ipv6" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IPV6</span></code><a class="headerlink" href="#is-ipv6" title="Link to this heading"></a></h4>
 <p>This validator checks if a field’s value is an IP version 6 address.</p>
 <p>The signature for the <code class="docutils literal notranslate"><span class="pre">IS_IPV6</span></code> constructor is the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">IS_IPV6</span><span class="p">(</span><span class="n">is_private</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1395,7 +1396,7 @@ and <code class="docutils literal notranslate"><span class="pre">is_teredo</span
 </div>
 </section>
 <section id="is-ipaddress">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IPADDRESS</span></code><a class="headerlink" href="#is-ipaddress" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IPADDRESS</span></code><a class="headerlink" href="#is-ipaddress" title="Link to this heading"></a></h4>
 <p>This validator checks if a field’s value is an IP address (either version 4 or version 6).
 Can be set to force addresses from within a specific range.
 Checks are done using the appropriate <code class="docutils literal notranslate"><span class="pre">IS_IPV4</span></code> or <code class="docutils literal notranslate"><span class="pre">IS_IPV6</span></code> validator.</p>
@@ -1427,9 +1428,9 @@ Checks are done using the appropriate <code class="docutils literal notranslate"
 </section>
 </section>
 <section id="other-validators">
-<h3>Other validators<a class="headerlink" href="#other-validators" title="Permalink to this heading"></a></h3>
+<h3>Other validators<a class="headerlink" href="#other-validators" title="Link to this heading"></a></h3>
 <section id="cleanup">
-<h4><code class="docutils literal notranslate"><span class="pre">CLEANUP</span></code><a class="headerlink" href="#cleanup" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">CLEANUP</span></code><a class="headerlink" href="#cleanup" title="Link to this heading"></a></h4>
 <p>This is a filter. It never fails. By default it just removes all characters whose decimal ASCII codes
 are not in the list [10, 13, 32-127]. It always perform an initial strip (i.e. heading and trailing blank characters removal) on the value.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">CLEANUP</span><span class="p">()</span>
@@ -1443,9 +1444,9 @@ are not in the list [10, 13, 32-127]. It always perform an initial strip (i.e. h
 </section>
 </section>
 <section id="database-validators">
-<h3>Database validators<a class="headerlink" href="#database-validators" title="Permalink to this heading"></a></h3>
+<h3>Database validators<a class="headerlink" href="#database-validators" title="Link to this heading"></a></h3>
 <section id="is-not-in-db">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_NOT_IN_DB</span></code><a class="headerlink" href="#is-not-in-db" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_NOT_IN_DB</span></code><a class="headerlink" href="#is-not-in-db" title="Link to this heading"></a></h4>
 <p>Synopsis:
 <code class="docutils literal notranslate"><span class="pre">IS_NOT_IN_DB(db|set,</span> <span class="pre">'table.field')</span></code></p>
 <p>Consider the following example:</p>
@@ -1481,7 +1482,7 @@ this results in a race condition and both records are accepted. It is therefore 
 </div>
 </section>
 <section id="is-in-db">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code><a class="headerlink" href="#is-in-db" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code><a class="headerlink" href="#is-in-db" title="Link to this heading"></a></h4>
 <p>Synopsis:
 <code class="docutils literal notranslate"><span class="pre">IS_IN_DB(db|set,</span> <span class="pre">'table.value_field',</span> <span class="pre">'%(representing_field)s',</span> <span class="pre">zero='choose</span> <span class="pre">one')</span></code>
 where the third and fourth arguments are optional.</p>
@@ -1540,7 +1541,7 @@ if the validated value passes the <code class="docutils literal notranslate"><sp
 </div>
 </section>
 <section id="is-in-db-and-tagging">
-<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code> and Tagging<a class="headerlink" href="#is-in-db-and-tagging" title="Permalink to this heading"></a></h4>
+<h4><code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code> and Tagging<a class="headerlink" href="#is-in-db-and-tagging" title="Link to this heading"></a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code> validator has an optional attribute <code class="docutils literal notranslate"><span class="pre">multiple=False</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> multiple values can be stored in one field.
 This field should be of type <code class="docutils literal notranslate"><span class="pre">list:reference</span></code> as discussed in <a class="reference internal" href="chapter-07.html#list-type-and-contains"><span class="std std-ref">`` Lista: &lt;type&gt; `` e `` contains``</span></a>. An explicit example of
 tagging is discussed there. Multiple references are handled automatically in create and update forms, but they are transparent to
@@ -1548,7 +1549,7 @@ the DAL. We strongly suggest using the jQuery multiselect plugin to render multi
 </section>
 </section>
 <section id="validation-functions">
-<h3>Validation functions<a class="headerlink" href="#validation-functions" title="Permalink to this heading"></a></h3>
+<h3>Validation functions<a class="headerlink" href="#validation-functions" title="Link to this heading"></a></h3>
 <p>In order to explicitly define a validation function, we pass to the <code class="docutils literal notranslate"><span class="pre">validation</span></code> parameter a
 function that takes the form and returns a dictionary, mapping field
 names to errors. If the dictionary is non-empty, the errors will be
@@ -1558,20 +1559,15 @@ displayed to the user, and no database I/O will take place.</p>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
 <span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_INT_IN_RANGE</span>
 
-<span class="k">def</span> <span class="nf">check_nonnegative_quantity</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;The product quantity must be even&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">custom_check</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">4</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s2">&quot;too short&quot;</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;form_example&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_example.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">form_example</span><span class="p">():</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">),</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_INT_IN_RANGE</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))],</span>
-        <span class="n">validation</span><span class="o">=</span><span class="n">check_nonnegative_quantity</span><span class="p">,</span>
-        <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">validation</span><span class="o">=</span><span class="n">custom_check</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
-        <span class="c1"># Do something with form.vars[&#39;product_name&#39;] and form.vars[&#39;product_quantity&#39;]</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 </pre></div>
@@ -1591,7 +1587,7 @@ displayed to the user, and no database I/O will take place.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -1616,7 +1612,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

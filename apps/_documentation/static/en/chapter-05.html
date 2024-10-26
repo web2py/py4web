@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating your first app &mdash; py4web 1.20230507.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Creating an app &mdash; py4web 20240915 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=78bb2521"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -40,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,7 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating your first app</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating an app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#from-scratch">From scratch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#static-web-pages">Static web pages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-web-pages">Dynamic Web Pages</a><ul>
@@ -69,6 +71,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-scaffold-app">The _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#copying-the-scaffold-app">Copying the _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watch-for-files-change">Watch for files change</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#domain-mapped-apps">Domain-mapped apps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
@@ -98,7 +101,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Creating your first app</li>
+      <li class="breadcrumb-item active">Creating an app</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-05.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -108,10 +111,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="creating-your-first-app">
-<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Permalink to this heading"></a></h1>
+  <section id="creating-an-app">
+<h1>Creating an app<a class="headerlink" href="#creating-an-app" title="Link to this heading"></a></h1>
 <section id="from-scratch">
-<h2>From scratch<a class="headerlink" href="#from-scratch" title="Permalink to this heading"></a></h2>
+<h2>From scratch<a class="headerlink" href="#from-scratch" title="Link to this heading"></a></h2>
 <p>Apps can be created using the dashboard or directly from the filesystem.
 Here, we are going to do it manually, as the Dashboard is already described in
 its own chapter.</p>
@@ -149,7 +152,7 @@ access. Yet typically most apps are designed to expose static or dynamic
 web pages.</p>
 </section>
 <section id="static-web-pages">
-<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Permalink to this heading"></a></h2>
+<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Link to this heading"></a></h2>
 <p>To expose static web pages you simply need to create a <code class="docutils literal notranslate"><span class="pre">static</span></code>
 subfolder, and any file in there will be automatically published:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>apps/myapp/static
@@ -169,7 +172,7 @@ and if-modified-since. This is all
 handled automatically based on the HTTP request headers.</p>
 </section>
 <section id="dynamic-web-pages">
-<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Permalink to this heading"></a></h2>
+<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Link to this heading"></a></h2>
 <p>To create a dynamic page, you must create a function that returns the
 page content. For example edit the <code class="docutils literal notranslate"><span class="pre">myapp/__init__.py</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
@@ -201,7 +204,7 @@ ambiguity. But there is one exception: if you call your app
 then py4web will not prepend any prefix to the routes defined inside the
 app.</p>
 <section id="on-return-values">
-<h3>On return values<a class="headerlink" href="#on-return-values" title="Permalink to this heading"></a></h3>
+<h3>On return values<a class="headerlink" href="#on-return-values" title="Link to this heading"></a></h3>
 <p>py4web actions should return a string or a dictionary. If they return a
 dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
@@ -223,7 +226,7 @@ PY4WEB comes with yatl, a full chapter will be dedicated later and we
 will provide an example shortly.</p>
 </section>
 <section id="routes">
-<h3>Routes<a class="headerlink" href="#routes" title="Permalink to this heading"></a></h3>
+<h3>Routes<a class="headerlink" href="#routes" title="Link to this heading"></a></h3>
 <p>It is possible to map patterns in the URL into arguments of the
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
@@ -265,7 +268,7 @@ can be an HTTP method or a list of methods:</p>
 multiple routes.</p>
 </section>
 <section id="the-request-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Permalink to this heading"></a></h3>
+<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Link to this heading"></a></h3>
 <p>From py4web you can import <code class="docutils literal notranslate"><span class="pre">request</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
 
@@ -288,7 +291,7 @@ with one additional attribute:</p>
 <p>Which you can use the code to identify the name and the folder used for the app.</p>
 </section>
 <section id="templates">
-<h3>Templates<a class="headerlink" href="#templates" title="Permalink to this heading"></a></h3>
+<h3>Templates<a class="headerlink" href="#templates" title="Link to this heading"></a></h3>
 <p>In order to use a yatl template you must declare it. For example create a file <code class="docutils literal notranslate"><span class="pre">apps/myapp/templates/paint.html</span></code> that contains:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
@@ -345,7 +348,7 @@ automatically.</p>
 </section>
 </section>
 <section id="the-scaffold-app">
-<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Permalink to this heading"></a></h2>
+<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Link to this heading"></a></h2>
 <p>Most of the times, you do not want to start writing code from scratch.
 You also want to follow some sane conventions outlined here, like not
 putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
@@ -359,32 +362,7 @@ on which you can rely to build your real project.</p>
 <p>You will normally find the scaffold app under apps, but you can easily
 create a new clone of it manually or using the Dashboard.</p>
 <p>Here is the tree structure of the <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
-├── common.py            # defines useful objects
-├── controllers.py       # your actions
-├── databases            # your sqlite databases and metadata
-    │   └── README.md
-├── models.py            # your pyDAL table model
-├── settings.py          # any settings used by the app
-├── settings_private.py  # (optional) settings that you want to keep private
-├── static               # static files
-│   ├── README.md
-│   ├── css              # CSS files, we ship bulma because it is JS agnostic
-│   │   └── no.css       # we used bulma.css in the past
-│   ├── favicon.ico
-│   └── js               # JS files, we ship with these but you can replace them
-│       ├── utils.js
-├── tasks.py
-├── templates            # your templates go here
-│   ├── README.md
-│   ├── auth.html        # the auth page for register/logic/etc (uses vue)
-│   ├── generic.html     # a general purpose template
-│   ├── index.html
-│   └── layout.html      # a bulma layout example
-└── translations         # internationalization/pluralization files go here
-    └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
-</pre></div>
-</div>
+<img alt="_images/scaffold_tree.png" src="_images/scaffold_tree.png" />
 <p>The scaffold app contains an example of a more complex action:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
 <span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
@@ -401,8 +379,8 @@ create a new clone of it manually or using the Dashboard.</p>
 </div>
 <p>Notice the following:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by
-which is a fast bottlepy spin-off.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by <code class="docutils literal notranslate"><span class="pre">ombott</span></code>
+which is a minimal and fast bottlepy spin-off.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">redirect</span></code> and <code class="docutils literal notranslate"><span class="pre">URL</span></code> are similar to their web2py counterparts</p></li>
 <li><p>helpers (<code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, etc) must be imported
 from <code class="docutils literal notranslate"><span class="pre">yatl.helpers</span></code> . They work pretty much as in web2py</p></li>
@@ -422,7 +400,7 @@ agnostic to your choice of JS and CSS, but with some exceptions. The
 component. Hence if you want to use that, you should not remove it.</p>
 </section>
 <section id="copying-the-scaffold-app">
-<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this heading"></a></h2>
+<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Link to this heading"></a></h2>
 <p>The scaffold app is really useful, and you will surely use it a lot as
 a starting point for testing and even developing full features new apps.</p>
 <p>It’s better not to work directly on it: always create new apps copying it.
@@ -440,7 +418,7 @@ along with the new app.</p>
 </ul>
 </section>
 <section id="watch-for-files-change">
-<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this heading"></a></h2>
+<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Link to this heading"></a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
 Python source files change (by default).
@@ -487,6 +465,42 @@ decorator are ignored since they are watched by default. Handler
 function’s parameter is a list of filepaths that were changed. All
 exceptions inside handlers are printed in terminal.</p>
 </section>
+<section id="domain-mapped-apps">
+<h2>Domain-mapped apps<a class="headerlink" href="#domain-mapped-apps" title="Link to this heading"></a></h2>
+<p>In production environments it is often required to have several apps being
+served by a single py4web server, where different apps are mapped to
+different domains.</p>
+<p>py4web can easily handle running multiple apps, but there is no build-in
+mechanism for mapping domains to specific applications. Such mapping needs
+to be done externally to py4web – for instance using a web reverse-proxy,
+such as nginx.</p>
+<p>While nginx or other reverse-proxies are also useful in production
+environments for handling SSL termination, caching and other uses,
+we cover only the mapping of domains to py4web applications here.</p>
+<p>An example nginx configuration for an application <code class="docutils literal notranslate"><span class="pre">myapp</span></code> mapped to
+a domain <code class="docutils literal notranslate"><span class="pre">myapp.example.com</span></code> might look like that:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">server {</span>
+<span class="go">   listen 80;</span>
+<span class="go">   server_name myapp.example.com;</span>
+<span class="go">   proxy_http_version 1.1;</span>
+<span class="go">   proxy_set_header Host $host;</span>
+<span class="go">   proxy_set_header X-PY4WEB-APPNAME /myapp;</span>
+<span class="go">   location / {</span>
+<span class="go">      proxy_pass http://127.0.0.1:8000/myapp$request_uri;</span>
+<span class="go">   }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>This is an example <code class="docutils literal notranslate"><span class="pre">server</span></code> block of nginx configuraiton. One would have to create a separate such block for <strong>each app/each domain</strong> being served by py4web server. Note some important aspects:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">server_name</span></code> defines the domain mapped to the app <code class="docutils literal notranslate"><span class="pre">myapp</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_http_version</span> <span class="pre">1.1;</span></code> directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk to the backend-server – here py4web – and it creates all kinds of issues with buffering and otherwise),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">Host</span> <span class="pre">$host;</span></code> directive ensures that the correct <code class="docutils literal notranslate"><span class="pre">Host</span></code> is passed to py4web – here <code class="docutils literal notranslate"><span class="pre">myapp.example.com</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">X-PY4WEB-APPNAME</span> <span class="pre">/myapp;</span></code> directive ensures that py4web (and ombott) knows which app to serve and <strong>also</strong> that this application is domain-mapped – pay specific attention to the slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) in front of the <code class="docutils literal notranslate"><span class="pre">myapp</span></code> name – it is <strong>required</strong> to ensure correct parsing of URLs on ombott level,</p></li>
+<li><p>finally <code class="docutils literal notranslate"><span class="pre">proxy_pass</span> <span class="pre">http://127.0.0.1:8000/myapp$request_uri;</span></code> ensures that the request is passed in its entirity (<code class="docutils literal notranslate"><span class="pre">$request_uri</span></code>) to py4web server (here: <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8000</span></code>) and the correct app (<code class="docutils literal notranslate"><span class="pre">/myapp</span></code>).</p></li>
+</ul>
+<p>Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as <code class="docutils literal notranslate"><span class="pre">Auth</span></code>, <code class="docutils literal notranslate"><span class="pre">Form</span></code>, and <code class="docutils literal notranslate"><span class="pre">Grid</span></code> are done correctly using the domain to which the app is mapped to.</p>
+</section>
 </section>
 
 
@@ -500,7 +514,7 @@ exceptions inside handlers are printed in terminal.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -525,7 +539,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -6,18 +6,10 @@ import hashlib
 import random
 import re
 import time
-import urllib
 import uuid
 
-from pydal.validators import (
-    CRYPT,
-    IS_EMAIL,
-    IS_EQUAL_TO,
-    IS_MATCH,
-    IS_NOT_EMPTY,
-    IS_NOT_IN_DB,
-    IS_STRONG,
-)
+from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
@@ -70,15 +62,13 @@ class AuthEnforcer(Fixture):
         self.auth.on_success(context)
 
     def abort_or_redirect(self, page, message=""):
-        """Return HTTP 403 if 'application/json' in HTTP_ACCEPT
-        and HTTP_JSON_REDIRECTS flag is not set in the request to 'on'.
-        Else redirects to page
+        """
+        Return HTTP 403 if 'text/htmp' not in HTTP_ACCEPT
+        else redirects to specified page
         """
 
-        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
-            request.headers.get("json-redirects", "") != "on"
-        ):
-            raise HTTP(403)
+        if "text/html" not in request.headers.get("accept", ""):
+            raise HTTP(403, body={"message": message})
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
@@ -97,17 +87,22 @@ class AuthEnforcer(Fixture):
         # If a plugin can handle requests, redirects to the login url for the login.
         for plugin in self.auth.plugins.values():
             if hasattr(plugin, "handle_request"):
-                if re.search(REGEX_APPJSON,
-                             request.headers.get("accept", "")) and (
-                        request.headers.get("json-redirects", "") != "on"
+                if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
+                    request.headers.get("json-redirects", "") != "on"
                 ):
                     raise HTTP(403)
                 redirect_next = request.fullpath
                 if request.query_string:
                     redirect_next = redirect_next + "?{}".format(request.query_string)
                 redirect(
-                    URL(self.auth.route, "plugin", plugin.name, "login",
-                        vars=dict(next=redirect_next)))
+                    URL(
+                        self.auth.route,
+                        "plugin",
+                        plugin.name,
+                        "login",
+                        vars=dict(next=redirect_next),
+                    )
+                )
         # Otherwise, uses the normal login.
         self.abort_or_redirect("login", message=message)
 
@@ -235,17 +230,20 @@ class Auth(Fixture):
         password_in_db=True,
         two_factor_required=None,
         two_factor_send=None,
+        two_factor_validate=None,
+        template_args=None,
     ):
-
         # configuration parameters
         self.param = Param(
             registration_requires_confirmation=registration_requires_confirmation,
             registration_requires_approval=registration_requires_approval,
             login_after_registration=False,
             login_expiration_time=login_expiration_time,  # seconds
-            password_complexity={"entropy": 50}
-            if password_complexity == "default"
-            else password_complexity,
+            password_complexity=(
+                {"entropy": 50}
+                if password_complexity == "default"
+                else password_complexity
+            ),
             block_previous_password_num=block_previous_password_num,
             allowed_actions=allowed_actions or ["all"],
             use_appname_in_redirects=use_appname_in_redirects,
@@ -258,7 +256,10 @@ class Auth(Fixture):
             expose_all_models=True,
             two_factor_required=two_factor_required,
             two_factor_send=two_factor_send,
+            two_factor_validate=two_factor_validate,
             two_factor_tries=3,
+            auth_enforcer=None,
+            template_args=template_args or {},
         )
 
         # callbacks for forms
@@ -415,13 +416,16 @@ class Auth(Fixture):
                         readable=False,
                     )
                 )
-            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields))
+            db.define_table(
+                "auth_user",
+                *(auth_fields + self.extra_auth_user_fields),
+                format=lambda u: f"{u.first_name} {u.last_name}")
 
     @property
     def signature(self):
         """Returns a list of fields for a table signature"""
         now = lambda: datetime.datetime.utcnow()
-        user = lambda s=self: s.get_user().get("id")
+        user = lambda s=self: s.user_id
         fields = [
             Field(
                 "created_on",
@@ -472,11 +476,17 @@ class Auth(Fixture):
     @property
     def user(self):
         """Use as @action.uses(auth.user)"""
-        return AuthEnforcer(self)
+        return (
+            self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self)
+        )
 
     def condition(self, condition):
         """Use as @action.uses(auth.condition(lambda user: True))"""
-        return AuthEnforcer(self, condition)
+        return (
+            self.param.auth_enforcer
+            if self.param.auth_enforcer
+            else AuthEnforcer(self, condition)
+        )
 
     # utilities
     def get_user(self, safe=True):
@@ -486,24 +496,25 @@ class Auth(Fixture):
         If session contains only a user['id']
         retrives the other readable user info from auth_user
         """
-        if not self.session.is_valid():
+        if not self.session.is_valid() or not self.user_id:
             return {}
-        user = self.session.get("user")
-        if not user or not isinstance(user, dict) or "id" not in user:
-            return {}
-        if len(user) == 1 and self.db:
-            user = self.db.auth_user(user["id"])
+        if self.db:
+            user = self.db.auth_user(self.user_id)
             if not user:
                 return {}
             if safe:
-                user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                user = {
+                    f.name: user[f.name]
+                    for f in self.db.auth_user
+                    if f.readable or f.name == "id"
+                }
         return user
 
     @property
     def is_logged_in(self):
         if not self.session.is_valid():
             return False
-        return self.session.get("user", {}).get("id", None) != None
+        return self.session.get("user", {}).get("id", None) is not None
 
     @property
     def user_id(self):
@@ -519,6 +530,36 @@ class Auth(Fixture):
     @property
     def current_user(self):
         return self.get_user()
+
+    def start_impersonating(self, impersonated_id, next_url):
+        """impersonates the new user"""
+        user = self.session.get("user")
+        if not user or "id" not in user:
+            raise RuntimeError("Cannot impersonate if not logged in")
+        if "impersonator_id" in user:
+            raise RuntimeError("Cannot impersonate while impersonating")
+        if impersonated_id == self.user_id:
+            raise RuntimeError("Cannot impersonate yourself")
+        self.session.clear()
+        self.store_user_in_session(impersonated_id)
+        self.session["user"]["impersonator_id"] = user["id"]
+        redirect(next_url)
+
+    def is_impersonating(self):
+        """checks if we are impersonating a user"""
+        return self.session.get("user", {}).get("impersonator_id", None) is not None
+
+    def stop_impersonating(self, next_url):
+        """stops impersonating a user, assuming we are impersonating one"""
+        user = self.session.get("user")
+        impersonator_id = (user or {}).get("impersonator_id")
+        if impersonator_id is None:
+            raise RuntimeError(
+                "Cannot stop impersonation because not impersonating anybody"
+            )
+        self.session.clear()
+        self.store_user_in_session(impersonator_id)
+        redirect(next_url)
 
     def register_plugin(self, plugin):
         """Registers an Auth plugin, usually from common.py inside apps"""
@@ -539,12 +580,19 @@ class Auth(Fixture):
     def register(self, fields, send=True, next="", validate=True, route=None):
         """Registers a new user after the user's parameters are entered
         in the SignUp form"""
-        if self.use_username:
-            fields["username"] = fields.get("username", "").lower()
+        if "username" in fields:
+            fields["username"] = fields["username"].lower()
         fields["email"] = fields.get("email", "").lower()
 
         def store(fields):
             if validate:
+                if self.use_username:
+                    self.db.auth_user.username.required = True
+                self.db.auth_user.action_token.writable = True
+                self.db.auth_user.password.writable = True
+                self.db.auth_user.password.required = True
+                self.db.auth_user.first_name.required = True
+                self.db.auth_user.last_name.required = True
                 return self.db.auth_user.validate_and_insert(**fields)
             return dict(id=self.db.auth_user.insert(**fields))
 
@@ -595,7 +643,7 @@ class Auth(Fixture):
                     # get of create the user (if does not exist)
                     user_info = {}
                     user_info["sso_id"] = plugin.name + ":" + email
-                    if self.use_username or not "@" in email:
+                    if self.use_username or "@" not in email:
                         user_info["username"] = email
                     if "@" in email:
                         user_info["email"] = email
@@ -619,11 +667,11 @@ class Auth(Fixture):
         # then check for possible login blockers
         if not user:
             error = "invalid_credentials"
-        elif (user["action_token"] or "").startswith("pending-registration:"):
+        elif (user.get("action_token") or "").startswith("pending-registration:"):
             error = "registration_is_pending"
-        elif user["action_token"] == "account-blocked":
+        elif user.get("action_token") == "account-blocked":
             error = "account_is_blocked"
-        elif user["action_token"] == "pending-approval":
+        elif user.get("action_token") == "pending-approval":
             error = "account_needs_to_be_approved"
 
         # return the error or the user
@@ -641,7 +689,7 @@ class Auth(Fixture):
         field = (
             db.auth_user.email
             if "@" in value or not self.use_username
-            else self.auth_user.username
+            else db.auth_user.username
         )
         user = db(field == value).select().first()
         if user and user.action_token != "account-blocked":
@@ -813,32 +861,36 @@ class Auth(Fixture):
 
     def get_or_register_user(self, user):
         db = self.db
-        # if the we have an email for the user
-        if "email" in user:
-            # return a user if exists and has a verified email
-            row = self.get_or_delete_existing_unverified_account(user["email"])
-        # else retrieve the user from the sso_id
-        else:
+        # if we have an sso_id we use it to id the user
+        if user.get("sso_id"):
+            keyid = "sso_id"
             row = (
                 db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
             )
-        # if we have found a candidate user
-        if row:
-            # we expect the email to match if provided
-            if "email" in user and row.email != user["email"]:
-                return None
-            # we can update all the other information provided by the SSO
-            if any(user[key] != row[key] for key in user if not key == "username"):
+            # the sso source is always more authoritative so update the record
+            if row:
                 row.update_record(**user)
-            user["id"] = row["id"]
-        # if we do not have a candidate user we need to create one
+                # pass the full user
+                user = row.as_dict()
+        # othrewise we id the user via email
+        elif user.get("email"):
+            keyid = "email"
+            # return a user if exists and has a verified email
+            row = self.get_or_delete_existing_unverified_account(user["email"])
+            # the database is more authoritative
+            if row:
+                user.update(**row.as_dict())
         else:
-            # we expect an email to be able to create account
-            if not "email" in user:
-                return None
-            # if we expect a username but not provided, user email as username
-            if self.use_username and "username" not in user:
-                user["username"] = user["email"]
+            return None
+        # if we do not have a candidate user we create one
+        if not row:
+            # if we expect a username but not provided, use keyid as username
+            if self.use_username:
+                if "username" not in user:
+                    user["username"] = user[keyid]
+                    # make sure the username is unique
+                    if db(db.auth_user.username == user["username"]).count():
+                        raise HTTP(401, body=f"Conficting {user['username']} accounts")
             # create the user
             user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return user
@@ -927,7 +979,7 @@ class Auth(Fixture):
                     current_record_label=current_record_label,
                 )
 
-    def enable(self, route="auth", uses=(), env=None, spa=False):
+    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True):
         """Enables Auth, aka generates login/logout/register/etc API pages"""
         self.route = route = route.rstrip("/")
         env = env or {}
@@ -944,34 +996,35 @@ class Auth(Fixture):
 
         # This exposes all API actions as /{app_name}/{route}/api/{name}
         # and API Models as /{app_name}/{route}/api/{name}?@model=true
-
-        # Exposed Public APIs
-        exposed_api_routes = [
-            dict(api_name=api_name, api_route=f"{route}/api/{api_name}", uses=auth)
-            for api_name in AuthAPI.public_api
-            if self.allows(api_name)
-        ]
-
-        # Exposed Private APIs
-        exposed_api_routes.extend(
-            [
-                dict(
-                    api_name=api_name,
-                    api_route=f"{route}/api/{api_name}",
-                    uses=auth.user,
-                )
-                for api_name in AuthAPI.private_api
+        exposed_api_routes = []
+        if allow_api_routes:
+            # Exposed Public APIs
+            exposed_api_routes = [
+                dict(api_name=api_name, api_route=f"{route}/api/{api_name}", uses=auth)
+                for api_name in AuthAPI.public_api
                 if self.allows(api_name)
             ]
-        )
 
-        for item in exposed_api_routes:
-            api_factory = getattr(AuthAPI, item["api_name"])
+            # Exposed Private APIs
+            exposed_api_routes.extend(
+                [
+                    dict(
+                        api_name=api_name,
+                        api_route=f"{route}/api/{api_name}",
+                        uses=auth.user,
+                    )
+                    for api_name in AuthAPI.private_api
+                    if self.allows(api_name)
+                ]
+            )
 
-            @action(item["api_route"], method=methods)
-            @action.uses(item["uses"], *uses)
-            def _(auth=auth, api_factory=api_factory):
-                return api_factory(auth)
+            for item in exposed_api_routes:
+                api_factory = getattr(AuthAPI, item["api_name"])
+
+                @action(item["api_route"], method=methods)
+                @action.uses(item["uses"], *uses)
+                def _(auth=auth, api_factory=api_factory):
+                    return api_factory(auth)
 
         # This exposes all plugins as /{app_name}/{route}/plugins/{path}
         for name in self.plugins:
@@ -1015,10 +1068,9 @@ class Auth(Fixture):
 
             for item in exposed_form_routes:
                 form_factory = getattr(self.form_source, item["form_name"])
-
+                template = Template(f"{route}.html", **self.param.template_args)
                 @action(item["form_route"], method=["GET", "POST"])
-                @action.uses(f"{route}.html")
-                @action.uses(item["uses"], self.flash, *uses)
+                @action.uses(template, item["uses"], self.flash, *uses)
                 def _(
                     auth=auth,
                     form_factory=form_factory,
@@ -1041,7 +1093,7 @@ def api_wrapper(func):
 
     def func_wrapper(auth, func=func):
         data = func(auth) or {}
-        if not "status" in data and data.get("errors"):
+        if "status" not in data and data.get("errors"):
             data.update(status="error", message="validation errors", code=401)
         elif "errors" in data and not data["errors"]:
             del data["errors"]
@@ -1110,7 +1162,6 @@ class AuthAPI:
 
     @staticmethod
     def get_model(defaultAuthFunction):
-
         model = defaultAuthFunction(model=True)
 
         for key, value in model.items():
@@ -1127,9 +1178,11 @@ class AuthAPI:
                             writable=field.writable if field.type != "id" else False,
                             required=field.required,
                             regex=field.regex if hasattr(field, "regex") else None,
-                            default=field.default()
-                            if callable(field.default)
-                            else field.default,
+                            default=(
+                                field.default()
+                                if callable(field.default)
+                                else field.default
+                            ),
                             options=field.options,
                         )
                     )
@@ -1304,7 +1357,6 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_email(auth):
-
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
@@ -1402,7 +1454,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-in"],
                         action="login",
-                        href="/auth/api/login",
+                        href=URL(f"{self.auth.route}/api/login"),
                     )
                 )
 
@@ -1411,7 +1463,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["lost-password"],
                         action="request_reset_password",
-                        href="/auth/api/request_reset_password",
+                        href=URL(f"{self.auth.route}/api/request_reset_password"),
                     )
                 )
 
@@ -1419,7 +1471,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/register",
+                href=URL(f"{self.auth.route}/api/register"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1461,7 +1513,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-in"],
-                    _href="../auth/login",
+                    _href=URL(f"{self.auth.route}/login"),
                     _class=self.auth.param.button_classes["sign-in"],
                     _role="button",
                 )
@@ -1470,7 +1522,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
-                    _href="../auth/request_reset_password",
+                    _href=URL(f"{self.auth.route}/request_reset_password"),
                     _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
@@ -1486,7 +1538,7 @@ class DefaultAuthForms:
             if not hasattr(plugin, "get_login_url"):
                 continue
 
-            url = f"/auth/plugin/{name}/login"
+            url = URL(f"{self.auth.route}/plugin/{name}/login")
 
             next_url = prevent_open_redirect(request.query.get("next"))
             if next_url:
@@ -1498,7 +1550,7 @@ class DefaultAuthForms:
 
         combined_div = DIV(
             *[
-                A(item["label"], _href=f"..{item['href']}", _role="button")
+                A(item["label"], _href=f"{item['href']}", _role="button")
                 for item in top_buttons
             ]
         )
@@ -1518,9 +1570,11 @@ class DefaultAuthForms:
         fields = [
             Field(
                 "email",
-                label=self.auth.db.auth_user.username.label
-                if self.auth.use_username
-                else self.auth.db.auth_user.email.label,
+                label=(
+                    self.auth.db.auth_user.username.label
+                    if self.auth.use_username
+                    else self.auth.db.auth_user.email.label
+                ),
             ),
             Field(
                 "password",
@@ -1538,7 +1592,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-up"],
                         action="register",
-                        href="/auth/api/register",
+                        href=URL(f"{self.auth.route}/api/register"),
                     )
                 )
 
@@ -1547,7 +1601,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["lost-password"],
                         action="request_reset_password",
-                        href="/auth/api/request_reset_password",
+                        href=URL(f"{self.auth.route}/api/request_reset_password"),
                     )
                 )
 
@@ -1557,7 +1611,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/login",
+                href=URL(f"{self.auth.route}/api/login"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1592,7 +1646,7 @@ class DefaultAuthForms:
                 ):
                     self.auth.session["auth.2fa_user"] = user["id"]
                     self.auth.session["auth.2fa_next_url"] = next_url
-                    redirect(URL("auth", "two_factor"))
+                    redirect(URL(f"{self.auth.route}/two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1600,7 +1654,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-up"],
-                    _href="../auth/register",
+                    _href=URL(f"{self.auth.route}/register"),
                     _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
@@ -1609,7 +1663,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
-                    _href="../auth/request_reset_password",
+                    _href=URL(f"{self.auth.route}/request_reset_password"),
                     _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
@@ -1623,8 +1677,7 @@ class DefaultAuthForms:
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
     def two_factor(self):
-
-        if self.auth.param.two_factor_send is None:
+        if (self.auth.param.two_factor_send is None) and (self.auth.param.two_factor_validate is None):
             raise HTTP(404)
 
         user_id = self.auth.session.get("auth.2fa_user")
@@ -1635,13 +1688,27 @@ class DefaultAuthForms:
 
         user = self.auth.db.auth_user(user_id)
         code = self.auth.session.get("auth.2fa_code")
-        if not code:
+        if (not code) and (not self.auth.param.two_factor_send is None):
             # generate and send the code
             code = str(random.randint(100000, 999999))
             code = self.auth.param.two_factor_send(user, code)
             # store code in session
             self.auth.session["auth.2fa_code"] = code
             self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+        elif self.auth.session.get("auth.2fa_tries_left") is None:
+            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+
+        def two_factor_validate(form):
+            # external validation outcome
+            outcome = None
+            if self.auth.param.two_factor_validate:
+                outcome = self.auth.param.two_factor_validate(user, form.vars['authentication_code'])
+            # outcome:
+            #   True: external validation passed
+            #   False: external validation failed
+            #   None: external validation status unknown - check against the generated code
+            if outcome==False or ((outcome is None) and (form.vars['authentication_code']!=code)):
+                form.errors['authentication_code'] = self.auth.param.messages["errors"]["two_factor"]
 
         form = Form(
             [
@@ -1649,12 +1716,9 @@ class DefaultAuthForms:
                     "authentication_code",
                     label=self.auth.param.messages["labels"]["two_factor"],
                     required=True,
-                    requires=IS_EQUAL_TO(
-                        code,
-                        error_message=self.auth.param.messages["errors"]["two_factor"],
-                    ),
                 ),
             ],
+            validation=two_factor_validate,
             formstyle=self.auth.param.formstyle,
             form_name="auth_2fa",
             keep_values=True,
@@ -1664,7 +1728,7 @@ class DefaultAuthForms:
         if form.accepted:
             # reset the 2f session
             self._reset_two_factor()
-            # store user i session
+            # store user in session
             self.auth.store_user_in_session(user["id"])
             # login user
             self._postprocessing("login", form, user)
@@ -1679,7 +1743,7 @@ class DefaultAuthForms:
                 self._set_flash(
                     self.auth.param.messages["errors"]["two_factor_max_tries"]
                 )
-                redirect(URL("auth", "login", vars=dict(next=next_url)))
+                redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):
@@ -1701,7 +1765,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-in"],
                         action="login",
-                        href="/auth/api/login",
+                        href=URL(f"{self.auth.route}/api/login"),
                     )
                 )
 
@@ -1710,7 +1774,7 @@ class DefaultAuthForms:
                     dict(
                         label=self.auth.param.messages["buttons"]["sign-up"],
                         action="register",
-                        href="/auth/api/register",
+                        href=URL(f"{self.auth.route}/api/register"),
                     )
                 )
 
@@ -1718,7 +1782,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/request_reset_password",
+                href=URL(f"{self.auth.route}/api/request_reset_password"),
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
@@ -1743,7 +1807,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-in"],
-                    _href="../auth/login",
+                    _href=URL(f"{self.auth.route}/login"),
                     _class=self.auth.param.button_classes["sign-in"],
                     _role="button",
                 )
@@ -1753,7 +1817,7 @@ class DefaultAuthForms:
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["sign-up"],
-                    _href="../auth/register",
+                    _href=URL(f"{self.auth.route}/register"),
                     _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
@@ -1785,7 +1849,7 @@ class DefaultAuthForms:
                 public=True,
                 hidden=True,
                 fields=fields,
-                href="/auth/api/reset_password",
+                href=URL(f"{self.auth.route}/api/reset_password"),
                 submit_label=button_name,
             )
 
@@ -1837,7 +1901,7 @@ class DefaultAuthForms:
                 public=False,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/change_password",
+                href=URL(f"{self.auth.route}/api/change_password"),
                 submit_label=button_name,
             )
 
@@ -1897,7 +1961,7 @@ class DefaultAuthForms:
                 public=False,
                 hidden=False,
                 fields=fields,
-                href="/auth/api/profile",
+                href=URL(f"{self.auth.route}/api/profile"),
                 submit_label=button_name,
                 deletable=deletable,
             )
@@ -1915,10 +1979,9 @@ class DefaultAuthForms:
         return form
 
     def logout(self, model=False):
-
         if model:
             return dict(
-                public=False, hidden=False, noform=True, href="/auth/api/logout"
+                public=False, hidden=False, noform=True, href=URL(f"{self.auth.route}/api/logout")
             )
 
         """Process logout"""
@@ -1928,10 +1991,9 @@ class DefaultAuthForms:
         return ""
 
     def verify_email(self, model=False):
-
         if model:
             return dict(
-                public=True, hidden=True, noform=True, href="/auth/api/verify_email"
+                public=True, hidden=True, noform=True, href=URL(f"{self.auth.route}/api/verify_email")
             )
 
         """Process token in email verification"""

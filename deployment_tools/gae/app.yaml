@@ -1,4 +1,4 @@
-runtime: python37
+runtime: python311
 
 # Handlers define how to route requests to your application.
 handlers:

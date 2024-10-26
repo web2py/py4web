@@ -62,20 +62,21 @@ def show(name):
     path = name
     name = name.rstrip("/0123456789")
     data = []
-    filename = f"apps/showcase/{name}.md"
+    here = os.path.dirname(__file__)
+    filename = f"{here}/{name}.md"
     if os.path.exists(filename):
         with open(filename) as stream:
             metadata = stream.read().strip()
         data.append({"name": f"{name}.md", "content": metadata, "language": "markdown"})
-    filename = f"apps/showcase/{name}.py"
+    filename = f"{here}/{name}.py"
     if not os.path.exists(filename):
         raise HTTP(404)
     with open(filename) as stream:
         controller = stream.read().strip()
     data.append({"name": f"{name}.py", "content": controller, "language": "python"})
-    templates = re.compile("[/\w]+\.html").findall(controller)
+    templates = re.compile(r"[/\w]+\.html").findall(controller)
     for template in templates:
-        with open(f"apps/showcase/templates/{template}") as stream:
+        with open(f"{here}/templates/{template}") as stream:
             content = stream.read().strip()
             data.append(
                 {
@@ -89,10 +90,10 @@ def show(name):
         if not other.startswith("."):
             continue
         filename = other[1:].replace(".", "/") + ".py"
-        with open(f"apps/showcase/{filename}") as stream:
+        with open(f"{here}/{filename}") as stream:
             content = stream.read().strip()
             data.append({"shortname": filename, "content": content, "language": "python"})
     # drop the subfolder name
     path = "/".join(path.split("/")[1:])
-    executable = MODE == "full" or name in globals()
+    executable = MODE == "full" or name.split("/")[-1] in globals()
     return {"files": data, "mode": MODE, "path": path, "executable": executable}

@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-import urllib
 
 from pydal.exceptions import NotAuthorizedException, NotFoundException
 from pydal.helpers.regex import REGEX_UPLOAD_PATTERN
@@ -11,7 +10,6 @@ from py4web.core import bottle
 
 
 def downloader(db, path, filename, download_filename=None):
-
     """
     Given a db, and filesystem path, and the filename of an uploaded file,
     it retrieves the file, checks permission, and returns or stream its.
@@ -36,6 +34,7 @@ def downloader(db, path, filename, download_filename=None):
     fieldname = items.group("field")
     try:
         field = db[tablename][fieldname]
+        path = field.uploadfolder or path
 
         # Functionality to handle uploadseparate Field declaration.
         if field.uploadseparate:
@@ -48,8 +47,7 @@ def downloader(db, path, filename, download_filename=None):
         (original_name, stream) = field.retrieve(filename, path, nameonly=True)
         fullpath = os.path.join(path, filename)
         if not os.path.exists(fullpath) and hasattr(stream, "read"):
-            with open(fullpath, "wb") as fp:
-                shutil.copyfile(fp, stream)
+            return stream.read()
     except NotAuthorizedException:
         raise HTTP(403)
     except NotFoundException:

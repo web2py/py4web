@@ -38,10 +38,9 @@ class JsonRpc:
         try:
             result = func(*params) if isinstance(params, list) else func(**params)
             return {"result": result, "id": rid, "jsonrpc": "2.0"}
-        except Exception as e:
-            error = e
+        except Exception as err:
             return {
                 "rid": None,
                 "jsonrpc": "2.0",
-                "error": {"code": -32603, "message": "Internal error", "data": e},
+                "error": {"code": -32603, "message": "Internal error", "data": err},
             }

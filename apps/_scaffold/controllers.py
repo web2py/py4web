@@ -27,7 +27,17 @@ Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app w
 
 from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
-from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
+from .common import (
+    db,
+    session,
+    T,
+    cache,
+    auth,
+    logger,
+    authenticated,
+    unauthenticated,
+    flash,
+)
 
 
 @action("index")
@@ -35,5 +45,4 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 def index():
     user = auth.get_user()
     message = T("Hello {first_name}").format(**user) if user else T("Hello")
-    actions = {"allowed_actions": auth.param.allowed_actions}
-    return dict(message=message, actions=actions)
+    return dict(message=message)

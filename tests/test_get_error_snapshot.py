@@ -1,5 +1,5 @@
-import os
 import unittest
+
 from py4web.core import get_error_snapshot
 
 
@@ -10,16 +10,16 @@ class ErrorTest(unittest.TestCase):
         except Exception:
             snapshot = get_error_snapshot()
             keys = list(sorted(snapshot.keys()))
-        self.assertEqual(
-            keys,
-            [
-                "exception_type",
-                "exception_value",
-                "os_environ",
-                "platform_info",
-                "python_version",
-                "stackframes",
-                "timestamp",
-                "traceback",
-            ],
-        )
+            self.assertEqual(
+                keys,
+                [
+                    "exception_type",
+                    "exception_value",
+                    "os_environ",
+                    "platform_info",
+                    "python_version",
+                    "stackframes",
+                    "timestamp",
+                    "traceback",
+                ],
+            )

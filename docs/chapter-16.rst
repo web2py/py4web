@@ -2,6 +2,155 @@
 Advanced topics and examples
 ============================
 
+The scheduler
+-------------
+
+Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work.
+
+Given a task (just a python function), you can schedule async runs of that function.
+The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.
+
+The scheduler works by creating a table ``task_run`` and enqueueing runs of the predefined task as table records.
+Each ``task_run`` references a task and contains the input to be passed to that task. The scheduler will capture the
+task stdout+stderr in a ``db.task_run.log`` and the task output in ``db.task_run.output``.
+
+A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
+and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
+The worker processes are daemons and they only live for the life of one task run. Each worker process is only
+responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.
+
+The system is very robust because the only source of truth is the database and its integrity is guaranteed by
+transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitly killed.
+
+Aside for allowing multiple concurrent task runs in execution on one node,
+it is also possible to run multiple instances of the scheduler on different computing nodes,
+as long as they use the same client/server database for ``task_run`` and as long as
+they all define the same tasks.
+
+Here is an example of how to use the scheduler:
+
+.. code:: python
+
+   from pydal.tools.scheduler import Scheduler, delta, now
+   from .common import db
+
+   # create and start the scheduler
+   scheduler = Scheduler(db, sleep_time=1, max_concurrent_runs=1)
+   scheduler.start()
+
+   # register your tasks
+   scheduler.register_task("hello", lambda **inputs: print("hi!"))
+   scheduler.register_task("slow", lambda: time.sleep(10))
+   scheduler.register_task("periodic", lambda **inputs: print("I am periodic!"))
+   scheduler.register_task("fail", lambda x: 1 / x)
+   
+   # enqueue some task runs:
+   
+   scheduler.enqueue_run(name="hello")
+   scheduler.enqueue_run(name="hello", scheduled_for=now() + delta(10) # start in 10 secs
+   scheduler.enqueue_run(name="slow", timeout=1) # 1 secs
+   scheduler.enqueue_run(name="periodic", period=10) # 10 secs
+   scheduler.enqueue_run(name="fail", inputs={"x": 0})
+
+Notice that in scaffolding app, the scheduler is created and started in common if
+``USE_SCHEDULER=True`` in ``settings.py``.
+
+You can manage your task runs busing the dashboard or using a ``Grid(path, db.task_run)``.
+
+To prevent database locks (in particular with sqlite) we recommend:
+
+- Use a different database for the scheduler and everything else
+- Always ``db.commit()`` as soon as possible after any insert/update/delete
+- wrap your database logic in tasks in a try...except as in
+
+.. code:: python
+
+   def my_task():
+       try:
+           # do something
+           db.commit()
+       except Exception:
+           db.rollback()
+
+
+Sending messages using a background task
+----------------------------------------
+
+As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python).
+
+Here is a possible scheduler task to send the email:
+
+.. code:: python
+
+    import sendgrid
+    from sendgrid.helpers.mail import Mail, Email, To, Content
+
+    def sendmail_task(from_addr, to_addrs, subject, body):
+        ""
+        # build the messages using sendgrid API
+        from_email = Email(from_addr)  # Must be your verified sender
+        content_type = "text/plain" if body[:6] != "<html>" else "text/html"
+        content = Content(content_type, body)
+        mail = Mail(from_email, To(to_addrs), subject, content)
+        # ask sendgrid to deliver it
+        sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
+        response = sg.client.mail.send.post(request_body=mail.get())
+        # check if worked
+        assert response.status_code == "200"
+
+    # register the above task with the scheduler
+    scheduler.register_task("sendmail", sendmail_task)
+
+
+To schedule sending a new email do:
+
+.. code:: python
+
+    email = {
+        "from_addr": "me@example.com",
+        "to_addrs": ["me@example.com"], 
+        "subject": "Hello World",
+        "body": "I am alive!",
+    }
+    scheduler.enqueue_run(name="sendmail", inputs=email, scheduled_for=None)
+
+The key:value in the email representation must match the arguments of the task.
+The ``scheduled_for`` argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your ``task_run``\s for the task called ``sendmail``.
+
+You can also tell auth to tap into above mechanism for sending emails:
+
+.. code:: python
+
+    class MySendGridSender:
+        def __init__(self, from_addr):
+            self.from_addr = from_adds
+        def send(self, to_addr, subject, body):
+            email = {
+                "from_addr": self.from_addr,
+                "to_addrs": [to_addr], 
+                "subject": subject,
+                "body": body,
+            }
+            scheduler.enqueue_run(name="sendmail", inputs=email)
+
+    auth.sender = MySendGridSender(from_addr="me@example.com")
+
+With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+Notice the only requirement here is that ``auth.sender`` must be an object with a ``send`` method with the same signature as in the example.
+
+Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in ``auth_user`` and 2) override the ``Auth.send`` method.
+
+
+Celery
+------
+
+Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
+Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
+tasks and/or they are short running tasks.
 
 
 py4web and asyncio

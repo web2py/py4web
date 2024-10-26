@@ -14,7 +14,6 @@ This file specifically includes utilities for security.
 import base64
 import hashlib
 import hmac
-import inspect
 import json
 import logging
 import os
@@ -28,9 +27,9 @@ import time
 import uuid
 import zlib
 
-_struct_2_long_long = struct.Struct("=QQ")
-
 from Crypto.Cipher import AES
+
+_struct_2_long_long = struct.Struct("=QQ")
 
 HAVE_COMPARE_DIGEST = False
 if hasattr(hmac, "compare_digest"):

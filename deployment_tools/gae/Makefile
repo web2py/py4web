@@ -4,18 +4,9 @@ install-gcloud-linux:
 upgrade-gcloud:
 	gcloud components update
 setup:
-	mkdir -p lib
-	rm -rf lib/*
-	#
-	cat ../../requirements.txt \
-	| grep -v gevent \
-	| grep -v tornado \
-	| grep -v gunicorn \
-	| grep -v memcache > requirements.txt
-	echo mysqlclient >> requirements.txt
-	mkdir -p lib
-	# python3 -m pip install -U --no-deps py4web -t lib/
-	cp -r ../../py4web lib/
+	mkdir -p apps
+	echo "" > apps/__init__.py
+	echo "copy the apps you want to deploy under the new app"
 deploy:
 	gcloud config set account ${email}
 	gcloud config set project ${project}

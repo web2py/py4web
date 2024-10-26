@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 1.20230507.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Advanced topics and examples &mdash; Documentação py4web 20240915</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -40,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,7 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -68,6 +70,9 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-scheduler">The scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sending-messages-using-a-background-task">Sending messages using a background task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery">Celery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#py4web-and-asyncio">py4web and asyncio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#htmx">htmx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-form">htmx usage in Form</a></li>
@@ -110,9 +115,134 @@
            <div itemprop="articleBody">
              
   <section id="advanced-topics-and-examples">
-<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Permalink to this heading"></a></h1>
+<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link to this heading"></a></h1>
+<section id="the-scheduler">
+<h2>The scheduler<a class="headerlink" href="#the-scheduler" title="Link to this heading"></a></h2>
+<p>Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work.</p>
+<p>Given a task (just a python function), you can schedule async runs of that function.
+The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.</p>
+<p>The scheduler works by creating a table <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and enqueueing runs of the predefined task as table records.
+Each <code class="docutils literal notranslate"><span class="pre">task_run</span></code> references a task and contains the input to be passed to that task. The scheduler will capture the
+task stdout+stderr in a <code class="docutils literal notranslate"><span class="pre">db.task_run.log</span></code> and the task output in <code class="docutils literal notranslate"><span class="pre">db.task_run.output</span></code>.</p>
+<p>A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
+and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
+The worker processes are daemons and they only live for the life of one task run. Each worker process is only
+responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.</p>
+<p>The system is very robust because the only source of truth is the database and its integrity is guaranteed by
+transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitly killed.</p>
+<p>Aside for allowing multiple concurrent task runs in execution on one node,
+it is also possible to run multiple instances of the scheduler on different computing nodes,
+as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
+they all define the same tasks.</p>
+<p>Here is an example of how to use the scheduler:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">now</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="c1"># create and start the scheduler</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">sleep_time</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_concurrent_runs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># register your tasks</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hi!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am periodic!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># enqueue some task runs:</span>
+
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># start in 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Notice that in scaffolding app, the scheduler is created and started in common if
+<code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
+<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(path,</span> <span class="pre">db.task_run)</span></code>.</p>
+<p>To prevent database locks (in particular with sqlite) we recommend:</p>
+<ul class="simple">
+<li><p>Use a different database for the scheduler and everything else</p></li>
+<li><p>Always <code class="docutils literal notranslate"><span class="pre">db.commit()</span></code> as soon as possible after any insert/update/delete</p></li>
+<li><p>wrap your database logic in tasks in a try…except as in</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># do something</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-messages-using-a-background-task">
+<h2>Sending messages using a background task<a class="headerlink" href="#sending-messages-using-a-background-task" title="Link to this heading"></a></h2>
+<p>As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (<a class="reference external" href="https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python">https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python</a>).</p>
+<p>Here is a possible scheduler task to send the email:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sendgrid</span>
+<span class="kn">from</span> <span class="nn">sendgrid.helpers.mail</span> <span class="kn">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">To</span><span class="p">,</span> <span class="n">Content</span>
+
+<span class="k">def</span> <span class="nf">sendmail_task</span><span class="p">(</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">to_addrs</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="c1"># build the messages using sendgrid API</span>
+    <span class="n">from_email</span> <span class="o">=</span> <span class="n">Email</span><span class="p">(</span><span class="n">from_addr</span><span class="p">)</span>  <span class="c1"># Must be your verified sender</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span> <span class="k">if</span> <span class="n">body</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&lt;html&gt;&quot;</span> <span class="k">else</span> <span class="s2">&quot;text/html&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">Content</span><span class="p">(</span><span class="n">content_type</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">mail</span> <span class="o">=</span> <span class="n">Mail</span><span class="p">(</span><span class="n">from_email</span><span class="p">,</span> <span class="n">To</span><span class="p">(</span><span class="n">to_addrs</span><span class="p">),</span> <span class="n">subject</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+    <span class="c1"># ask sendgrid to deliver it</span>
+    <span class="n">sg</span> <span class="o">=</span> <span class="n">sendgrid</span><span class="o">.</span><span class="n">SendGridAPIClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">SENDGRID_API_KEY</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">request_body</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="c1"># check if worked</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="s2">&quot;200&quot;</span>
+
+<span class="c1"># register the above task with the scheduler</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">sendmail_task</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To schedule sending a new email do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="s2">&quot;me@example.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;I am alive!&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The key:value in the email representation must match the arguments of the task.
+The <code class="docutils literal notranslate"><span class="pre">scheduled_for</span></code> argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your <code class="docutils literal notranslate"><span class="pre">task_run</span></code>s for the task called <code class="docutils literal notranslate"><span class="pre">sendmail</span></code>.</p>
+<p>You can also tell auth to tap into above mechanism for sending emails:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySendGridSender</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_adds</span>
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span><span class="p">,</span>
+            <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">to_addr</span><span class="p">],</span>
+            <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">MySendGridSender</span><span class="p">(</span><span class="n">from_addr</span><span class="o">=</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+Notice the only requirement here is that <code class="docutils literal notranslate"><span class="pre">auth.sender</span></code> must be an object with a <code class="docutils literal notranslate"><span class="pre">send</span></code> method with the same signature as in the example.</p>
+<p>Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> and 2) override the <code class="docutils literal notranslate"><span class="pre">Auth.send</span></code> method.</p>
+</section>
+<section id="celery">
+<h2>Celery<a class="headerlink" href="#celery" title="Link to this heading"></a></h2>
+<p>Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
+Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
+tasks and/or they are short running tasks.</p>
+</section>
 <section id="py4web-and-asyncio">
-<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Permalink to this heading"></a></h2>
+<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link to this heading"></a></h2>
 <p>Asyncio is not strictly needed, at least for most of the normal use
 cases where it will add problems more than value because of its concurrency model.
 On the other hand, we think py4web needs a built-in websocket async based solution.</p>
@@ -121,7 +251,7 @@ the framework’s components: in particular pydal is not asyncio compliant becau
 not all the adapters work with async.</p>
 </section>
 <section id="htmx">
-<h2>htmx<a class="headerlink" href="#htmx" title="Permalink to this heading"></a></h2>
+<h2>htmx<a class="headerlink" href="#htmx" title="Link to this heading"></a></h2>
 <p>There are many javascript front-end frameworks available today that allow you great flexibility
 over how you design your web client. Vue, React and Angular are just a few.  However, the
 complexity in building one of these systems prevents many developers from reaping those benefits.
@@ -140,7 +270,7 @@ there is also a video tutorial: <a class="reference external" href="https://www.
 <li><p>Includes an htmx attributes plugin for the py4web grid</p></li>
 </ol>
 <section id="htmx-usage-in-form">
-<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Permalink to this heading"></a></h3>
+<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Link to this heading"></a></h3>
 <p>The py4web Form class allows you to pass **kwargs to it that will be passed along as attributes to the html
 form. For example, to add the hx-post and hx-target to the &lt;form&gt; element you would use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
@@ -232,7 +362,7 @@ you can add “sidecar” elements to your forms. You can see in htmx_form that 
 required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV.</p>
 </section>
 <section id="htmx-usage-in-grid">
-<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Permalink to this heading"></a></h3>
+<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Link to this heading"></a></h3>
 <p>The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes
 for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for
 htmx.</p>
@@ -303,7 +433,7 @@ processing and then tell the grid we’re going to use an alternate attributes p
 Now the forms, links and delete confirmations are all handled by htmx.</p>
 </section>
 <section id="autocomplete-widget-using-htmx">
-<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Permalink to this heading"></a></h3>
+<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Link to this heading"></a></h3>
 <p>htmx can be used for much more than just form/grid processing. In this example we’ll take advantage of htmx and the
 py4web form widgets to build an autocomplete widget that can be used in your forms. <em>NOTE: this is just an example, none
 of this code comes with py4web</em></p>
@@ -507,18 +637,18 @@ data builder URL to provide your own controller function to retrieve the data.</
 </section>
 </section>
 <section id="utils-js">
-<h2>utils.js<a class="headerlink" href="#utils-js" title="Permalink to this heading"></a></h2>
+<h2>utils.js<a class="headerlink" href="#utils-js" title="Link to this heading"></a></h2>
 <p>Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
 yet we never clearly listed what is in there. So here it is.</p>
 <section id="string-format">
-<h3>string.format<a class="headerlink" href="#string-format" title="Permalink to this heading"></a></h3>
+<h3>string.format<a class="headerlink" href="#string-format" title="Link to this heading"></a></h3>
 <p>It extends the String object prototype to allow expressions like this:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello {name}&quot;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
 <section id="the-q-object">
-<h3>The Q object<a class="headerlink" href="#the-q-object" title="Permalink to this heading"></a></h3>
+<h3>The Q object<a class="headerlink" href="#the-q-object" title="Link to this heading"></a></h3>
 <p>The Q object can be used like a selector supporting jQuery like syntax:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element-id&quot;</span><span class="p">)[</span><span class="mf">0</span><span class="p">];</span>
 <span class="kd">var</span><span class="w"> </span><span class="nx">selected_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;.element-class&quot;</span><span class="p">);</span>
@@ -602,7 +732,7 @@ place the content of the selected file into a variable, for example to do an aja
 </div>
 </section>
 <section id="the-t-object">
-<h3>The T object<a class="headerlink" href="#the-t-object" title="Permalink to this heading"></a></h3>
+<h3>The T object<a class="headerlink" href="#the-t-object" title="Link to this heading"></a></h3>
 <p>This is a Javascript reimplementation of the Python pluralize library in Python
 which is used by the Python T object in py4web. So basically a client-side T.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">T</span><span class="p">.</span><span class="nx">translations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;dog&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="mf">0</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;no cane&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;un case&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{n} cani&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;tanti cani&#39;</span><span class="p">}};</span>
@@ -732,7 +862,7 @@ as well as modify other components.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -757,7 +887,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

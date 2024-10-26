@@ -1,9 +1,7 @@
-from types import SimpleNamespace
-import pytest
 import threading
-from py4web.core import Fixture
+import pytest
 
-result = {"seq": []}
+from py4web.core import Fixture
 
 
 def run_thread(func, *a):
@@ -12,41 +10,37 @@ def run_thread(func, *a):
 
 
 class Foo(Fixture):
-    def on_request(self):
-        self._safe_local = SimpleNamespace()
+    def on_request(self, context):
+        Fixture.local_initialize(self)
 
     @property
     def bar(self):
-        return self._safe_local.a
+        return self.local.a
 
     @bar.setter
     def bar(self, a):
-        self._safe_local.a = a
+        self.local.a = a
 
 
+results = {}
 foo = Foo()
-
-
-def before_request():
-    Fixture.__init_request_ctx__()
 
 
 @pytest.fixture
 def init_foo():
     def init(key, a, evnt_done=None, evnt_play=None):
-        result["seq"].append(key)
-        before_request()
-        foo.on_request()
+        Fixture.local_initialize(foo)
         foo.bar = a
         evnt_done and evnt_done.set()
         evnt_play and evnt_play.wait()
-        result[key] = foo.bar
+        results[key] = foo.bar
+        Fixture.local_delete(foo)
         return foo
 
     return init
 
 
-def test_fixtute_local_storage(init_foo):
+def test_fixture_local_storage(init_foo):
     assert init_foo("t1", "a1") is foo
     evnt_done = threading.Event()
     evnt_play = threading.Event()
@@ -58,16 +52,14 @@ def test_fixtute_local_storage(init_foo):
     t3.join()
     evnt_play.set()
     t2.join()
-    assert foo.bar == "a1"
-    assert result["t2"] == "a2"
-    assert result["t3"] == "a3"
-    assert ",".join(result["seq"]) == "t1,t2,t3"
+    assert results["t1"] == "a1"
+    assert results["t2"] == "a2"
+    assert results["t3"] == "a3"
 
 
-def test_fixtute_error():
-    before_request()
+def test_fixture_error():
     # attempt to access _safe_local prop without on_request-call
     with pytest.raises(RuntimeError) as err:
         foo.bar
-    assert "py4web hint" in err.value.args[0]
+    assert "not initialized" in err.value.args[0]
     assert "Foo object" in err.value.args[0]

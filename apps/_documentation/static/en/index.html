@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>py4web: the reference Manual &mdash; py4web 1.20230507.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>py4web: the reference Manual &mdash; py4web 20240915 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=78bb2521"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -39,7 +41,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -55,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -94,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="py4web-the-reference-manual">
-<h1>py4web: the reference Manual<a class="headerlink" href="#py4web-the-reference-manual" title="Permalink to this heading"></a></h1>
+<h1>py4web: the reference Manual<a class="headerlink" href="#py4web-the-reference-manual" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -123,13 +125,14 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-04.html#login-into-the-dashboard">Login into the Dashboard</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#from-scratch">From scratch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#static-web-pages">Static web pages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#dynamic-web-pages">Dynamic Web Pages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#the-scaffold-app">The _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#copying-the-scaffold-app">Copying the _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-05.html#watch-for-files-change">Watch for files change</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#domain-mapped-apps">Domain-mapped apps</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a><ul>
@@ -152,6 +155,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-introduction">DAL introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#using-the-dashboard-app-with-databases">Using the dashboard app with databases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-constructor">DAL constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-constructor">Table constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#field-constructor">Field constructor</a></li>
@@ -216,6 +220,7 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#customizing-style">Customizing style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-action-buttons">Custom Action Buttons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#reference-fields">Reference Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#grids-with-checkboxes">Grids with checkboxes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a><ul>
@@ -223,6 +228,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#the-scheduler">The scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#sending-messages-using-a-background-task">Sending messages using a background task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#celery">Celery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-16.html#py4web-and-asyncio">py4web and asyncio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-16.html#htmx">htmx</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-16.html#utils-js">utils.js</a></li>
@@ -232,7 +240,7 @@
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -250,7 +258,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -275,7 +283,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

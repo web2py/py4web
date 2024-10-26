@@ -8,10 +8,10 @@
 """
 
 import email.utils
-import json
 import logging
 import mimetypes
 import os
+import re
 import smtplib
 from email import message_from_string
 from email.encoders import encode_base64
@@ -505,7 +505,6 @@ class Mailer:
             #                   sign                   #
             ############################################
             if sign:
-                import string
 
                 core.check_version(None)
                 pin = payload_in.as_string().replace("\n", "\r\n")
@@ -530,7 +529,7 @@ class Mailer:
                         "signed",
                         boundary=None,
                         _subparts=None,
-                        **dict(micalg="pgp-sha1", protocol="application/pgp-signature")
+                        **dict(micalg="pgp-sha1", protocol="application/pgp-signature"),
                     )
                     # Insert the origin payload
                     payload.attach(payload_in)
@@ -574,7 +573,7 @@ class Mailer:
                         "encrypted",
                         boundary=None,
                         _subparts=None,
-                        **dict(protocol="application/pgp-encrypted")
+                        **dict(protocol="application/pgp-encrypted"),
                     )
                     p = MIMEBase("application", "pgp-encrypted")
                     p.set_payload("Version: 1\r\n")
@@ -737,7 +736,7 @@ class Mailer:
             to.extend(bcc)
         payload["Subject"] = encoded_or_raw(to_unicode(subject, encoding))
         payload["Date"] = email.utils.formatdate()
-        for k, v in iteritems(headers):
+        for k, v in headers.items():
             payload[k] = encoded_or_raw(to_unicode(v, encoding))
 
         list_unsubscribe = list_unsubscribe or self.settings.list_unsubscribe
@@ -788,7 +787,7 @@ class Mailer:
                         body=to_unicode(text or "", encoding),
                         html=html,
                         attachments=attachments,
-                        **xcc
+                        **xcc,
                     )
                 elif html and (not raw):
                     result = google_mail.send_mail(
@@ -797,7 +796,7 @@ class Mailer:
                         subject=to_unicode(subject, encoding),
                         body=to_unicode(text or "", encoding),
                         html=html,
-                        **xcc
+                        **xcc,
                     )
                 else:
                     result = google_mail.send_mail(
@@ -805,7 +804,7 @@ class Mailer:
                         to=origTo,
                         subject=to_unicode(subject, encoding),
                         body=to_unicode(text or "", encoding),
-                        **xcc
+                        **xcc,
                     )
             elif self.settings.server == "aws" and boto3:
                 client = boto3.client("ses")
@@ -814,8 +813,9 @@ class Mailer:
                     response = client.send_raw_email(
                         RawMessage=raw, Source=sender, Destinations=to
                     )
+                    print("Message send:", response)
                     return True
-                except ClientError as e:
+                except ClientError:
                     raise RuntimeError()
             else:
                 smtp_args = self.settings.server.split(":")
@@ -834,12 +834,12 @@ class Mailer:
                     # do not want to hide errors raising some exception here
                     try:
                         server.quit()
-                    except:
+                    except Exception:
                         pass
                     # ensure to close any socket with SMTP server
                     try:
                         server.close()
-                    except:
+                    except Exception:
                         pass
         except Exception as e:
             self.settings.logger.warning("Mailer.send failure:%s" % e)

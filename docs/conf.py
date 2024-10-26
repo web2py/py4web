@@ -31,6 +31,8 @@ with open(pkg_init, 'r') as src:
         if '__version__ = ' in line:
             values = line.split(sep = ' = ')
             current_version = values[1].strip('\n').strip('"')
+            current_version = current_version[2:]
+            current_version = current_version[:-2]
             break
 release = current_version
 version = current_version
@@ -46,7 +48,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
     'sphinx_tabs.tabs',
-    'sphinxcontrib.spelling',
+#    'sphinxcontrib.spelling',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -82,7 +84,6 @@ html_logo = 'images/logo.png'
 html_favicon = 'images/logo-32x32.ico'
 html_theme_options = {
     'logo_only': False,
-    'display_version': True,
 }
 # The master toctree document.
 master_doc = 'index'
@@ -171,11 +172,12 @@ latex_elements = {
 # -- Options for PDF output --------------------------------------------------
 
 # settings for creating PDF with rinoh
-rinoh_documents = [(
-    master_doc,
-    'target',
-    project + ' Documentation',
-    '© ' + copyright,
+rinoh_documents = [dict(
+    doc = master_doc,
+    target = 'target',
+    title = project + ' Documentation',
+    date = '© ' + copyright,
+    logo = 'images/logo.png'
 )]
 
 

@@ -58,10 +58,6 @@ class ReCaptcha:
     def field(self):
         return Field("g_recaptcha_response", "hidden", requires=self.validator)
 
-    @property
-    def script(self):
-        return recaptcha_script(self.api_key)
-
     def validator(self, value, _):
         data = {"secret": self.api_secret, "response": value}
         res = requests.post(
@@ -71,5 +67,5 @@ class ReCaptcha:
             if res.json()["success"]:
                 return (True, None)
             return (False, "Invalid ReCaptcha response")
-        except exc:
+        except Exception as exc:
             return (False, str(exc))

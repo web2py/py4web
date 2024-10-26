@@ -194,7 +194,7 @@ if MODE in ("demo", "readonly", "full"):
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
 
-    @action("delete_app/<name:re:\w+>", method="POST")
+    @action("delete_app/<name:re:\\w+>", method="POST")
     @session_secured
     def delete_app(name):
         """delete the app"""
@@ -209,7 +209,7 @@ if MODE in ("demo", "readonly", "full"):
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
 
-    @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
+    @action("new_file/<name:re:\\w+>/<file_name:path>", method="POST")
     @session_secured
     def new_file(name, file_name):
         """creates a new file"""
@@ -417,9 +417,9 @@ if MODE == "full":
         """Saves a file"""
         app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
-        with open(path, "w") as myfile:
+        with open(path, "wb") as myfile:
             body = json.load(request.body)
-            myfile.write(body)
+            myfile.write(body.encode("utf8"))
         if reload_app:
             Reloader.import_app(app_name)
         return {"status": "success"}
@@ -567,7 +567,10 @@ if MODE == "full":
 @action.uses(Logged(session), "translations.html")
 def translations(name):
     """returns a json with all translations for all languages"""
-    t = Translator(os.path.join(FOLDER, name, "translations"))
+    folder = os.path.join(FOLDER, name, "translations")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    t = Translator(folder)
     return t.languages
 
 

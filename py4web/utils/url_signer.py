@@ -50,8 +50,8 @@ class URLVerifier(Fixture):
             if self.url_signer.lifespan is not None:
                 if float(ts) + self.url_signer.lifespan < time.time():
                     raise HTTP(403)
-        except:
-            raise HTTP(403)
+        except Exception as err:
+            raise HTTP(403, body=str(err))
 
     def _decode_ts(self, ts_string):
         """Decodes the timestamp, removing the salt."""
@@ -115,10 +115,6 @@ class URLSigner(Fixture):
         self.lifespan = lifespan
         assert "_signature" not in self.variables_to_sign
         self.algo = algo or hashlib.sha256
-
-    @property
-    def local(self):
-        return self._safe_local
 
     def on_request(self, context):
         """Creates the signing key if necessary."""

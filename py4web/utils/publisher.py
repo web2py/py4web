@@ -9,7 +9,6 @@ MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="tr
 
 
 class Publisher:
-
     """this is a work in progress - API subject to change"""
 
     def __init__(self, db, policy=None, auth=None, path="service/{uuid}/<tablename>"):
@@ -23,7 +22,6 @@ class Publisher:
         f = action(self.path + "/<id:int>", method=["PUT", "DELETE"])(f)
 
     def api(self, tablename, id=None):
-        policy = self.policy
         data = self.restapi(request.method, tablename, id, request.query, request.json)
         response.status = data["code"]
         return data
@@ -36,7 +34,6 @@ class Publisher:
         name = "vue%s" % str(uuid.uuid4())[:8]
         return DIV(
             self.mtable(table),
-            TAG.SCRIPT(_src=URL("static/js/axios.min.js")),
             TAG.SCRIPT(_src=URL("static/js/vue.min.js")),
             TAG.SCRIPT(_src=URL("static/js/utils.js")),
             TAG.SCRIPT(_src=URL("static/components/mtable.js")),

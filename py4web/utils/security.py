@@ -1,4 +1,3 @@
-import fnmatch
 import ipaddress
 
 from py4web.core import HTTP, Fixture, request, response
@@ -19,7 +18,6 @@ def match_ip(ip, networks):
 
 
 class CheckHeaders(Fixture):
-
     """
     This fixture can block an action from being excuted if:
     - it does not match the specificated protocol (http, https)

@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grid &mdash; py4web 1.20230507.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Grid &mdash; py4web 20240915 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=78bb2521"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -40,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,7 +58,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -82,6 +84,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-fields">Reference Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grids-with-checkboxes">Grids with checkboxes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
@@ -113,12 +116,12 @@
            <div itemprop="articleBody">
              
   <section id="grid">
-<h1>Grid<a class="headerlink" href="#grid" title="Permalink to this heading"></a></h1>
+<h1>Grid<a class="headerlink" href="#grid" title="Link to this heading"></a></h1>
 <p>py4web comes with a Grid object providing grid and CRUD (create, update and delete) capabilities.
 This allows you to quickly and safely provide an interface to your data. Since it’s also
 highly customizable, it’s the corner stone of most py4web’s applications.</p>
 <section id="key-features">
-<h2>Key features<a class="headerlink" href="#key-features" title="Permalink to this heading"></a></h2>
+<h2>Key features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Full CRUD with Delete Confirmation</p></li>
 <li><p>Click column heads for sorting - click again for DESC</p></li>
@@ -137,14 +140,14 @@ hints &amp; tips.</p>
 </div>
 </section>
 <section id="basic-grid-example">
-<h2>Basic grid example<a class="headerlink" href="#basic-grid-example" title="Permalink to this heading"></a></h2>
+<h2>Basic grid example<a class="headerlink" href="#basic-grid-example" title="Link to this heading"></a></h2>
 <p>In this simple example we will make a grid over the superhero table.</p>
 <p>Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">grid</span></code>. Change it with the following content.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in grid/__init__.py</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">GridClassStyleBulma</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
 
 
@@ -249,7 +252,7 @@ more examples, including a master/detail grid example written with <strong>htmx<
 And don’t forget Jim Steil’s detailed tutorial on <a class="reference external" href="https://github.com/jpsteil/grid_tutorial">https://github.com/jpsteil/grid_tutorial</a>.</p>
 </section>
 <section id="the-grid-object">
-<h2>The Grid object<a class="headerlink" href="#the-grid-object" title="Permalink to this heading"></a></h2>
+<h2>The Grid object<a class="headerlink" href="#the-grid-object" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Grid</span><span class="p">:</span>
    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
       <span class="bp">self</span><span class="p">,</span>
@@ -338,7 +341,7 @@ instead of providing a simple Boolean value you can use an expression like:</p>
 </div>
 <p>See also <a class="reference internal" href="#using-callable-parameters"><span class="std std-ref">Using callable parameters</span></a> later on.</p>
 <section id="searching-and-filtering">
-<h3>Searching and filtering<a class="headerlink" href="#searching-and-filtering" title="Permalink to this heading"></a></h3>
+<h3>Searching and filtering<a class="headerlink" href="#searching-and-filtering" title="Link to this heading"></a></h3>
 <p>There are two ways to build a search form:</p>
 <ul class="simple">
 <li><p>Provide a search_queries list</p></li>
@@ -356,7 +359,7 @@ your own search form and handle all the filtering (building the queries)
 by yourself.</p>
 </section>
 <section id="crud-settings">
-<h3>CRUD settings<a class="headerlink" href="#crud-settings" title="Permalink to this heading"></a></h3>
+<h3>CRUD settings<a class="headerlink" href="#crud-settings" title="Link to this heading"></a></h3>
 <p>The grid provides CRUD (create, read, update and delete) capabilities
 utilizing py4web Form.
 You can turn off CRUD features by setting
@@ -367,7 +370,7 @@ auto-generated CRUD pages and handle the detail pages yourself.</p>
 </section>
 </section>
 <section id="custom-columns">
-<h2>Custom columns<a class="headerlink" href="#custom-columns" title="Permalink to this heading"></a></h2>
+<h2>Custom columns<a class="headerlink" href="#custom-columns" title="Link to this heading"></a></h2>
 <p>If the grid does not involve a join but displays results from a single table
 you can specify a list of columns. Columns are highly customizable.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Column</span>
@@ -402,7 +405,7 @@ defined outside of the controller method, it just keeps adding the actions colum
 </div>
 </section>
 <section id="using-templates">
-<h2>Using templates<a class="headerlink" href="#using-templates" title="Permalink to this heading"></a></h2>
+<h2>Using templates<a class="headerlink" href="#using-templates" title="Link to this heading"></a></h2>
 <p>Use the following to render your grid or CRUD forms in your templates.</p>
 <p>Display the grid or a CRUD Form</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
@@ -433,7 +436,7 @@ the grid or a form. Use the following to decide:</p>
 </div>
 </section>
 <section id="customizing-style">
-<h2>Customizing style<a class="headerlink" href="#customizing-style" title="Permalink to this heading"></a></h2>
+<h2>Customizing style<a class="headerlink" href="#customizing-style" title="Link to this heading"></a></h2>
 <p>You can provide your own formstyle or grid classes and style to grid.</p>
 <ul class="simple">
 <li><p>formstyle is the same as a Form formstyle, used to style the CRUD
@@ -448,7 +451,7 @@ to use other class_style, in particular <code class="docutils literal notranslat
 your choice. Unfortunately, one based on <strong>bootstrap</strong> is still missing.</p>
 </section>
 <section id="custom-action-buttons">
-<h2>Custom Action Buttons<a class="headerlink" href="#custom-action-buttons" title="Permalink to this heading"></a></h2>
+<h2>Custom Action Buttons<a class="headerlink" href="#custom-action-buttons" title="Link to this heading"></a></h2>
 <p>As with web2py, you can add additional buttons to each row in your grid.
 You do this by providing <code class="docutils literal notranslate"><span class="pre">pre_action_buttons</span></code> or <code class="docutils literal notranslate"><span class="pre">post_action_buttons</span></code> to
 the Grid <strong>init</strong> method.</p>
@@ -461,7 +464,7 @@ after the standard action buttons</p></li>
 <p>You can build your own Action Button class to pass to pre/post action
 buttons based on the template below (this is not provided with py4web).</p>
 <section id="sample-action-button-class">
-<h3>Sample Action Button Class<a class="headerlink" href="#sample-action-button-class" title="Permalink to this heading"></a></h3>
+<h3>Sample Action Button Class<a class="headerlink" href="#sample-action-button-class" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridActionButton</span><span class="p">:</span>
  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
      <span class="bp">self</span><span class="p">,</span>
@@ -526,7 +529,7 @@ your Action buttons:</p>
 </div>
 </section>
 <section id="using-callable-parameters">
-<h3>Using callable parameters<a class="headerlink" href="#using-callable-parameters" title="Permalink to this heading"></a></h3>
+<h3>Using callable parameters<a class="headerlink" href="#using-callable-parameters" title="Link to this heading"></a></h3>
 <p>A recent improvement to py4web allows you to pass a <strong>callable</strong> instead of a GridActionButton. This allow you to more easily change the behaviour
 of standard and custom Actions.</p>
 <p>Callable can be used with:</p>
@@ -576,7 +579,7 @@ of standard and custom Actions.</p>
 </section>
 </section>
 <section id="reference-fields">
-<h2>Reference Fields<a class="headerlink" href="#reference-fields" title="Permalink to this heading"></a></h2>
+<h2>Reference Fields<a class="headerlink" href="#reference-fields" title="Link to this heading"></a></h2>
 <p>When displaying fields in a PyDAL table, you sometimes want to display a
 more descriptive field than a foreign key value. There are a couple of
 ways to handle that with the py4web grid.</p>
@@ -612,6 +615,39 @@ combine fields to be displayed together as the filter_out method would</p>
 understanding the different grids in the same application may need to
 behave differently.</p>
 </section>
+<section id="grids-with-checkboxes">
+<h2>Grids with checkboxes<a class="headerlink" href="#grids-with-checkboxes" title="Link to this heading"></a></h2>
+<p>While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checkboxes.
+You can also add the helpers logic (the grid uses helpers to generate HTML) to wrap it in a <code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code> and add one
+or more submit buttons. You can then add logic to process the selected rows when the button is selected. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span><span class="n">_name</span><span class="o">=</span><span class="s2">&quot;selected_id&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;manage.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">manage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+   <span class="c1"># if we are displaying a &quot;select&quot; grid page (not a form)</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+      <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+      <span class="c1"># if checkboxes selection was submitted</span>
+      <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+         <span class="c1"># do something with the selected ids</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;you selected&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;selected_id&quot;</span><span class="p">))</span>
+      <span class="c1"># inject a ``&lt;form&gt;`` and a ``submit`` button</span>
+      <span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FORM</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+            <span class="n">DIV</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="s2">&quot;do it!&quot;</span><span class="p">)),</span>
+            <span class="n">_method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="n">_action</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)]</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Notice in the above example <code class="docutils literal notranslate"><span class="pre">request.POST.get(&quot;selected_id&quot;)</span></code> can be a single ID (if one selected) or a list of IDs (if more than one
+is selected).</p>
+</section>
 </section>
 
 
@@ -625,7 +661,7 @@ behave differently.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -650,7 +686,7 @@ behave differently.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

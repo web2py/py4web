@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Internacionalização &mdash; Documentação py4web 1.20230507.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Internacionalização &mdash; Documentação py4web 20240915</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -100,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="internationalization">
-<h1>Internacionalização<a class="headerlink" href="#internationalization" title="Permalink to this heading"></a></h1>
+<h1>Internacionalização<a class="headerlink" href="#internationalization" title="Link to this heading"></a></h1>
 <section id="pluralize">
-<h2>Pluralizar<a class="headerlink" href="#pluralize" title="Permalink to this heading"></a></h2>
+<h2>Pluralizar<a class="headerlink" href="#pluralize" title="Link to this heading"></a></h2>
 <p>Pluralizar é uma biblioteca Python para a Internacionalização (i18n) e Pluralização (p10n).</p>
 <p>The library assumes a folder (for example “translations”) that contains
 files like:</p>
@@ -146,7 +148,7 @@ tantissimi cani
 <p>T.select (s) pode analisar uma string s seguinte HTTP aceito formato de idioma.</p>
 </section>
 <section id="update-the-translation-files">
-<h2>Atualizar os arquivos de tradução<a class="headerlink" href="#update-the-translation-files" title="Permalink to this heading"></a></h2>
+<h2>Atualizar os arquivos de tradução<a class="headerlink" href="#update-the-translation-files" title="Link to this heading"></a></h2>
 <p>Encontrar todas as cordas envoltas em T (…) em .py, .html e arquivos .js:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matches = T.find_matches(&#39;path/to/app/folder&#39;)
 </pre></div>
@@ -185,7 +187,7 @@ T.update_languages(known_expressions))
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -210,7 +212,7 @@ T.update_languages(known_expressions))
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

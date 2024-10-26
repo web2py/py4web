@@ -1,3 +1,5 @@
+import requests
+
 from . import OAuth2
 
 

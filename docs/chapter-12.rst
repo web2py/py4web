@@ -5,7 +5,68 @@ Forms
 The Form class provides a high-level API for quickly building CRUD (create, update and delete) forms, 
 especially for working on an existing database table. It can generate and process a form from a 
 list of desired fields and/or from an existing database table.
-It is a pretty much equivalent to web2py’s ``SQLFORM``.
+
+There are 3 types of forms:
+
+CRUD Create forms:
+
+.. code:: python
+
+    @action('create_thing')
+    @action.uses('generic.html', db, flash)
+    def create_thing():
+        form = Form(db.thing)
+        if form.accepted:
+            flash.set("record created")
+            redirect(URL('other_page'))
+        return locals()
+
+CRUD Update forms:
+
+.. code:: python
+	  
+    @action('update_thing/<thing_id:int>')
+    @action.uses('generic.html', db, flash)
+    def update_thing(thing_id):
+        form = Form(db.thing, thing_id)
+        if form.accepted:
+            flash.set("record updated")
+            redirect(URL('other_page'))
+        return locals()	
+
+Non-CRUD forms (not associated to a database):
+
+.. code:: python
+
+    @action('some_form')
+    @action.uses('generic.html', flash)
+    def some_form():
+        fields = [
+	    Field("name", requires=IS_NOT_EMPTY()),
+	    Field("color", required=IS_IN_SET(["red","blue","green"])),
+	]
+        form = Form(fields)
+        if form.accepted:
+            flash.set("information recorded")	
+            redirect(URL('other_page'))
+        return locals()	
+
+The use of flash is optional. ``flash`` is defined in ``common.py``
+in the scaffolding application. It simply stores a message in a cookie
+so it can be recovered and displayed after redirection.
+This is done in the default layout.
+
+In this chapter from now on we will assume the following model and
+an app derived from the scaffolding app:
+
+.. code:: python
+
+    db.define_table(
+        'thing',
+        Field('name', requires=IS_NOT_EMPTY()),
+        Field('color', requires=IS_IN_SET(['red','blue','green'])),
+        Field('image', 'upload', download_url=lambda name: URL('download', name)),
+    )
 
 
 The Form constructor
@@ -15,22 +76,22 @@ The ``Form`` constructor accepts the following arguments:
 
 .. code:: python
 
-   Form(self,
-        table,
-        record=None,
-        readonly=False,
-        deletable=True,
-        formstyle=FormStyleDefault,
-        dbio=True,
-        keep_values=False,
-        form_name=False,
-        hidden=None,
-        validation=None,
-        csrf_session=None,
-        csrf_protection=True,
-        lifespan=None,
-        signing_info=None,
-        ):
+    Form(self,
+         table,
+         record=None,
+         readonly=False,
+         deletable=True,
+         formstyle=FormStyleDefault,
+         dbio=True,
+         keep_values=False,
+         form_name=False,
+         hidden=None,
+         validation=None,
+         csrf_session=None,
+         csrf_protection=True,
+         lifespan=None,
+         signing_info=None,
+         ):
 
 Where:
 
@@ -58,25 +119,25 @@ Create a new minimal app called ``form_minimal`` :
 
 .. code:: python
 
-    # in form_minimal/__init__.py
-    from py4web import action, Field, redirect, URL
+    # in controllers.py
+    from py4web impot action, redirect, URL, Field
     from py4web.utils.form import Form
-    from pydal.validators import IS_NOT_EMPTY
-
+    from pydal.validators import *
 
     @action('index', method=['GET', 'POST'])
     @action.uses('form_minimal.html')
     def index():
-        form = Form([
-            Field('product_name'),
-            Field('product_quantity', 'integer', requires=IS_NOT_EMPTY()),
-            ])
+        fields = [
+            Field('name', requires=IS_NOT_EMPTY()),
+            Field('color', requires=IS_IN_SET(['red','blue','green'])),
+        ]
+        form = Form(fields)
         if form.accepted:
-            # Do something with form.vars['product_name'] and form.vars['product_quantity']
+            # Do something with form.vars['name'] and form.vars['color']
             redirect(URL('accepted'))
         if form.errors:
-            # display message error
-            redirect(URL('not_accepted'))
+            # do something
+            ...
         return dict(form=form)
 
     @action("accepted")
@@ -84,16 +145,12 @@ Create a new minimal app called ``form_minimal`` :
         return "form_example accepted"
 
 
-    @action("not_accepted")
-    def not_accepted():
-        return "form_example NOT accepted"
-
-
 Also, you need to create a file inside the app called ``templates/form_minimal.html``
 that just contains the line:
 
 .. code:: html
 
+    [[extend 'layout.html']]
     [[=form]]
 
 
@@ -118,41 +175,26 @@ The next example will.
 Basic form example
 ------------------
 
-In this next basic example we generate a form from a database. 
+In this next basic example we generate a CRUD create form from a database. 
 Create a new minimal app called ``form_basic`` :
 
 
 .. code-block:: python
 
-    # in form_basic/__init__.py
-    import os
-    from py4web import action, Field, DAL
-    from py4web.utils.form import Form, FormStyleDefault
-    from pydal.validators import IS_NOT_EMPTY, IS_IN_SET
-    
-    # database definition
-    DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
-    if not os.path.isdir(DB_FOLDER):
-        os.mkdir(DB_FOLDER)
-    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
-    db.define_table(
-        'person',
-        Field('superhero', requires=IS_NOT_EMPTY()),
-        Field('realname'),
-        Field('universe', requires=IS_IN_SET(['DC Comics','Marvel Comics'])),
-    )
+    # in controllers.py
+    from py4web import action, redirect, URL, Field
+    from py4web.utils.form import Form
+    from pydal.validators import *
+    from .common import db
     
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_basic.html", db)
-    def index(id=None):
-        form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
-        rows = db(db.person).select()
+    def create_form():
+        form = Form(db.thing)
+        rows = db(db.thing).select()
         return dict(form=form, rows=rows)
 
-
-Because this is a dual purpose form, in case an ``id`` is passed, we also validate it
-by checking if the corresponding record exists and raise 404 if not.
 
 Note the import of two simple validators on top, in order to be used later
 with the ``requires`` parameter. We'll fully explain them
@@ -163,7 +205,9 @@ contains, for example, the following code:
 
 .. code:: html
 
-    <h2 class="title">Form Basic example: Superhero Identity</h2>
+    [[extend "layout.html"]]
+
+    <h2 class="title">Form Basic example: My Things</h2>
 
     [[=form]]
     
@@ -171,12 +215,12 @@ contains, for example, the following code:
     
     <ul>
     [[for row in rows:]]
-    <li>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]</li>
+    <li>[[=row.id]]: [[=row.name]] has color [[=row.color]]</li>
     [[pass]]
     </ul>
 
-
-Reload py4web and visit http://127.0.0.1:8000/form_basic : 
+    
+Reload py4web and visit http://127.0.0.1:8000/create_form : 
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:
 
@@ -185,58 +229,45 @@ previously added entries on the bottom:
 This is a simple example and you cannot change nor delete existing records. But if you'd
 like to experiment, the database content can be fully seen and changed with the Dashboard app.
 
+You can turn a create form into a CRUD update form by passing a record or a record id
+it second argument:
 
-Notice that py4web by default let you choose the value of the `universe` field using
-a dropdown menu:
+.. code:: html
 
-.. image:: images/form3.png
-
-The basic form usage is quite useful for rapid prototyping of programs, since you don't need
-to specify the layout of the form. On the other hand, you cannot change its default behaviour.
-
+    # controllers definition
+    @action("update_form/<thing_id:int>", method=["GET", "POST"])
+    @action.uses("form_basic.html", db)
+    def update_form():
+        form = Form(db.thing, thing_id)
+        rows = db(db.thing).select()
+        return dict(form=form, rows=rows)
 
 
 File upload field
 ~~~~~~~~~~~~~~~~~
 
+We can make a minor modification to our reference model and an upload type file:
+
+.. code:: python
+
+   db.define_table(
+       'thing',
+       Field('name', requires=IS_NOT_EMPTY()),
+       Field('color', requires=IS_IN_SET(['red','blue','green'])),
+       Field('image', 'upload', download_url=lambda image: URL('download', image)),
+   )
+
 The file upload field is quite particular. The standard way to use it (as in the _scaffold app) 
 is to have the UPLOAD_FOLDER defined in the common.py file. But if you don't specify it, then the
 default value of  ``your_app/upload`` folder will be used (and the folder will also be created if needed).
-Let's look at a simple example:
+``download_url`` is a callback that given the image name, generated the URL to download. The ``download``
+url is predefined in ``common.py``.
 
-.. code-block:: python
-
-    # in form_upload/__init__.py
-    import os
-    from py4web.core import required_folder
-    from py4web import action, Field, DAL
-    from py4web.utils.form import Form, FormStyleDefault
-    from pydal.validators import IS_NOT_EMPTY
-
-    # database definition
-    DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
-    if not os.path.isdir(DB_FOLDER):
-        os.mkdir(DB_FOLDER)
-    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
-    db.define_table(
-        'person',
-        Field('superhero', requires=IS_NOT_EMPTY()),
-        Field('image', "upload", label='Superhero Image', requires=IS_NOT_EMPTY()),
-    )
-
-    @action("index", method=["GET", "POST"])
-    @action.uses("form_upload.html", db)
-    def upload(id=None):
-        form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
-        rows = db(db.person).select()
-        return dict(form=form, rows=rows)
-
-
-And in templates/form_upload.html :
+We can modify ``form_basic.html`` to display the uploaded images:
 
 .. code:: html
 
-    <h2 class="title">Form upload example: Superhero Identity</h2>
+    <h2 class="title">Form upload example: My Things</h2>
 
     [[=form]]
     
@@ -244,17 +275,13 @@ And in templates/form_upload.html :
     
     <ul>
     [[for row in rows:]]
-    <li>[[=row.id]]: [[=row.superhero]] = [[=row.image]]</li>
+    <li>[[=row.id]]: [[=row.name]] has color [[=row.color]]
+        <img src="[[=URL('download', row.image)]]" />
     [[pass]]
     </ul>
 
 
-This gives a result like the following:
-
-.. image:: images/form6.png
-
-
-Note that the uploaded files will be saved on the UPLOAD_FOLDER folder with their name hashed.
+The uploaded files (the thing images) are saved on the UPLOAD_FOLDER folder with their name hashed.
 Other details on the upload fields can be found on :ref:`Field constructor` paragraph, including
 a way to save the files inside the database itself.
 
@@ -286,68 +313,35 @@ This is an improved 'Basic Form Example' with a radio button widget:
 
 .. code:: python
 
-    # in form_widgets/__init__.py
-    import os
-    from py4web import action, Field, DAL
+    # in controllers.py
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form, FormStyleDefault, RadioWidget
-    from pydal.validators import IS_NOT_EMPTY, IS_IN_SET
-
-    # database definition
-    DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
-    if not os.path.isdir(DB_FOLDER):
-        os.mkdir(DB_FOLDER)
-    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
-    db.define_table(
-        'person',
-        Field('superhero', requires=IS_NOT_EMPTY()),
-        Field('realname'),
-        Field('universe', requires=IS_IN_SET(['DC Comics','Marvel Comics'])),
-    )
+    from pydal.validators import *
+    from .common import db
 
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_widgets.html", db)
-    def index(id=None):
-        FormStyleDefault.widgets['universe']=RadioWidget()
-        form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
-        rows = db(db.person).select()
+    def create_form():
+        FormStyleDefault.widgets['color']=RadioWidget()
+        form = Form(db.thing, formstyle=FormStyleDefault)
+        rows = db(db.thing).select()
         return dict(form=form, rows=rows)
 
 Notice the differences from the 'Basic Form example' we've seen at the
 beginning of the chapter:
 
 - you need to import the widget from the py4web.utils.form library
-- before the form definition, you define the ``universe`` field form style with the line:
+- before the form definition, you define the ``color`` field form style with the line:
 
     .. code:: python
 
-        FormStyleDefault.widgets['universe']=RadioWidget()
-
-You will also need a template file ``templates/form_widgets.html`` that
-contains the following code (as the form_basic.html) :
-
-.. code:: html
-
-    <h2 class="title">Form Widget example: Superhero Identity</h2>
-
-    [[=form]]
-
-    <h2 class="title">Rows</h2>
-
-    <ul>
-    [[for row in rows:]]
-    <li>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]</li>
-    [[pass]]
-    </ul>
+        FormStyleDefault.widgets['color']=RadioWidget()
 
 The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!
 
-.. image:: images/form4.png
-
-
 Using widgets in forms is quite easy, and they'll let you have more control on its pieces.
-
 
 Custom widgets
 ~~~~~~~~~~~~~~
@@ -357,26 +351,11 @@ improving again our Superhero example:
 
 .. code:: python
 
-    #
-    # in form_custom_widgets/__init__.py
-    #
-    import os
-    from py4web import action, Field, DAL
+    # in controllers.py
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form, FormStyleDefault, RadioWidget
-    from pydal.validators import IS_NOT_EMPTY, IS_IN_SET
-    from yatl.helpers import INPUT, DIV
-    
-    # database definition
-    DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
-    if not os.path.isdir(DB_FOLDER):
-        os.mkdir(DB_FOLDER)
-    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
-    db.define_table(
-        'person',
-        Field('superhero', requires=IS_NOT_EMPTY()),
-        Field('realname'),
-        Field('universe', requires=IS_IN_SET(['DC Comics','Marvel Comics'])),
-    )
+    from pydal.validators import *
+    from .common import db
     
     # custom widget class definition
     class MyCustomWidget:
@@ -395,48 +374,23 @@ improving again our Superhero example:
             return control
     
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_custom_widgets.html", db)
-    def index(id=None):
+    def create_form():
         MyStyle = FormStyleDefault
         MyStyle.classes = FormStyleDefault.classes
-        MyStyle.widgets['superhero']=MyCustomWidget()
-        MyStyle.widgets['realname']=MyCustomWidget()
-        MyStyle.widgets['universe']=RadioWidget()
+        MyStyle.widgets['name']=MyCustomWidget()
+        MyStyle.widgets['color']=RadioWidget()
         
-        form = Form(db.person, id, deletable=False, formstyle=MyStyle)
-        rows = db(db.person).select()
+        form = Form(db.thing, deletable=False, formstyle=MyStyle)
+        rows = db(db.thing).select()
         return dict(form=form, rows=rows)
     
 
-
-
-You will also need a template file ``templates/form_custom_widgets.html`` that
-contains the following code (as the form_basic.html) :
-        
-.. code:: html
-
-    <h2 class="title">Form Custom Widgets example: Superhero Identity</h2>
-
-    [[=form]]
-    
-    <h2 class="title">Rows</h2>
-    
-    <ul>
-    [[for row in rows:]]
-    <li>[[=row.id]]: [[=row.superhero]]  ([[=row.realname]]) from [[=row.universe]] </li>
-    [[pass]]
-    </ul>
-
-
-    
 The result is similar to the previous ones, but now we have a custom input field, 
-with foreground color red and background color black:
-
-.. image:: images/form5.png
+with foreground color red and background color black,
 
 Even the radio button widget has changed, from red to blue.
-
 
 Advanced form design
 --------------------
@@ -476,6 +430,7 @@ For example you could use it to avoid displaying the ``id`` field while editing 
 
 .. code:: html
 
+    [[extend 'layout.html']]	  
     [[=form.custom.begin ]]
         [[for field in DETAIL_FIELDS: ]]
             [[ if field not in ['id']: ]]
@@ -486,10 +441,6 @@ For example you could use it to avoid displaying the ``id`` field while editing 
         [[pass]]
     [[=form.custom.submit ]]
     [[=form.custom.end ]]
-
-
-Custom forms are also frequently used for avoiding code redundancy; you can use a single template file for
-multiple form types, and programmatically change the fields contained and how to render them.
 
 Note: 'custom' is just a convention, it could be any name that does not clash with already defined objects.
 
@@ -503,6 +454,33 @@ Note: 'custom' is just a convention, it could be any name that does not clash wi
     that might be needed based on your css framework.  For example, if you're using Bulma as
     your css framework, you'll have to add an outer DIV in order to get select controls to
     appear correctly.
+
+  
+You can also be more creative and use your HTML in the template instead of using widgets:
+
+.. code:: css
+
+    [[extend 'layout.html']]
+
+    [[for field, error form.errors.items:]]
+    <div class="error">Field [[=field]] [[=error]]</div>
+    [[pass]]
+    
+    [[=form.custom.begin ]]
+
+    <div class="select">
+         <input name="name" value="form.vars.get('name', '')"/>
+    </div>
+    <div class="select">
+    [[for color in ['red', 'blue', 'green']:]]
+         <label>[[=color]]</label>
+         <input name="color" type="radio" value="[[=color]]"
+                    [[if form.vars.get('color') == color:]]checked[[pass]]
+         />
+    [[pass]]	 
+    </div>
+    <input type="submit" value="Click me"/>
+    [[=form.custom.end ]]
 
 
 The sidecar parameter
@@ -828,6 +806,19 @@ Examples:
                     prepend_scheme='https')
 
 
+``IS_SAFE``
+^^^^^^^^^^^
+
+.. code:: python
+
+    requires = IS_SAFE(error_message='Unsafe Content')
+    requires = IS_SAFE(mode="sanitize")
+    requires = IS_SAFE(sanitizer=lambda text: str(XML(text, sanitize=True)))
+
+This validators is for text fields that should contain HTML and may contain invalid tags (script, ember, object, iframe).
+It works by trying to sanitize the content and either provide an error (mode="error") or replacing the content
+with the sanitized one (mode="sanitize"). You can specify the error message, the mode, and provide your own sanitizer.
+		    
 ``IS_SLUG``
 ^^^^^^^^^^^
 
@@ -1131,7 +1122,7 @@ To keep the options alphabetically sorted by their labels into the drop down lis
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``IS_IN_SET`` validator has an optional attribute ``multiple=False``. If set to True, multiple values can be stored in one
-field. The field should be of type ``list:integer`` or ``list:string`` as discussed in [[Chapter 6 ../06#list-type-and-contains]].
+field. The field should be of type ``list:integer`` or ``list:string`` as discussed in :ref:`list_type and contains`.
 An explicit example of tagging is discussed there. We strongly suggest using the jQuery multiselect plugin to render multiple fields.
 
 **Note** that when ``multiple=True``, ``IS_IN_SET`` will accept zero or more values, i.e. it will accept the field when nothing has been selected.
@@ -1823,19 +1814,14 @@ Here is an example:
    from py4web.utils.form import Form, FormStyleBulma
    from pydal.validators import IS_INT_IN_RANGE
 
-   def check_nonnegative_quantity(form):
-       if not form.errors and form.vars['product_quantity'] % 2:
-           form.errors['product_quantity'] = T('The product quantity must be even')
+   def custom_check(form):
+       if not 'name' in form.errors and len(form.vars['name']) < 4
+           form.errors['name'] = T("too short")
 
    @action('form_example', method=['GET', 'POST'])
    @action.uses('form_example.html', session)
    def form_example():
-       form = Form([
-           Field('product_name'),
-           Field('product_quantity', 'integer', requires=IS_INT_IN_RANGE(0,100))],
-           validation=check_nonnegative_quantity,
-           formstyle=FormStyleBulma)
+       form = Form(db.thing, validation=custom_check)
        if form.accepted:
-           # Do something with form.vars['product_name'] and form.vars['product_quantity']
            redirect(URL('index'))
        return dict(form=form)

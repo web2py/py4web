@@ -1,9 +1,6 @@
 What is py4web?
 ===============
 
-.. image:: https://travis-ci.com/web2py/py4web.svg?branch=master
-    :target: https://travis-ci.com/web2py/py4web
-
 .. image:: https://img.shields.io/pypi/v/py4web.svg
    :target: https://pypi.org/project/py4web/
 
@@ -22,32 +19,32 @@ Screenshots
 
 Running py4web
 
-.. image:: docs/images/first_run.png
+.. image:: https://py4web.com/_documentation/static/en/_images/first_run.png
 
 The main Dashboard
 
-.. image:: docs/images/dashboard_main.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_main.png
 
 Editing a file in the Dashboard
 
-.. image:: docs/images/dashboard_edit.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_edit.png
 
 Editing a database in the Dashboard
 
-.. image:: docs/images/dashboard_restapi.png
+.. image:: https://py4web.com/_documentation/static/en/_images/dashboard_restapi.png
 
 Installation
 ############
 
-PY4WEB runs fine on Windows, MacOS and Linux. There are many installation procedures (see the official documentation for details) but only two of them are summarized here.
+PY4WEB runs fine on Windows, MacOS and Linux. There are many installation procedures `(see the official documentation for details) <https://py4web.com/_documentation/static/en/chapter-03.html>`__ but only two of them are summarized here.
 
 The **simplest way** to install py4web is using binaries, but it's only available for Windows and MacOS. It's meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from `this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it on a local folder and open a command line there. Finally run the commands (omit './' if you're using Windows)
 
 
 .. code:: bash
 
-   ./py4web-start set_password
-   ./py4web-start run apps
+   ./py4web set_password
+   ./py4web run apps
 
 
 
@@ -78,35 +75,42 @@ Launch Arguments
 
    # py4web run -h
 
-   Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+   Usage: py4web.py run [OPTIONS] APPS_FOLDER
   
       Run all the applications on apps_folder
 
    Options:
-   -Y, --yes                     No prompt, assume yes to questions  [default:
-                                 False]
-   -H, --host TEXT               Host name  [default: 127.0.0.1]
-   -P, --port INTEGER            Port number  [default: 8000]
-   -p, --password_file TEXT      File for the encrypted password  [default:
-                                password.txt]
-   -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
-                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
-                                 server to use  [default: default]
-   -w, --number_workers INTEGER  Number of workers  [default: 0]
-   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full,
-                                 none  [default: full]
-   --watch [off|sync|lazy]       Watch python changes and reload apps
-                                 automatically, modes: off, sync, lazy
-                                 [default: lazy]
-   --ssl_cert PATH               SSL certificate file for HTTPS
-   --ssl_key PATH                SSL key file for HTTPS
-   --errorlog TEXT               Where to send error logs
-                                 (:stdout|:stderr|tickets_only|{filename})
-                                 [default: :stderr]
-   -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
-                                 (=WARNING)]
-   -D, --debug                   Debug switch [default: False]
-   -help, -h, --help             Show this message and exit.
+  -Y, --yes                       No prompt, assume yes to questions
+  -H, --host TEXT                 Host listening IP  [default: 127.0.0.1]
+  -P, --port INTEGER              Port number  [default: 8000]
+  -A, --app_names TEXT            List of apps to run, comma separated (all if
+                                  omitted or empty)
+  -p, --password_file TEXT        File for the encrypted password  [default:
+                                  password.txt]
+  -Q, --quiet                     Suppress server output
+  -R, --routes                    Write apps routes to file
+  -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|gunicorn|gunicornGevent|
+                                  gevent|geventWebSocketServer|geventWs|
+                                  wsgirefThreadingServer|wsgiTh|rocketServer]
+                                  Web server to use
+  -w, --number_workers INTEGER    Number of workers  [default: 0]
+  -d, --dashboard_mode TEXT       Dashboard mode: demo, readonly, full, none
+                                  [default: full]
+  --watch [off|sync|lazy]         Watch python changes and reload apps
+                                  automatically, modes: off, sync, lazy
+                                  [default: lazy]
+  --ssl_cert PATH                 SSL certificate file for HTTPS
+  --ssl_key PATH                  SSL key file for HTTPS
+  --errorlog TEXT                 Where to send error logs
+                                  (:stdout|:stderr|tickets_only|{filename})
+                                  [default: :stderr]
+  -L, --logging_level INTEGER     The log level (0 - 50) [default: 30
+                                  (=WARNING)]
+  -D, --debug                     Debug switch
+  -U, --url_prefix TEXT           Prefix to add to all URLs in and out
+  -m, --mode TEXT                 default or development  [default: default]
+  -h, -help, --help               Show this message and exit.
+
 
 
 
@@ -180,4 +184,4 @@ Many thanks to everyone who has contributed to the project, and especially:
 - `sugizo <https://github.com/sugizo>`__
 - `valq7711 <https://github.com/valq7711>`__
 - `Kevin Keller <https://github.com/Kkeller83>`__
-- `Sam de Alfaro <sam@dealfaro.com>`__ (logo design)
+- Sam de Alfaro sam@dealfaro.com (logo design)

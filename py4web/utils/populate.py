@@ -92,10 +92,10 @@ class Learner:
 
     def learn(self, text):
         replacements1 = {
-            "[^a-zA-Z0-9\.;:\-]": " ",
-            "\s+": " ",
+            r"[^a-zA-Z0-9\.;:\-]": " ",
+            r"\s+": " ",
             ", ": " , ",
-            "\. ": " . ",
+            r"\. ": " . ",
             ": ": " : ",
             "; ": " ; ",
         }
@@ -124,7 +124,7 @@ class Learner:
         self.db = db
 
     def generate(self, length=10000, prefix=False):
-        replacements2 = {" ,": ",", " \.": ".\n", " :": ":", " ;": ";", "\n\s+": "\n"}
+        replacements2 = {" ,": ",", " \\.": ".\n", " :": ":", " ;": ";", "\n\\s+": "\n"}
         keys = list(self.db.keys())
         key = keys[random.randint(0, len(keys) - 1)]
         words = key
@@ -132,7 +132,7 @@ class Learner:
         regex = re.compile("[a-z]+")
         for i in range(length):
             okey = key
-            if not key in self.db:
+            if key not in self.db:
                 break  # should not happen
             db = self.db[key]
             s = sum(db.values())
@@ -231,7 +231,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                 continue
             elif field.compute is not None:
                 continue
-            elif default and not field.default in (None, ""):
+            elif default and field.default not in (None, ""):
                 record[fieldname] = field.default
             elif compute and field.compute:
                 continue
@@ -271,7 +271,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                     record[fieldname] = random.randint(
                         field.requires.minimum, field.requires.maximum - 1
                     )
-                except:
+                except Exception:
                     if "day" in fieldname:
                         record[fieldname] = random.randint(1, 28)
                     elif "month" in fieldname:
@@ -280,7 +280,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                         record[fieldname] = random.randint(2000, 2013)
                     else:
                         record[fieldname] = random.randint(0, 1000)
-            elif field.type == "double" or str(field.type).startswith("decimal"):
+            elif field.type in ("float", "double") or str(field.type).startswith("decimal"):
                 if hasattr(field.requires, "minimum"):
                     rand = random.random()
                     if str(field.type).startswith("decimal"):
@@ -295,7 +295,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
             elif field.type[:10] == "reference ":
                 tablename = field.type[10:]
                 rtable = db[tablename]
-                if not tablename in ids:
+                if tablename not in ids:
                     if db._dbname == "gql":
                         ids[tablename] = [x.id for x in db(rtable).select(rtable.id)]
                     else:
@@ -308,7 +308,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
             elif field.type[:15] == "list:reference ":
                 tablename = field.type[15:]
                 rtable = db[tablename]
-                if not tablename in ids:
+                if tablename not in ids:
                     if db._dbname == "gql":
                         ids[tablename] = [x.id for x in db(rtable).select(rtable.id)]
                     else:

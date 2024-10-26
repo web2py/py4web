@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The RestAPI &mdash; Documentação py4web 1.20230507.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>The RestAPI &mdash; Documentação py4web 20240915</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=31ad276e"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=5f54a428"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                20240915
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The RestAPI</a><ul>
@@ -102,7 +104,7 @@
            <div itemprop="articleBody">
              
   <section id="the-restapi">
-<h1>The RestAPI<a class="headerlink" href="#the-restapi" title="Permalink to this heading"></a></h1>
+<h1>The RestAPI<a class="headerlink" href="#the-restapi" title="Link to this heading"></a></h1>
 <p>Since version 19.5.10 pyDAL includes a restful API <a class="reference internal" href="#cit0801" id="id1"><span>[CIT0801]</span></a> called RestAPI. It is
 inspired by GraphQL <a class="reference internal" href="#cit0802" id="id2"><span>[CIT0802]</span></a> and while it’s not quite the same due to it being less
 powerful, it is in the spirit of py4web since it’s more practical and easier to use.</p>
@@ -199,7 +201,7 @@ for individual tables and individual fields.</p>
 </pre></div>
 </div>
 <section id="restapi-policies-and-actions">
-<h2>RestAPI policies and actions<a class="headerlink" href="#restapi-policies-and-actions" title="Permalink to this heading"></a></h2>
+<h2>RestAPI policies and actions<a class="headerlink" href="#restapi-policies-and-actions" title="Link to this heading"></a></h2>
 <p>The policy is per table (or * for all tables) and per method. <code class="docutils literal notranslate"><span class="pre">authorize</span></code>
 can be True (allow), False (deny) or a function with the signature
 (method, tablename, record_id, get_vars, post_vars) which returns
@@ -224,7 +226,7 @@ FormData</strong> object.</p>
 </div>
 </section>
 <section id="restapi-get">
-<h2>RestAPI GET<a class="headerlink" href="#restapi-get" title="Permalink to this heading"></a></h2>
+<h2>RestAPI GET<a class="headerlink" href="#restapi-get" title="Link to this heading"></a></h2>
 <p>A consulta geral tem a forma `` {} algo .eq = value`` onde `` eq = `` significa “igual”, `` gt = `` significa “maior que”, etc. A expressão pode ser prefixado por `` not.``.</p>
 <p><code class="docutils literal notranslate"><span class="pre">{something}</span></code> can be:</p>
 <ul>
@@ -283,7 +285,7 @@ to a record with <strong>description</strong> equal to “Flight” &gt;&gt;</p>
 model. <code class="docutils literal notranslate"><span class="pre">&#64;lookup</span></code> denormalizes the linked field.</p>
 </section>
 <section id="restapi-practical-examples">
-<h2>RestAPI practical examples<a class="headerlink" href="#restapi-practical-examples" title="Permalink to this heading"></a></h2>
+<h2>RestAPI practical examples<a class="headerlink" href="#restapi-practical-examples" title="Link to this heading"></a></h2>
 <p>Aqui estão alguns exemplos práticos:</p>
 <p>URL:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero
@@ -1084,7 +1086,7 @@ identity!:real_identity[name]
 </div>
 </section>
 <section id="the-restapi-response">
-<h2>The RestAPI response<a class="headerlink" href="#the-restapi-response" title="Permalink to this heading"></a></h2>
+<h2>The RestAPI response<a class="headerlink" href="#the-restapi-response" title="Link to this heading"></a></h2>
 <p>All RestAPI response have the fields:</p>
 <dl class="field-list simple">
 <dt class="field-odd">api_version<span class="colon">:</span></dt>
@@ -1142,7 +1144,7 @@ identity!:real_identity[name]
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -1167,7 +1169,7 @@ identity!:real_identity[name]
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 20240915
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
