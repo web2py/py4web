@@ -4,7 +4,7 @@ What is py4web?
 .. image:: https://img.shields.io/pypi/v/py4web.svg
    :target: https://pypi.org/project/py4web/
 
-PY4WEB is a web framework for rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker.
+PY4WEB is a web framework for the rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker.
 
 
 -  Main web site:  https://py4web.com
