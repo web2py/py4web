@@ -186,7 +186,7 @@ Here is an example of usage:
    @action.uses(T)
    def index(): return str(T('Hello world'))
 
-The string `hello world` will be translated based on the
+The string ``hello world`` will be translated based on the
 internationalization file in the specified “translations” folder that
 best matches the HTTP ``accept-language`` header.
 
@@ -215,7 +215,7 @@ action with a counter that counts “visits”.
        return str(T("You have been here {n} times").format(n=counter))
 
 
-If the `T` fixture is to be used from inside a template you may want to pass it to the template:
+If the ``T`` fixture is to be used from inside a template you may want to pass it to the template:
 
 .. code:: python
 
@@ -311,7 +311,7 @@ you have to redefine the select method for the T instance:
    T.on_request = lambda *_: T.local.__dict__.update(tag="it", language=T.languages["it"])
 
 This is to be done outside any action and will apply to all actions. Action will still need to declare 
-`action.uses(T)` else the behavior is undefined.
+``action.uses(T)`` else the behavior is undefined.
 
 
 
@@ -623,10 +623,10 @@ given condition. For example to enforce a workflow:
        return locals()
 
 Notice that the Condition fixtures takes a function as first argument
-which is called `on_request` and must evaluate to True or False.
+which is called ``on_request`` and must evaluate to True or False.
 
 Also notice that in the above example the Condition depends on the Session
-therefore it must be listed after `session` in `action.uses`.
+therefore it must be listed after ``session`` in ``action.uses``.
 
 If False, by default, the Condition fixture raises 404.
 It is possible to specify a different exception:
@@ -643,7 +643,7 @@ for example, to redirect to another page:
    Condition(cond, on_false=lambda: redirect(URL('step1')))
 
 You can use condition to check permissions. For example, if you
-are giving group memberships to users using `Tags` (it will be explained
+are giving group memberships to users using ``Tags`` (it will be explained
 later on the :ref:`Authorization using Tags` chapter), then you can
 require that users action have specific group membership:
 
@@ -855,13 +855,13 @@ A fixture is an object with the following minimal structure:
        def on_success(self, context): pass
        def on_error(self, context) pass
 
-For example in the DAL fixture case, `on_request` starts a transaction,
-`on_success` commits it, and `on_error` rolls it back.
+For example in the DAL fixture case, ``on_request`` starts a transaction,
+``on_success`` commits it, and ``on_error`` rolls it back.
 
-In the case of a template, `on_request` and `on_error` do nothing but
-`on_success` transforms the output.
+In the case of a template, ``on_request`` and ``on_error`` do nothing but
+``on_success`` transforms the output.
 
-In the case of `auth.user` fixtures, `on_request` does all the work of
+In the case of ``auth.user`` fixtures, ``on_request`` does all the work of
 determining if the user is logged in (from the dependent session fixture)
 and eventually preventing the request from accessing the inner layers.
 
@@ -873,24 +873,24 @@ Under normal circumstances above methods are executed in this order:
    request  -> A.on_request -> B.on_request -> C.on_request -> action
    response <- A.on_success <- B.on_success <- C.on_success <-
 
-i.e. the first fixture (A) is the first one to call `on_request`
-and the last one to call `on_success`. You can think of them as layers of
-an onion with the action (user code) at the center. `on_success` is called
-when entering a layer from the outside and `on_success` is called when
+i.e. the first fixture (A) is the first one to call ``on_request``
+and the last one to call ``on_success``. You can think of them as layers of
+an onion with the action (user code) at the center. ``on_success`` is called
+when entering a layer from the outside and ``on_success`` is called when
 exiting a layer from the inside (like WSGI middleware).
 
 If any point an exception is raised inner layers are not called
-and outer layers will call `on_error` instead of `on_success`.
+and outer layers will call ``on_error`` instead of ``on_success``.
 
 Context is a shared object which contains:
 
 - content['fixtures']: the list of all the fixtures for the action.
-- context['processed']: the list of fixtures that called `on_request` previously within the request.
+- context['processed']: the list of fixtures that called ``on_request`` previously within the request.
 - context['exception']: the exception raised by the action or any previous fixture logic (usually None)
 - context['output']: the action output.
 
-`on_success` and `on_error` can see the current `context['exception']` and
-transform it. They can see the current `context['output']` and transform it as well.
+``on_success`` and ``on_error`` can see the current ``context['exception']`` and
+transform it. They can see the current ``context['output']`` and transform it as well.
 
 For example here is a fixture that transforms the output text to upper case:
 
@@ -906,7 +906,7 @@ For example here is a fixture that transforms the output text to upper case:
    @action.uses(upper_case)
    def index(): return "hello world"
    
-Notice that this fixture assumes the `context['output']` is a string
+Notice that this fixture assumes the ``context['output']`` is a string
 and therefore it must come before the template.
 
 Here is a fixture that logs exceptions tracebacks to a file:
@@ -926,14 +926,14 @@ Here is a fixture that logs exceptions tracebacks to a file:
    @action.uses(errlog)
    def index(): return 1/0
 
-Fixtures also have a `__prerequisite__` attribute. If a fixture
+Fixtures also have a ``__prerequisite__`` attribute. If a fixture
 takes another fixture as an argument, its value must be appended
-to the list of `__prerequisites__`. This guarantees that they are
+to the list of ``__prerequisites__``. This guarantees that they are
 always executed in the proper order even if listed in the wrong order.
-It also makes it optional to declare prerequisite fixtures in `action.uses`.
+It also makes it optional to declare prerequisite fixtures in ``action.uses``.
 
-For example `Auth` depends on `db`, `session`, and `flash`. `db` and `session`
-are indeed arguments. `flash` is a special singleton fixture declared within `Auth`.
+For example ``Auth`` depends on ``db``, ``session``, and ``flash``. ``db`` and ``session``
+are indeed arguments. ``flash`` is a special singleton fixture declared within ``Auth``.
 This means that
 
 .. code:: python
@@ -949,7 +949,7 @@ is equivalent to
 Why are fixtures not simply functions that contain a try/except?
 
 We considered the option but there are some special exceptions that should
-not be considered errors but success (`py4web.HTTP`, `bottle.HTTResponse`)
+not be considered errors but success (``py4web.HTTP``, ``bottle.HTTResponse``)
 while other exceptions are errors. The actual logic can be complicated 
 and individual fixtures do not need to know these details.
 
@@ -960,6 +960,84 @@ or an error. We believe this logic keeps the fixtures easy.
 Fixtures should not in general communicate with each other but nothing
 prevents one fixture to put data in the context and another fixture to
 retrieve that data.
+
+Fixtures with dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If a fixture depends on another fixture, it needs to be passed that fixture in the initializer, 
+and the fixture must be listed in the ``__prerequisites__`` attribute.
+For example, suppose we want to create a fixture that grants access to a controller only
+to users whose email address is included in an ADMIN_EMAILS list. 
+We can write the following fixture:
+
+.. code:: python
+
+    class AdminAccess(Fixture):
+
+        def __init__(self, auth, admin_list, redirect_url=None):
+            super().__init__()
+            self.admin_list = admin_list
+            self.auth = auth
+            self.__prerequisites__ = [auth]
+            # One thing to note here is that the URL function can only be called in a 
+            # request context (while serving a request).  Thus, we cannot store in the fixture
+            # initialization the full URL to redirect, but only the path. 
+            self.redirect_url = redirect_url or 'index'
+            
+        def on_request(self, context):
+            if ((not self.auth.current_user) 
+                or self.auth.current_user.get('email') not in self.admin_list):
+                redirect(URL(self.redirect_url))
+                     
+        def on_error(self, context):
+            redirect(URL(self.redirect_url))
+
+The fixture can be created and used as follows:
+
+.. code:: python
+
+    admin_access = AdminAccess(auth, ['a@example.com',], 'index')
+
+    @action('/admin-only')
+    @action.uses('admin_only.html', admin_access)
+    def admin_only():
+        return dict()
+
+Using local storage
+~~~~~~~~~~~~~~~~~~~
+
+Fixtures can use a thread-local storage for data they need.  
+Here is an example: 
+
+.. code:: python
+
+    class LocalStorageDemo(Fixture):
+        
+       def __init__(self):
+           super().__init__()
+          
+       def on_request(self, context):
+           Fixture.local_initialize(self) 
+           # We can check whether the local storage is valid. 
+           print(f"is_valid: {self.is_valid()}")
+           content = str(uuid.uuid4())
+           print(f"Storing content: {content}")
+           self.local.my_content = content
+               
+       def on_success(self, context):
+           # The line below is used only to show that the thread-local object is in place.         
+           print(f"Retrieved: {self.local.my_content}")
+
+Notably, the initializer should contain the line: 
+
+.. code:: python
+
+    Fixture.local_initialize(self)
+
+in order to initialize the thread-local storage.
+Once this is done, the thread-local storage can be used to store and retrieve data
+using the the ``self.local`` object. 
+
 
 Multiple fixtures
 -----------------
@@ -1004,11 +1082,11 @@ is almost equivalent to
 
    @action.uses(A,B)
 
-but not quite. All fixtures declared in one `action.uses` share
-the same context while fixtures in different `action.uses` use
+but not quite. All fixtures declared in one ``action.uses`` share
+the same context while fixtures in different ``action.uses`` use
 different contexts and therefore they cannot communicate with each other.
 This may change in the future.
-For now we recommend using a single call to `action.uses`.
+For now we recommend using a single call to ``action.uses``.
 
 
 Caching and Memoize
