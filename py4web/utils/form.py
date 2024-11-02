@@ -651,30 +651,6 @@ FormStyleBootstrap4.classes.update(
     }
 )
 
-FormStyleBootstrap5 = FormStyleFactory()
-FormStyleBootstrap5.classes.update(
-    {
-        "outer": "mb-3 col-auto",  # Replaced 'form-group' with 'mb-3' for margin-bottom
-        "inner": "",
-        "label": "form-label",  # Explicitly use 'form-label' for labels
-        "info": "form-text",
-        "error": "form-text text-danger py4web-validation-error",
-        "submit": "btn btn-primary",
-        "input": "form-control",
-        "input[type=text]": "form-control",
-        "input[type=date]": "form-control",
-        "input[type=time]": "form-control",
-        "input[type=datetime-local]": "form-control",
-        "input[type=radio]": "form-check-input",
-        "input[type=checkbox]": "form-check-input",
-        "input[type=submit]": "btn btn-primary",
-        "input[type=password]": "form-control",
-        "input[type=file]": "form-control",  # Bootstrap 5 doesn't have a specific 'form-control-file' class
-        "select": "form-select",  # 'form-select' is used in Bootstrap 5 instead of 'form-control' for select elements
-        "textarea": "form-control",
-    }
-)
-
 # ################################################################
 # Form object (replaced SQLFORM)
 # ################################################################
