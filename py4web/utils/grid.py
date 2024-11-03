@@ -510,7 +510,7 @@ class Grid:
                 def compute(row, col=col):
                     value = row(str(col))
                     if col.represent:
-                        value = col.represent(value)
+                        value = col.represent(value, row)
                     # deal with download links in special manner if no representation
                     if col.type == "upload" and value and col.download_url:
                         value = A("download", _href=col.download_url(value))
