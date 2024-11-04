@@ -187,6 +187,38 @@ And these are possible filters (only ``:re`` has a config):
 The pattern matching the wildcard is passed to the function under the
 specified variable ``name``.
 
+Note that the routing is implemented in ombott as radix-tree hybrid 
+router. It is declaration-order-independent and it prioritizes static 
+route-fragment over dynamic one, since this is most expected behavior.
+
+This results in some constraints, such as one cannot have more than one 
+route that has dynamic fragment of different types (int, path) in the 
+same place.. Hence **something like this is incorrect** and will result 
+in errors: 
+
+.. code:: python
+
+   @action('color/<code:int>')
+   def color(code):
+       return f'Color code: {code}'
+   
+   @action('color/<name:path>')
+   def color(name):
+       return f'Color name: {name}'
+
+Instead, to accomplish a simmilar result, one needs to handle all the 
+logic in one action:
+
+.. code:: python
+   
+   @action('color/<color_identifier:path>')
+   def color(color_identifier):
+      try:
+         msg = f'Color code: {int(color_identifier)}'
+      except:
+         msg = f'Color name: {color_identifier}'
+      return msg
+
 Also, the action decorator takes an optional ``method`` argument that
 can be an HTTP method or a list of methods:
 
@@ -482,3 +514,38 @@ a separate such block for **each app/each domain** being served by py4web server
 
 Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as ``Auth``, ``Form``,
 and ``Grid`` are done correctly using the domain to which the app is mapped to. 
+
+Custom error pages
+------------------
+
+py4web provides default error pages. For instance, if none of the routes 
+in an app matches the request, a default 404 error page will be shown. By 
+default all HTTP error codes are handled automatically by py4web. 
+
+It is however possible to override this behaviour. It can be done either 
+per HTTP error code, or even for all errors.
+
+Here is an example for overriding HTTP code 404 (not found):
+
+.. code:: python
+
+   from py4web.core import ERROR_PAGES
+   ERROR_PAGES[404] = f"Page not found!"
+
+If one wants to replace _all_ default error pages, a special qualifier 
+``"*"`` should be used. Also, the returned value may contain HTML code as 
+well:
+
+.. code:: python
+
+   from py4web import URL
+   from py4web.core import ERROR_PAGES
+   from yatl.helpers import A
+
+   ERROR_PAGES["*"] = f"We have encountered an error! (try: {A('Main Page', _href=URL("/",scheme=True))})"
+
+Note that this setup is **global**. This means that it is defined once 
+for all apps on a given py4web instance. This is because, when an error 
+is encountered, it could be because the request has not matched any of 
+the apps. Hence, this configuration should only be done in **one of the 
+apps**. 
