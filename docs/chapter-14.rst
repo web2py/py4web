@@ -366,7 +366,7 @@ the grid or a form. Use the following to decide:
 
 ::
 
-   [[if request.query.get('action') in ('details', 'edit'):]]
+   [[if grid.action in ['details', 'edit']: ]]
        #  Display the custom form
        [[form = grid.render() ]]
        [[form.custom["begin"] ]]

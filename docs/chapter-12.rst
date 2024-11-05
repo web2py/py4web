@@ -343,6 +343,11 @@ dropdown menu!
 
 Using widgets in forms is quite easy, and they'll let you have more control on its pieces.
 
+.. important::
+
+   When using py4web, use py4web widgets, and do not use the pydal widget argument in the Field object
+   (see :ref:`Field constructor`).
+
 Custom widgets
 ~~~~~~~~~~~~~~
 

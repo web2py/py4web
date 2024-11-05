@@ -1055,9 +1055,11 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 -  ``authorize`` can be used to require access control on the
    corresponding field, for “upload” fields only. It will be discussed
    more in detail in the context of Authentication and Authorization.
+-  ``widget`` do not use DAL widgets with py4web, it has has its own
+   (see :ref:`Widgets` later).
 -  ``represent`` can be None or can point to a function that takes a
    field value and returns an alternate representation for the field
-   value. Examples:
+   value.
 
 Note not all the attributes are thread safe and most of them
 should only be set globally for an app. The following are guaranteed to be
