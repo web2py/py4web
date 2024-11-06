@@ -711,7 +711,7 @@ it doesn't exist:
    @action.uses(db)
    def index():
        client_ip = request.environ.get('REMOTE_ADDR')
-       db.visit_log.insert(client_ip=client_ip, timestamp=datetime.utcnow())
+       db.visit_log.insert(client_ip=client_ip, timestamp=datetime.now())
        return "Your visit was stored in database"
 
 Notice that the database fixture defines (creates/re-creates) tables

@@ -19,7 +19,7 @@ class DBStore:
         self.table = db[name]
 
     def get(self, key):
-        db, table, now = self.db, self.table, datetime.utcnow()
+        db, table, now = self.db, self.table, datetime.now()
         row = db(table.rkey == key).select().first()
         if not row:
             return None
@@ -28,7 +28,7 @@ class DBStore:
         return row.rvalue
 
     def set(self, key, value, expiration=None):
-        db, table, now = self.db, self.table, datetime.utcnow()
+        db, table, now = self.db, self.table, datetime.now()
         db(table.expires_on < now).delete()
         row = db(table.rkey == key).select().first()
         expires_on = (

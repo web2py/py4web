@@ -1168,7 +1168,7 @@ def get_error_snapshot(depth=5):
         etype = etype.__name__
 
     data = {}
-    data["timestamp"] = datetime.datetime.utcnow().isoformat().replace("T", " ")
+    data["timestamp"] = datetime.datetime.now().isoformat().replace("T", " ")
     data["python_version"] = sys.version
     platform_keys = [
         "machine",
@@ -1248,7 +1248,7 @@ class DatabaseErrorLogger:
                 app_name=app_name,
                 method=request.method,
                 path=request.path,
-                timestamp=datetime.datetime.utcnow(),
+                timestamp=datetime.datetime.now(),
                 client_ip=request.environ.get("REMOTE_ADDR"),
                 error=error_snapshot["exception_value"],
                 snapshot=error_snapshot,

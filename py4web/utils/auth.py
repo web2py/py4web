@@ -126,7 +126,7 @@ class AuthEnforcer(Fixture):
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
             self.auth.session["recent_activity"] = time_now
-        self.auth.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
+        self.auth.session["recent_timestamp"] = datetime.datetime.now().isoformat()
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
 
@@ -424,7 +424,7 @@ class Auth(Fixture):
     @property
     def signature(self):
         """Returns a list of fields for a table signature"""
-        now = lambda: datetime.datetime.utcnow()
+        now = lambda: datetime.datetime.now()
         user = lambda s=self: s.user_id
         fields = [
             Field(
@@ -787,7 +787,7 @@ class Auth(Fixture):
                     past_passwords_hash=past_pwds
                 )
         num = db(db.auth_user.id == user.get("id")).update(
-            password=new_pwd, last_password_change=datetime.datetime.utcnow()
+            password=new_pwd, last_password_change=datetime.datetime.now()
         )
         return {"updated": num}
 
