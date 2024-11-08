@@ -512,7 +512,7 @@ class Grid:
                     if col.represent:
                         value = col.represent(value, row)
                     # deal with download links in special manner if no representation
-                    if col.type == "upload" and value and col.download_url:
+                    if col.type == "upload" and value and hasattr(col, "download_url"):
                         value = A("download", _href=col.download_url(value))
                     return value
 
@@ -639,7 +639,7 @@ class Grid:
                     redirect(self.endpoint)
 
         elif self.action == "delete" and self.is_deletable(record):
-            db(db[self.tablename].id == self.record_id).delete()
+            db(db[self.tablename]._id == self.record_id).delete()
 
             referrer = parse_referer(request)
             url = self.endpoint + "/select"
@@ -680,7 +680,7 @@ class Grid:
             if self.param.groupby or self.param.left:
                 #  need groupby fields in select to get proper count
                 self.total_number_of_rows = len(
-                    db(query).select(db[self.tablename].id, **select_params)
+                    db(query).select(db[self.tablename]._id, **select_params)
                 )
             else:
                 self.total_number_of_rows = db(query).count()
