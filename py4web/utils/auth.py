@@ -339,7 +339,7 @@ class Auth(Fixture):
 
     def on_success(self, context):
         if self.inject:
-            context["template_inject"] = {"user": self.get_user()}
+            context["template_inject"]["user"] = self.get_user()
 
     def define_tables(self):
         """Defines the auth_user table"""
