@@ -2,6 +2,7 @@
 import copy
 import multiprocessing
 import os
+import sys
 import threading
 import time
 import unittest
@@ -18,7 +19,18 @@ os.environ["PY4WEB_APPS_FOLDER"] = os.path.sep.join(
 )
 
 SECRET = str(uuid.uuid4())
-db = DAL("sqlite://storage_%s" % uuid.uuid4(), folder="/tmp/")
+if sys.platform == "win32":
+    path = "./tmp/"
+else:
+    path = "/tmp/"
+
+try:
+    os.mkdir(path)
+except Exception:
+    pass
+with open(path + "sql.log", "w"):
+    pass
+db = DAL("sqlite://storage_%s" % uuid.uuid4(), folder=path)
 db.define_table("thing", Field("name"))
 session = Session(secret=SECRET)
 cache = Cache()
