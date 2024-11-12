@@ -1,5 +1,5 @@
 wheel
-ombott==2.2
+ombott==2.3
 click
 colorama
 cryptography
