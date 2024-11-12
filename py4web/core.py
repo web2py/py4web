@@ -1715,11 +1715,11 @@ def start_server(kwargs):
         main_process = psutil.Process()
         children = main_process.children(recursive=True)
         for child in children:
-            child.terminate()  # friendly termination
+            child.terminate()  # friendly termination (SIGTERM)
         _, still_alive = psutil.wait_procs(children, timeout=2)
         for child in still_alive:
-            child.kill()  # unfriendly termination
-        main_process.terminate()
+            child.kill()  # unfriendly termination (SIGKILL)
+        main_process.kill() # SIGKILL
 
     signal.signal(signal.SIGINT, kill_all)
 
