@@ -61,12 +61,16 @@ Then you can apply all of them at once with:
        return dict()
 
 Usually, it's not important the order you use to specify the fixtures, because py4web
-knows well how to manage them if they have explicit dependencies. For example auth
-depends explicitly on db and session and flash, so you do not even needs to list them.
+knows well how to manage them if they have explicit dependencies
+(using the ``__prerequisites__`` attribute). For example auth depends explicitly on 
+db and session and flash, so you do not even needs to list them.
 
 But there is an important exception: the Template fixture must always be the
 **first one**. Otherwise, it will not have access to various things it should
 need from the other fixtures, especially Inject() and Flash() that we'll see later.
+
+If all your templates depend on a specific fixture, you can also list them as
+``__postrequisites__`` of Template. This is explained in detail below.
 
 
 The Template fixture
@@ -146,6 +150,12 @@ And then:
 This syntax has no performance implications: it's just for avoiding to replicate a decorator logic in multiple places.
 In this way you'll have cleaner code and if needed you'll be able to change it later in one place only.
 
+Alternatively, you can also specify fixtures as a global dependency of Template:
+.. code:: python
+
+   Template.dependencies.append(flash)
+
+This ensures flash always runs before Template. See :ref:`Fixtures with dependencies` for more info.
 
 The Inject fixture
 ------------------
@@ -926,11 +936,11 @@ Here is a fixture that logs exceptions tracebacks to a file:
    @action.uses(errlog)
    def index(): return 1/0
 
-Fixtures also have a ``__prerequisite__`` attribute. If a fixture
-takes another fixture as an argument, its value must be appended
-to the list of ``__prerequisites__``. This guarantees that they are
+Fixtures also have ``__prerequisites__`` and ``__postrequisites__`` attributes.
+If a fixture takes another fixture as an argument, its value must be appended
+to either of these depending on the required behaviour. This guarantees that they are
 always executed in the proper order even if listed in the wrong order.
-It also makes it optional to declare prerequisite fixtures in ``action.uses``.
+It also makes it optional to declare requisite fixtures in ``action.uses``.
 
 For example ``Auth`` depends on ``db``, ``session``, and ``flash``. ``db`` and ``session``
 are indeed arguments. ``flash`` is a special singleton fixture declared within ``Auth``.
@@ -964,9 +974,14 @@ retrieve that data.
 Fixtures with dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If a fixture depends on another fixture, it needs to be passed that fixture in the initializer, 
-and the fixture must be listed in the ``__prerequisites__`` attribute.
-For example, suppose we want to create a fixture that grants access to a controller only
+If a fixture depends on another fixture, it needs to be passed that fixture
+in the initializer, and the fixture must be listed in either the ``__prerequisites__``
+or ``__postrequisites__`` attributes. Specifically, if the dependencies
+``on_request`` should run before your ``on_request``, list it in ``__prerequisites__``.
+If instead the dependencies ``on_success`` should run before your ``on_success``,
+list it in ``__postrequisites``. These are different as ``on_success`` is called in
+reverse order compared to ``on_request``. For example, suppose we want to create a 
+fixture that grants access to a controller only
 to users whose email address is included in an ADMIN_EMAILS list. 
 We can write the following fixture:
 
@@ -1002,6 +1017,32 @@ The fixture can be created and used as follows:
     @action.uses('admin_only.html', admin_access)
     def admin_only():
         return dict()
+
+``__postrequisites__`` on the other hand inverts this dependency relation.
+Essentially, instead of requiring other fixtures to run before yours,
+it requires your fixture to run before another.
+This is mostly useful since ``on_success`` is called in reverse order compared to
+``on_request``.
+
+This is useful for example for ``Template``, as the ``on_success`` of ``Template``
+has to run last. So if ``Template`` always needs ``flash`` instead of having to
+add ``flash`` to each controller or define a custom decorator, it can be added
+to the ``__postrequisites__`` of ``Template`` instead.
+
+Note: ``Template`` has a class variable called ``dependencies`` which
+you should use, as ``dependencies`` is copied into ``__postrequisites__``
+each time a new instance of ``Template`` is created.
+
+Internally, adding ``flash`` to the ``__postrequisites__`` of ``Template``
+is the same as adding all ``Template`` instances to the ``__prerequisites__``
+of ``flash``. 
+
+.. warning::
+   It's possible to cause dependency cycles using this.
+   Never add the same dependency to both ``__prerequisites__`` and
+   ``__postrequisites__``, as both are parts of the same dependency 
+   graph (which is a Directed Acyclic Graph).
+   Doing this will lead to a ``graphlib.CycleError``.
 
 Using local storage
 ~~~~~~~~~~~~~~~~~~~

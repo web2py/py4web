@@ -35,6 +35,7 @@ import types
 import urllib.parse
 import uuid
 import zipfile
+import graphlib # provided by backport when py < 3.9
 from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
 
@@ -590,12 +591,14 @@ class Template(Fixture):
     """The Template Fixture class"""
 
     cache = Cache(100)
+    dependencies = []
 
     def __init__(self, filename, path=None, delimiters="[[ ]]"):
         """Initialized the template object"""
         self.filename = filename
         self.path = path
         self.delimiters = delimiters
+        self.__postrequisites__ = Template.dependencies[:]
 
     def on_success(self, context):
         """
@@ -942,6 +945,62 @@ def redirect(location):
     raise HTTP(303)
 
 
+def fixture_topological_sort(fixtures_in):
+    # deduplicated list of all fixtures
+    all_fixtures = []
+
+    # dependency graph based only on indices into all_fixtures
+    graph = {}
+
+    # recursively create the graph by adding fixtures and their dependencies to it
+    def recursive_create_graph(fixt):
+        if fixt not in all_fixtures:
+            all_fixtures.append(fixt)
+            graph[all_fixtures.index(fixt)] = set()
+
+        prereqs = getattr(fixt, "__prerequisites__", ()) or ()
+        postreqs = getattr(fixt, "__postrequisites__", ()) or ()
+
+        # prerequisites are added as dependencies of the source fixture
+        for pre in prereqs:
+            recursive_create_graph(pre)
+            graph[all_fixtures.index(fixt)].add(all_fixtures.index(pre))
+
+        # postrequisites imply the source fixture is a dependency of the postrequisite
+        for post in postreqs:
+            recursive_create_graph(post)
+            graph[all_fixtures.index(post)].add(all_fixtures.index(fixt))
+
+    # populate graph/all_fixtures
+    for fixt in fixtures_in:
+        recursive_create_graph(fixt)
+
+    sorter = graphlib.TopologicalSorter(graph)
+    try:
+        # convert from indices back into their fixtures
+        return [all_fixtures[i] for i in sorter.static_order()]
+    except graphlib.CycleError as e:
+        # nicely format the error displaying the cycle
+        nodes = set()
+        cycle = []
+        # e.args[1] contains dependency cycles: A -> B -> A
+        for i in e.args[1]:
+            fixt = all_fixtures[i]
+            cycle.append(str(fixt))
+            prereqs = getattr(fixt, "__prerequisites__", ())
+            postreqs = getattr(fixt, "__postrequisites__", ())
+            nodes.add(f"""
+{fixt}:
+  - prerequisites: {prereqs}
+  - postrequisites: {postreqs}""")
+        raise graphlib.CycleError(f"""
+Involving the following fixtures:
+{''.join(nodes)}
+
+Fixture dependency cycle: {' -> '.join(cycle)}""",) from None
+
+
+
 class action:  # pylint: disable=invalid-name
     """@action(...) is a decorator for functions to be exposed as actions"""
 
@@ -956,18 +1015,8 @@ class action:  # pylint: disable=invalid-name
     @staticmethod
     def uses(*fixtures_in):
         """Used to declare needed fixtures, they will be topologically sorted"""
-        fixtures = []
-        reversed_fixtures = []
-        stack = list(fixtures_in)
-        while stack:
-            fixture = stack.pop()
-            reversed_fixtures.append(fixture)
-            stack.extend(getattr(fixture, "__prerequisites__", ()))
-        for fixture in reversed(reversed_fixtures):
-            if isinstance(fixture, str):
-                fixture = Template(fixture)
-            if fixture not in fixtures:
-                fixtures.append(fixture)
+        fixtures = [Template(f) if isinstance(f, str) else f for f in fixtures_in]
+        fixtures = fixture_topological_sort(fixtures)
 
         def decorator(func):
             if DEBUG:
