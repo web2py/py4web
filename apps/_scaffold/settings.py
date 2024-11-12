@@ -6,6 +6,7 @@ This is an optional file that defined app level settings such as:
 This file is provided as an example:
 """
 import os
+
 from py4web.core import required_folder
 
 # mode (default or development)

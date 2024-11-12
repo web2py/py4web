@@ -3,7 +3,8 @@ import os
 import unittest
 import uuid
 
-from py4web.core import DAL, HTTP, Field, Fixture, Session, bottle, request, safely
+from py4web.core import (DAL, HTTP, Field, Fixture, Session, bottle, request,
+                         safely)
 from py4web.utils.auth import Auth, AuthAPI
 
 SECRET = str(uuid.uuid4())

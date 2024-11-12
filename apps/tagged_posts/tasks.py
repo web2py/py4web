@@ -9,7 +9,8 @@ To use celery tasks:
 5) Start "celery -A apps.{appname}.tasks worker --loglevel=info" for each worker
 
 """
-from .common import settings, scheduler, db, Field
+from .common import Field, db, scheduler, settings
+
 
 # example of task that needs db access
 @scheduler.task

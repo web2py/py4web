@@ -9,14 +9,13 @@ File operations
 ---------------
 """
 
+import glob
+import gzip
+import logging
 import os
 import re
-import tarfile
-import glob
 import shutil
-import logging
-import gzip
-
+import tarfile
 
 __all__ = (
     "safe_join",

@@ -1,5 +1,7 @@
 import os
-from py4web import action, Cache
+
+from py4web import Cache, action
+
 cache = Cache(size=1000)
 
 @action("index")

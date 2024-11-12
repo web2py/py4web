@@ -1,4 +1,4 @@
-from py4web import action, redirect, URL
+from py4web import URL, action, redirect
 
 
 @action("index")

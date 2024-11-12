@@ -13,7 +13,8 @@ from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
-from py4web.core import REGEX_APPJSON, Fixture, Flash, Template, Translator
+from py4web.core import (REGEX_APPJSON, Fixture, Flash, Template, Translator,
+                         utcnow)
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 
@@ -109,24 +110,14 @@ class AuthEnforcer(Fixture):
     def on_request(self, context):
         """Checks that we have a user in the session and
         the condition is met"""
-        user = self.auth.session.get("user")
-        if not user or not user.get("id"):
+        if "user" not in self.auth.session or "id" not in self.auth.session["user"]:
             self.auth.session["recent_activity"] = None
             self.goto_login(message="User not logged in")
-        activity = self.auth.session.get("recent_activity")
-        time_now = calendar.timegm(time.gmtime())
-        # enforce the optionl auth session expiration time
-        if (
-            self.auth.param.login_expiration_time
-            and activity
-            and time_now - activity > self.auth.param.login_expiration_time
-        ):
-            del self.auth.session["user"]
+
+        self.auth.on_request(context)
+
+        if "user" not in self.auth.session or "id" not in self.auth.session["user"]:
             self.goto_login(message="Login expired")
-        # record the time of the latest activity for logged in user (with throttling)
-        if not activity or time_now - activity > 6:
-            self.auth.session["recent_activity"] = time_now
-        self.auth.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
 
@@ -291,6 +282,24 @@ class Auth(Fixture):
         self.form_source = DefaultAuthForms(self)
         self.fix_actions()
 
+    def on_request(self, context):
+        """Checks that we have a user in the session and
+        the condition is met"""
+        user = self.session.get("user")
+        if user:
+            activity = self.session.get("recent_activity")
+            time_now = calendar.timegm(time.gmtime())
+            # enforce the optionl auth session expiration time
+            if (
+                self.param.login_expiration_time
+                and activity
+                and time_now - activity > self.param.login_expiration_time
+            ):
+                del self.session["user"]
+            elif not activity or time_now - activity > 6:
+                self.session["recent_activity"] = time_now
+        self.session["recent_timestamp"] = utcnow().isoformat()
+
     def allows(self, action_name):
         """Checks if the provided action is allowed on the Auth object"""
         return (
@@ -419,12 +428,13 @@ class Auth(Fixture):
             db.define_table(
                 "auth_user",
                 *(auth_fields + self.extra_auth_user_fields),
-                format=lambda u: f"{u.first_name} {u.last_name}")
+                format=lambda u: f"{u.first_name} {u.last_name}",
+            )
 
     @property
     def signature(self):
         """Returns a list of fields for a table signature"""
-        now = lambda: datetime.datetime.utcnow()
+        now = lambda: utcnow()
         user = lambda s=self: s.user_id
         fields = [
             Field(
@@ -787,7 +797,7 @@ class Auth(Fixture):
                     past_passwords_hash=past_pwds
                 )
         num = db(db.auth_user.id == user.get("id")).update(
-            password=new_pwd, last_password_change=datetime.datetime.utcnow()
+            password=new_pwd, last_password_change=utcnow()
         )
         return {"updated": num}
 
@@ -1069,6 +1079,7 @@ class Auth(Fixture):
             for item in exposed_form_routes:
                 form_factory = getattr(self.form_source, item["form_name"])
                 template = Template(f"{route}.html", **self.param.template_args)
+
                 @action(item["form_route"], method=["GET", "POST"])
                 @action.uses(template, item["uses"], self.flash, *uses)
                 def _(
@@ -1677,7 +1688,9 @@ class DefaultAuthForms:
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
     def two_factor(self):
-        if (self.auth.param.two_factor_send is None) and (self.auth.param.two_factor_validate is None):
+        if (self.auth.param.two_factor_send is None) and (
+            self.auth.param.two_factor_validate is None
+        ):
             raise HTTP(404)
 
         user_id = self.auth.session.get("auth.2fa_user")
@@ -1702,13 +1715,19 @@ class DefaultAuthForms:
             # external validation outcome
             outcome = None
             if self.auth.param.two_factor_validate:
-                outcome = self.auth.param.two_factor_validate(user, form.vars['authentication_code'])
+                outcome = self.auth.param.two_factor_validate(
+                    user, form.vars["authentication_code"]
+                )
             # outcome:
             #   True: external validation passed
             #   False: external validation failed
             #   None: external validation status unknown - check against the generated code
-            if outcome==False or ((outcome is None) and (form.vars['authentication_code']!=code)):
-                form.errors['authentication_code'] = self.auth.param.messages["errors"]["two_factor"]
+            if outcome == False or (
+                (outcome is None) and (form.vars["authentication_code"] != code)
+            ):
+                form.errors["authentication_code"] = self.auth.param.messages["errors"][
+                    "two_factor"
+                ]
 
         form = Form(
             [
@@ -1981,7 +2000,10 @@ class DefaultAuthForms:
     def logout(self, model=False):
         if model:
             return dict(
-                public=False, hidden=False, noform=True, href=URL(f"{self.auth.route}/api/logout")
+                public=False,
+                hidden=False,
+                noform=True,
+                href=URL(f"{self.auth.route}/api/logout"),
             )
 
         """Process logout"""
@@ -1993,7 +2015,10 @@ class DefaultAuthForms:
     def verify_email(self, model=False):
         if model:
             return dict(
-                public=True, hidden=True, noform=True, href=URL(f"{self.auth.route}/api/verify_email")
+                public=True,
+                hidden=True,
+                noform=True,
+                href=URL(f"{self.auth.route}/api/verify_email"),
             )
 
         """Process token in email verification"""

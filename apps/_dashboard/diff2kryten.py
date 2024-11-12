@@ -1,6 +1,5 @@
 import sys
 
-
 # Note, when changing the Highlight.js css,
 # the background color of .file .diff should match the
 # background in the .hljs class in gitlog.min.css

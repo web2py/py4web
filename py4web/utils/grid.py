@@ -9,25 +9,8 @@ import functools
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TAG,
-    TBODY,
-    TD,
-    TH,
-    THEAD,
-    TR,
-    XML,
-    A,
-    I,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -259,9 +242,7 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.datetime)
-            else value
-            if value
-            else ""
+            else value if value else ""
         ),
         "time": lambda value: (
             XML(
@@ -269,9 +250,7 @@ class Grid:
                 % (value.hour, value.minute, value.second)
             )
             if value and isinstance(value, datetime.time)
-            else value
-            if value
-            else ""
+            else value if value else ""
         ),
         "date": lambda value: (
             XML(
@@ -283,9 +262,7 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.date)
-            else value
-            if value
-            else ""
+            else value if value else ""
         ),
         "list": lambda value: ", ".join(x for x in value) if value else "",
     }
@@ -976,9 +953,11 @@ class Grid:
                     [
                         self.param.grid_class_style.get(
                             col.td_class_style,
-                            col.td_class_style(row)
-                            if callable(col.td_class_style)
-                            else self.param.grid_class_style.get("grid-td"),
+                            (
+                                col.td_class_style(row)
+                                if callable(col.td_class_style)
+                                else self.param.grid_class_style.get("grid-td")
+                            ),
                         ),
                         f"grid-cell-{col.key}",
                     ]

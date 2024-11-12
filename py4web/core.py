@@ -48,7 +48,6 @@ except ImportError:
     gunicorn = None
 
 import click
-
 # Third party modules
 import ombott as bottle
 import pluralize
@@ -88,6 +87,7 @@ __all__ = [
     "wsgi",
     "Condition",
     "safely",
+    "utcnow",
 ]
 
 PY4WEB_CMD = sys.argv[0]
@@ -136,6 +136,11 @@ bottle.default_app().add_hook("before_request", _before_request)
 
 # set to true to debug issues with fixtures
 DEBUG = False
+
+
+def utcnow():
+    """returns the current time in utc"""
+    return datetime.datetime.now(datetime.timezone.utc)
 
 
 def module2filename(module):
@@ -1104,9 +1109,9 @@ class Condition(Fixture):
 # Monkey Patch: Cookies
 #########################################################################################
 
-http.cookies.Morsel._reserved[  # pylint: disable=protected-access
-    "same-site"
-] = "SameSite"
+http.cookies.Morsel._reserved["same-site"] = (  # pylint: disable=protected-access
+    "SameSite"
+)
 
 #########################################################################################
 # Monkey Patch: ssl bug for gevent
@@ -1168,7 +1173,7 @@ def get_error_snapshot(depth=5):
         etype = etype.__name__
 
     data = {}
-    data["timestamp"] = datetime.datetime.utcnow().isoformat().replace("T", " ")
+    data["timestamp"] = utcnow().isoformat().replace("T", " ")
     data["python_version"] = sys.version
     platform_keys = [
         "machine",
@@ -1248,7 +1253,7 @@ class DatabaseErrorLogger:
                 app_name=app_name,
                 method=request.method,
                 path=request.path,
-                timestamp=datetime.datetime.utcnow(),
+                timestamp=utcnow(),
                 client_ip=request.environ.get("REMOTE_ADDR"),
                 error=error_snapshot["exception_value"],
                 snapshot=error_snapshot,
@@ -1740,6 +1745,7 @@ def start_server(kwargs):
         log_routes(bottle.default_app().routes)
 
     bottle.run(**params)
+
 
 def check_compatible(py4web_version):
     """To be called by apps to check if module version is compatible with py4web requirements"""

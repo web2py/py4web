@@ -3,8 +3,9 @@ import random
 
 def make():
     # prevent circular imports
-    from .common import db, action
     from py4web.utils.populate import populate
+
+    from .common import action, db
 
     if db(db.auth_user).count() == 1:
         populate(db.auth_user, 10, contents={"is_active": True})

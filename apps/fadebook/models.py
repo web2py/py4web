@@ -1,5 +1,6 @@
-from .common import *
 from pydal.validators import IS_NOT_EMPTY
+
+from .common import *
 
 db.define_table(
     "feed_item", Field("body", "text", requires=IS_NOT_EMPTY()), auth.signature

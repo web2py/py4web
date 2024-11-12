@@ -1,6 +1,8 @@
 from py4web import action, request
+
 from .common import auth
 from .models import db, parse_post_content
+
 
 @action("index")
 @action.uses("index.html", auth.user)

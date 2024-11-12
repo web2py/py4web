@@ -20,11 +20,11 @@ from .examples.page_with_raise import page_with_raise
 from .examples.page_with_redirect import page_with_redirect, target
 from .examples.page_with_template import page_with_template
 from .examples.page_without_template import page_without_template
+from .examples.rest import rest
+from .examples.rpc import rpc
 from .examples.session_clear import session_clear
 from .examples.session_counter import session_counter
 from .examples.tagsinput_form import tagsinput_form
-from .examples.rest import rest
-from .examples.rpc import rpc
 from .vue_components_examples.vue_file_uploader import vue_file_uploader
 from .vue_components_examples.vue_grid import vue_grid
 from .vue_components_examples.vue_star_rater import vue_star_rater
@@ -33,7 +33,6 @@ if MODE == "full":
     from .examples.auth_form import auth_form
     from .examples.auth_forms import auth_forms
     from .examples.create_form import create_form
-    from .examples.update_form import update_form
     from .examples.custom_form import custom_form
     from .examples.example_ajax_grid import example_ajax_grid
     from .examples.example_html_grid import example_html_grid
@@ -43,11 +42,12 @@ if MODE == "full":
     from .examples.show_a_button import show_a_button
     from .examples.socketio import index as socketio
     from .examples.test_expose import test_expose1, test_expose2, test_expose3
-    from .vue_components_examples.vue_view_form import vue_view_form
-    from .vue_components_examples.vue_insert_form import vue_insert_form
+    from .examples.update_form import update_form
+    from .examples.ws import index as ws
     from .vue_components_examples.vue_edit_form import vue_edit_form
     from .vue_components_examples.vue_grid_and_forms import vue_grid_and_forms
-    from .examples.ws import index as ws
+    from .vue_components_examples.vue_insert_form import vue_insert_form
+    from .vue_components_examples.vue_view_form import vue_view_form
 
 
 @action("index")

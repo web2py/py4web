@@ -1,4 +1,4 @@
-from .common import settings, scheduler
+from .common import scheduler, settings
 from .models import db
 
 # #######################################################

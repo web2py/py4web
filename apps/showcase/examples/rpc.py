@@ -1,7 +1,8 @@
+import requests
+
 from py4web import action, request
 from py4web.utils.jsonrpc import JsonRpc
 
-import requests
 
 # define a function you want to expose
 def add(x, y):

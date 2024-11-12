@@ -1,8 +1,9 @@
-import uuid
 import json
-from py4web.core import action, request, response, Fixture
-from .models import db, Field
+import uuid
 
+from py4web.core import Fixture, action, request, response
+
+from .models import Field, db
 
 # for demo purposes we create a table of tokens
 # in practice you want to link them to users

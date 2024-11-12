@@ -1,5 +1,6 @@
 import os
-from py4web import action, request, DAL, Field, Session, Cache, Condition
+
+from py4web import DAL, Cache, Condition, Field, Session, action, request
 
 # define session and cache objects
 session = Session()

@@ -2,7 +2,7 @@ import os
 
 from yatl.helpers import A, I
 
-from py4web import action, URL, redirect
+from py4web import URL, action, redirect
 from py4web.utils.form import FormStyleDefault
 from py4web.utils.grid import Column, Grid, GridClassStyle
 

@@ -1,6 +1,7 @@
-from py4web import action, redirect, URL, Field, HTTP
+from py4web import HTTP, URL, Field, action, redirect
 from py4web.utils.form import Form
-from .common import flash, session, db, auth
+
+from .common import auth, db, flash, session
 from .make_up_data import make
 
 #
