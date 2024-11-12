@@ -1,17 +1,18 @@
-What is py4web?
-===============
+PY4WEB
+======
 
 .. image:: https://img.shields.io/pypi/v/py4web.svg
    :target: https://pypi.org/project/py4web/
 
-PY4WEB is a web framework for the rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker.
+.. image:: https://github.com/web2py/py4web/actions/workflows/run_test.yaml/badge.svg
+   :target: https://github.com/web2py/py4web/actions/workflows/run_test.yaml
 
+PY4WEB is a web framework for the rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker.
 
 -  Main web site:  https://py4web.com
 -  GitHub repository: https://github.com/web2py/py4web
 -  Official documentation site: https://py4web.com/_documentation
 -  License: `BSD-3-Clause License <https://github.com/web2py/py4web/blob/master/LICENSE.md>`__
-
 
 
 Screenshots
