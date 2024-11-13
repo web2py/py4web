@@ -519,10 +519,7 @@ class Flash(Fixture):
         output = context["output"]
         flash = self.local.flash or ""
         if isinstance(output, dict):
-            if "template_inject" in context:
-                context["template_inject"]["flash"] = flash
-            else:
-                context["template_inject"] = dict(flash=flash)
+            context["template_inject"]["flash"] = flash
         elif self.local.flash is not None:
             response.headers.setdefault("component-flash", json.dumps(flash))
 
@@ -616,7 +613,7 @@ class Template(Fixture):
         ctx = dict(request=request)
         ctx.update(HELPERS)
         ctx.update(URL=URL)
-        ctx.update(context.get("template_inject", {}))
+        ctx.update(context["template_inject"])
         ctx.update(output)
         ctx["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
@@ -998,6 +995,7 @@ class action:  # pylint: disable=invalid-name
                     "output": None,
                     "exception": None,
                     "processed": processed,
+                    "template_inject": {},
                 }
                 try:
                     for fixture in fixtures:
