@@ -30,6 +30,7 @@ from .vue_components_examples.vue_grid import vue_grid
 from .vue_components_examples.vue_star_rater import vue_star_rater
 
 if MODE == "full":
+    from .vue_components_examples.models import db
     from .examples.auth_form import auth_form
     from .examples.auth_forms import auth_forms
     from .examples.create_form import create_form
