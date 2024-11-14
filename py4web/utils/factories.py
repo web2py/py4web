@@ -22,33 +22,38 @@ class ActionFactory:
     def __init__(self, *fixtures):
         self.fixtures = fixtures
 
-    def get(self, path=None, template=None):
-        return self._action_maker("GET", path, template)
+    def get(self, path=None, template=None, uses=None):
+        return self._action_maker("GET", path, template, uses)
 
-    def post(self, path=None, template=None):
-        return self._action_maker("POST", path, template)
+    def post(self, path=None, template=None, uses=None):
+        return self._action_maker("POST", path, template, uses)
 
-    def put(self, path=None, template=None):
-        return self._action_maker("PUT", path, template)
+    def put(self, path=None, template=None, uses=None):
+        return self._action_maker("PUT", path, template, uses)
 
-    def delete(self, path=None, template=None):
-        return self._action_maker("DELETE", path, template)
+    def delete(self, path=None, template=None, uses=None):
+        return self._action_maker("DELETE", path, template, uses)
 
-    def head(self, path=None, template=None):
-        return self._action_maker("HEAD", path, template)
+    def head(self, path=None, template=None, uses=None):
+        return self._action_maker("HEAD", path, template, uses)
 
     def __call__(
-        self, path=None, template=None, method=["GET", "POST", "PUT", "HEAD", "DELETE"]
+        self,
+        path=None,
+        template=None,
+        method=["GET", "POST", "PUT", "HEAD", "DELETE"],
+        uses=None
     ):
-        return self._action_maker(method, path, template)
+        return self._action_maker(method, path, template, uses)
 
-    def _action_maker(self, method, path, template):
+    def _action_maker(self, method, path, template, uses):
+        uses = uses or [] # handle uses=None
         def make_action(func, path=path, method=method, template=template):
             if not path:
                 path = func.__name__
                 for name in func.__code__.co_varnames[: func.__code__.co_argcount]:
                     path += "/<%s>" % name
-            fixtures = [f for f in self.fixtures]
+            fixtures = [*self.fixtures, *uses]
             if template is None:
                 template = func.__name__ + ".html"
             if template:
@@ -59,8 +64,9 @@ class ActionFactory:
 
         return make_action
 
-    def callback(self, path=None):
-        return CallbackFactory(path, self.fixtures)
+    def callback(self, path=None, uses=None):
+        uses = uses or [] # handle uses=None
+        return CallbackFactory(path, [*self.fixtures, *uses])
 
 
 class CallbackFactory:
