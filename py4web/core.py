@@ -1713,7 +1713,12 @@ def start_server(kwargs):
 
     # Catch interrupts like Ctrl-C if needed
     def kill_all(sig, _):
-        os.kill(os.getpid(), signal.SIGKILL)
+        if hasattr(signal, "SIGKILL"):
+            # on linux and mac
+            os.kill(os.getpid(), signal.SIGKILL)
+        else:
+            # on windows
+            os.kill(os.getpid(), signal.SIGINT)
 
     signal.signal(signal.SIGINT, kill_all)
 
