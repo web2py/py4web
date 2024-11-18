@@ -296,12 +296,12 @@ class Cache:
 
 def objectify(obj):  # pylint: disable=too-many-return-statements
     """converts the obj(ect) into a json serializable object"""
+    if hasattr(obj, "isoformat"):
+        return obj.isoformat().replace("T", " ")
     if isinstance(obj, numbers.Integral):
         return int(obj)
     if isinstance(obj, (numbers.Rational, numbers.Real)):
         return float(obj)
-    if isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
-        return obj.isoformat().replace("T", " ")
     if isinstance(obj, str):
         return obj
     if isinstance(obj, dict):
@@ -310,7 +310,7 @@ def objectify(obj):  # pylint: disable=too-many-return-statements
         return obj.as_list()
     if hasattr(obj, "as_dict"):
         return obj.as_dict()
-    if hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
+    if isinstance(obj, (list, set, types.GeneratorType)):
         return list(obj)
     if hasattr(obj, "xml"):
         return obj.xml()
