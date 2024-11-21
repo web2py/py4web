@@ -214,6 +214,8 @@ auth.enable(uses=(session, T, db), env=dict(T=T))
 # Define convenience decorators
 # They can be used instead of @action and @action.uses
 # They should NEVER BE MIXED with @action and @action.uses
+# If you need to provide extra fixtures for a specific controller
+# add them like this: @authenticated(uses=[extra_fixture])
 # #######################################################
 unauthenticated = ActionFactory(db, session, T, flash, auth)
 authenticated = ActionFactory(db, session, T, flash, auth.user)

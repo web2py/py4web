@@ -1122,9 +1122,9 @@ Convenience Decorators
 ----------------------
 
 The ``_scaffold`` application, in ``common.py`` defines two special
-convenience decorators:
+convenience decorators using ActionFactory:
 
-::
+.. code:: python
 
    @unauthenticated()
    def index():
@@ -1132,7 +1132,7 @@ convenience decorators:
 
 and
 
-::
+.. code:: python
 
    @authenticated()
    def index():
@@ -1146,6 +1146,45 @@ arguments of the action separated by a slash (/).
 -  @unauthenticated does not require the user to be logged in.
 -  @authenticated required the user to be logged in.
 
-They can be combined with (and precede) other ``@action.uses(...)`` but
-they should not be combined with ``@action(...)`` because they perform
-that function automatically.
+.. warning::
+
+   ActionFactory decorators like these cannot be combined
+   with @action or @action.uses
+
+The decorators can be used directly as shown above, which enables
+all HTTP methods (GET, POST, PUT, ...) but you can also create separate
+controllers for each HTTP method:
+
+.. code:: python
+
+   @authenticated.get()
+   def index():
+       # only handle GET requests
+       return dict()
+
+   @authenticated.post(path="index")
+   def index_form():
+       # only handle POST requests
+       return dict()
+
+The both decorator and its HTTP method calls have the following arguments:
+
+- ``path`` overwrites the path built from the function name
+   with the given string. Does not automatically handle arguments.
+- ``template`` specifies the template name, instead of using
+   the function name.
+- ``uses`` specify extra fixtures for this specific controllers.
+
+
+.. code:: python
+   
+   @authenticated(
+      path="test",
+      template="generic.html",
+      uses=[Inject(message="Hello World")])
+   def example():
+       return dict()
+
+As manual ordering of fixtures isn't possible with ``uses``,
+make sure the fixtures define their dependencies.
+See: :ref:`Fixtures with dependencies`
