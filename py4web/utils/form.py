@@ -275,7 +275,7 @@ class FormStyleFactory:
         errors,
         readonly,
         deletable,
-        noncreate,
+        showreadonly,
         show_id,
         kwargs=None,
     ):
@@ -348,10 +348,9 @@ class FormStyleFactory:
                 continue
 
             #  if this is an create form (unkown id) then only show writable fields.
-            #  Some if an edit form was made from a list of fields and noncreate=True
-            elif not vars.get("id") and noncreate:
-                if not field.writable:
-                    continue
+            #  Some if an edit form was made from a list of fields and showreadonly=True
+            elif not showreadonly and not field.writable:
+                continue
 
             # ignore blob fields
             if field.type == "blob":  # never display blobs (mistake?)
@@ -684,7 +683,7 @@ class Form(object):
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
     :param deletable: set to False to disallow deletion of record
-    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form.
+    :param showreadonly: show readonly fields True, False, or None for default behavior)
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
     :param keep_values: if set to true, it remembers the values of the previously submitted form
@@ -704,7 +703,7 @@ class Form(object):
         record=None,
         readonly=False,
         deletable=True,
-        noncreate=True,
+        showreadonly=True,
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
@@ -757,7 +756,10 @@ class Form(object):
         self.vars = {}
         self.errors = {}
         self.readonly = readonly
-        self.noncreate = noncreate
+        # if showreadoanly is None only display readonly fields for edit for or non db based forms
+        if showreadonly is None:
+            showreadonly = self.record or isinstance(table, (list, tuple))
+        self.showreadonly = showreadonly
         self.submitted = False
         self.deleted = False
         self.accepted = False
@@ -943,7 +945,7 @@ class Form(object):
                 errors,
                 self.readonly,
                 self.deletable,
-                self.noncreate,
+                self.showreadonly,
                 show_id=self.show_id,
                 kwargs=self.kwargs,
             )
