@@ -15,6 +15,7 @@ rocket3 >= 20241201.1
 yatl >= 20230507.3
 pydal >= 20241201.2
 watchgod >= 0.6
+graphlib_backport>=1.0;python_version<"3.9"
 
 # optional modules:
 # gunicorn
