@@ -117,6 +117,10 @@ class TestSession(unittest.TestCase):
         memcache_process = None
         try:
             memcache_process = subprocess.Popen(["memcached", "-p", "11211"])
+        except:
+            print("No memcached")
+            return
+        try:
             time.sleep(1)
             request.app_name = "myapp"
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
