@@ -178,6 +178,22 @@ if settings.OAUTH2OKTA_CLIENT_ID:
     )
 
 # #######################################################
+# Enable optional API token plugins
+# #######################################################
+
+# curl -H "Authorization: Bearer {token}"
+# create tokens in db.auth_simple_token
+#
+# simple_token_plugin = SimpleTokenPlugin(auth)
+# auth.token_plugins.append(simple_token_plugin)
+
+# curl -H "Authorization: Bearer {token}"
+# create tokens with JwtTokenPlugin(auth).make(user, expiration)
+#
+# jwt_token_plugin = JwtTokenPlugin(auth)
+# auth.token_plugins.append(jwt_token_plugin)
+
+# #######################################################
 # Define a convenience action to allow users to download
 # files uploaded and reference by Field(type='upload')
 # #######################################################
