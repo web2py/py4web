@@ -2086,25 +2086,28 @@ class SimpleTokenPlugin:
         return dict(grid=grid)
     """
 
-    def __init__(self, auth):
+    def __init__(self, auth, table=None):
         self.auth = auth
-        auth.db.define_table(
-            "auth_simple_token",
-            Field("token", default=uuid.uuid4, unique=True, writable=False),
-            Field(
-                "user_id", "reference auth_user", default=auth.user_id, writable=False
-            ),
-            Field("description"),
-            Field("expiration_date", "datetime"),
-            auth.signature,
-        )
+        if table:
+            self.table = table
+        else:
+            self.table = auth.db.define_table(
+                "auth_simple_token",
+                Field("token", default=uuid.uuid4, unique=True, writable=False),
+                Field(
+                    "user_id", "reference auth_user", default=auth.user_id, writable=False
+                ),
+                Field("description"),
+                Field("expiration_date", "datetime"),
+                auth.signature,
+            )
 
     def get_user(self):
         authorization = request.headers.get("authorization")
         if authorization and authorization.startswith("Bearer "):
             db = self.auth.db
             token = authorization[6:].strip()
-            row = db.auth_simple_token(token=token)
+            row = self.table(token=token)
             if row and row.expiration_date.isoformat() > utcnow().isoformat():
                 user = db.auth_user(row.user_id)
                 return user.as_dict()

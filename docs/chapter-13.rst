@@ -414,6 +414,165 @@ You will also have to register your OAuth2 redirect URI in your created applicat
     As Discord users have no concept of first/last name, the user in the auth table will contain the
     Discord username as the first name and discriminator as the last name.
 
+Auth API Plugins
+~~~~~~~~~~~~~~~~
+
+There are two types of web APIs, those called by the browser for example by a single page web app,
+and those designed to be called by a different kind of program. Both of them may need tosupport
+authentication. The distintion is important because, in the case of the browser, there is no need
+to manage any authentication token as the browser already provides cookies and py4web uses
+cookies to handle seesions. If the user operating the browser is logged-in, when an API is called,
+the corresponding action already knows who the user is. No additional logic is necessary.
+In this case there there is no need for any kind of additional API token which would only diminuish
+the security provided by the cookie based session token.
+
+When the API is to be accessed by a different program (for example a script) the story is different.
+There is no session and we do not want to ask the user for the password every time.
+The standard way to authenticate in this case is by issuing the user an API token, aka a string, 
+which, when presented along with API request allows py4web to recognize the identity of the caller.
+This is also referred to as "Authentication bearer".
+
+Py4web provides a plugin system that gives you a lot of flexibility but it also provides
+two practical plugins that are sufficient in most cases. The two plugins are called: 
+SimpleTokenPlugin and JwtTokenPlugin. The first one of the two is recommended in most of the cases.
+
+What all plugins have in common:
+- They have a way for a user to create a token which is a string.
+- When an HTTP(S) request is made to an action that @actiion.uses(auth) or @action.uses(auth.user)
+  py4web will identify the user if the token is present, as if the user was logged-in.
+
+What SimpleTokenPlugin and JwtTokenPlugin have in common:
+- When an HTTP(S) request is made, the token must be put in the "Authentication" header.
+  You will need to create your own plugin if you want to pass it in some other manner.
+- Each user can create as many tokens as desired.
+- Users can create tokens for other users if the application logic requires/allows it.
+
+Unique features of SimpleTokenPlugin:
+- A token is a UUID.
+- Tokens can be managed serverside (created, deleted, expired, change expiration).
+- Current tokens are stored in a adatabase table.
+- The default table associates token with the owner and a textual description.
+  Users can nevertheless provide their own table and add any desired metadata to tokens
+  which the app can retrieve to distinguish different tokens from the same user.
+  This is done by adding fields to the table.
+- Under the hood veryfing a token requires a database query.
+
+Unique features of JwtTokenPlugin:
+- The token is an encrypted and digitally signed dict that stores the user_id and expiration.
+- The author of the token can add any metadata to into the token at creation.
+- The token is not stored anywhere serverside and there is no database table.
+- Tokens can be created (and there is a function to do so) but they cannot be managed.
+  The server cannot expire tokens or change expiration. This would require the tokens
+  to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.
+- The only way to expire a token is by changing the serverside secret using for validation
+  so when a token is expired, all tokens are expired.
+
+SimpleTokenPlugin are the recommended kind of tokens for most applications.
+JwtTokenPlugin are valuable when the expiration is short and known in advance and when
+avoiding a database lookup is very important, such as for actions that are very fast
+and one is willing to sacrifice a bit of security (serverside token expiration capability)
+in order to avoid database access.
+
+Example of SimpleTokenPlugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In common.py:
+
+.. code:: python
+
+    from py4web.utils.auth import SimpleTokenPlugin
+    simple_token_plugin = SimpleTokenPlugin(auth)
+    auth.token_plugins.append(simple_token_plugin)
+
+You can optionally a ``table=db.mytable`` to a custom table. Otherwise it will create and use
+one called "auth_simple_token".
+
+In controllers.py
+
+.. code:: python
+
+    @action("test_api")
+    @action.uses(auth.user)
+    def test_api():
+        return {"hello": "world"}   
+
+Users can access this action if via a browser if they are logged in, without the token, of via API by providing a token.
+
+.. code:: bash
+
+    curl http://127.0.0.1:8000/test1/test_api -H "Authorization: Bearer {token}"
+
+In order to create and manage tokens you can use a grid. In controllers.py
+
+.. code:: python
+
+    @action("tokens/<path:path>")
+    @action.uses("generic.html", auth.user)
+    def _(path):
+       db.auth_simple_token.user_id.default = auth.user_id
+       grid = Grid(path, db.auth_simple_token.user_id==auth.user_id, create=True, deletable=True)
+       return dict(grid=grid)
+
+
+Example of JwtTokenPlugin
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In common.py:
+
+.. code:: python
+
+    from py4web.utils.auth import SimpleTokenPlugin
+    jwt_token_plugin = JwtTokenPlugin(auth)
+    auth.token_plugins.append(jwt_token_plugin)
+
+
+In controllers.py it works the same as SimpleTokenPlugin:
+
+.. code:: python
+
+    @action("test_api")
+    @action.uses(auth.user)
+    def test_api():
+        return {"hello": "world"}   
+
+The token is also passed using the same header as in the previous example:
+
+.. code:: bash
+
+    curl http://127.0.0.1:8000/test1/test_api -H "Authorization: Bearer {token}"
+
+While you cannot manage tokens you still need a way to create them. You can create an
+action for example that, when called, gives you a new token. In controllers.py
+
+.. code:: python
+
+    @action("make_token")
+    @action.uses("generic.html", auth.user)
+    def make_token():
+         return dict(token=jwt_token_plugin.make(
+            auth.current_user, 
+            expiration=utcnow()+datetime.timedelta(days=10)))
+
+Example of custom Token Plugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A token plugin is just a class that, given a request, returns an associated user.
+For example here is a dumb and UNSAFE plugin that authorizes everybody as user 1 as long as
+the "Authentication" header is provided.
+
+from py4web import request
+
+.. code:: python
+
+    class MyCustomTokenPlugin:
+        def get_user(self):
+            authorization = request.headers.get("Authentication")
+            if authorization:
+                return db.auth_user(1)
+            return None 
+
+    auth.token_plugins.append(MyCustomTokenPlugin())
+
 
 Authorization using Tags
 ------------------------
