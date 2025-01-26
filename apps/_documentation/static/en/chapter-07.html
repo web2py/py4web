@@ -1,27 +1,24 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20240915 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20241204 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78bb2521"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=00fdcdc7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,9 +38,6 @@
             py4web
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                20240915
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -1249,9 +1243,11 @@ current value of that, or any other compute field.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">authorize</span></code> can be used to require access control on the
 corresponding field, for “upload” fields only. It will be discussed
 more in detail in the context of Authentication and Authorization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widget</span></code> do not use DAL widgets with py4web, it has has its own
+(see <a class="reference internal" href="chapter-12.html#widgets"><span class="std std-ref">Widgets</span></a> later).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">represent</span></code> can be None or can point to a function that takes a
 field value and returns an alternate representation for the field
-value. Examples:</p></li>
+value.</p></li>
 </ul>
 <p>Note not all the attributes are thread safe and most of them
 should only be set globally for an app. The following are guaranteed to be
@@ -4550,7 +4546,7 @@ than on SQL databases.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -4575,7 +4571,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240915
+      v: 20241204
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

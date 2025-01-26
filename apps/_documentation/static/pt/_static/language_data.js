@@ -1,13 +1,6 @@
 /*
- * language_data.js
- * ~~~~~~~~~~~~~~~~
- *
  * This script contains the language-specific data used by searchtools.js,
  * namely the list of stopwords, stemmer, scorer and splitter.
- *
- * :copyright: Copyright 2007-2024 by the Sphinx team, see AUTHORS.
- * :license: BSD, see LICENSE for details.
- *
  */
 
 var stopwords = ["a", "ao", "aos", "aquela", "aquelas", "aquele", "aqueles", "aquilo", "as", "at\u00e9", "com", "como", "da", "das", "de", "dela", "delas", "dele", "deles", "depois", "do", "dos", "e", "ela", "elas", "ele", "eles", "em", "entre", "era", "eram", "essa", "essas", "esse", "esses", "esta", "estamos", "estas", "estava", "estavam", "este", "esteja", "estejam", "estejamos", "estes", "esteve", "estive", "estivemos", "estiver", "estivera", "estiveram", "estiverem", "estivermos", "estivesse", "estivessem", "estiv\u00e9ramos", "estiv\u00e9ssemos", "estou", "est\u00e1", "est\u00e1vamos", "est\u00e3o", "eu", "foi", "fomos", "for", "fora", "foram", "forem", "formos", "fosse", "fossem", "fui", "f\u00f4ramos", "f\u00f4ssemos", "haja", "hajam", "hajamos", "havemos", "hei", "houve", "houvemos", "houver", "houvera", "houveram", "houverei", "houverem", "houveremos", "houveria", "houveriam", "houvermos", "houver\u00e1", "houver\u00e3o", "houver\u00edamos", "houvesse", "houvessem", "houv\u00e9ramos", "houv\u00e9ssemos", "h\u00e1", "h\u00e3o", "isso", "isto", "j\u00e1", "lhe", "lhes", "mais", "mas", "me", "mesmo", "meu", "meus", "minha", "minhas", "muito", "na", "nas", "nem", "no", "nos", "nossa", "nossas", "nosso", "nossos", "num", "numa", "n\u00e3o", "n\u00f3s", "o", "os", "ou", "para", "pela", "pelas", "pelo", "pelos", "por", "qual", "quando", "que", "quem", "se", "seja", "sejam", "sejamos", "sem", "serei", "seremos", "seria", "seriam", "ser\u00e1", "ser\u00e3o", "ser\u00edamos", "seu", "seus", "somos", "sou", "sua", "suas", "s\u00e3o", "s\u00f3", "tamb\u00e9m", "te", "tem", "temos", "tenha", "tenham", "tenhamos", "tenho", "terei", "teremos", "teria", "teriam", "ter\u00e1", "ter\u00e3o", "ter\u00edamos", "teu", "teus", "teve", "tinha", "tinham", "tive", "tivemos", "tiver", "tivera", "tiveram", "tiverem", "tivermos", "tivesse", "tivessem", "tiv\u00e9ramos", "tiv\u00e9ssemos", "tu", "tua", "tuas", "t\u00e9m", "t\u00ednhamos", "um", "uma", "voc\u00ea", "voc\u00eas", "vos", "\u00e0", "\u00e0s", "\u00e9ramos"];

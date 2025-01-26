@@ -1,28 +1,26 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation and Startup &mdash; py4web 20240915 documentation</title>
+  <title>Installation and Startup &mdash; py4web 20241204 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78bb2521"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/tabs.js?v=3030b3cb"></script>
-        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=00fdcdc7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/tabs.js?v=3030b3cb"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -42,9 +40,6 @@
             py4web
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                20240915
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -420,38 +415,36 @@ Usage: py4web.py run [OPTIONS] APPS_FOLDER
   Run the applications on apps_folder
 
 Options:
-  -Y, --yes                     No prompt, assume yes to questions
-                                [default: False]
-
-  -H, --host TEXT               Host listening IP [default: 127.0.0.1]
-  -P, --port INTEGER            Port number  [default: 8000]
-  -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
-                                empty)
-  -p, --password_file TEXT      File for the encrypted password  [default:
-                                password.txt]
-  -Q, --quiet                   Suppress server output
-  -R, --routes                  Write apps routes to file
-  -s, --server                  [default|wsgiref|tornado|gunicorn|gevent|waitress|gunicorn|gunicornGevent|gevent|
-                                geventWebSocketServer|geventWs|wsgirefThreadingServer|wsgiTh|rocketServer]
-                                Web server to use
-  -w, --number_workers INTEGER  Number of workers  [default: 0]
-  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
-                                [default: full]
-
-  --watch [off|sync|lazy]       Watch python changes and reload apps
-                                automatically, modes: off, sync, lazy
-                                [default: lazy]
-
-  --ssl_cert PATH               SSL certificate file for HTTPS
-  --ssl_key PATH                SSL key file for HTTPS
-  --errorlog TEXT               Where to send error logs
-                                (:stdout|:stderr|tickets_only|{filename})
-                                [default: :stderr]
-  -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
-                                (=WARNING)]
-  -D, --debug                   Debug switch  [default: False]
-  -U, --url_prefix TEXT         Prefix to add to all URLs in and out
-  -help, -h, --help             Show this message and exit.
+   -Y, --yes                       No prompt, assume yes to questions
+   -H, --host TEXT                 Host listening IP  [default: 127.0.0.1]
+   -P, --port INTEGER              Port number  [default: 8000]
+   -A, --app_names TEXT            List of apps to run, comma separated (all if
+                                    omitted or empty)
+   -p, --password_file TEXT        File for the encrypted password  [default:
+                                    password.txt]
+   -Q, --quiet                     Suppress server output
+   -R, --routes                    Write apps routes to file
+   -s, --server [default|wsgiref|tornado|wsgiref+threaded|rocket|waitress|gunicorn|gevent|gunicorn+gevent|gevent+websockets]
+                                    Web server to use (unavailable: waitress,
+                                    gunicorn, gevent, gunicorn+gevent,
+                                    gevent+websockets)
+   -w, --number_workers INTEGER    Number of workers  [default: 0]
+   -d, --dashboard_mode TEXT       Dashboard mode: demo, readonly, full, none
+                                    [default: full]
+   --watch [off|sync|lazy]         Watch python changes and reload apps
+                                    automatically, modes: off, sync, lazy
+                                    [default: lazy]
+   --ssl_cert PATH                 SSL certificate file for HTTPS
+   --ssl_key PATH                  SSL key file for HTTPS
+   --errorlog TEXT                 Where to send error logs
+                                    (:stdout|:stderr|tickets_only|{filename})
+                                    [default: :stderr]
+   -L, --logging_level INTEGER     The log level (0 - 50) [default: 30
+                                    (=WARNING)]
+   -D, --debug                     Debug switch
+   -U, --url_prefix TEXT           Prefix to add to all URLs in and out
+   -m, --mode TEXT                 default or development  [default: default]
+   -help, -h, --help               Show this message and exit.
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">app_names</span></code> option lets you filter which specific apps you want to serve (comma separated). If absent or empty
@@ -598,9 +591,10 @@ with some tips and tricks.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;configurations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py4web&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;debugpy&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;launch&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;program&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${workspaceFolder}/py4web.py&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py4web&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">// or &quot;program&quot;: &quot;${workspaceFolder}/py4web.py&quot;, if you didn&#39;t install py4web as a package</span>
 <span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
 <span class="w">                </span><span class="s2">&quot;apps&quot;</span><span class="p">,</span>
@@ -708,7 +702,7 @@ certificates. It optionally manage iptables, too.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -733,7 +727,7 @@ certificates. It optionally manage iptables, too.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240915
+      v: 20241204
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

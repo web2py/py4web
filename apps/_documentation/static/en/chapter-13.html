@@ -1,27 +1,24 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20240915 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 20241204 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78bb2521"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=00fdcdc7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,9 +38,6 @@
             py4web
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                20240915
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -83,6 +77,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#oauth2-with-google">OAuth2 with Google</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#oauth2-with-facebook">OAuth2 with Facebook</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#oauth2-with-discord">OAuth2 with Discord</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-api-plugins">Auth API Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-simpletokenplugin">Example of SimpleTokenPlugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-jwttokenplugin">Example of JwtTokenPlugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-custom-token-plugin">Example of custom Token Plugin</a></li>
 </ul>
 </li>
 </ul>
@@ -254,9 +254,11 @@ a logged in user and should redirect to login if no user is logged in.</p>
 </section>
 <section id="two-factor-authentication">
 <h3>Two Factor Authentication<a class="headerlink" href="#two-factor-authentication" title="Link to this heading"></a></h3>
-<p>Two factor authentication (or Two-step verification) is a way of improving authentication security. When activated an extra step is added in the login
-process. In the first step, users are shown the standard username/password form. If they successfully pass this challenge by submitting the correct
-username and password, and two factor authentication is enabled for the user, the server will present a second form before logging them in.</p>
+<p>Two factor authentication (or Two-step verification) is a way of improving authentication security.
+When activated an extra step is added in the login process. In the first step, users are shown the
+standard username/password form. If they successfully pass this challenge by submitting the correct
+username and password, and two factor authentication is enabled for the user, the server will
+present a second form before logging them in.</p>
 <p>There are a few Auth settings available to control how two factor authentication works.</p>
 <p>The following can be specified on Auth instantiation:</p>
 <ul class="simple">
@@ -266,8 +268,9 @@ username and password, and two factor authentication is enabled for the user, th
 </ul>
 <section id="two-factor-required">
 <h4>two_factor_required<a class="headerlink" href="#two-factor-required" title="Link to this heading"></a></h4>
-<p>When you pass a method name to the <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> parameter you are telling py4web to call that method to determine whether or not this login should
-be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, two factor authentication
+<p>When you pass a method name to the <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> parameter you are telling py4web to call
+that method to determine whether or not this login should be use or bypass two factor authentication.
+If your method returns True, then this login requires two factor.  If it returns False, two factor authentication
 is bypassed for this login.</p>
 <p>Sample <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> method</p>
 <p>This example shows how to allow users that are on a specific network.</p>
@@ -290,8 +293,9 @@ is bypassed for this login.</p>
 </section>
 <section id="two-factor-send">
 <h4>two_factor_send<a class="headerlink" href="#two-factor-send" title="Link to this heading"></a></h4>
-<p>When two factor authentication is active, py4web can generate a 6 digit code (using random.randint) and makes it possible to send it to the user. How this code is
-sent, is up to you. The <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
+<p>When two factor authentication is active, py4web can generate a 6 digit code (using random.randint) and
+makes it possible to send it to the user. How this code is sent, is up to you. The <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>
+argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
 <p>This example shows how to send an email with the two factor code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
@@ -315,14 +319,23 @@ Also notice this method can override the code and return a new one.</p>
 </section>
 <section id="two-factor-validate">
 <h4>two_factor_validate<a class="headerlink" href="#two-factor-validate" title="Link to this heading"></a></h4>
-<p>By default, py4web will validate the user input in the two factor form by comparing the code entered by the user with the code generated and sent using
-<code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>. However, sometimes it may be useful to define a custom validation of this user-entered code. For instance, if one would like to use the
-TOTP (or the Time-Based One-Time-Passwords) as the two factor authentication method, the validation requires comparing the code entered by the user with the
-value generated at the same time at the server side. Hence, it is not sufficient to generate that value earlier when showing the form (using for instance
-<code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method), because by the time the user submits the form, the current valid value may already be different. Instead, this value should be
+<p>By default, py4web will validate the user input in the two factor form by comparing the code entered
+by the user with the code generated and sent using <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>. However, sometimes it may be
+useful to define a custom validation of this user-entered code. For instance, if one would like to use the
+TOTP (or the Time-Based One-Time-Passwords) as the two factor authentication method, the validation
+requires comparing the code entered by the user with the value generated at the same time at the server side.
+Hence, it is not sufficient to generate that value earlier when showing the form (using for instance
+<code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method), because by the time the user submits the form, the current valid value may
+already be different. Instead, this value should be
 generated when validating the form submitted by the user.</p>
-<p>To accomplish such custom validation, the <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> method is available. It takes two arguments - the current user and the code that was entered
-by the user into the two factor authentication form. The primary use-case for this method is validation of time-based passwords.</p>
+<p>To accomplish such custom validation, the <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> method is available. It takes two arguments:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the current user</p></li>
+<li><p>the code that was entered by the user into the two factor authentication form</p></li>
+</ul>
+</div></blockquote>
+<p>The primary use-case for this method is validation of time-based passwords.</p>
 <p>This example shows how to validate a time-based two factor code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validate_code</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
    <span class="k">try</span><span class="p">:</span>
@@ -341,15 +354,17 @@ by the user into the two factor authentication form. The primary use-case for th
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">validate_code</span></code> method must return one of three values:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> - if the validation succeded,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> - if the validation succeeded,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">False</span></code> - if the validation failed,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - if the validation was not possible for any reason</p></li>
 </ul>
-<p>Notice that - if defined - this method is _always_ called to validate the two factor authentication form. It is up to you to decide what kind of validation it
-does. If the returned value is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the user input will be accepted as valid. If the returned value is <code class="docutils literal notranslate"><span class="pre">False</span></code> then the user input will be rejected as
-invalid, number of tries will be decresed by one, and user will be asked to try again. If the returned value is <code class="docutils literal notranslate"><span class="pre">None</span></code> the user input will be checked against
-the code generated with the use of <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method and the final result will depend on that comparison. In this case authentication will fail if <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>
-method was not defined, and hence no code was sent to the user.</p>
+<p>Notice that - if defined - this method is _always_ called to validate the two factor
+authentication form. It is up to you to decide what kind of validation it does. If the returned value is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+the user input will be accepted as valid. If the returned value is <code class="docutils literal notranslate"><span class="pre">False</span></code> then the user input will be
+rejected as invalid, number of tries will be decreased by one, and user will be asked to try again.
+If the returned value is <code class="docutils literal notranslate"><span class="pre">None</span></code> the user input will be checked against the code generated with the use
+of <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method and the final result will depend on that comparison. In this case authentication
+will fail if <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> method was not defined, and hence no code was sent to the user.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_validate</span> <span class="o">=</span> <span class="n">validate_code</span>
 </pre></div>
 </div>
@@ -382,7 +397,8 @@ method was not defined, and hence no code was sent to the user.</p>
 </dl>
 </li>
 </ul>
-<p>Important! If you filtered <code class="docutils literal notranslate"><span class="pre">ALLOWED_ACTIONS</span></code> in your app, make sure to whitelist the “two_factor” action so not to block the two factor API.</p>
+<p>Important! If you filtered <code class="docutils literal notranslate"><span class="pre">ALLOWED_ACTIONS</span></code> in your app, make sure to whitelist the “two_factor” action
+so not to block the two factor API.</p>
 </section>
 </section>
 <section id="auth-plugins">
@@ -472,6 +488,149 @@ You will also have to register your OAuth2 redirect URI in your created applicat
 <p class="admonition-title">Note</p>
 <p>As Discord users have no concept of first/last name, the user in the auth table will contain the
 Discord username as the first name and discriminator as the last name.</p>
+</div>
+</section>
+</section>
+<section id="auth-api-plugins">
+<h3>Auth API Plugins<a class="headerlink" href="#auth-api-plugins" title="Link to this heading"></a></h3>
+<p>There are two types of web APIs, those called by the browser for example by a single page web app,
+and those designed to be called by a different kind of program. Both of them may need tosupport
+authentication. The distintion is important because, in the case of the browser, there is no need
+to manage any authentication token as the browser already provides cookies and py4web uses
+cookies to handle seesions. If the user operating the browser is logged-in, when an API is called,
+the corresponding action already knows who the user is. No additional logic is necessary.
+In this case there there is no need for any kind of additional API token which would only diminuish
+the security provided by the cookie based session token.</p>
+<p>When the API is to be accessed by a different program (for example a script) the story is different.
+There is no session and we do not want to ask the user for the password every time.
+The standard way to authenticate in this case is by issuing the user an API token, aka a string,
+which, when presented along with API request allows py4web to recognize the identity of the caller.
+This is also referred to as “Authentication bearer”.</p>
+<p>Py4web provides a plugin system that gives you a lot of flexibility but it also provides
+two practical plugins that are sufficient in most cases. The two plugins are called:
+SimpleTokenPlugin and JwtTokenPlugin. The first one of the two is recommended in most of the cases.</p>
+<p>What all plugins have in common:
+- They have a way for a user to create a token which is a string.
+- When an HTTP(S) request is made to an action that &#64;actiion.uses(auth) or &#64;action.uses(auth.user)</p>
+<blockquote>
+<div><p>py4web will identify the user if the token is present, as if the user was logged-in.</p>
+</div></blockquote>
+<p>What SimpleTokenPlugin and JwtTokenPlugin have in common:
+- When an HTTP(S) request is made, the token must be put in the “Authentication” header.</p>
+<blockquote>
+<div><p>You will need to create your own plugin if you want to pass it in some other manner.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Each user can create as many tokens as desired.</p></li>
+<li><p>Users can create tokens for other users if the application logic requires/allows it.</p></li>
+</ul>
+<p>Unique features of SimpleTokenPlugin:
+- A token is a UUID.
+- Tokens can be managed serverside (created, deleted, expired, change expiration).
+- Current tokens are stored in a adatabase table.
+- The default table associates token with the owner and a textual description.</p>
+<blockquote>
+<div><p>Users can nevertheless provide their own table and add any desired metadata to tokens
+which the app can retrieve to distinguish different tokens from the same user.
+This is done by adding fields to the table.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Under the hood veryfing a token requires a database query.</p></li>
+</ul>
+<p>Unique features of JwtTokenPlugin:
+- The token is an encrypted and digitally signed dict that stores the user_id and expiration.
+- The author of the token can add any metadata to into the token at creation.
+- The token is not stored anywhere serverside and there is no database table.
+- Tokens can be created (and there is a function to do so) but they cannot be managed.</p>
+<blockquote>
+<div><p>The server cannot expire tokens or change expiration. This would require the tokens
+to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>The only way to expire a token is by changing the serverside secret using for validation
+so when a token is expired, all tokens are expired.</p></li>
+</ul>
+<p>SimpleTokenPlugin are the recommended kind of tokens for most applications.
+JwtTokenPlugin are valuable when the expiration is short and known in advance and when
+avoiding a database lookup is very important, such as for actions that are very fast
+and one is willing to sacrifice a bit of security (serverside token expiration capability)
+in order to avoid database access.</p>
+<section id="example-of-simpletokenplugin">
+<h4>Example of SimpleTokenPlugin<a class="headerlink" href="#example-of-simpletokenplugin" title="Link to this heading"></a></h4>
+<p>In common.py:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<span class="n">simple_token_plugin</span> <span class="o">=</span> <span class="n">SimpleTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simple_token_plugin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can optionally a <code class="docutils literal notranslate"><span class="pre">table=db.mytable</span></code> to a custom table. Otherwise it will create and use
+one called “auth_simple_token”.</p>
+<p>In controllers.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_api</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Users can access this action if via a browser if they are logged in, without the token, of via API by providing a token.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://127.0.0.1:8000/test1/test_api<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer {token}&quot;</span>
+</pre></div>
+</div>
+<p>In order to create and manage tokens you can use a grid. In controllers.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;tokens/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">==</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-jwttokenplugin">
+<h4>Example of JwtTokenPlugin<a class="headerlink" href="#example-of-jwttokenplugin" title="Link to this heading"></a></h4>
+<p>In common.py:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<span class="n">jwt_token_plugin</span> <span class="o">=</span> <span class="n">JwtTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jwt_token_plugin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In controllers.py it works the same as SimpleTokenPlugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_api</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>The token is also passed using the same header as in the previous example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://127.0.0.1:8000/test1/test_api<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer {token}&quot;</span>
+</pre></div>
+</div>
+<p>While you cannot manage tokens you still need a way to create them. You can create an
+action for example that, when called, gives you a new token. In controllers.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;make_token&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">make_token</span><span class="p">():</span>
+     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">jwt_token_plugin</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
+        <span class="n">expiration</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">10</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-custom-token-plugin">
+<h4>Example of custom Token Plugin<a class="headerlink" href="#example-of-custom-token-plugin" title="Link to this heading"></a></h4>
+<p>A token plugin is just a class that, given a request, returns an associated user.
+For example here is a dumb and UNSAFE plugin that authorizes everybody as user 1 as long as
+the “Authentication” header is provided.</p>
+<p>from py4web import request</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomTokenPlugin</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authentication&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">authorization</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyCustomTokenPlugin</span><span class="p">())</span>
+</pre></div>
 </div>
 </section>
 </section>
@@ -661,7 +820,7 @@ Here is an example of an action to start impersonating and stop impersonating an
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -686,7 +845,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20240915
+      v: 20241204
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

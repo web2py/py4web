@@ -1,27 +1,24 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating an app &mdash; py4web 20240915 documentation</title>
+  <title>Creating an app &mdash; py4web 20241204 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78bb2521"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=00fdcdc7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,9 +38,6 @@
             py4web
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                20240915
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -72,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#copying-the-scaffold-app">Copying the _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watch-for-files-change">Watch for files change</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#domain-mapped-apps">Domain-mapped apps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-error-pages">Custom error pages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
@@ -165,11 +160,15 @@ subfolder, and any file in there will be automatically published:</p>
 </div>
 <p>Notice that <code class="docutils literal notranslate"><span class="pre">static</span></code> is a special path for py4web and only files under
 the <code class="docutils literal notranslate"><span class="pre">static</span></code> folder are served.</p>
-<p>Important: internally py4web uses the ombott
-(One More BOTTle) &lt;<a class="reference external" href="https://github.com/valq7711/ombott">https://github.com/valq7711/ombott</a>&gt;`__,
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Internally py4web uses the
+<a class="reference external" href="https://github.com/valq7711/ombott">ombott (One More BOTTle) web server</a>,
+which is a minimal and fast <a class="reference external" href="https://bottlepy.org/">bottlepy</a> spin-off.
 It supports streaming, partial content, range requests,
 and if-modified-since. This is all
 handled automatically based on the HTTP request headers.</p>
+</div>
 </section>
 <section id="dynamic-web-pages">
 <h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Link to this heading"></a></h2>
@@ -259,6 +258,33 @@ the config field. The matched value is not modified.</p></li>
 </ul>
 <p>The pattern matching the wildcard is passed to the function under the
 specified variable <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>Note that the routing is implemented in ombott as radix-tree hybrid
+router. It is declaration-order-independent and it prioritizes static
+route-fragment over dynamic one, since this is most expected behavior.</p>
+<p>This results in some constraints, such as one cannot have more than one
+route that has dynamic fragment of different types (int, path) in the
+same place.. Hence <strong>something like this is incorrect</strong> and will result
+in errors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;code:int&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Color code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name:path&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Color name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+<p>Instead, to accomplish a simmilar result, one needs to handle all the
+logic in one action:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;color_identifier:path&gt;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">):</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Color code: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+   <span class="k">except</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Color name: </span><span class="si">{</span><span class="n">color_identifier</span><span class="si">}</span><span class="s1">&#39;</span>
+   <span class="k">return</span> <span class="n">msg</span>
+</pre></div>
+</div>
 <p>Also, the action decorator takes an optional <code class="docutils literal notranslate"><span class="pre">method</span></code> argument that
 can be an HTTP method or a list of methods:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index&#39;, method=[&#39;GET&#39;,&#39;POST&#39;,&#39;DELETE&#39;])
@@ -379,11 +405,10 @@ create a new clone of it manually or using the Dashboard.</p>
 </div>
 <p>Notice the following:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by <code class="docutils literal notranslate"><span class="pre">ombott</span></code>
-which is a minimal and fast bottlepy spin-off.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">redirect</span></code> and <code class="docutils literal notranslate"><span class="pre">URL</span></code> are similar to their web2py counterparts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by <code class="docutils literal notranslate"><span class="pre">ombott</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">redirect</span></code> and <code class="docutils literal notranslate"><span class="pre">URL</span></code> are similar to their web2py counterparts.</p></li>
 <li><p>helpers (<code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, etc) must be imported
-from <code class="docutils literal notranslate"><span class="pre">yatl.helpers</span></code> . They work pretty much as in web2py</p></li>
+from <code class="docutils literal notranslate"><span class="pre">yatl.helpers</span></code> . They work pretty much as in web2py.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">db</span></code>, <code class="docutils literal notranslate"><span class="pre">session</span></code>, <code class="docutils literal notranslate"><span class="pre">T</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code>, <code class="docutils literal notranslate"><span class="pre">auth</span></code> are Fixtures. They
 must be defined in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth.user)</span></code> indicates that this action expects a
@@ -491,15 +516,58 @@ a domain <code class="docutils literal notranslate"><span class="pre">myapp.exam
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>This is an example <code class="docutils literal notranslate"><span class="pre">server</span></code> block of nginx configuraiton. One would have to create a separate such block for <strong>each app/each domain</strong> being served by py4web server. Note some important aspects:</p>
+<p>This is an example <code class="docutils literal notranslate"><span class="pre">server</span></code> block of nginx configuration. One would have to create
+a separate such block for <strong>each app/each domain</strong> being served by py4web server. Note some important aspects:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">server_name</span></code> defines the domain mapped to the app <code class="docutils literal notranslate"><span class="pre">myapp</span></code>,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">proxy_http_version</span> <span class="pre">1.1;</span></code> directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk to the backend-server – here py4web – and it creates all kinds of issues with buffering and otherwise),</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">proxy_http_version</span> <span class="pre">1.1;</span></code> directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk</dt><dd><p>to the backend-server – here py4web – and it creates all kinds of issues with buffering and otherwise),</p>
+</dd>
+</dl>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">Host</span> <span class="pre">$host;</span></code> directive ensures that the correct <code class="docutils literal notranslate"><span class="pre">Host</span></code> is passed to py4web – here <code class="docutils literal notranslate"><span class="pre">myapp.example.com</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">X-PY4WEB-APPNAME</span> <span class="pre">/myapp;</span></code> directive ensures that py4web (and ombott) knows which app to serve and <strong>also</strong> that this application is domain-mapped – pay specific attention to the slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) in front of the <code class="docutils literal notranslate"><span class="pre">myapp</span></code> name – it is <strong>required</strong> to ensure correct parsing of URLs on ombott level,</p></li>
-<li><p>finally <code class="docutils literal notranslate"><span class="pre">proxy_pass</span> <span class="pre">http://127.0.0.1:8000/myapp$request_uri;</span></code> ensures that the request is passed in its entirity (<code class="docutils literal notranslate"><span class="pre">$request_uri</span></code>) to py4web server (here: <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8000</span></code>) and the correct app (<code class="docutils literal notranslate"><span class="pre">/myapp</span></code>).</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">proxy_set_header</span> <span class="pre">X-PY4WEB-APPNAME</span> <span class="pre">/myapp;</span></code> directive ensures that py4web (and ombott) knows which app to serve</dt><dd><p>and <strong>also</strong> that this application is domain-mapped – pay specific attention to the slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) in front of the <code class="docutils literal notranslate"><span class="pre">myapp</span></code>
+name – it is <strong>required</strong> to ensure correct parsing of URLs on ombott level,</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>finally <code class="docutils literal notranslate"><span class="pre">proxy_pass</span> <span class="pre">http://127.0.0.1:8000/myapp$request_uri;</span></code> ensures that the request is passed in its integrity (<code class="docutils literal notranslate"><span class="pre">$request_uri</span></code>)</dt><dd><p>to py4web server (here: <code class="docutils literal notranslate"><span class="pre">127.0.0.1:8000</span></code>) and the correct app (<code class="docutils literal notranslate"><span class="pre">/myapp</span></code>).</p>
+</dd>
+</dl>
+</li>
 </ul>
-<p>Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as <code class="docutils literal notranslate"><span class="pre">Auth</span></code>, <code class="docutils literal notranslate"><span class="pre">Form</span></code>, and <code class="docutils literal notranslate"><span class="pre">Grid</span></code> are done correctly using the domain to which the app is mapped to.</p>
+<p>Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as <code class="docutils literal notranslate"><span class="pre">Auth</span></code>, <code class="docutils literal notranslate"><span class="pre">Form</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">Grid</span></code> are done correctly using the domain to which the app is mapped to.</p>
+</section>
+<section id="custom-error-pages">
+<h2>Custom error pages<a class="headerlink" href="#custom-error-pages" title="Link to this heading"></a></h2>
+<p>py4web provides default error pages. For instance, if none of the routes
+in an app matches the request, a default 404 error page will be shown. By
+default all HTTP error codes are handled automatically by py4web.</p>
+<p>It is however possible to override this behaviour. It can be done either
+per HTTP error code, or even for all errors.</p>
+<p>Here is an example for overriding HTTP code 404 (not found):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">ERROR_PAGES</span>
+<span class="n">ERROR_PAGES</span><span class="p">[</span><span class="mi">404</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Page not found!&quot;</span>
+</pre></div>
+</div>
+<p>If one wants to replace _all_ default error pages, a special qualifier
+<code class="docutils literal notranslate"><span class="pre">&quot;*&quot;</span></code> should be used. Also, the returned value may contain HTML code as
+well:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">ERROR_PAGES</span>
+<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+
+<span class="n">ERROR_PAGES</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;We have encountered an error! (try: </span><span class="si">{</span><span class="n">A</span><span class="p">(</span><span class="s1">&#39;Main Page&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="n">scheme</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
+</pre></div>
+</div>
+<p>Note that this setup is <strong>global</strong>. This means that it is defined once
+for all apps on a given py4web instance. This is because, when an error
+is encountered, it could be because the request has not matched any of
+the apps. Hence, this configuration should only be done in <strong>one of the
+apps</strong>.</p>
 </section>
 </section>
 
@@ -514,7 +582,7 @@ a domain <code class="docutils literal notranslate"><span class="pre">myapp.exam
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -539,7 +607,7 @@ a domain <code class="docutils literal notranslate"><span class="pre">myapp.exam
      <label for="switch"></label>
      </span>
       
-      v: 20240915
+      v: 20241204
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -1,27 +1,24 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 20240915 documentation</title>
+  <title>Fixtures &mdash; py4web 20241204 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78bb2521"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=00fdcdc7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,9 +38,6 @@
             py4web
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                20240915
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -79,7 +73,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-dal-fixture">The DAL fixture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-auth-fixture">The Auth fixture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#caveats-about-fixtures">Caveats about fixtures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-fixtures">Custom fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-fixtures">Custom fixtures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixtures-with-dependencies">Fixtures with dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-local-storage">Using local storage</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#multiple-fixtures">Multiple fixtures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#caching-and-memoize">Caching and Memoize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convenience-decorators">Convenience Decorators</a></li>
@@ -266,7 +264,7 @@ templates. Here is a simple example:</p>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The string <cite>hello world</cite> will be translated based on the
+<p>The string <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code> will be translated based on the
 internationalization file in the specified “translations” folder that
 best matches the HTTP <code class="docutils literal notranslate"><span class="pre">accept-language</span></code> header.</p>
 <p>Here <code class="docutils literal notranslate"><span class="pre">Translator</span></code> is a py4web class that extends
@@ -290,7 +288,7 @@ action with a counter that counts “visits”.</p>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;You have been here </span><span class="si">{n}</span><span class="s2"> times&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">counter</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>If the <cite>T</cite> fixture is to be used from inside a template you may want to pass it to the template:</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">T</span></code> fixture is to be used from inside a template you may want to pass it to the template:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
@@ -364,7 +362,7 @@ you have to redefine the select method for the T instance:</p>
 </pre></div>
 </div>
 <p>This is to be done outside any action and will apply to all actions. Action will still need to declare
-<cite>action.uses(T)</cite> else the behavior is undefined.</p>
+<code class="docutils literal notranslate"><span class="pre">action.uses(T)</span></code> else the behavior is undefined.</p>
 </section>
 <section id="the-flash-fixture">
 <h2>The Flash fixture<a class="headerlink" href="#the-flash-fixture" title="Link to this heading"></a></h2>
@@ -629,9 +627,9 @@ given condition. For example to enforce a workflow:</p>
 </pre></div>
 </div>
 <p>Notice that the Condition fixtures takes a function as first argument
-which is called <cite>on_request</cite> and must evaluate to True or False.</p>
+which is called <code class="docutils literal notranslate"><span class="pre">on_request</span></code> and must evaluate to True or False.</p>
 <p>Also notice that in the above example the Condition depends on the Session
-therefore it must be listed after <cite>session</cite> in <cite>action.uses</cite>.</p>
+therefore it must be listed after <code class="docutils literal notranslate"><span class="pre">session</span></code> in <code class="docutils literal notranslate"><span class="pre">action.uses</span></code>.</p>
 <p>If False, by default, the Condition fixture raises 404.
 It is possible to specify a different exception:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Condition</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">HTTP</span><span class="p">(</span><span class="mi">400</span><span class="p">))</span>
@@ -643,7 +641,7 @@ for example, to redirect to another page:</p>
 </pre></div>
 </div>
 <p>You can use condition to check permissions. For example, if you
-are giving group memberships to users using <cite>Tags</cite> (it will be explained
+are giving group memberships to users using <code class="docutils literal notranslate"><span class="pre">Tags</span></code> (it will be explained
 later on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter), then you can
 require that users action have specific group membership:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
@@ -825,11 +823,11 @@ attributes.</p>
     <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="k">pass</span>
 </pre></div>
 </div>
-<p>For example in the DAL fixture case, <cite>on_request</cite> starts a transaction,
-<cite>on_success</cite> commits it, and <cite>on_error</cite> rolls it back.</p>
-<p>In the case of a template, <cite>on_request</cite> and <cite>on_error</cite> do nothing but
-<cite>on_success</cite> transforms the output.</p>
-<p>In the case of <cite>auth.user</cite> fixtures, <cite>on_request</cite> does all the work of
+<p>For example in the DAL fixture case, <code class="docutils literal notranslate"><span class="pre">on_request</span></code> starts a transaction,
+<code class="docutils literal notranslate"><span class="pre">on_success</span></code> commits it, and <code class="docutils literal notranslate"><span class="pre">on_error</span></code> rolls it back.</p>
+<p>In the case of a template, <code class="docutils literal notranslate"><span class="pre">on_request</span></code> and <code class="docutils literal notranslate"><span class="pre">on_error</span></code> do nothing but
+<code class="docutils literal notranslate"><span class="pre">on_success</span></code> transforms the output.</p>
+<p>In the case of <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> fixtures, <code class="docutils literal notranslate"><span class="pre">on_request</span></code> does all the work of
 determining if the user is logged in (from the dependent session fixture)
 and eventually preventing the request from accessing the inner layers.</p>
 <p>Now imagine a request coming in calling an action with three fixtures A, B, and C.
@@ -838,22 +836,22 @@ Under normal circumstances above methods are executed in this order:</p>
 response &lt;- A.on_success &lt;- B.on_success &lt;- C.on_success &lt;-
 </pre></div>
 </div>
-<p>i.e. the first fixture (A) is the first one to call <cite>on_request</cite>
-and the last one to call <cite>on_success</cite>. You can think of them as layers of
-an onion with the action (user code) at the center. <cite>on_success</cite> is called
-when entering a layer from the outside and <cite>on_success</cite> is called when
+<p>i.e. the first fixture (A) is the first one to call <code class="docutils literal notranslate"><span class="pre">on_request</span></code>
+and the last one to call <code class="docutils literal notranslate"><span class="pre">on_success</span></code>. You can think of them as layers of
+an onion with the action (user code) at the center. <code class="docutils literal notranslate"><span class="pre">on_success</span></code> is called
+when entering a layer from the outside and <code class="docutils literal notranslate"><span class="pre">on_success</span></code> is called when
 exiting a layer from the inside (like WSGI middleware).</p>
 <p>If any point an exception is raised inner layers are not called
-and outer layers will call <cite>on_error</cite> instead of <cite>on_success</cite>.</p>
+and outer layers will call <code class="docutils literal notranslate"><span class="pre">on_error</span></code> instead of <code class="docutils literal notranslate"><span class="pre">on_success</span></code>.</p>
 <p>Context is a shared object which contains:</p>
 <ul class="simple">
 <li><p>content[‘fixtures’]: the list of all the fixtures for the action.</p></li>
-<li><p>context[‘processed’]: the list of fixtures that called <cite>on_request</cite> previously within the request.</p></li>
+<li><p>context[‘processed’]: the list of fixtures that called <code class="docutils literal notranslate"><span class="pre">on_request</span></code> previously within the request.</p></li>
 <li><p>context[‘exception’]: the exception raised by the action or any previous fixture logic (usually None)</p></li>
 <li><p>context[‘output’]: the action output.</p></li>
 </ul>
-<p><cite>on_success</cite> and <cite>on_error</cite> can see the current <cite>context[‘exception’]</cite> and
-transform it. They can see the current <cite>context[‘output’]</cite> and transform it as well.</p>
+<p><code class="docutils literal notranslate"><span class="pre">on_success</span></code> and <code class="docutils literal notranslate"><span class="pre">on_error</span></code> can see the current <code class="docutils literal notranslate"><span class="pre">context['exception']</span></code> and
+transform it. They can see the current <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> and transform it as well.</p>
 <p>For example here is a fixture that transforms the output text to upper case:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UpperCase</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
@@ -866,7 +864,7 @@ transform it. They can see the current <cite>context[‘output’]</cite> and tr
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
 </pre></div>
 </div>
-<p>Notice that this fixture assumes the <cite>context[‘output’]</cite> is a string
+<p>Notice that this fixture assumes the <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> is a string
 and therefore it must come before the template.</p>
 <p>Here is a fixture that logs exceptions tracebacks to a file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LogErrors</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
@@ -883,13 +881,13 @@ and therefore it must come before the template.</p>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
 </pre></div>
 </div>
-<p>Fixtures also have a <cite>__prerequisite__</cite> attribute. If a fixture
+<p>Fixtures also have a <code class="docutils literal notranslate"><span class="pre">__prerequisite__</span></code> attribute. If a fixture
 takes another fixture as an argument, its value must be appended
-to the list of <cite>__prerequisites__</cite>. This guarantees that they are
+to the list of <code class="docutils literal notranslate"><span class="pre">__prerequisites__</span></code>. This guarantees that they are
 always executed in the proper order even if listed in the wrong order.
-It also makes it optional to declare prerequisite fixtures in <cite>action.uses</cite>.</p>
-<p>For example <cite>Auth</cite> depends on <cite>db</cite>, <cite>session</cite>, and <cite>flash</cite>. <cite>db</cite> and <cite>session</cite>
-are indeed arguments. <cite>flash</cite> is a special singleton fixture declared within <cite>Auth</cite>.
+It also makes it optional to declare prerequisite fixtures in <code class="docutils literal notranslate"><span class="pre">action.uses</span></code>.</p>
+<p>For example <code class="docutils literal notranslate"><span class="pre">Auth</span></code> depends on <code class="docutils literal notranslate"><span class="pre">db</span></code>, <code class="docutils literal notranslate"><span class="pre">session</span></code>, and <code class="docutils literal notranslate"><span class="pre">flash</span></code>. <code class="docutils literal notranslate"><span class="pre">db</span></code> and <code class="docutils literal notranslate"><span class="pre">session</span></code>
+are indeed arguments. <code class="docutils literal notranslate"><span class="pre">flash</span></code> is a special singleton fixture declared within <code class="docutils literal notranslate"><span class="pre">Auth</span></code>.
 This means that</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
 </pre></div>
@@ -900,7 +898,7 @@ This means that</p>
 </div>
 <p>Why are fixtures not simply functions that contain a try/except?</p>
 <p>We considered the option but there are some special exceptions that should
-not be considered errors but success (<cite>py4web.HTTP</cite>, <cite>bottle.HTTResponse</cite>)
+not be considered errors but success (<code class="docutils literal notranslate"><span class="pre">py4web.HTTP</span></code>, <code class="docutils literal notranslate"><span class="pre">bottle.HTTResponse</span></code>)
 while other exceptions are errors. The actual logic can be complicated
 and individual fixtures do not need to know these details.</p>
 <p>They all need to know what the context is and whether they are
@@ -909,6 +907,74 @@ or an error. We believe this logic keeps the fixtures easy.</p>
 <p>Fixtures should not in general communicate with each other but nothing
 prevents one fixture to put data in the context and another fixture to
 retrieve that data.</p>
+<section id="fixtures-with-dependencies">
+<h3>Fixtures with dependencies<a class="headerlink" href="#fixtures-with-dependencies" title="Link to this heading"></a></h3>
+<p>If a fixture depends on another fixture, it needs to be passed that fixture in the initializer,
+and the fixture must be listed in the <code class="docutils literal notranslate"><span class="pre">__prerequisites__</span></code> attribute.
+For example, suppose we want to create a fixture that grants access to a controller only
+to users whose email address is included in an ADMIN_EMAILS list.
+We can write the following fixture:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AdminAccess</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">admin_list</span><span class="p">,</span> <span class="n">redirect_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span> <span class="o">=</span> <span class="n">admin_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">auth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prerequisites__</span> <span class="o">=</span> <span class="p">[</span><span class="n">auth</span><span class="p">]</span>
+        <span class="c1"># One thing to note here is that the URL function can only be called in a</span>
+        <span class="c1"># request context (while serving a request).  Thus, we cannot store in the fixture</span>
+        <span class="c1"># initialization the full URL to redirect, but only the path.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span> <span class="o">=</span> <span class="n">redirect_url</span> <span class="ow">or</span> <span class="s1">&#39;index&#39;</span>
+
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span><span class="p">):</span>
+            <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The fixture can be created and used as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">admin_access</span> <span class="o">=</span> <span class="n">AdminAccess</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a@example.com&#39;</span><span class="p">,],</span> <span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/admin-only&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;admin_only.html&#39;</span><span class="p">,</span> <span class="n">admin_access</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">admin_only</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-local-storage">
+<h3>Using local storage<a class="headerlink" href="#using-local-storage" title="Link to this heading"></a></h3>
+<p>Fixtures can use a thread-local storage for data they need.
+Here is an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LocalStorageDemo</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+   <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+       <span class="n">Fixture</span><span class="o">.</span><span class="n">local_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+       <span class="c1"># We can check whether the local storage is valid.</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_valid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+       <span class="n">content</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Storing content: </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span> <span class="o">=</span> <span class="n">content</span>
+
+   <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+       <span class="c1"># The line below is used only to show that the thread-local object is in place.</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retrieved: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notably, the initializer should contain the line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Fixture</span><span class="o">.</span><span class="n">local_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>in order to initialize the thread-local storage.
+Once this is done, the thread-local storage can be used to store and retrieve data
+using the the <code class="docutils literal notranslate"><span class="pre">self.local</span></code> object.</p>
+</section>
 </section>
 <section id="multiple-fixtures">
 <h2>Multiple fixtures<a class="headerlink" href="#multiple-fixtures" title="Link to this heading"></a></h2>
@@ -942,11 +1008,11 @@ some extra variables to your templates, then A must come first.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>but not quite. All fixtures declared in one <cite>action.uses</cite> share
-the same context while fixtures in different <cite>action.uses</cite> use
+<p>but not quite. All fixtures declared in one <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> share
+the same context while fixtures in different <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> use
 different contexts and therefore they cannot communicate with each other.
 This may change in the future.
-For now we recommend using a single call to <cite>action.uses</cite>.</p>
+For now we recommend using a single call to <code class="docutils literal notranslate"><span class="pre">action.uses</span></code>.</p>
 </section>
 <section id="caching-and-memoize">
 <h2>Caching and Memoize<a class="headerlink" href="#caching-and-memoize" title="Link to this heading"></a></h2>
@@ -976,16 +1042,16 @@ every time a template needs to be rendered.</p>
 <section id="convenience-decorators">
 <h2>Convenience Decorators<a class="headerlink" href="#convenience-decorators" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> application, in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> defines two special
-convenience decorators:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@unauthenticated()
-def index():
-    return dict()
+convenience decorators using ActionFactory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@unauthenticated</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>and</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@authenticated()
-def index():
-    return dict()
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>They apply all of the decorators below (db, session, T, flash, auth),
@@ -996,9 +1062,50 @@ arguments of the action separated by a slash (/).</p>
 <li><p>&#64;unauthenticated does not require the user to be logged in.</p></li>
 <li><p>&#64;authenticated required the user to be logged in.</p></li>
 </ul>
-<p>They can be combined with (and precede) other <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> but
-they should not be combined with <code class="docutils literal notranslate"><span class="pre">&#64;action(...)</span></code> because they perform
-that function automatically.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>ActionFactory decorators like these cannot be combined
+with &#64;action or &#64;action.uses</p>
+</div>
+<p>The decorators can be used directly as shown above, which enables
+all HTTP methods (GET, POST, PUT, …) but you can also create separate
+controllers for each HTTP method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="c1"># only handle GET requests</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="nd">@authenticated</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index_form</span><span class="p">():</span>
+    <span class="c1"># only handle POST requests</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The both decorator and its HTTP method calls have the following arguments:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code> overwrites the path built from the function name</dt><dd><p>with the given string. Does not automatically handle arguments.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">template</span></code> specifies the template name, instead of using</dt><dd><p>the function name.</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uses</span></code> specify extra fixtures for this specific controllers.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="p">(</span>
+   <span class="n">path</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+   <span class="n">template</span><span class="o">=</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span>
+   <span class="n">uses</span><span class="o">=</span><span class="p">[</span><span class="n">Inject</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)])</span>
+<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As manual ordering of fixtures isn’t possible with <code class="docutils literal notranslate"><span class="pre">uses</span></code>,
+make sure the fixtures define their dependencies.
+See: <a class="reference internal" href="#fixtures-with-dependencies"><span class="std std-ref">Fixtures with dependencies</span></a></p>
 </section>
 </section>
 
@@ -1013,7 +1120,7 @@ that function automatically.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -1038,7 +1145,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240915
+      v: 20241204
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
