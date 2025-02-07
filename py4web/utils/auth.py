@@ -386,6 +386,24 @@ class Auth(Fixture):
                 requires = [IS_STRONG(**self.param.password_complexity), CRYPT()]
             else:
                 requires = [CRYPT()]
+
+            # virtual field for whichever name should be displayed
+            # used in emails, templates, etc.
+            # full name used primarily in the format argument of the auth_user table
+
+            display_name_f = lambda row: row.auth_user.email
+            display_name_full_f = lambda row: row.auth_user.email
+
+            if self.use_first_last_name:
+                display_name_f = lambda row: row.auth_user.first_name
+            elif self.use_username:
+                display_name_f = lambda row: row.auth_user.username
+
+            if self.use_first_last_name:
+                display_name_full_f = (
+                    lambda row: f"{row.auth_user.first_name} {row.auth_user.last_name}"
+                )
+
             auth_fields = {
                 "email": Field(
                     "email",
@@ -410,7 +428,18 @@ class Auth(Fixture):
                     readable=False,
                     writable=False,
                 ),
+                "display_name": Field.Virtual(
+                    "display_name",
+                    display_name_f,
+                    label=self.param.messages["labels"].get("display_name"),
+                ),
+                "display_name_full": Field.Virtual(
+                    "display_name_full",
+                    display_name_full_f,
+                    label=self.param.messages["labels"].get("display_name_full"),
+                ),
             }
+
             if self.use_username:
                 auth_fields["username"] = Field(
                     "username",
@@ -429,35 +458,6 @@ class Auth(Fixture):
                     "last_name",
                     requires=ne,
                     label=self.param.messages["labels"].get("last_name"),
-                )
-            # virtual field for whichever name should be displayed
-            # used in emails, templates, etc.
-            if self.use_first_last_name:
-                auth_fields["display_name"] = Field.Virtual(
-                    "display_name",
-                    lambda row: row.auth_user.first_name,
-                )
-            elif self.use_username:
-                auth_fields["display_name"] = Field.Virtual(
-                    "display_name",
-                    lambda row: row.auth_user.username,
-                )
-            else:
-                auth_fields["display_name"] = Field.Virtual(
-                    "display_name",
-                    lambda row: row.auth_user.email,
-                )
-
-            # full name used primarily in the format argument of the auth_user table.
-            if self.use_first_last_name:
-                auth_fields["display_name_full"] = Field.Virtual(
-                    "display_name_full",
-                    lambda row: f"{row.auth_user.first_name} {row.auth_user.last_name}",
-                )
-            else:
-                auth_fields["display_name_full"] = Field.Virtual(
-                    "display_name_full",
-                    lambda row: row.auth_user.email,
                 )
 
             if self.use_phone_number:
@@ -489,6 +489,7 @@ class Auth(Fixture):
                 "last_password_change",
                 "past_passwords_hash",
                 "display_name",
+                "display_name_full",
             ]
             auth_fields = [
                 auth_fields[key] for key in auth_fields_sort if key in auth_fields
@@ -643,6 +644,7 @@ class Auth(Fixture):
 
     def register_plugin(self, plugin):
         """Registers an Auth plugin, usually from common.py inside apps"""
+
         is_compat, msg = plugin.is_auth_compatible(self)
         if not is_compat:
             raise ValueError(f"{plugin} is not compatible: {msg}")
