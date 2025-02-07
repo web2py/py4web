@@ -8,7 +8,6 @@ import time
 import uuid
 
 import jwt
-
 from pydal.validators import (
     CRYPT,
     IS_EMAIL,
@@ -133,15 +132,15 @@ class Auth(Fixture):
     MESSAGES = {
         "verify_email": {
             "subject": "Confirm email",
-            "body": "Welcome {first_name}, click {link} to confirm your email",
+            "body": "Welcome {display_name}, click {link} to confirm your email",
         },
         "reset_password": {
             "subject": "Password reset",
-            "body": "Hello {first_name}, click {link} to change password",
+            "body": "Hello {display_name}, click {link} to change password",
         },
         "unsubscribe": {
             "subject": "Unsubscribe confirmation",
-            "body": "By {first_name}, you have been erased from our system",
+            "body": "By {display_name}, you have been erased from our system",
         },
         "flash": {
             "user-registered": "User registered",
@@ -157,6 +156,8 @@ class Auth(Fixture):
             "email": "Email",
             "first_name": "First Name",
             "last_name": "Last Name",
+            "display_name": "Display Name",
+            "display_name_full": "Full Display Name",
             "phone_number": "Phone Number",
             "username_or_email": "Username or Email",
             "password": "Password",
@@ -211,6 +212,7 @@ class Auth(Fixture):
         define_tables=True,
         sender=None,
         use_username=True,
+        use_first_last_name=True,
         use_phone_number=False,
         registration_requires_confirmation=True,
         registration_requires_approval=False,
@@ -274,6 +276,7 @@ class Auth(Fixture):
         self.sender = sender
         self.route = "auth"
         self.use_username = use_username  # if False, uses email only
+        self.use_first_last_name = use_first_last_name  # if False, uses username or email as "account name" (in emails etc.)
         self.password_in_db = password_in_db  # if False, password is never saved in db
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
@@ -383,14 +386,14 @@ class Auth(Fixture):
                 requires = [IS_STRONG(**self.param.password_complexity), CRYPT()]
             else:
                 requires = [CRYPT()]
-            auth_fields = [
-                Field(
+            auth_fields = {
+                "email": Field(
                     "email",
                     requires=(IS_EMAIL(), IS_NOT_IN_DB(db, "auth_user.email")),
                     unique=True,
                     label=self.param.messages["labels"].get("email"),
                 ),
-                Field(
+                "password": Field(
                     "password",
                     "password",
                     requires=requires,
@@ -398,61 +401,104 @@ class Auth(Fixture):
                     writable=False,
                     label=self.param.messages["labels"].get("password"),
                 ),
-                Field(
-                    "first_name",
-                    requires=ne,
-                    label=self.param.messages["labels"].get("first_name"),
-                ),
-                Field(
-                    "last_name",
-                    requires=ne,
-                    label=self.param.messages["labels"].get("last_name"),
-                ),
-                Field("sso_id", readable=False, writable=False),
-                Field("action_token", readable=False, writable=False),
-                Field(
+                "sso_id": Field("sso_id", readable=False, writable=False),
+                "action_token": Field("action_token", readable=False, writable=False),
+                "last_password_change": Field(
                     "last_password_change",
                     "datetime",
                     default=None,
                     readable=False,
                     writable=False,
                 ),
-            ]
+            }
             if self.use_username:
-                auth_fields.insert(
-                    0,
-                    Field(
-                        "username",
-                        requires=[ne, IS_NOT_IN_DB(db, "auth_user.username")],
-                        unique=True,
-                        label=self.param.messages["labels"].get("username"),
-                    ),
+                auth_fields["username"] = Field(
+                    "username",
+                    requires=[ne, IS_NOT_IN_DB(db, "auth_user.username")],
+                    unique=True,
+                    label=self.param.messages["labels"].get("username"),
                 )
+
+            if self.use_first_last_name:
+                auth_fields["first_name"] = Field(
+                    "first_name",
+                    requires=ne,
+                    label=self.param.messages["labels"].get("first_name"),
+                )
+                auth_fields["last_name"] = Field(
+                    "last_name",
+                    requires=ne,
+                    label=self.param.messages["labels"].get("last_name"),
+                )
+            # virtual field for whichever name should be displayed
+            # used in emails, templates, etc.
+            if self.use_first_last_name:
+                auth_fields["display_name"] = Field.Virtual(
+                    "display_name",
+                    lambda row: row.auth_user.first_name,
+                )
+            elif self.use_username:
+                auth_fields["display_name"] = Field.Virtual(
+                    "display_name",
+                    lambda row: row.auth_user.username,
+                )
+            else:
+                auth_fields["display_name"] = Field.Virtual(
+                    "display_name",
+                    lambda row: row.auth_user.email,
+                )
+
+            # full name used primarily in the format argument of the auth_user table.
+            if self.use_first_last_name:
+                auth_fields["display_name_full"] = Field.Virtual(
+                    "display_name_full",
+                    lambda row: f"{row.auth_user.first_name} {row.auth_user.last_name}",
+                )
+            else:
+                auth_fields["display_name_full"] = Field.Virtual(
+                    "display_name_full",
+                    lambda row: row.auth_user.email,
+                )
+
             if self.use_phone_number:
-                auth_fields.insert(
-                    2,
-                    Field(
-                        "phone_number",
-                        requires=[
-                            ne,
-                            IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
-                        ],
-                        label=self.param.messages["labels"].get("phone_number"),
-                    ),
+                auth_fields["phone_number"] = Field(
+                    "phone_number",
+                    requires=[
+                        ne,
+                        IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
+                    ],
+                    label=self.param.messages["labels"].get("phone_number"),
                 )
+
             if self.param.block_previous_password_num is not None:
-                auth_fields.append(
-                    Field(
-                        "past_passwords_hash",
-                        "list:string",
-                        writable=False,
-                        readable=False,
-                    )
+                auth_fields["phone_number"] = Field(
+                    "past_passwords_hash",
+                    "list:string",
+                    writable=False,
+                    readable=False,
                 )
+            auth_fields_sort = [
+                "username",
+                "email",
+                "phone_number",
+                "password",
+                "first_name",
+                "last_name",
+                "sso_id",
+                "action_token",
+                "last_password_change",
+                "past_passwords_hash",
+                "display_name",
+            ]
+            auth_fields = [
+                auth_fields[key] for key in auth_fields_sort if key in auth_fields
+            ]
+
             db.define_table(
                 "auth_user",
-                *(auth_fields + self.extra_auth_user_fields),
-                format=lambda u: f"{u.first_name} {u.last_name}",
+                *auth_fields,
+                *self.extra_auth_user_fields,
+                format=lambda u: u.display_name_full,
             )
 
     @property
@@ -597,6 +643,9 @@ class Auth(Fixture):
 
     def register_plugin(self, plugin):
         """Registers an Auth plugin, usually from common.py inside apps"""
+        is_compat, msg = plugin.is_auth_compatible(self)
+        if not is_compat:
+            raise ValueError(f"{plugin} is not compatible: {msg}")
         self.plugins[plugin.name] = plugin
         # special parameters values depending on the plugins
         if plugin.name in ["pam", "ldap"]:
@@ -625,8 +674,9 @@ class Auth(Fixture):
                 self.db.auth_user.action_token.writable = True
                 self.db.auth_user.password.writable = True
                 self.db.auth_user.password.required = True
-                self.db.auth_user.first_name.required = True
-                self.db.auth_user.last_name.required = True
+                if self.use_first_last_name:
+                    self.db.auth_user.first_name.required = True
+                    self.db.auth_user.last_name.required = True
                 return self.db.auth_user.validate_and_insert(**fields)
             return dict(id=self.db.auth_user.insert(**fields))
 
@@ -644,7 +694,7 @@ class Auth(Fixture):
                     scheme=True,
                     use_appname=self.param.use_appname_in_redirects,
                 )
-                self.send("verify_email", fields, link=link)
+                self.send("verify_email", self.db.auth_user[res["id"]], link=link)
         elif self.param.registration_requires_approval:
             fields["action_token"] = "pending-approval"
             res = store(fields)
@@ -866,11 +916,14 @@ class Auth(Fixture):
         db(db.auth_user.id == id).update(
             email="%s@example.com" % token,
             password=None,
-            first_name="anonymous",
-            last_name="anonymous",
             sso_id=None,
             action_token="gdpr-unsubscribed",
         )
+        if self.use_first_last_name:
+            db(db.auth_user.id == id).update(
+                first_name="anonymous",
+                last_name="anonymous",
+            )
         if send:
             self.send("unsubscribe", user)
 
@@ -1725,7 +1778,7 @@ class DefaultAuthForms:
 
         user = self.auth.db.auth_user(user_id)
         code = self.auth.session.get("auth.2fa_code")
-        if (not code) and (not self.auth.param.two_factor_send is None):
+        if (not code) and (self.auth.param.two_factor_send is not None):
             # generate and send the code
             code = str(random.randint(100000, 999999))
             code = self.auth.param.two_factor_send(user, code)
@@ -2095,7 +2148,10 @@ class SimpleTokenPlugin:
                 "auth_simple_token",
                 Field("token", default=uuid.uuid4, unique=True, writable=False),
                 Field(
-                    "user_id", "reference auth_user", default=auth.user_id, writable=False
+                    "user_id",
+                    "reference auth_user",
+                    default=auth.user_id,
+                    writable=False,
                 ),
                 Field("description"),
                 Field("expiration_date", "datetime"),

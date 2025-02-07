@@ -49,6 +49,11 @@ class OAuth2WPMiniorange(OAuth2):
         # "last_name": "lastname",
     }
 
+    def is_auth_compatible(self, auth):
+        if not auth.use_username:
+            return False, "requires auth.use_username = True"
+        return super().is_auth_compatible(auth)
+
     def __init__(
         self,
         client_id,

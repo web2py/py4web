@@ -39,6 +39,13 @@ class OAuth2Discord(OAuth2):
         "username": "full_username",
     }
 
+    def is_auth_compatible(self, auth):
+        if not auth.use_first_last_name:
+            return False, "requires auth.use_first_last_name = True"
+        if not auth.use_username:
+            return False, "requires auth.use_username = True"
+        return super().is_auth_compatible(auth)
+
     def callback(self, query):
         # since Discord returns username and discriminator separately, we extend the auth plugin's callback
         # function to merge them into a single field, so it can be mapped into username correctly later

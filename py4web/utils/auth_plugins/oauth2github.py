@@ -17,3 +17,8 @@ class OAuth2Github(OAuth2):
         "email": "email",
         "sso_id": "url",
     }
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_username:
+            return False, "requires auth.use_first_last_name = True"
+        return super().is_auth_compatible(auth)

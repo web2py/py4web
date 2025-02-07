@@ -46,3 +46,6 @@ py4web/assets
 workspace.code-workspace
 venv
 docs/_build
+py4web.egg-info/
+build/
+tmp/

@@ -8,8 +8,17 @@ import requests
 from py4web.core import HTTP, URL, redirect, request
 
 
-class UsernamePassword:
+class BasePlugin:
+    name: str = "undefined"
 
+    def is_auth_compatible(self, auth):
+        return True, ""
+
+    def __str__(self):
+        return f"<{self.__class__.__name__} name={self.name}>"
+
+
+class UsernamePassword(BasePlugin):
     name = "undefined"
 
     def __init__(self, test_mode=False):
@@ -21,10 +30,14 @@ class UsernamePassword:
         raise NotImplementedError
 
 
-class SSO(object):
-
+class SSO(BasePlugin):
     name = "undefined"
     maps = {}
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_username:
+            return False, "requires auth.use_username = True"
+        return True, ""
 
     ### methods that must be overwritten
 
