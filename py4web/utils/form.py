@@ -7,8 +7,20 @@ import uuid
 import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
-                          TEXTAREA, XML, A, P)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    LABEL,
+    OPTION,
+    SELECT,
+    SPAN,
+    TEXTAREA,
+    XML,
+    A,
+    P,
+)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -774,8 +786,15 @@ class Form(object):
             self.vars = self._read_vars_from_record(table)
 
         if not readonly:
-            post_vars = request.GET if self.method == "GET" else request.POST
-            form_vars = copy.deepcopy(request.forms)
+            try:
+                post_vars = request.GET if self.method == "GET" else request.POST
+            except KeyError:
+                post_vars = {}
+
+            try:
+                form_vars = copy.deepcopy(request.forms)
+            except KeyError:
+                form_vars = {}
             for k in form_vars:
                 self.vars[k] = form_vars[k]
             process = False
