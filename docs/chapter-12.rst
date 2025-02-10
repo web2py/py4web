@@ -99,8 +99,9 @@ Where:
 -  ``record``: a DAL record or record id
 -  ``readonly``: set to True to make a readonly form
 -  ``deletable``: set to False to disallow deletion of record
--  ``formstyle``: a function that renders the form using helpers. Can be FormStyleDefault (default),
-   FormStyleBulma or FormStyleBootstrap4 
+-  ``formstyle``: a function that renders the form using helpers.
+    Can be FormStyleDefault (default), FormStyleBulma,
+    FormStyleBootstrap4, or FormStyleBootstrap5
 -  ``dbio``: set to False to prevent any DB writes
 -  ``keep_values``: if set to true, it remembers the values of the previously submitted form
 -  ``form_name``: the optional name of this form
