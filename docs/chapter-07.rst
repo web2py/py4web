@@ -30,19 +30,31 @@ A little taste of pyDAL features:
 - Inner & Outer Joins
 - Nested Selects
 
-py4web model
-~~~~~~~~~~~~
+Thread safety and Field attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Even if web2py and py4web use the same pyDAL, there are important differences (see 
-:ref:`From web2py to py4web` for details). The main caveat is that in py4web only
-the action is executed for every HTTP request, while the code defined outside of
-actions is only executed at startup. That makes py4web much faster, in particular
-when there are many tables. The downside of this approach is that the developer
-should be careful to never override pyDAL variables inside action or in any way
-that depends on the content of the request object, else the code is not thread safe.
-The only variables that can be changed at will are the following field attributes:
-readable, writable, requires, update, and default.
-All the others are for practical purposes to be considered global and non thread safe.
+Even though py4web and web2py use the same pyDAL, there is an important difference 
+which stems from the core architecture of py4web.
+In py4web only the following ``Field`` attributes can be changed inside an action:
+
+- ``readable``
+- ``writable``
+- ``default``
+- ``filter_in``
+- ``filter_out``
+- ``label``
+- ``update``
+- ``requires``
+- ``widget``
+- ``represent``
+
+These are reset to their original values before each action is called.
+All other ``Field``, ``DAL``, and ``Table`` attributes are global and non-thread-safe.
+
+This limitation exists because py4web executes table definitions only at startup,
+unlike web2py which re-defines tables on each request. This makes py4web a lot faster
+than web2py, but you need to be careful as modifying non-thread-safe
+attributes in actions can cause race conditions and bugs.
 
 Supported databases
 ~~~~~~~~~~~~~~~~~~~
