@@ -30,31 +30,11 @@ A little taste of pyDAL features:
 - Inner & Outer Joins
 - Nested Selects
 
-Thread safety and Field attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. note::
 
-Even though py4web and web2py use the same pyDAL, there is an important difference 
-which stems from the core architecture of py4web.
-In py4web only the following ``Field`` attributes can be changed inside an action:
-
-- ``readable``
-- ``writable``
-- ``default``
-- ``filter_in``
-- ``filter_out``
-- ``label``
-- ``update``
-- ``requires``
-- ``widget``
-- ``represent``
-
-These are reset to their original values before each action is called.
-All other ``Field``, ``DAL``, and ``Table`` attributes are global and non-thread-safe.
-
-This limitation exists because py4web executes table definitions only at startup,
-unlike web2py which re-defines tables on each request. This makes py4web a lot faster
-than web2py, but you need to be careful as modifying non-thread-safe
-attributes in actions can cause race conditions and bugs.
+   An important difference between py4web and web2py is that only some few Field attributes are
+   safe to modify in actions. See :ref:`Thread safety and Field attributes` for more info, and
+   :ref:`From web2py to py4web` for a general list of differences.
 
 Supported databases
 ~~~~~~~~~~~~~~~~~~~
@@ -1073,10 +1053,31 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    field value and returns an alternate representation for the field
    value.
 
-Note not all the attributes are thread safe and most of them
-should only be set globally for an app. The following are guaranteed to be
-thread safe and be set/reset in any action:
-``default``, ``update``, ``readable``, ``writable``, ``requires``.
+Thread safety and Field attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Even though py4web and web2py use the same pyDAL, there is an important difference 
+which stems from the core architecture of py4web.
+In py4web only the following ``Field`` attributes can be changed inside an action:
+
+- ``readable``
+- ``writable``
+- ``default``
+- ``filter_in``
+- ``filter_out``
+- ``label``
+- ``update``
+- ``requires``
+- ``widget``
+- ``represent``
+
+These are reset to their original values before each action is called.
+All other ``Field``, ``DAL``, and ``Table`` attributes are global and non-thread-safe.
+
+This limitation exists because py4web executes table definitions only at startup,
+unlike web2py which re-defines tables on each request. This makes py4web a lot faster
+than web2py, but you need to be careful as modifying non-thread-safe
+attributes in actions can cause race conditions and bugs.
 
 
 Field types and validators
