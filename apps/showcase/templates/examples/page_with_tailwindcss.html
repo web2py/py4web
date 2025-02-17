@@ -1,0 +1,16 @@
+[[extend 'layout_tailwind.html']]
+
+<!-- Page Header -->
+<div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-3xl font-semibold py-4 text-center shadow-md">
+    Page with TailwindCSS Grid
+</div>
+
+<!-- Grid Container -->
+<div class="container mx-auto my-8 px-6">
+    <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Data Table</h2>
+        <div class="overflow-x-auto">
+            [[ = grid.render() ]]
+        </div>
+    </div>
+</div>

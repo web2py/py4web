@@ -5,6 +5,7 @@
 *.1
 *.bak
 *.bak2
+.envrc
 *.svn
 *.w2p
 *.class
@@ -43,6 +44,8 @@ deployment_tools/gae/lib
 deployment_tools/gae/apps
 deployment_tools/gae/requirements.txt
 py4web/assets
+pyproject.toml
+poetry.lock
 workspace.code-workspace
 venv
 docs/_build

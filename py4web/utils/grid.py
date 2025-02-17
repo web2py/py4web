@@ -201,6 +201,59 @@ class GridClassStyleBootstrap5(GridClassStyle):
     }
 
 
+class GridClassStyleTailwind(GridClassStyle):
+    classes = {
+        "grid-wrapper": "grid-wrapper space-y-4 bg-white shadow-md rounded-lg p-4",
+        "grid-header": "grid-header flex justify-between items-center pb-4 border-b border-gray-300",
+        "grid-new-button": "grid-new-button px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600",
+        "grid-search": "grid-search flex items-center gap-2",
+        "grid-table-wrapper": "grid-table-wrapper overflow-x-auto",
+        "grid-table": "grid-table w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden",
+        "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up text-gray-600",
+        "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down text-gray-600",
+        "grid-thead": "bg-gray-200 text-gray-700",
+        "grid-tr": "border-b border-gray-300",
+        "grid-th": "px-4 py-2 text-left font-semibold",
+        "grid-td": "px-4 py-2 text-gray-700",
+        "grid-td-buttons": "px-4 py-2 flex gap-2",
+        "grid-button": "px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow",
+        "grid-details-button": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 shadow",
+        "grid-edit-button": "px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 shadow",
+        "grid-delete-button": "px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 shadow",
+        "grid-search-button": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+        "grid-clear-button": "px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition",
+        "grid-footer": "grid-footer flex justify-between items-center pt-4 border-t border-gray-300",
+        "grid-info": "grid-info text-gray-600",
+        "grid-pagination": "grid-pagination flex gap-2",
+        "grid-pagination-button": "px-3 py-1 bg-gray-200 rounded hover:bg-gray-300",
+        "grid-pagination-button-current": "px-3 py-1 bg-blue-500 text-white rounded",
+
+        # Cell styling
+        "grid-cell-type-string": "text-left",
+        "grid-cell-type-text": "text-left",
+        "grid-cell-type-boolean": "text-center",
+        "grid-cell-type-float": "text-right",
+        "grid-cell-type-decimal": "text-right",
+        "grid-cell-type-int": "text-right",
+        "grid-cell-type-date": "text-center",
+        "grid-cell-type-time": "text-center",
+        "grid-cell-type-datetime": "text-center",
+        "grid-cell-type-upload": "text-center",
+        "grid-cell-type-list": "text-left",
+        "grid-cell-type-id": "text-center",
+
+        # Search form
+        "grid-search-form": "flex flex-wrap gap-2 items-center border p-2 rounded-lg bg-gray-100",
+        "grid-search-form-table": "w-full",
+        "grid-search-form-tr": "border-b border-gray-300",
+        "grid-search-form-td": "p-2",
+        "grid-search-form-input": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full",
+        "grid-search-form-select": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full",
+        "grid-search-boolean": "form-checkbox h-5 w-5 text-blue-600",
+        "grid-header-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
+        "grid-footer-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
+    }
+
 class Column:
     """class used to represent a column in a grid"""
 
