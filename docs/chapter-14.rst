@@ -66,8 +66,9 @@ Create a new minimal app called ``grid``. Change it with the following content.
    @action.uses('grid.html', db)
    def index(path=None):
       grid = Grid(path,
-               formstyle=FormStyleDefault, # FormStyleDefault or FormStyleBulma
-               grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma      
+               formstyle=FormStyleDefault, # FormStyleDefault, FormStyleBulma, FormStyleBootstrap4, or FormStyleBootstrap5
+               grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5
+               icon_style=IconStyleFontawesome, # IconStyle, IconStyleFontawesome, or IconStyleBootstrapIcons
                query=(db.person.id > 0),
                orderby=[db.person.name],
                search_queries=[['Search by Name', lambda val: db.person.name.contains(val)]])
@@ -121,11 +122,11 @@ the grid object on __init__.py to:
 .. code:: python
 
 
-   formstyle=FormStyleBulma, # FormStyleDefault or FormStyleBulma
-   grid_class_style=GridClassStyleBulma, #GridClassStyle or GridClassStyleBulma
+   formstyle=FormStyleBulma, # FormStyleDefault or FormStyleBulma,FormStyleBootstrap4, or FormStyleBootstrap5
+   grid_class_style=GridClassStyleBulma, # GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5
 
 Notice that in this case you need to import the corresponding python modules in advance
-(we've already done it on line 4 and 5 above). Instead if you use the default no.css style
+(we've already done it on line 4 and 5 above). If you use the default no.css style instead,
 you don't need to manually import its style modules (and you even don't need the formstyle
 and grid_class_style parameters).
 
@@ -149,6 +150,10 @@ Then refresh the page.
 
 
 This is much better, isn't it?
+
+Bootstrap4 and Bootstrap5 also have styles available, and you can change the icon style between
+Fontawesome, Bootstrap Icons, and a basic IconStyle you can write your own CSS for. More info in
+the section: :ref:`Customizing style`
 
 
 .. Note::
@@ -200,6 +205,7 @@ The Grid object
          search_button_text="Filter",
          formstyle=FormStyleDefault,
          grid_class_style=GridClassStyle,
+         icon_style=IconStyleFontawsome,
          T=lambda text: text,
       ):
 
@@ -246,9 +252,11 @@ The Grid object
    search form
 -  formstyle: py4web Form formstyle used to style your form when
    automatically building CRUD forms
--  grid_class_style: GridClassStyle object used to override defaults for
+-  grid_class_style: GridClassStyle class used to override defaults for
    styling your rendered grid. Allows you to specify classes or styles
    to apply at certain points in the grid
+-  icon_style: default: IconStyleFontawsome. used to get icon css classes.
+   Other options: IconStyle, IconStyleBootstrapIcons
 -  T: optional pluralize object
 
 (*) The parameters ``details``, ``editable`` and ``deletable`` can also take a **callable** that will 
@@ -387,14 +395,23 @@ You can provide your own formstyle or grid classes and style to grid.
    forms.
 -  grid_class_style is a class that provides the classes and/or styles
    used for certain portions of the grid.
+-  icon_style is a class which provides the icon classes, for example for FontAwesome
 
 The default ``GridClassStyle`` - based on **no.css**, primarily uses styles to
 modify the layout of the grid. We've already seen that it's possible
-to use other class_style, in particular ``GridClassStyleBulma``.
+to use other class_style, in particular ``GridClassStyleBulma`` or ``GridClassStyleBootstrap5``.
 
 You can even build your own class_style to be used with the css framework of
-your choice. Unfortunately, one based on **bootstrap** is still missing.
+your choice.
 
+With icon_style, you can customize the icon font used. Currently, the following exist:
+- ``IconStyleFontawsome`` is the current default (for backwards compatibility). You need
+   to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use this.
+- ``IconStyle`` which doesn't correspond to any font or icon set. It inserts simple
+   css classes like ``icon-edit-button`` which you can write your own css for.
+- ``IconStyleBootstrapIcons`` You need to add the icon font CSS from
+   `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__
+   to your html templates to use this.
 
 Custom Action Buttons
 ---------------------
@@ -447,8 +464,8 @@ Sample Action Button Class
 
 -  url: the page to navigate to when the button is clicked
 -  text: text to display on the button
--  icon: the font-awesome icon to display before the text, for example
-   "fa-calendar"
+-  icon: the icon corresponding to your icon-style to display before the text, for example
+   "fa-calendar" for IconStyleFontawesome.
 -  additional_classes: a space-separated list of classes to include on
    the button element
 -  additional_styles: a string containing additional styles to add to the button
@@ -510,7 +527,7 @@ Example usage:
            lambda row: GridActionButton(
                URL("test", row.id),
                text="Click me",
-               icon="fa-plus",
+               icon=IconStyleFontawsome.add_button, # same as "fa-plus"
                additional_classes=row.id,
                additional_styles=["height: 10px" if row.bar else None],
            )

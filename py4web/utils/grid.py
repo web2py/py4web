@@ -200,6 +200,46 @@ class GridClassStyleBootstrap5(GridClassStyle):
         "grid-footer-element": "grid-footer-element btn btn-sm",
     }
 
+class IconStyle:
+    sort_up = "icon-sort-up"
+    sort_down = "icon-sort-down"
+    add_button = "icon-add-button"
+    details_button = "icon-details-button"
+    edit_button = "icon-edit-button"
+    delete_button = "icon-delete-button"
+
+    @classmethod
+    def complete(self, icontxt: str) -> str:
+        return icontxt
+
+class IconStyleFontawsome(IconStyle):
+    sort_up = "fas fa-sort-up"
+    sort_down = "fas fa-sort-down"
+    add_button = "fas fa-plus"
+    details_button = "fas fa-id-card"
+    edit_button = "fas fa-edit"
+    delete_button = "fas fa-trash"
+
+    @classmethod
+    def complete(self, icontxt: str) -> str:
+        if "fas " not in icontxt:
+            return f"fas {icontxt}"
+        return icontxt
+
+
+class IconStyleBootstrapIcons(IconStyle):
+    sort_up = "bi bi-sort-up"
+    sort_down = "bi bi-sort-down"
+    add_button = "bi bi-plus"
+    details_button = "bi bi-person-vcard"
+    edit_button = "bi bi-pencil-square"
+    delete_button = "bi bi-trash"
+
+    @classmethod
+    def complete(self, icontxt: str) -> str:
+        if "bi " not in icontxt:
+            return f"bi {icontxt}"
+        return icontxt
 
 class Column:
     """class used to represent a column in a grid"""
@@ -242,7 +282,7 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.datetime)
-            else value if value else ""
+            else (value or "")
         ),
         "time": lambda value: (
             XML(
@@ -250,7 +290,7 @@ class Grid:
                 % (value.hour, value.minute, value.second)
             )
             if value and isinstance(value, datetime.time)
-            else value if value else ""
+            else (value or "")
         ),
         "date": lambda value: (
             XML(
@@ -262,9 +302,9 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.date)
-            else value if value else ""
+            else (value or "")
         ),
-        "list": lambda value: ", ".join(x for x in value) if value else "",
+        "list": lambda value: ", ".join(x for x in value) or "",
     }
 
     def __init__(
@@ -293,6 +333,7 @@ class Grid:
         search_button_text="Filter",
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
+        icon_style=IconStyleFontawsome,
         T=lambda text: text,
         groupby=None,
         # deprecated
@@ -344,6 +385,7 @@ class Grid:
         self.db = query._db
         self.T = T
         self.form_maker = form_maker
+        self.icon_style = icon_style
         self.param = Param(
             query=query,
             columns=columns or fields,
@@ -433,6 +475,9 @@ class Grid:
             return self.param.deletable(row)
         # if deletable is boolean, check it
         return self.param.deletable
+
+    def get_style(self, element, default=None):
+        return self.param.grid_class_style.get(element, default)
 
     def process(self):
         query = None
@@ -700,7 +745,7 @@ class Grid:
                     "",
                     self.make_action_buttons,
                     key=key,
-                    td_class_style=self.param.grid_class_style.get("grid-td-buttons"),
+                    td_class_style=self.get_style("grid-td-buttons"),
                 )
             )
 
@@ -750,7 +795,7 @@ class Grid:
         if row_id:
             url += "/%s" % row_id
 
-        classes = self.param.grid_class_style.get(name)
+        classes = self.get_style(name)
 
         if callable(additional_classes):
             additional_classes = additional_classes(row)
@@ -772,7 +817,7 @@ class Grid:
             attrs.update(self.attributes_plugin.link(url=url))
 
         link = A(
-            I(_class="fa %s" % icon),
+            I(_class=self.icon_style.complete(icon)),
             _role="button",
             _message=message,
             _title=button_text,
@@ -781,7 +826,11 @@ class Grid:
         )
         if self.param.include_action_button_text:
             link.append(
-                SPAN(XML("&nbsp;"), button_text, _class="grid-action-button-text")
+                SPAN(
+                    XML("&nbsp;"),
+                    button_text,
+                    _class=self.get_style("grid-action-button-text"),
+                )
             )
 
         return link
@@ -806,51 +855,47 @@ class Grid:
         ]
         attrs = self.attributes_plugin.link(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)
-        classes = self.param.grid_class_style.get("grid-search-form-select")
+        classes = self.get_style("grid-search-form-select")
         select = SELECT(*options, **dict(_name="search_type", _class=classes))
-        classes = self.param.grid_class_style.get("grid-search-form-input")
+        classes = self.get_style("grid-search-form-input")
         input = INPUT(
             _type="text",
             _name="search_string",
             _value=search_string,
             _class=classes,
         )
-        classes = self.param.grid_class_style.get("grid-search-button")
+        classes = self.get_style("grid-search-button")
         submit = INPUT(_type="submit", _value=self.T("Search"), _class=classes)
         clear_script = "document.querySelector('[name=search_string]').value='';"
-        classes = self.param.grid_class_style.get("grid-clear-button")
+        classes = self.get_style("grid-clear-button")
         clear = INPUT(
             _type="submit",
             _value=self.T("Clear"),
             _onclick=clear_script,
             _class=classes,
         )
-        div = DIV(
-            _id="grid-search", _classes=self.param.grid_class_style.get("grid-search")
-        )
+        div = DIV(_id="grid-search", _classes=self.get_style("grid-search"))
 
-        tr = TR(_class=self.param.grid_class_style.get("grid-search-form-tr"))
-        classes = self.param.grid_class_style.get("grid-search-form-td")
+        tr = TR(_class=self.get_style("grid-search-form-tr"))
+        classes = self.get_style("grid-search-form-td")
         if len(options) > 1:
             tr.append(TD(select, _class=classes))
         tr.append(TD(input, _class=classes))
         tr.append(TD(submit, clear, _class=classes))
-        classes = self.param.grid_class_style.get("grid-search-form-table")
+        classes = self.get_style("grid-search-form-table")
         form.append(TABLE(tr, _class=classes))
         div.append(form)
         return div
 
     def _make_search_form(self):
         # TODO: Do we need this?
-        div = DIV(
-            _id="grid-search", _class=self.param.grid_class_style.get("grid-search")
-        )
+        div = DIV(_id="grid-search", _class=self.get_style("grid-search"))
         div.append(self.param.search_form.custom["begin"])
-        tr = TR(_class=self.param.grid_class_style.get("grid-search-form-tr"))
+        tr = TR(_class=self.get_style("grid-search-form-tr"))
         for field in self.param.search_form.table:
-            td = TD(_class=self.param.grid_class_style.get("grid-search-form-td"))
+            td = TD(_class=self.get_style("grid-search-form-td"))
             if field.type == "boolean":
-                sb = DIV(_class=self.param.grid_class_style.get("grid-search-boolean"))
+                sb = DIV(_class=self.get_style("grid-search-boolean"))
                 sb.append(self.param.search_form.custom["widgets"][field.name])
                 sb.append(field.label)
                 td.append(sb)
@@ -870,19 +915,17 @@ class Grid:
                         _type="submit",
                         _value=self.T(self.param.search_button_text),
                     ),
-                    _class=self.param.grid_class_style.get("grid-search-form-td"),
+                    _class=self.get_style("grid-search-form-td"),
                 )
             )
         else:
             tr.append(
                 TD(
                     self.param.search_form.custom["submit"],
-                    _class=self.param.grid_class_style.get("grid-search-form-td"),
+                    _class=self.get_style("grid-search-form-td"),
                 )
             )
-        div.append(
-            TABLE(tr, _class=self.param.grid_class_style.get("grid-search-form-table"))
-        )
+        div.append(TABLE(tr, _class=self.get_style("grid-search-form-table")))
         for hidden_widget in self.param.search_form.custom["hidden_widgets"].keys():
             if hidden_widget not in ("formname", "formkey"):
                 div.append(
@@ -896,11 +939,11 @@ class Grid:
     def _make_table_header(self):
         sort_order = request.query.get("orderby", "")
 
-        thead = THEAD(_class=self.param.grid_class_style.get("grid-thead"))
+        thead = THEAD(_class=self.get_style("grid-thead"))
         for index, col in enumerate(self.columns):
             col_header = self._make_col_header(col, index, sort_order)
             classes = join_classes(
-                self.param.grid_class_style.get("grid-th"),
+                self.get_style("grid-th"),
                 "grid-col-%s" % col.key,
             )
             thead.append(TH(col_header, _class=classes))
@@ -908,8 +951,16 @@ class Grid:
         return thead
 
     def _make_col_header(self, col, index, sort_order):
-        up = I(_class=self.param.grid_class_style.get("grid-sorter-icon-up"))
-        dw = I(_class=self.param.grid_class_style.get("grid-sorter-icon-down"))
+        up = I(
+            _class=join_classes(
+                self.get_style("grid-sorter-icon-up"), self.icon_style.sort_up
+            )
+        )
+        dw = I(
+            _class=join_classes(
+                self.get_style("grid-sorter-icon-down"), self.icon_style.sort_down
+            )
+        )
 
         orderby = col.orderby and str(col.orderby)
 
@@ -944,19 +995,19 @@ class Grid:
 
             tr = TR(
                 _role="row",
-                _class=self.param.grid_class_style.get("grid-tr"),
+                _class=self.get_style("grid-tr"),
             )
 
             #  add all the fields to the row
             for col in self.columns:
                 classes = join_classes(
                     [
-                        self.param.grid_class_style.get(
+                        self.get_style(
                             col.td_class_style,
                             (
                                 col.td_class_style(row)
                                 if callable(col.td_class_style)
-                                else self.param.grid_class_style.get("grid-td")
+                                else self.get_style("grid-td")
                             ),
                         ),
                         f"grid-cell-{col.key}",
@@ -1019,7 +1070,7 @@ class Grid:
                 self._make_action_button(
                     url=details_url,
                     button_text=self.T(self.param.details_action_button_text),
-                    icon="fa-id-card",
+                    icon=self.icon_style.details_button,
                     name="grid-details-button",
                 )
             )
@@ -1033,7 +1084,7 @@ class Grid:
                 self._make_action_button(
                     url=edit_url,
                     button_text=self.T(self.param.edit_action_button_text),
-                    icon="fa-edit",
+                    icon=self.icon_style.edit_button,
                     name="grid-edit-button",
                     _disabled=not self.is_editable(row),
                 )
@@ -1051,7 +1102,7 @@ class Grid:
                 self._make_action_button(
                     url=delete_url,
                     button_text=self.T(self.param.delete_action_button_text),
-                    icon="fa-trash",
+                    icon=self.icon_style.delete_button,
                     additional_classes="confirmation",
                     message="Delete record",
                     name="grid-delete-button",
@@ -1098,7 +1149,7 @@ class Grid:
         return cat
 
     def _make_table_pager(self):
-        pager = DIV(_class=self.param.grid_class_style.get("grid-pagination"))
+        pager = DIV(_class=self.get_style("grid-pagination"))
         previous_page_number = None
         for page_number in self.iter_pages(
             self.current_page_number, self.number_of_pages
@@ -1120,7 +1171,7 @@ class Grid:
             pager.append(
                 A(
                     page_number,
-                    _class=self.param.grid_class_style.get(page_name),
+                    _class=self.get_style(page_name),
                     _role="button",
                     **attrs,
                 )
@@ -1129,8 +1180,8 @@ class Grid:
         return pager
 
     def _make_table(self):
-        html = DIV(_class=self.param.grid_class_style.get("grid-wrapper"))
-        grid_header = DIV(_class=self.param.grid_class_style.get("grid-header"))
+        html = DIV(_class=self.get_style("grid-wrapper"))
+        grid_header = DIV(_class=self.get_style("grid-header"))
 
         #  build the New button if needed
         if self.param.create and self.param.create != "":
@@ -1145,9 +1196,9 @@ class Grid:
                 self._make_action_button(
                     create_url,
                     self.T(self.param.new_action_button_text),
-                    "fa-plus",
+                    icon=self.icon_style.add_button,
                     icon_size="normal",
-                    override_classes=self.param.grid_class_style.get("grid-new-button"),
+                    override_classes=self.get_style("grid-new-button"),
                 )
             )
         if self.param.header_elements and len(self.param.header_elements) > 0:
@@ -1160,7 +1211,7 @@ class Grid:
                     override_classes = element.__dict__.get("override_classes", None)
                     if not override_classes:
                         override_classes = join_classes(
-                            self.param.grid_class_style.get("grid-header-element"),
+                            self.get_style("grid-header-element"),
                             element.additional_classes,
                         )
                     grid_header.append(
@@ -1186,7 +1237,7 @@ class Grid:
 
         html.append(grid_header)
 
-        table = TABLE(_class=self.param.grid_class_style.get("grid-table"))
+        table = TABLE(_class=self.get_style("grid-table"))
 
         # build the header
         table.append(self._make_table_header())
@@ -1195,14 +1246,12 @@ class Grid:
         table.append(self._make_table_body())
 
         #  add the table to the html
-        html.append(
-            DIV(table, _class=self.param.grid_class_style.get("grid-table-wrapper"))
-        )
+        html.append(DIV(table, _class=self.get_style("grid-table-wrapper")))
 
         #  add the row counter information
-        footer = DIV(_class=self.param.grid_class_style.get("grid-footer"))
+        footer = DIV(_class=self.get_style("grid-footer"))
 
-        row_count = DIV(_class=self.param.grid_class_style.get("grid-info"))
+        row_count = DIV(_class=self.get_style("grid-info"))
         (
             row_count.append(
                 str(self.T("Displaying rows %s thru %s of %s"))
@@ -1237,7 +1286,7 @@ class Grid:
                     override_classes = element.__dict__.get("override_classes", None)
                     if not override_classes:
                         override_classes = join_classes(
-                            self.param.grid_class_style.get("grid-footer-element"),
+                            self.get_style("grid-footer-element"),
                             element.additional_classes,
                         )
                     html.append(

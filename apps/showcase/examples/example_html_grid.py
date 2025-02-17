@@ -1,10 +1,8 @@
-import os
-
 from yatl.helpers import A, I
 
 from py4web import URL, action, redirect
 from py4web.utils.form import FormStyleDefault
-from py4web.utils.grid import Column, Grid, GridClassStyle
+from py4web.utils.grid import Column, Grid, GridClassStyle, IconStyleFontawsome
 
 from .common import T, auth, db, session
 
@@ -24,6 +22,7 @@ def example_html_grid(path=None):
         search_button_text="Filter",
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
+        icon_style=IconStyleFontawsome,
     )
 
     search_queries = [
@@ -47,7 +46,7 @@ def example_html_grid(path=None):
         orderby=orderby,
         show_id=False,
         T=T,
-        **grid_param
+        **grid_param,
     )
 
     grid.columns[3].represent = lambda row: I(
