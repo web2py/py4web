@@ -20,6 +20,7 @@ from .examples.page_with_raise import page_with_raise
 from .examples.page_with_redirect import page_with_redirect, target
 from .examples.page_with_template import page_with_template
 from .examples.page_without_template import page_without_template
+from .examples.page_with_tailwindcss import page_with_tailwindcss
 from .examples.rest import rest
 from .examples.rpc import rpc
 from .examples.session_clear import session_clear

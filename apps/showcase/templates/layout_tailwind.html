@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
+    <link rel="stylesheet" href="css/no.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link href="css/prism.css" rel="stylesheet" />
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red}</style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Header / Navbar -->
+    <header class="bg-black text-white shadow-md">
+        <div class="container mx-auto flex items-center justify-between px-6 py-4">
+            <!-- Logo -->
+            <a href="[[=URL('index')]]" class="text-lg font-bold">Py4web Examples Showcase</a>
+
+            <!-- Hamburger Menu (Mobile) -->
+            <div class="md:hidden">
+                <button @click="isOpen = !isOpen" class="text-white focus:outline-none">
+                    ☰
+                </button>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="hidden md:flex space-x-6">
+                [[block page_left_menu]][[end]]
+
+                <ul class="flex space-x-4">
+                    [[if globals().get('user'):]]
+                        <li class="relative group">
+                            <button class="text-white focus:outline-none">
+                                [[=globals().get('user',{}).get('email')]]
+                            </button>
+                            <ul class="absolute hidden group-hover:block bg-white text-gray-900 shadow-lg py-2 mt-2 rounded-lg w-40">
+                                <li><a href="[[=URL('auth/logout')]]" class="block px-4 py-2 hover:bg-gray-200">Logout</a></li>
+                            </ul>
+                        </li>
+                    [[else:]]
+                        <li class="relative group">
+                            <button class="text-white focus:outline-none">
+                                Login
+                            </button>
+                            <ul class="absolute hidden group-hover:block bg-white text-gray-900 shadow-lg py-2 mt-2 rounded-lg w-40">
+                                <li><a href="[[=URL('auth/register')]]" class="block px-4 py-2 hover:bg-gray-200">Sign up</a></li>
+                                <li><a href="[[=URL('auth/login')]]" class="block px-4 py-2 hover:bg-gray-200">Log in</a></li>
+                            </ul>
+                        </li>
+                    [[pass]]
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="container mx-auto mt-4">
+        <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto bg-white shadow-md rounded-lg p-6 mt-6">
+        [[include]]
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white text-center py-4 mt-6">
+        <p>Made with py4web</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/prism.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/sugar.min.js"></script>
+    [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
+
+</body>
+</html>
