@@ -42,16 +42,20 @@ and which database to use. Auth data is stored in ``session['user']``
 and, if a user is logged in, the user id is stored in
 session[‘user’][‘id’]. The db object is used to store persistent info
 about the user in a table ``auth_user`` which is created if missing.
-The ``auth_user`` table has the following fields:
+The ``auth_user`` table always has the following fields:
 
--  username
--  email
--  password
--  first_name
--  last_name
--  sso_id (used for single sign on, see later)
--  action_token (used to verify email, block users, and other tasks,
-   also see later).
+-  ``email``
+-  ``password``
+-  ``sso_id`` used for single sign on, see later
+-  ``action_token`` used to verify email, block users, and other tasks,
+   also see later.
+
+With the following fields being optional, based on the Auth constructor arguments:
+
+- ``username``: enabled by default, disable with ``use_username=False``
+-  ``first_name``, ``last_name``: enabled by default, disable with``use_first_last_name=False``
+-  ``phone_number``: disabled by default, enable with ``use_phone_number=True``
+-  ``past_passwords_hash``: disabled by default, enable with ``block_previous_password_num=3``
 
 The ``auth.enable()`` step creates and exposes the following RESTful
 APIs:
@@ -135,7 +139,7 @@ trying to parse the session for a user session.
    @action.uses(auth)
    def index():
        user = auth.get_user()
-       return 'hello {first_name}'.format(**user) if user else 'not logged in'
+       return 'hello {display_name}'.format(**user) if user else 'not logged in'
 
 The second one forces the login if needed:
 
@@ -145,7 +149,7 @@ The second one forces the login if needed:
    @action.uses(auth.user)
    def index():
        user = auth.get_user()
-       return 'hello {first_name}'.format(**user)
+       return 'hello {display_name}'.format(**user)
 
 Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.

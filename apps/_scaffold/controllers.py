@@ -37,5 +37,5 @@ from .common import (T, auth, authenticated, cache, db, flash, logger, session,
 @action.uses("index.html", auth, T)
 def index():
     user = auth.get_user()
-    message = T("Hello {first_name}").format(**user) if user else T("Hello")
+    message = T("Hello {display_name}").format(**user) if user else T("Hello")
     return dict(message=message)

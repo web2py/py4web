@@ -179,7 +179,7 @@ def index():
 def index():
     user = auth.get_user()
     if user:
-        message = f"Hello {user['first_name']}"
+        message = f"Hello {user['display_name']}"
     else:
         message = "Hello, you are not logged in"
     return {"message": message}
@@ -193,7 +193,7 @@ def index():
 @action.uses("generic.html", auth.user)
 def index():
     user = auth.get_user()
-    message = f"Hello {user['first_name']}"
+    message = f"Hello {user['display_name']}"
     return {"message": message}
 </code></pre>
 
@@ -209,7 +209,7 @@ is_manager = Condition(lambda: "manager" in groups.get(auth.user_id))
 @action.uses("generic.html", auth.user, is_manager)
 def index():
     user = auth.get_user()
-    message = f"Hello {user['first_name']} (manager!)"
+    message = f"Hello {user['display_name']} (manager!)"
     return {"message": message}
 </code></pre>
 

@@ -745,12 +745,24 @@ Auth is used as follows:
    @action.uses(auth)
    def index():
        user = auth.get_user() or redirect(URL('auth/login'))
-       return 'Welcome %s' % user.get('first_name')
+       return 'Welcome %s' % user.get('display_name')
 
 The constructor of the ``Auth`` object defines the ``auth_user`` table
-with the following fields: username, email, password, first_name,
-last_name, sso_id, and action_token (the last two are mostly for
+with the following fields: email, password, sso_id, and action_token (the last two are mostly for
 internal use).
+
+The following fields are optional, and can be enabled/disabled in the ``Auth`` constructor:
+
+- ``username``: enabled by default, disable with ``use_username=False``
+-  ``first_name``, ``last_name``: enabled by default, disable with``use_first_last_name=False``
+-  ``phone_number``: disabled by default, enable with ``use_phone_number=True``
+-  ``past_passwords_hash``: disabled by default, enable with ``block_previous_password_num=3``
+
+The auth_user table also has the following "virtual" fields, for convenience.
+These result in different values depending on which optional fields are enabled:
+
+- ``display_name``: Either ``first_name``, ``username``, or ``email``
+- ``display_name_full``: Either ``first_name last_name``, or ``email``
 
 If a ``auth_user`` table is defined before calling ``auth.enable()``
 the provided table will be used.
@@ -793,7 +805,7 @@ Since this check is very common, py4web provides an additional fixture
    @action.uses(auth.user)
    def index():
        user = auth.get_user()
-       return 'Welcome %s' % user.get('first_name')
+       return 'Welcome %s' % user.get('display_name')
 
 This fixture automatically redirects to the ``auth/login`` page if user
 is not logged-in, hence this example is equivalent to the previous one.

@@ -5,9 +5,10 @@ import jwt
 
 from py4web.core import HTTP, Field, request
 
+from . import BasePlugin
 
-class OAuthServer(object):
 
+class OAuthServer(BasePlugin):
     algorithms = ["HS256", "RS256"]
 
     def __init__(self, auth, secret):
