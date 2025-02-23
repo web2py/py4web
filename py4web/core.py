@@ -18,7 +18,6 @@ import http.cookies
 import importlib.machinery
 import importlib.util
 import inspect
-import io
 import json
 import logging
 import numbers
@@ -913,6 +912,10 @@ def URL(  # pylint: disable=invalid-name
     if scheme is not False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
+        expected_domain = os.environ.get("PY4WEB_DOMAIN")
+        if expected_domain and domain != expected_domain:
+            logging.warning(f"Possible cache poisoning blocked: url={original_url}")
+            domain = expected_domain
         if scheme is True:
             scheme = orig_scheme
         elif scheme is None:
