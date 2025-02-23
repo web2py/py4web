@@ -32,7 +32,7 @@ upgrade-vue:
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
 build: clean assets
 	pip install --upgrade build
-	pip install --upgrade twine
+	pip install --upgrade "twine<6.1"
 	python -m build
 deploy: build
 	python -m twine upload dist/*
