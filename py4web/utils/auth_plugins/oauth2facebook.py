@@ -19,5 +19,10 @@ class OAuth2Facebook(OAuth2):
         "last_name": "last_name",
     }
 
+    def is_auth_compatible(self, auth):
+        if not auth.use_first_last_name:
+            return False, "requires auth.use_first_last_name = True"
+        return super().is_auth_compatible(auth)
+
     def revoke(self, token):
         requests.delete(self.revoke_url, headers={"Authorization": token})

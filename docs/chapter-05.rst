@@ -363,7 +363,7 @@ The scaffold app contains an example of a more complex action:
    @action.uses('generic.html', session, db, T, auth.user)
    def index():
        user = auth.get_user()
-       message = T('Hello {first_name}'.format(**user))
+       message = T('Hello {display_name}'.format(**user))
        return dict(message=message, user=user)
 
 Notice the following:

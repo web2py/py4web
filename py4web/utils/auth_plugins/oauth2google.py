@@ -16,3 +16,8 @@ class OAuth2Google(OAuth2):
         "first_name": "given_name",
         "last_name": "family_name",
     }
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_first_last_name:
+            return (False, "requires auth.use_first_last_name = True")
+        return super().is_auth_compatible(auth)

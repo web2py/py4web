@@ -15,3 +15,8 @@ class OAuth2Okta(OAuth2):
         "email": "sub",
         "sso_id": "sub",
     }
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_username:
+            return False, "requires auth.use_username = True"
+        return super().is_auth_compatible(auth)

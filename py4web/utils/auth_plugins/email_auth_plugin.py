@@ -1,9 +1,10 @@
 import logging
 import smtplib
 
+from . import BasePlugin
 
-class EmailAuthPlugin:
 
+class EmailAuthPlugin(BasePlugin):
     name = "email_auth"
     label = "Email"
 

@@ -2,9 +2,10 @@ import base64
 
 from pydal._compat import urllib2, urlopen
 
+from . import BasePlugin
 
-class BasicAuthPlugin:
 
+class BasicAuthPlugin(BasePlugin):
     name = "basic"
     label = "Basic"
 

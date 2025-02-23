@@ -20,6 +20,8 @@ from pydal import Field
 from py4web import HTTP, URL, redirect, request, response
 from py4web.utils.auth import REGEX_APPJSON, AuthEnforcer
 
+from . import BasePlugin
+
 
 class AuthEnforcerGoogleScoped(AuthEnforcer):
     """This class catches certain invalid access errors Google generates
@@ -32,9 +34,9 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
         super().__init__(auth, condition=condition)
         self.db = db
         self.error_page = error_page
-        assert (
-            error_page is not None
-        ), "You need to specify an error page; can't use login."
+        assert error_page is not None, (
+            "You need to specify an error page; can't use login."
+        )
 
     def on_error(self, context):
         if isinstance(context.get("exception"), RefreshError):
@@ -75,7 +77,7 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
             self._handle_error()
 
 
-class OAuth2GoogleScoped(object):
+class OAuth2GoogleScoped(BasePlugin):
     """Class that enables google login via oauth2 with additional scopes.
     The authorization info is saved so the scopes can be used later on.
 
@@ -98,6 +100,12 @@ class OAuth2GoogleScoped(object):
     name = "oauth2googlescoped"
     label = "Google Scoped"
     callback_url = "auth/plugin/oauth2googlescoped/callback"
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_first_last_name:
+            return False, "requires auth.use_first_last_name = True"
+
+        return super().is_auth_compatible(auth)
 
     def __init__(
         self,

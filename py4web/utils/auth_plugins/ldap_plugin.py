@@ -15,10 +15,6 @@ ldap.set_option(ldap.OPT_REFERRALS, 0)
 
 
 class LDAPPlugin(UsernamePassword):
-
-    name = "ldap"
-    label = "LDAP"
-
     """
     to use ldap login with MS Active Directory:
 
@@ -147,6 +143,16 @@ class LDAPPlugin(UsernamePassword):
     is "error" and can be set to error, warning, info, debug.
     """
 
+    name = "ldap"
+    label = "LDAP"
+
+    def is_auth_compatible(self, auth):
+        if not auth.use_first_last_name:
+            return False, "requires auth.use_first_last_name = True"
+        if not auth.use_username:
+            return False, "requires auth.use_username = True"
+        return True, ""
+
     def __init__(
         self,
         server="ldap",
@@ -182,7 +188,6 @@ class LDAPPlugin(UsernamePassword):
         logger=logging,
         groups=None,
     ):
-
         self.server = server
         self.port = port
         self.base_dn = base_dn
@@ -219,7 +224,6 @@ class LDAPPlugin(UsernamePassword):
         self.groups = groups
 
     def check_credentials(self, username, password):
-
         server = self.server
         port = self.port
         base_dn = self.base_dn
@@ -557,7 +561,6 @@ class LDAPPlugin(UsernamePassword):
             return False
 
     def is_user_in_allowed_groups(self, username, password=None):
-
         server = self.server
         port = self.port
         base_dn = self.base_dn
