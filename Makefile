@@ -1,4 +1,4 @@
-.PHONY: clean docs clean-assets assets tests setup run build deploy
+.PHONY: clean docs clean-assets assets test setup run build deploy
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
@@ -17,7 +17,7 @@ py4web/assets/py4web.app.%.zip: apps/%
 docs:
 	pip install -U -r docs/requirements.txt
 	cd docs; ./updateDocs.sh html
-tests:
+test:
 	pip install -U -r test-requirements.txt
 	python -m pytest --cov=py4web --cov-report html:cov.html -v tests/
 setup:
