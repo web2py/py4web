@@ -5,8 +5,9 @@ from py4web.core import Field, Fixture, request
 
 
 class recaptcha_fixture(Fixture):
-    def __init__(self, api_key):
+    def __init__(self, api_key, version):
         self.api_key = api_key
+        self.version = version
         Fixture.__init__(self)
 
     def on_request(self, context):
@@ -17,24 +18,54 @@ class recaptcha_fixture(Fixture):
 
     def on_success(self, context):
         if context:
-            script = "".join(
+            script_v2 = "".join(
                 map(
                     lambda line: line.strip(),
                     """<script>
             var field = document.querySelector("input[name=g_recaptcha_response]");
+            
             if(field) {
               field.hidden = true;
-              field.setAttribute("type", "hidden");           
-              var form =  document.querySelector(".auth-container form");
+              field.setAttribute("type", "hidden");
+              let label = document.querySelector('label[for="no_table_g_recaptcha_response"]');
+              label.hidden = true;
+              document.getElementById("g-recaptcha-div").setAttribute("data-sitekey", "%s");
+              var form =  document.querySelector("form");
               var button = form.querySelector("input[type=submit]");
               window.recaptcha_submit = function(token){ form.submit(); };
+           
+            }
+            </script>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            """.split(
+                        "\n"
+                    ),
+                )
+            )
+            script_v3 = "".join(
+                map(
+                    lambda line: line.strip(),
+                    """<script>
+            var field = document.querySelector("input[name=g_recaptcha_response]");
+            
+            if(field) {
+              field.hidden = true;
+              field.setAttribute("type", "hidden");
+              let label = document.querySelector('label[for="no_table_g_recaptcha_response"]');
+              label.hidden = true;
+              var form =  document.querySelector("form");
+              var button = form.querySelector("input[type=submit]");
+              window.recaptcha_submit = function(token){ form.submit(); };
+
               button.classList.add("g-recaptcha");
               button.setAttribute("data-action", "submit");
               button.setAttribute("data-callback", "recaptcha_submit");
               button.setAttribute("data-sitekey", "%s");
+            
+           
             }
             </script>
-            <script src="https://www.google.com/recaptcha/api.js"></script>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
             """.split(
                         "\n"
                     ),
@@ -42,17 +73,21 @@ class recaptcha_fixture(Fixture):
             )
             if context["output"] is None:
                 context["output"] = {}
-            context["output"]["recaptcha"] = XML(script % self.api_key)
+            if self.version == "v2":
+                context["output"]["recaptcha"] = XML(script_v2 % self.api_key)
+            else:
+                context["output"]["recaptcha"] = XML(script_v3 % self.api_key)
 
 
 class ReCaptcha:
-    def __init__(self, api_key, api_secret):
+    def __init__(self, api_key, api_secret, version):
         self.api_key = api_key
         self.api_secret = api_secret
+        self.version = version
 
     @property
     def fixture(self):
-        return recaptcha_fixture(self.api_key)
+        return recaptcha_fixture(self.api_key, self.version)
 
     @property
     def field(self):
@@ -66,6 +101,7 @@ class ReCaptcha:
         try:
             if res.json()["success"]:
                 return (True, None)
-            return (False, "Invalid ReCaptcha response")
+            return (False, "Invalid ReCaptcha value")
         except Exception as exc:
+            print(exc)
             return (False, str(exc))
