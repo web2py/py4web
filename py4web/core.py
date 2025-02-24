@@ -912,10 +912,16 @@ def URL(  # pylint: disable=invalid-name
     if scheme is not False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
-        expected_domain = os.environ.get("PY4WEB_DOMAIN")
-        if expected_domain and domain != expected_domain:
-            logging.warning(f"Possible cache poisoning blocked: url={original_url}")
-            domain = expected_domain
+        expected_domains = [
+            domain_item.strip()
+            for domain_item in os.environ.get("PY4WEB_DOMAINS", "").split(",")
+            if domain_item
+        ]
+        if expected_domains and domain not in expected_domains:
+            logging.warning(
+                "Possible cache poisoning blocked: url=%s", original_url
+            )
+            domain = expected_domains[0]
         if scheme is True:
             scheme = orig_scheme
         elif scheme is None:
