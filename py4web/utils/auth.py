@@ -1657,6 +1657,7 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
+            form_name="form_auth",
         )
         user = None
         next_url = prevent_open_redirect(request.query.get("next"))
@@ -1697,6 +1698,7 @@ class DefaultAuthForms:
                     redirect(URL(f"{self.auth.route}/two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
+            
 
         if self.auth.allows("register"):
             form.param.sidecar.append(
