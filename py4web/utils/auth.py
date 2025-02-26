@@ -1657,7 +1657,6 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
-            form_name="form_auth",
         )
         user = None
         next_url = prevent_open_redirect(request.query.get("next"))
