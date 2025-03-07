@@ -100,9 +100,10 @@
                     reference_table_url.pop()
                     reference_table_url.push(field.references)
                     reference_table_url = reference_table_url.join('/') + '?@options_list=true';
+                    console.log(reference_table_url);
                     Q.get(reference_table_url).then(function (res) {
-                        let url_components = res.json().config.url.split('?')[0].split('/');
-                        self.reference_options[url_components[url_components.length - 1 ]] = res.data.items;
+                        let url_components = res.url.split('?')[0].split('/');
+                        self.reference_options[url_components[url_components.length - 1 ]] = res.json().items;
                      });
                     
                 }

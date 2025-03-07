@@ -388,9 +388,14 @@ if MODE in ("demo", "readonly", "full"):
                 )
                 policy.set(table._tablename, "DELETE", authorize=True)
 
+            def make_writable(tablename):
+                if tablename in db:
+                    for field in db[tablename]:
+                        field.writable = True
+
             # must wrap into action uses to make sure it closes transactions
             data = action.uses(db)(
-                lambda: RestAPI(db, policy)(
+                lambda: make_writable(args[2]) or RestAPI(db, policy)(
                     request.method, args[2], id, request.query, request.json
                 )
             )()
