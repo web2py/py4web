@@ -204,7 +204,12 @@ let init = (app) => {
         app.vue.walk = [];
         var name = app.vue.selected_app.name;
         Q.get('../walk/'+name).then(r=>{app.vue.walk=r.json().payload;});
-        Q.get('../rest/'+name).then(r=>{app.vue.databases=r.json().databases;});
+        Q.get('../rest/'+name).then(r=>{
+            var restpayload = r.json();            
+            app.vue.databases=restpayload.databases;
+            // d3 database graphs
+            d3_graph(restpayload.nodes, restpayload.links);
+        });
         app.vue.selected_filename = null;
     }
     app.clear_tickets = () => {

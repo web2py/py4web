@@ -351,23 +351,58 @@ if MODE in ("demo", "readonly", "full"):
         ]
         if len(args) == 1:
 
+            # for model d3 graphs
+            nodes = list()
+            links = list()
+
             def tables(name):
                 db = getattr(module, name)
                 make_safe(db)
-                return [
-                    {
+                tablelist = list()
+                for t in getattr(module, name):
+
+                    # add links and nodes for the db graph
+                    # code from web2py appadmin
+                    fields = []
+                    for field in t:
+                        f_type = field.type
+                        if not isinstance(f_type, str):
+                            disp = ' '
+                        elif f_type == 'string':
+                            disp = field.length
+                        elif f_type == 'id':
+                            disp = 'PK'
+                        elif f_type.startswith('reference') or \
+                            f_type.startswith('list:reference'):
+                            disp = 'FK'
+                        else:
+                            disp = ' '
+                        fields.append(dict(name=field.name, type=field.type, disp=disp))
+
+                        if isinstance(f_type, str) and (
+                            f_type.startswith('reference') or
+                            f_type.startswith('list:reference')):
+                            referenced_table = f_type.split()[1].split('.')[0]
+
+                            links.append(dict(source=t._tablename, target = referenced_table))
+
+                    nodes.append(dict(name=t._tablename, type='table', fields = fields))
+                    # end of code for d3 graphs
+
+                    tablelist.append({
                         "name": t._tablename,
                         "fields": t.fields,
                         "link": url(name, t._tablename) + "?model=true",
-                    }
-                    for t in getattr(module, name)
-                ]
+                    })
+                return tablelist
 
             return {
                 "databases": [
                     {"name": name, "tables": tables(name)} for name in databases
-                ]
-            }
+                ],
+                "links": links,
+                "nodes": nodes}
+        
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
             make_safe(db)
