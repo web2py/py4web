@@ -238,7 +238,7 @@ it second argument:
     # controllers definition
     @action("update_form/<thing_id:int>", method=["GET", "POST"])
     @action.uses("form_basic.html", db)
-    def update_form():
+    def update_form(thing_id):
         form = Form(db.thing, thing_id)
         rows = db(db.thing).select()
         return dict(form=form, rows=rows)
