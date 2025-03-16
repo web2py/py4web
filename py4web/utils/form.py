@@ -863,7 +863,7 @@ class Form(object):
                                 if value is not None:
                                     if field.uploadfolder:
                                         uploaded_files.append(tuple((field, value)))
-                                    validated_vars[field.name] = value
+                                    validated_vars[field.name] = field.store(value.file, value.filename, field.uploadfolder)
                                 elif self.record:
                                     if not delete:
                                         validated_vars[field.name] = self.record.get(
