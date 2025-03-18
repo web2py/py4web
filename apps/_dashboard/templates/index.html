@@ -5,6 +5,7 @@
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA==" />
     <link rel="stylesheet" type="text/css" href="css/future.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" type="text/css" href="css/d3_graph.css" /><!-- for d3 diagram maker -->
 </head>
 
 <body>
@@ -120,6 +121,12 @@
             <label for="databases">Databases in {{selected_app.name}}</label>
             <div style="max-width:100vw">
                 <div style="overflow-x:auto">
+                    <div>
+                    </br>
+                        <h2>Model graphs</h2>
+                        <div id="vis"></div><!-- d3 database diagrams-->
+                    </br>
+                    </div>
                     <table>
                         <tbody v-for="db in databases">
                             <tr v-for="table in db.tables">
@@ -264,5 +271,7 @@
 <script>
   T.languages = [[= languages]];
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script><!-- d3 library for database diagrams-->
+<script src="js/d3_graph.js"></script><!-- d3 diagram maker -->
 <script src="js/index.js"></script>
 </html>
