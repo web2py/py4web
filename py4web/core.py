@@ -1469,10 +1469,11 @@ class Reloader:
     def register_route(app_name, rule, kwargs, func):
         """Given an app_name and a rule registers the corresponding routes"""
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
-        if url_prefix and rule == "/":
-            rule = ""
-        else:
-            rule = url_prefix + rule
+        if url_prefix:
+            if rule == "/":
+                rule = url_prefix
+            else:
+                rule = url_prefix + rule
         dec_func = action.catch_errors(app_name, func)
         if "method" not in kwargs:
             kwargs["method"] = ["GET", "POST"]
