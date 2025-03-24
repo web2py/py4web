@@ -907,36 +907,39 @@ class Grid:
             if key not in ("search_type", "search_string")
         ]
         attrs = self.attributes_plugin.link(url=self.endpoint)
-        form = FORM(*hidden_fields, **attrs)
-        classes = self.get_style("grid-search-form-select")
-        select = SELECT(*options, **dict(_name="search_type", _class=classes))
-        classes = self.get_style("grid-search-form-input")
+        form = FORM(*hidden_fields, **attrs, _class=self.get_style("grid-search-form"))
+        select = SELECT(
+            *options,
+            _name="search_type",
+            _class=self.get_style("grid-search-form-select"),
+        )
         input = INPUT(
             _type="text",
             _name="search_string",
             _value=search_string,
-            _class=classes,
+            _class=self.get_style("grid-search-form-input"),
         )
-        classes = self.get_style("grid-search-button")
-        submit = INPUT(_type="submit", _value=self.T("Search"), _class=classes)
+        submit = INPUT(
+            _type="submit",
+            _value=self.T("Search"),
+            _class=self.get_style("grid-search-button"),
+        )
         clear_script = "document.querySelector('[name=search_string]').value='';"
-        classes = self.get_style("grid-clear-button")
         clear = INPUT(
             _type="submit",
             _value=self.T("Clear"),
             _onclick=clear_script,
-            _class=classes,
+            _class=self.get_style("grid-clear-button"),
         )
         div = DIV(_id="grid-search", _classes=self.get_style("grid-search"))
 
         tr = TR(_class=self.get_style("grid-search-form-tr"))
-        classes = self.get_style("grid-search-form-td")
+        td_classes = self.get_style("grid-search-form-td")
         if len(options) > 1:
-            tr.append(TD(select, _class=classes))
-        tr.append(TD(input, _class=classes))
-        tr.append(TD(submit, clear, _class=classes))
-        classes = self.get_style("grid-search-form-table")
-        form.append(TABLE(tr, _class=classes))
+            tr.append(TD(select, _class=td_classes))
+        tr.append(TD(input, _class=td_classes))
+        tr.append(TD(submit, clear, _class=td_classes))
+        form.append(TABLE(tr, _class=self.get_style("grid-search-form-table")))
         div.append(form)
         return div
 
