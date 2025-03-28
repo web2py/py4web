@@ -15,7 +15,7 @@ class recaptcha_fixture(Fixture):
         if value:
             request.POST["g_recaptcha_response"] = value
             del request.POST["g-recaptcha-response"]
-
+       
     def on_success(self, context):
         if context:
             script_v2 = "".join(
@@ -23,15 +23,30 @@ class recaptcha_fixture(Fixture):
                     lambda line: line.strip(),
                     """<script>
             var field = document.querySelector("input[name=g_recaptcha_response]");
+            var div_recaptcha = document.createElement("div");
+            div_recaptcha.classList.add("g-recaptcha");
+            div_recaptcha.setAttribute("id","g-recaptcha-div");
+            div_recaptcha.setAttribute("data-sitekey","%s" );
+            let current_url = window.location.href;
             
             if(field) {
               field.hidden = true;
               field.setAttribute("type", "hidden");
               let label = document.querySelector('label[for="no_table_g_recaptcha_response"]');
               label.hidden = true;
-              document.getElementById("g-recaptcha-div").setAttribute("data-sitekey", "%s");
               var form =  document.querySelector("form");
               var button = form.querySelector("input[type=submit]");
+              
+              if (window.location.href.endsWith('/auth/register')) {
+                form.insertBefore(div_recaptcha, form.childNodes[5]);
+                }
+              else if (window.location.href.endsWith('/auth/request_reset_password')) {
+                form.insertBefore(div_recaptcha, form.childNodes[2]);
+                }
+              else {
+                form.insertBefore(div_recaptcha, form.childNodes[4]);
+              }
+              
               window.recaptcha_submit = function(token){ form.submit(); };
            
             }
@@ -99,9 +114,12 @@ class ReCaptcha:
             "https://www.google.com/recaptcha/api/siteverify", data=data
         )
         try:
-            if res.json()["success"]:
+           
+
+            if res.json()["success"] == True:
                 return (True, None)
-            return (False, "Invalid ReCaptcha value")
+                        
+            return (False, "Please verify that you are not a robot")
         except Exception as exc:
-            print(exc)
             return (False, str(exc))
+
