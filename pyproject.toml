@@ -7,7 +7,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-py4web = "^1.20250315.1"
+py4web = "^1.20250328.1"
 
 
 [build-system]
