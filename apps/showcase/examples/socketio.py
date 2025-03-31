@@ -3,7 +3,7 @@ from py4web import action, request
 # pls, run socketio server - look into py4web/utils/wsservers.py.txt
 # test example for python-socketio
 #
-# sio examples https://github.com/ali96343/lvsio 
+# sio examples https://github.com/ali96343/lvsio
 # https://github.com/ali96343/capp
 
 

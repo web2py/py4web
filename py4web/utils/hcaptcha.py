@@ -47,23 +47,19 @@ class hcaptcha_fixture(Fixture):
             window.hcaptcha_submit = function(token){ form.submit(); };
             </script>
             <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-            """.split(
-                        "\n"
-                    ),
+            """.split("\n"),
                 )
             )
-            
+
             if context["output"] is None:
                 context["output"] = {}
             context["output"]["hcaptcha"] = XML(hcaptcha_script % self.site_key)
-        
 
 
 class Hcaptcha:
     def __init__(self, site_key, secret_key):
         self.site_key = site_key
         self.secret_key = secret_key
-
 
     @property
     def fixture(self):
@@ -77,13 +73,12 @@ class Hcaptcha:
         print(value)
         print(self.secret_key)
         # Build payload with secret key and token.
-        data = {"secret":self.secret_key, "response": value}
+        data = {"secret": self.secret_key, "response": value}
 
         # Make POST request with data payload to hCaptcha API endpoint.
         res = requests.post(url="https://hcaptcha.com/siteverify", data=data)
         print(res.text)
         try:
-            
             if res.json()["success"]:
                 return (True, None)
             return (False, "Invalid Hcaptcha value")

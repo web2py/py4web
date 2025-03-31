@@ -86,7 +86,6 @@ def escape(txt):
 # specify which language we want to render as for highlight.js
 # based on the name of the file
 def getFileType(name):
-
     if name.lower().endswith(".py"):
         return 'class="language-python"'
     if name.lower().endswith(".js"):

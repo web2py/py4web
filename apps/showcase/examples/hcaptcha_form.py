@@ -5,12 +5,10 @@ from py4web import Field, action, request
 from py4web.utils.form import Form
 
 from .common import session
-from .settings import (HCAPTCHA_SECRET_KEY, HCAPTCHA_SITE_KEY,
-                       HCAPTCHA_VERIFY_URL)
+from .settings import HCAPTCHA_SECRET_KEY, HCAPTCHA_SITE_KEY, HCAPTCHA_VERIFY_URL
 
 
 def hCaptcha(token):
-
     # Retrieve token from post data with key 'h-captcha-response'.
 
     # Build payload with secret key and token.
@@ -29,7 +27,6 @@ def hCaptcha(token):
 @action("hcaptcha_form")
 @action.uses("examples/hcaptcha_form.html", session)
 def hcaptcha_form():
-
     form = Form(
         [
             Field(

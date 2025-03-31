@@ -14,7 +14,8 @@ db.define_table("todo", Field("info"))
 db.commit()
 
 # an example of a custom requirement
-user_in_session = Condition(lambda: session.get('user', False))
+user_in_session = Condition(lambda: session.get("user", False))
+
 
 # example index page using session, template and vue.js
 @action("index")  # the function below is exposed as a GET action
@@ -55,4 +56,5 @@ def todo(id):
 @cache.memoize(expiration=5)  # here we cache the result for 5 seconds
 def uuid():
     import uuid
+
     return str(uuid.uuid4())

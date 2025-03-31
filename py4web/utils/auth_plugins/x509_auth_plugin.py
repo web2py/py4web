@@ -14,12 +14,12 @@ from functools import reduce
 
 from gluon.globals import current
 from gluon.storage import Storage
+
 # requires M2Crypto
 from M2Crypto import X509
 
 
 class x509Plugin:
-
     name = "x509"
     label = "x509"
 
@@ -36,7 +36,6 @@ class x509Plugin:
         # since we cannot access the web server ssl engine directly
 
         if self.ssl_client_raw_cert:
-
             x509 = X509.load_cert_string(self.ssl_client_raw_cert, X509.FORMAT_PEM)
             # extract it from the cert
             self.serial = (

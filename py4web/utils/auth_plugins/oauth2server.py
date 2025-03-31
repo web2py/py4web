@@ -7,7 +7,6 @@ from py4web.core import HTTP, Field, request
 
 
 class OAuthServer(object):
-
     algorithms = ["HS256", "RS256"]
 
     def __init__(self, auth, secret):

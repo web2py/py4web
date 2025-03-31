@@ -47,6 +47,7 @@ except ImportError:
     gunicorn = None
 
 import click
+
 # Third party modules
 import ombott as bottle
 import pluralize
@@ -192,9 +193,7 @@ def safely(func, exceptions=(Exception,), log=False, default=None):
 class Node:
     """A node for the LRU cache"""
 
-    def __init__(
-        self, key=None, value=None, t=None, m=None, prev=None, next=None
-    ):  # pylint: disable=redefined-builtin
+    def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):  # pylint: disable=redefined-builtin
         """create a node of the LRU cache"""
         self.key, self.value, self.t, self.m, self.prev, self.next = (
             key,

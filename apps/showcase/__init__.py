@@ -94,7 +94,9 @@ def show(name):
         filename = other[1:].replace(".", "/") + ".py"
         with open(f"{here}/{filename}") as stream:
             content = stream.read().strip()
-            data.append({"shortname": filename, "content": content, "language": "python"})
+            data.append(
+                {"shortname": filename, "content": content, "language": "python"}
+            )
     # drop the subfolder name
     path = "/".join(path.split("/")[1:])
     executable = MODE == "full" or name.split("/")[-1] in globals()

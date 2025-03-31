@@ -42,12 +42,13 @@ class ActionFactory:
         path=None,
         template=None,
         method=["GET", "POST", "PUT", "HEAD", "DELETE"],
-        uses=None
+        uses=None,
     ):
         return self._action_maker(method, path, template, uses)
 
     def _action_maker(self, method, path, template, uses):
-        uses = uses or [] # handle uses=None
+        uses = uses or []  # handle uses=None
+
         def make_action(func, path=path, method=method, template=template):
             if not path:
                 path = func.__name__
@@ -65,7 +66,7 @@ class ActionFactory:
         return make_action
 
     def callback(self, path=None, uses=None):
-        uses = uses or [] # handle uses=None
+        uses = uses or []  # handle uses=None
         return CallbackFactory(path, [*self.fixtures, *uses])
 
 

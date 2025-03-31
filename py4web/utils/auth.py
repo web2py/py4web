@@ -1661,25 +1661,24 @@ class DefaultAuthForms:
         user = None
         next_url = prevent_open_redirect(request.query.get("next"))
         self.auth.session["_next_login"] = next_url
-        
+
         if form.submitted:
-            # First, check for errors in the form  
+            # First, check for errors in the form
             if form.errors:
-                # Stops processing and returns the form with errors  
-                return form  
+                # Stops processing and returns the form with errors
+                return form
 
             # If there are no errors, continue with the login process.
             user, error = self.auth.login(
-                form.vars.get("email", ""), 
-                form.vars.get("password", "")
+                form.vars.get("email", ""), form.vars.get("password", "")
             )
             form.accepted = not error
 
             # Stops processing if there is a login error
             if error:
                 form.errors["password"] = error
-                return form  
-            
+                return form
+
         if user:
             #  We will process two_factor if two_factor_send is defined and either
             #  - No two_factor_required defined
@@ -1697,7 +1696,6 @@ class DefaultAuthForms:
                     redirect(URL(f"{self.auth.route}/two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
-            
 
         if self.auth.allows("register"):
             form.param.sidecar.append(
@@ -2109,7 +2107,10 @@ class SimpleTokenPlugin:
                 "auth_simple_token",
                 Field("token", default=uuid.uuid4, unique=True, writable=False),
                 Field(
-                    "user_id", "reference auth_user", default=auth.user_id, writable=False
+                    "user_id",
+                    "reference auth_user",
+                    default=auth.user_id,
+                    writable=False,
                 ),
                 Field("description"),
                 Field("expiration_date", "datetime"),

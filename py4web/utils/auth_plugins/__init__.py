@@ -9,7 +9,6 @@ from py4web.core import HTTP, URL, redirect, request
 
 
 class UsernamePassword:
-
     name = "undefined"
 
     def __init__(self, test_mode=False):
@@ -22,7 +21,6 @@ class UsernamePassword:
 
 
 class SSO(object):
-
     name = "undefined"
     maps = {}
 

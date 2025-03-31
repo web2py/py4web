@@ -1,6 +1,7 @@
 """
 This file defines the database models
 """
+
 import datetime
 
 from pydal.validators import *

@@ -1,6 +1,7 @@
 """
 This file defines the database models
 """
+
 import datetime
 
 from pydal.validators import *
@@ -60,6 +61,7 @@ if not db(db.person).count():
     db.tag.insert(superhero=3, superpower=2, strength=80)
     db.tag.insert(superhero=3, superpower=3, strength=20)
     db.tag.insert(superhero=3, superpower=4, strength=70)
+
 
 # Used for examples of forms.
 def get_user_email():

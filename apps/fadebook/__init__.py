@@ -5,6 +5,7 @@ assert py4web.check_compatible("1.20250328.1")
 
 # by importing controllers you expose the actions defined in it
 from . import controllers
+
 # by importing db you expose it to the _dashboard/dbadmin
 from .models import db
 

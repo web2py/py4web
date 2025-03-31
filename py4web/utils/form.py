@@ -677,13 +677,13 @@ FormStyleBootstrap5.classes.update(
 FormStyleTailwind = FormStyleFactory()
 FormStyleTailwind.classes.update(
     {
-        "outer": "mb-4",  
+        "outer": "mb-4",
         "inner": "w-full flex flex-col space-y-1",
         "label": "block text-gray-700 font-medium",
-        "info": "text-gray-500 text-sm",  
+        "info": "text-gray-500 text-sm",
         "error": "text-red-600 text-sm mt-1",
-        "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",  
-        "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",  
+        "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+        "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=text]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=date]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=time]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
@@ -863,7 +863,9 @@ class Form(object):
                                 if value is not None:
                                     if field.uploadfolder:
                                         uploaded_files.append(tuple((field, value)))
-                                    validated_vars[field.name] = field.store(value.file, value.filename, field.uploadfolder)
+                                    validated_vars[field.name] = field.store(
+                                        value.file, value.filename, field.uploadfolder
+                                    )
                                 elif self.record:
                                     if not delete:
                                         validated_vars[field.name] = self.record.get(

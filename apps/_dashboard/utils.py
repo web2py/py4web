@@ -58,7 +58,7 @@ def list_dir(
         n = 0
     regex = re.compile(expression)
     items = []
-    for (root, dirs, files) in os.walk(path, topdown=True):
+    for root, dirs, files in os.walk(path, topdown=True):
         for dir in dirs[:]:
             if dir.startswith("."):
                 dirs.remove(dir)
@@ -77,8 +77,7 @@ def list_dir(
 
 
 def recursive_unlink(path):
-    """Deletes `f`. If it's a folder, also its contents will be deleted
-    """
+    """Deletes `f`. If it's a folder, also its contents will be deleted"""
     if os.path.isdir(path):
         for s in os.listdir(path):
             recursive_unlink(os.path.join(path, s))
@@ -94,8 +93,7 @@ def _extractall(filename, path=".", members=None):
 
 
 def tar(file, dir, expression="^.+$", filenames=None, exclude=None):
-    """Tars dir into file, only tars file that match expression
-    """
+    """Tars dir into file, only tars file that match expression"""
     tar = tarfile.TarFile(file, "w")
     try:
         if filenames is None:
@@ -107,8 +105,7 @@ def tar(file, dir, expression="^.+$", filenames=None, exclude=None):
 
 
 def untar(file, dir):
-    """Untar file into dir
-    """
+    """Untar file into dir"""
     _extractall(file, dir)
 
 

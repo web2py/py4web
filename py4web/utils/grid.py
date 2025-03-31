@@ -9,8 +9,25 @@ import functools
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -200,6 +217,7 @@ class GridClassStyleBootstrap5(GridClassStyle):
         "grid-footer-element": "grid-footer-element btn btn-sm",
     }
 
+
 class IconStyle:
     sort_up = "icon-sort-up"
     sort_down = "icon-sort-down"
@@ -211,6 +229,7 @@ class IconStyle:
     @classmethod
     def complete(self, icontxt: str) -> str:
         return icontxt
+
 
 class IconStyleFontawsome(IconStyle):
     sort_up = "fas fa-sort-up"
@@ -241,6 +260,7 @@ class IconStyleBootstrapIcons(IconStyle):
             return f"bi {icontxt}"
         return icontxt
 
+
 class GridClassStyleTailwind(GridClassStyle):
     classes = {
         "grid-wrapper": "grid-wrapper space-y-4 bg-white shadow-md rounded-lg p-4",
@@ -267,7 +287,6 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-pagination": "grid-pagination flex gap-2",
         "grid-pagination-button": "px-3 py-1 bg-gray-200 rounded hover:bg-gray-300",
         "grid-pagination-button-current": "px-3 py-1 bg-blue-500 text-white rounded",
-
         # Cell styling
         "grid-cell-type-string": "text-left",
         "grid-cell-type-text": "text-left",
@@ -281,7 +300,6 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-cell-type-upload": "text-center",
         "grid-cell-type-list": "text-left",
         "grid-cell-type-id": "text-center",
-
         # Search form
         "grid-search-form": "flex flex-wrap gap-2 items-center border p-2 rounded-lg bg-gray-100",
         "grid-search-form-table": "w-full",
@@ -293,6 +311,7 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-header-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
         "grid-footer-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
     }
+
 
 class Column:
     """class used to represent a column in a grid"""

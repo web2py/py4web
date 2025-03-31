@@ -11,7 +11,7 @@ def add(x, y):
 
 # register your functions
 service = JsonRpc()
-service.methods['add'] = add
+service.methods["add"] = add
 
 
 # expose the server
@@ -22,7 +22,8 @@ def rpc():
 
 # example of a client
 def example_jsonrpc():
-    import jsonrpc.proxy                                                    
-    p = jsonrpc.proxy.JSONRPCProxy(URL('rpc'))
-    assert p.add(1,2) == 3                                                  
+    import jsonrpc.proxy
+
+    p = jsonrpc.proxy.JSONRPCProxy(URL("rpc"))
+    assert p.add(1, 2) == 3
     assert p.add(x=1, y=2) == 3

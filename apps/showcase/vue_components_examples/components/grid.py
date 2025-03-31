@@ -167,14 +167,22 @@ class Grid(Fixture):
                 cells=[
                     dict(text="Cat"),
                     dict(text="4"),
-                    dict(text="Mammal", url="javascript:alert('mammal/cat')", is_button=True),
+                    dict(
+                        text="Mammal",
+                        url="javascript:alert('mammal/cat')",
+                        is_button=True,
+                    ),
                 ]
             ),
             dict(
                 cells=[
                     dict(text="Dog"),
                     dict(text="4"),
-                    dict(text="Mammal", url="javascript:alert('mammal/dog')", is_button=True),
+                    dict(
+                        text="Mammal",
+                        url="javascript:alert('mammal/dog')",
+                        is_button=True,
+                    ),
                 ],
                 has_delete=True,
             ),
@@ -182,15 +190,19 @@ class Grid(Fixture):
                 cells=[
                     dict(text="Owl"),
                     dict(text="2"),
-                    dict(text="Bird", url="javascript:alert('bird/owl')", is_button=True),
+                    dict(
+                        text="Bird", url="javascript:alert('bird/owl')", is_button=True
+                    ),
                 ]
-            )
+            ),
         ]
         if query:
-            rows = [row for row in rows if query.lower() in row["cells"][0]["text"].lower()]
+            rows = [
+                row for row in rows if query.lower() in row["cells"][0]["text"].lower()
+            ]
         for k, sign in enumerate(sort_order):
             if sign != 0:
-                rows.sort(key=lambda row: row["cells"][k]["text"], reverse=(sign<0))
+                rows.sort(key=lambda row: row["cells"][k]["text"], reverse=(sign < 0))
         return dict(
             page=int(page),
             has_search=True,

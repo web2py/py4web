@@ -10,54 +10,62 @@ from py4web.utils.grid import GridClassStyleTailwind
 # Define a persistent SQLite database
 db = DAL("sqlite://storage_tailwindcss.sqlite")
 
+
 # Define the products table
 def define_tables():
     # Only define if it doesn't exist
-    if not hasattr(db, 'products'):
+    if not hasattr(db, "products"):
         db.define_table(
             "products",
             Field("name", "string"),
             Field("category", "string"),
             Field("price", "float"),
-            migrate=True
+            migrate=True,
         )
     return db.products
+
 
 # Initialize the products table
 products = define_tables()
 
+
 def initialize_data():
     if db(db.products).select().first() is None:  # Check if table is empty
-        db.products.bulk_insert([
-            {'name': "Laptop", 'category': "Electronics", 'price': 999.99},
-            {'name': "Desk Chair", 'category': "Furniture", 'price': 149.99},
-            {'name': "Coffee Maker", 'category': "Appliances", 'price': 79.99}
-        ])
+        db.products.bulk_insert(
+            [
+                {"name": "Laptop", "category": "Electronics", "price": 999.99},
+                {"name": "Desk Chair", "category": "Furniture", "price": 149.99},
+                {"name": "Coffee Maker", "category": "Appliances", "price": 79.99},
+            ]
+        )
         db.commit()
+
 
 # Initialize data after table creation
 initialize_data()
 
 
-@action("page_with_tailwindcss", method=['POST', 'GET'])
-@action('page_with_tailwindcss/<path:path>', method=['POST', 'GET', 'DELETE'])
+@action("page_with_tailwindcss", method=["POST", "GET"])
+@action("page_with_tailwindcss/<path:path>", method=["POST", "GET", "DELETE"])
 @action.uses("examples/page_with_tailwindcss.html", session, db)
 def page_with_tailwindcss(path=None):
     """Creates a simple Grid with TailwindCSS."""
     p = db.products
-    grid = Grid(path,
+    grid = Grid(
+        path,
         query=(p.id > 0),
         columns=[p.name, p.category, p.price],
         headings=["Name", "Category", "Price"],
         search_queries=[
             ("Search by Name", lambda val: p.name.contains(val)),
             ("Search by Category", lambda val: p.category.contains(val)),
-        ],               
+        ],
         orderby=[p.name],
         formstyle=FormStyleTailwind,
-        grid_class_style=GridClassStyleTailwind
+        grid_class_style=GridClassStyleTailwind,
     )
     return dict(grid=grid)
+
 
 if False:
     # How FormStyleTailwind and GridClassStyleTailwind are defined in py4web/utils/form.py and py4web/utils/grid.py
@@ -67,13 +75,13 @@ if False:
     FormStyleTailwind = FormStyleFactory()
     FormStyleTailwind.classes.update(
         {
-            "outer": "mb-4",  
+            "outer": "mb-4",
             "inner": "w-full flex flex-col space-y-1",
             "label": "block text-gray-700 font-medium",
-            "info": "text-gray-500 text-sm",  
+            "info": "text-gray-500 text-sm",
             "error": "text-red-600 text-sm mt-1",
-            "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",  
-            "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",  
+            "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+            "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
             "input[type=text]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
             "input[type=date]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
             "input[type=time]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
@@ -116,7 +124,6 @@ if False:
             "grid-pagination": "grid-pagination flex gap-2",
             "grid-pagination-button": "px-3 py-1 bg-gray-200 rounded hover:bg-gray-300",
             "grid-pagination-button-current": "px-3 py-1 bg-blue-500 text-white rounded",
-
             # Cell styling
             "grid-cell-type-string": "text-left",
             "grid-cell-type-text": "text-left",
@@ -130,7 +137,6 @@ if False:
             "grid-cell-type-upload": "text-center",
             "grid-cell-type-list": "text-left",
             "grid-cell-type-id": "text-center",
-
             # Search form
             "grid-search-form": "flex flex-wrap gap-2 items-center border p-2 rounded-lg bg-gray-100",
             "grid-search-form-table": "w-full",
