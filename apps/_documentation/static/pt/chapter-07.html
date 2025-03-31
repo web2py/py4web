@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 20250125</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 20250330</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59c536ae"></script>
+      <script src="_static/documentation_options.js?v=86a9ece6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
@@ -57,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The Database Abstraction Layer (DAL)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dal-introduction">DAL introduction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#py4web-model">py4web model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-databases">Supported databases</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-dal-a-quick-tour">The DAL: a quick tour</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-the-dal-stand-alone">Usando o DAL “stand-alone”</a></li>
@@ -103,6 +102,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#field-constructor">Construtor Field</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#thread-safety-and-field-attributes">Thread safety and Field attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#field-types-and-validators">Field types and validators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-time-field-and-table-modification">modificação da tabela e campo em tempo de execução</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#more-on-uploads">Mais sobre envios</a></li>
@@ -284,19 +284,12 @@ and rows to Objects.</p>
 <li><p>Inner &amp; Outer Joins</p></li>
 <li><p>Nested Selects</p></li>
 </ul>
-<section id="py4web-model">
-<h3>py4web model<a class="headerlink" href="#py4web-model" title="Link to this heading"></a></h3>
-<p>Even if web2py and py4web use the same pyDAL, there are important differences (see
-<a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">De web2py para py4web</span></a> for details). The main caveat is that in py4web only
-the action is executed for every HTTP request, while the code defined outside of
-actions is only executed at startup. That makes py4web much faster, in particular
-when there are many tables. The downside of this approach is that the developer
-should be careful to never override pyDAL variables inside action or in any way
-that depends on the content of the request object, else the code is not thread safe.
-The only variables that can be changed at will are the following field attributes:
-readable, writable, requires, update, and default.
-All the others are for practical purposes to be considered global and non thread safe.</p>
-</section>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>An important difference between py4web and web2py is that only some few Field attributes are
+safe to modify in actions. See <a class="reference internal" href="#thread-safety-and-field-attributes"><span class="std std-ref">Thread safety and Field attributes</span></a> for more info, and
+<a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">De web2py para py4web</span></a> for a general list of differences.</p>
+</div>
 <section id="supported-databases">
 <h3>Supported databases<a class="headerlink" href="#supported-databases" title="Link to this heading"></a></h3>
 <p>A partial list of supported databases is show in the table
@@ -434,7 +427,7 @@ example.</p>
 <p>pyDAL is an independent python package. As such, it can be used
 without the web2py/py4web environment; you just need to install
 it with <code class="docutils literal notranslate"><span class="pre">pip</span></code>. Then import the pydal module when needed:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -443,7 +436,7 @@ it with <code class="docutils literal notranslate"><span class="pre">pip</span><
 advisable from within py4web applications. Remember that <code class="docutils literal notranslate"><span class="pre">py4web.DAL</span></code>
 is a fixture, <code class="docutils literal notranslate"><span class="pre">pydal.DAL</span></code> is not. In this context, the last command
 should better be:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 </pre></div>
 </div>
 </div>
@@ -465,7 +458,7 @@ database with all the example data.</p>
 <p>Note that most of the code snippets that contain the python prompt
 <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> are also directly executable via a py4web shell.</p>
 <p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">showcase</span></code> app:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.showcase.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">apps.showcase.examples.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">()</span>
 <span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;thing&#39;, &#39;user_token&#39;, &#39;dummy&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -485,7 +478,7 @@ of a particular app. However this is not bulletproof, so for
 security reason this by default is not applied to the showcase app.
 But if your installation is local (not exposed to public networks), you can enable it
 by simply adding to the file``apps/showcase/__init__.py`` the line:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.examples.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 </pre></div>
 </div>
 <p>This allow you to look graphically inside the showcase application database:</p>
@@ -943,9 +936,9 @@ even multi-part. See <a class="reference internal" href="#legacy-databases-and-k
 <p>If you define your own table class as a sub-class of
 pydal.objects.Table, you can provide it here; this allows you to extend
 and override methods. Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.objects</span> <span class="kn">import</span> <span class="n">Table</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.objects</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
-<span class="k">class</span> <span class="nc">MyTable</span><span class="p">(</span><span class="n">Table</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTable</span><span class="p">(</span><span class="n">Table</span><span class="p">):</span>
     <span class="o">...</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">table_class</span><span class="o">=</span><span class="n">MyTable</span><span class="p">)</span>
@@ -1113,10 +1106,30 @@ autogenerated forms.</p></li>
 field value and returns an alternate representation for the field
 value.</p></li>
 </ul>
-<p>Note not all the attributes are thread safe and most of them
-should only be set globally for an app. The following are guaranteed to be
-thread safe and be set/reset in any action:
-<code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">readable</span></code>, <code class="docutils literal notranslate"><span class="pre">writable</span></code>, <code class="docutils literal notranslate"><span class="pre">requires</span></code>.</p>
+<section id="thread-safety-and-field-attributes">
+<h3>Thread safety and Field attributes<a class="headerlink" href="#thread-safety-and-field-attributes" title="Link to this heading"></a></h3>
+<p>Even though py4web and web2py use the same pyDAL, there is an important difference
+which stems from the core architecture of py4web.
+In py4web only the following <code class="docutils literal notranslate"><span class="pre">Field</span></code> attributes can be changed inside an action:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">readable</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">writable</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filter_in</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filter_out</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">update</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requires</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">widget</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">represent</span></code></p></li>
+</ul>
+<p>These are reset to their original values before each action is called.
+All other <code class="docutils literal notranslate"><span class="pre">Field</span></code>, <code class="docutils literal notranslate"><span class="pre">DAL</span></code>, and <code class="docutils literal notranslate"><span class="pre">Table</span></code> attributes are global and non-thread-safe.</p>
+<p>This limitation exists because py4web executes table definitions only at startup,
+unlike web2py which re-defines tables on each request. This makes py4web a lot faster
+than web2py, but you need to be careful as modifying non-thread-safe
+attributes in actions can cause race conditions and bugs.</p>
+</section>
 <section id="field-types-and-validators">
 <h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Link to this heading"></a></h3>
 <table class="docutils align-default">
@@ -1320,8 +1333,8 @@ conventions.</p>
 <div><p>Observe que o fluxo retornado por `` retrieve`` é um objeto de arquivo real no case de que os arquivos enviados são armazenados no sistema de arquivos. Nesse case, lembre-se de fechar o arquivo quando você é feito, chamando `` stream.close () <a href="#id1"><span class="problematic" id="id2">``</span></a>.</p>
 </div></blockquote>
 <p>Aqui está um exemplo de uso seguro do `` retrieve``:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">closing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">myfile</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 <span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">myfile</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">,</span> <span class="n">closing</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">dest</span><span class="p">:</span>
@@ -1546,8 +1559,8 @@ will be in <code class="docutils literal notranslate"><span class="pre">ret[&quo
 <section id="tagging-records">
 <h3>Marcação de registros<a class="headerlink" href="#tagging-records" title="Link to this heading"></a></h3>
 <p>Etiquetas permite adicionar ou encontrar propriedades anexadas aos registros em seu banco de dados.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.tools.tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tags</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;sqlite:memory&quot;</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s2">&quot;thing&quot;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span>
@@ -1924,7 +1937,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 <blockquote>
 <div><p>O uso de `` orderby = “&lt;random&gt;” `` não é suportada no Google NoSQL. No entanto, para superar esse limite, a classificação pode ser feito em linhas selecionadas:</p>
 </div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -2280,7 +2293,7 @@ element is the cache function with signature <cite>(key, callback, expiration)</
 is an instance of the py4web cache object), and
 the second element is the expiration time in seconds.</p>
 <p>No exemplo a seguir, você vê um controlador que armazena em cache um seleto sobre a mesa db.log previamente definido. As buscas reais dados selecionados do banco de dados back-end não mais do que uma vez a cada 60 segundos e armazena o resultado na memória. Se a próxima chamada para este controlador ocorre em menos de 60 segundos desde o último banco de dados IO, ele simplesmente vai buscar os dados anteriores da memória.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cache_db_select</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cache_db_select</span><span class="p">():</span>
     <span class="n">logs</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">logs</span><span class="o">=</span><span class="n">logs</span><span class="p">)</span>
 </pre></div>
@@ -2385,8 +2398,8 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </pre></div>
 </div>
 <p>Pode-se definir um `` total_price`` campo virtual como</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyVirtualFields</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">quantity</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">virtualfields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyVirtualFields</span><span class="p">())</span>
@@ -2401,8 +2414,8 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="s1">&#39;reference item&#39;</span><span class="p">),</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">))</span>
 
-<span class="k">class</span> <span class="nc">MyVirtualFields</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">quantity</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">virtualfields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyVirtualFields</span><span class="p">())</span>
@@ -2412,8 +2425,8 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 <p>Eles também podem agir sobre o resultado de um JOIN</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">item</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 
-<span class="k">class</span> <span class="nc">MyVirtualFields</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">quantity</span>
 
 <span class="n">rows</span><span class="o">.</span><span class="n">setvirtualfields</span><span class="p">(</span><span class="n">order_item</span><span class="o">=</span><span class="n">MyVirtualFields</span><span class="p">())</span>
@@ -2423,14 +2436,14 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </pre></div>
 </div>
 <p>Note como neste case, a sintaxe é diferente. O campo virtual acessa tanto `` self.item.unit_price`` e `` self.order_item.quantity`` que pertencem ao juntar-se selecionar. O campo virtual é anexado para as linhas da tabela usando o método <cite>setvirtualfields`</cite> do objecto linhas. Este método leva um número arbitrário de argumentos nomeados e pode ser usado para definir vários campos virtuais, definidos em várias classes, e anexá-los a várias tabelas:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyVirtualFields1</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">discounted_unit_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields1</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discounted_unit_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="mf">0.90</span>
 
-<span class="k">class</span> <span class="nc">MyVirtualFields2</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields2</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">quantity</span>
-    <span class="k">def</span> <span class="nf">discounted_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">discounted_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">discounted_unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_item</span><span class="o">.</span><span class="n">quantity</span>
 
 <span class="n">rows</span><span class="o">.</span><span class="n">setvirtualfields</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">MyVirtualFields1</span><span class="p">(),</span>
@@ -2445,9 +2458,9 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;unit_price&#39;</span><span class="p">,</span> <span class="s1">&#39;double&#39;</span><span class="p">),</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">))</span>
 
-<span class="k">class</span> <span class="nc">MyVirtualFields</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">lazy_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">lazy</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lazy_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">lazy</span><span class="p">(</span><span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">quantity</span>
         <span class="k">return</span> <span class="n">lazy</span>
 
@@ -2458,8 +2471,8 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </pre></div>
 </div>
 <p>ou mais curto utilizando uma função lambda:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyVirtualFields</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">lazy_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyVirtualFields</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lazy_total_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">unit_price</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">quantity</span>
 </pre></div>
 </div>
@@ -2752,7 +2765,7 @@ that do not support JOINs like the Google App Engine NoSQL.</p>
 </pre></div>
 </div>
 <p>Como antes, inserir alguns eventos, a “varredura de portas”, uma “injeção de XSS” e um “login não autorizado”. Por causa do exemplo, você pode registrar eventos com o mesmo event_time mas com diferentes gravidades (1, 2, e 3, respectivamente).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;port scan&#39;</span><span class="p">,</span> <span class="n">event_time</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">1</span>
@@ -3029,8 +3042,8 @@ field1,field2,field3,...
 <p>Cada registro é identificado por um identificador e referenciado por esse id. Se você tem duas cópias do banco de dados usado por instalações py4web distintas, o id é único apenas dentro de cada banco de dados e não através das bases de dados. Este é um problema ao mesclar registros de bancos de dados diferentes.</p>
 <p>A fim de fazer registros exclusivamente identificável através de bases de dados, eles devem: - ter um ID único (UUID), - ter uma última modificação para acompanhar o mais recente entre várias cópias, - referência o UUID em vez do id.</p>
 <p>Isto pode ser conseguido mudando o modelo acima para:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 
 <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span>
 
@@ -3060,9 +3073,9 @@ field1,field2,field3,...
 <div><p>Note-se que nas definições da tabela acima, o valor padrão para os dois campos `` uuid`` é definida como uma função de lambda, que retorna um UUID (convertido para uma strings). A função lambda é chamado uma vez para cada registro inserido, garantindo que cada registro recebe um UUID único, mesmo que vários registros são inseridos em uma única transação.</p>
 </div></blockquote>
 <p>Criar uma ação de controlador para exportar o banco de dados:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">response</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">response</span>
 
-<span class="k">def</span> <span class="nf">export</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">():</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
     <span class="n">db</span><span class="o">.</span><span class="n">export_to_csv_file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">)</span>
@@ -3070,9 +3083,9 @@ field1,field2,field3,...
 </pre></div>
 </div>
 <p>Criar uma ação de controlador para importar uma cópia salva dos outros registros de dados e sincronização:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">FORM</span><span class="p">,</span> <span class="n">INPUT</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORM</span><span class="p">,</span> <span class="n">INPUT</span>
 
-<span class="k">def</span> <span class="nf">import_and_sync</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">import_and_sync</span><span class="p">():</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">FORM</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;submit&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">process</span><span class="p">()</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
         <span class="n">db</span><span class="o">.</span><span class="n">import_from_csv_file</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -3155,7 +3168,7 @@ on the <a class="reference internal" href="chapter-13.html#authorization-using-t
 <p>A função também aceita um argumento de palavra-chave chamada `` colnames`` que deve conter uma lista de nomes de colunas um desejo para exportação. O padrão é todas as colunas.</p>
 <p>Ambos `` export_to_csv_file`` e `` import_from_csv_file`` aceitar argumentos de palavra-chave que contam o analisador CSV o formato para salvar / carregar os arquivos: - `` delimiter``: delimitador para separar valores (padrão “”) - `` quotechar <code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">personagem</span> <span class="pre">para</span> <span class="pre">usar</span> <span class="pre">para</span> <span class="pre">citar</span> <span class="pre">valores</span> <span class="pre">String</span> <span class="pre">(default</span> <span class="pre">para</span> <span class="pre">aspas)</span> <span class="pre">-</span> <span class="pre">``</span> <span class="pre">quoting</span></code>: sistema de cotação (padrão `` csv.QUOTE_MINIMAL``)</p>
 <p>Aqui estão algumas Exemplo de uso:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">csv</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
 <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/tmp/test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">oufile</span><span class="p">:</span>
     <span class="n">rows</span><span class="o">.</span><span class="n">export_to_csv_file</span><span class="p">(</span><span class="n">oufile</span><span class="p">,</span>
@@ -3275,7 +3288,7 @@ on the <a class="reference internal" href="chapter-13.html#authorization-using-t
 <p>Imagine for example that you want to store a serializable Python data
 structure in a field in the JSON format. Here is how it could be
 accomplished:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;anyobj&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
 <span class="gp">... </span>                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">))</span>
@@ -3308,7 +3321,7 @@ db.mytable._after_delete
 <p>This is best explained by examples.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 <span class="go">&lt;Table person (id, name)&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">pprint</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">pprint</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">_before_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">pprint</span><span class="p">(</span><span class="s1">&#39;before_insert&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
@@ -3404,14 +3417,14 @@ be called as consequence of a cascade-deletion.</p>
 <section id="custom-field-types">
 <span id="id3"></span><h3>Personalizados `` tipos Field``<a class="headerlink" href="#custom-field-types" title="Link to this heading"></a></h3>
 <p>Além de usar o `` filter_in`` e `` filter_out``, é possível definir novos tipos de campos / personalizados. Por exemplo, suponha que você deseja definir um tipo personalizado para armazenar um endereço IP:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">ip2int</span><span class="p">(</span><span class="n">sv</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">ip2int</span><span class="p">(</span><span class="n">sv</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="s2">&quot;Convert an IPV4 to an integer.&quot;</span>
 <span class="gp">... </span>    <span class="n">sp</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span> <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="c1"># IPV4 only</span>
 <span class="gp">... </span>    <span class="n">iip</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sp</span><span class="p">):</span> <span class="n">iip</span> <span class="o">=</span> <span class="p">(</span><span class="n">iip</span><span class="o">&lt;&lt;</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">iip</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">int2ip</span><span class="p">(</span><span class="n">iv</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">int2ip</span><span class="p">(</span><span class="n">iv</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="s2">&quot;Convert an integer to an IPV4.&quot;</span>
 <span class="gp">... </span>    <span class="k">assert</span> <span class="n">iv</span> <span class="o">&gt;</span> <span class="mi">0</span>
 <span class="gp">... </span>    <span class="n">iv</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span><span class="p">,);</span> <span class="n">ov</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3421,7 +3434,7 @@ be called as consequence of a cascade-deletion.</p>
 <span class="gp">... </span>    <span class="n">ov</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ov</span><span class="p">))</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">SQLCustomType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLCustomType</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ipv4</span> <span class="o">=</span> <span class="n">SQLCustomType</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">native</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                     <span class="n">encoder</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip2int</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">decoder</span><span class="o">=</span><span class="n">int2ip</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;website&#39;</span><span class="p">,</span>
@@ -3454,14 +3467,14 @@ portable across database engines.</p>
 <section id="using-dal-without-define-tables">
 <h3>Usando DAL sem definir tabelas<a class="headerlink" href="#using-dal-without-define-tables" title="Link to this heading"></a></h3>
 <p>A DAL pode ser usado a partir de qualquer programa Python simplesmente fazendo isso:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;path/to/app/databases&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>ou seja, importar a DAL, conexão e especificar a pasta que contém os arquivos .table (a pasta app / bancos de dados).</p>
 <p>Para acessar os dados e seus atributos ainda temos que definir todas as tabelas que vão de acesso com `` db.define_table``.</p>
 <p>Se nós apenas precisam de acesso aos dados, mas não para os atributos da tabela py4web, nós fugir sem re-definir as tabelas, mas simplesmente pedindo py4web para ler as informações necessárias a partir dos metadados nos ficheiros .table:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;path/to/app/databases&#39;</span><span class="p">,</span> <span class="n">auto_import</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3569,7 +3582,7 @@ SybaseAdapter extends MSSQLAdapter (experimental)
 </div>
 <p>que substituir o comportamento dos `` BaseAdapter``.</p>
 <p>Cada adaptador tem mais ou menos a seguinte estrutura:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySQLAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MySQLAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
 
     <span class="c1"># specify a driver to use</span>
     <span class="n">driver</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pymysql&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -3583,13 +3596,13 @@ SybaseAdapter extends MSSQLAdapter (experimental)
         <span class="p">}</span>
 
     <span class="c1"># connect to the database using driver</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">db_codec</span> <span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">db_codec</span> <span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">,</span>
                  <span class="n">credential_decoder</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">,</span> <span class="n">driver_args</span><span class="o">=</span><span class="p">{},</span>
                  <span class="n">adapter_args</span><span class="o">=</span><span class="p">{}):</span>
         <span class="c1"># parse uri string and store parameters in driver_args</span>
         <span class="o">...</span>
         <span class="c1"># define a connection function</span>
-        <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="n">driver_args</span><span class="o">=</span><span class="n">driver_args</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="n">driver_args</span><span class="o">=</span><span class="n">driver_args</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="o">**</span><span class="n">driver_args</span><span class="p">)</span>
         <span class="c1"># place it in the pool</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pool_connection</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
@@ -3598,7 +3611,7 @@ SybaseAdapter extends MSSQLAdapter (experimental)
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET sql_mode=&#39;NO_BACKSLASH_ESCAPES&#39;;&quot;</span><span class="p">)</span>
 
    <span class="c1"># override BaseAdapter methods as needed</span>
-   <span class="k">def</span> <span class="nf">lastrowid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">lastrowid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select last_insert_id();&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
@@ -3747,8 +3760,8 @@ in the following dictionary also in “dal.py”:</p>
 An updated list of adapters can be obtained as dictionary with</p>
 <p>For any adapter you can replace the driver with a different one
 globally (not thread safe):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MySQLdb</span> <span class="k">as</span> <span class="nn">mysqldb</span>
-<span class="kn">from</span> <span class="nn">pydal.adapters.mysql</span> <span class="kn">import</span> <span class="n">SQLAdapter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MySQLdb</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mysqldb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.adapters.mysql</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAdapter</span>
 <span class="n">SQLAdapter</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">mysqldb</span>
 </pre></div>
 </div>
@@ -3758,7 +3771,7 @@ globally (not thread safe):</p>
 </div>
 <p>For recognized adapters you can also simply specify the name in the
 <code class="docutils literal notranslate"><span class="pre">adapter_args</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.adapters.mysql</span> <span class="kn">import</span> <span class="n">MySQL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.adapters.mysql</span><span class="w"> </span><span class="kn">import</span> <span class="n">MySQL</span>
 <span class="k">assert</span> <span class="s2">&quot;mysqldv&quot;</span> <span class="ow">in</span> <span class="n">MySQL</span><span class="o">.</span><span class="n">drivers</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">driver_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">adapter_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="s2">&quot;mysqldb&quot;</span><span class="p">})</span>
 </pre></div>
@@ -3873,7 +3886,7 @@ dashboard and deleting any corrupted entry from the table called
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

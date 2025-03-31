@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rede &mdash; Documentação py4web 20250125</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Rede &mdash; Documentação py4web 20250330</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59c536ae"></script>
+      <script src="_static/documentation_options.js?v=86a9ece6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
@@ -139,11 +139,11 @@ hints &amp; tips.</p>
 <p>In this simple example we will make a grid over the superhero table.</p>
 <p>Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">grid</span></code>. Change it with the following content.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in grid/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.grid</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
 
 
 <span class="c1"># database definition</span>
@@ -167,10 +167,11 @@ hints &amp; tips.</p>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index/&lt;path:path&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;grid.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
-            <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma</span>
-            <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma</span>
+            <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span> <span class="c1"># FormStyleDefault, FormStyleBulma, FormStyleBootstrap4, or FormStyleBootstrap5</span>
+            <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5</span>
+            <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawesome</span><span class="p">,</span> <span class="c1"># IconStyle, IconStyleFontawesome, or IconStyleBootstrapIcons</span>
             <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
             <span class="n">search_queries</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;Search by Name&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">val</span><span class="p">)]])</span>
@@ -206,12 +207,12 @@ Change the file templates/grid.html with this content:</p>
 <p>We can also think about using the <strong>bulma.css</strong>,
 see <a class="reference external" href="https://bulma.io/">here</a>. In this case you need to change
 the grid object on __init__.py to:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma</span>
-<span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyleBulma</span><span class="p">,</span> <span class="c1">#GridClassStyle or GridClassStyleBulma</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma,FormStyleBootstrap4, or FormStyleBootstrap5</span>
+<span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyleBulma</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5</span>
 </pre></div>
 </div>
 <p>Notice that in this case you need to import the corresponding python modules in advance
-(we’ve already done it on line 4 and 5 above). Instead if you use the default no.css style
+(we’ve already done it on line 4 and 5 above). If you use the default no.css style instead,
 you don’t need to manually import its style modules (and you even don’t need the formstyle
 and grid_class_style parameters).</p>
 <p>You also have to change the file templates/grid.html with this content:</p>
@@ -229,6 +230,9 @@ and grid_class_style parameters).</p>
 <p>Then refresh the page.</p>
 <img alt="_images/grid_bulmacss.png" src="_images/grid_bulmacss.png" />
 <p>This is much better, isn’t it?</p>
+<p>Bootstrap4 and Bootstrap5 also have styles available, and you can change the icon style between
+Fontawesome, Bootstrap Icons, and a basic IconStyle you can write your own CSS for. More info in
+the section: <a class="reference internal" href="#customizing-style"><span class="std std-ref">Customizing style</span></a></p>
 <div class="admonition note">
 <p class="admonition-title">Nota</p>
 <p>These are just minimal examples for showing how <code class="docutils literal notranslate"><span class="pre">grid</span></code> works internally.
@@ -248,8 +252,8 @@ And don’t forget Jim Steil’s detailed tutorial on <a class="reference extern
 </section>
 <section id="the-grid-object">
 <h2>The Grid object<a class="headerlink" href="#the-grid-object" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Grid</span><span class="p">:</span>
-   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Grid</span><span class="p">:</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
       <span class="bp">self</span><span class="p">,</span>
       <span class="n">path</span><span class="p">,</span>
       <span class="n">query</span><span class="p">,</span>
@@ -274,6 +278,7 @@ And don’t forget Jim Steil’s detailed tutorial on <a class="reference extern
       <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
       <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
       <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
+      <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="p">,</span>
       <span class="n">T</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
    <span class="p">):</span>
 </pre></div>
@@ -312,9 +317,11 @@ button (*)</p></li>
 <li><p>include_action_button_text: boolean dizendo a grid se deseja ou não de texto em botões de ação dentro de sua grid</p></li>
 <li><p>search_button_text: texto a ser exibido no botão enviar em seu formulário de pesquisa</p></li>
 <li><p>formstyle: py4web Form formstyle usado para estilo seu formulário ao construir automaticamente formulários CRUD</p></li>
-<li><p>grid_class_style: GridClassStyle object used to override defaults for
+<li><p>grid_class_style: GridClassStyle class used to override defaults for
 styling your rendered grid. Allows you to specify classes or styles
 to apply at certain points in the grid</p></li>
+<li><p>icon_style: default: IconStyleFontawsome. used to get icon css classes.
+Other options: IconStyle, IconStyleBootstrapIcons</p></li>
 <li><p>T: optional pluralize object</p></li>
 </ul>
 <p>(*) The parameters <code class="docutils literal notranslate"><span class="pre">details</span></code>, <code class="docutils literal notranslate"><span class="pre">editable</span></code> and <code class="docutils literal notranslate"><span class="pre">deletable</span></code> can also take a <strong>callable</strong> that will
@@ -354,8 +361,8 @@ create/details/editable/deletable during grid instantiation.</p>
 <h2>Custom columns<a class="headerlink" href="#custom-columns" title="Link to this heading"></a></h2>
 <p>If the grid does not involve a join but displays results from a single table
 you can specify a list of columns. Columns are highly customizable.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Column</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
 
 <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
    <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -422,12 +429,31 @@ the grid or a form. Use the following to decide:</p>
 <ul class="simple">
 <li><p>formstyle é o mesmo que um formstyle Forma, usadas para as formas estilo CRUD.</p></li>
 <li><p>grid_class_style é uma classe que fornece as classes e / ou estilos utilizados para certas porções da grelha.</p></li>
+<li><p>icon_style is a class which provides the icon classes, for example for FontAwesome</p></li>
 </ul>
 <p>The default <code class="docutils literal notranslate"><span class="pre">GridClassStyle</span></code> - based on <strong>no.css</strong>, primarily uses styles to
 modify the layout of the grid. We’ve already seen that it’s possible
-to use other class_style, in particular <code class="docutils literal notranslate"><span class="pre">GridClassStyleBulma</span></code>.</p>
+to use other class_style, in particular <code class="docutils literal notranslate"><span class="pre">GridClassStyleBulma</span></code> or <code class="docutils literal notranslate"><span class="pre">GridClassStyleBootstrap5</span></code>.</p>
 <p>You can even build your own class_style to be used with the css framework of
-your choice. Unfortunately, one based on <strong>bootstrap</strong> is still missing.</p>
+your choice.</p>
+<p>With icon_style, you can customize the icon font used. Currently, the following exist:
+- <code class="docutils literal notranslate"><span class="pre">IconStyleFontawsome</span></code> is the current default (for backwards compatibility). You need</p>
+<blockquote>
+<div><p>to add <a class="reference external" href="https://fontawesome.com/">fontawesome</a> icon font CSS to use this.</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">IconStyle</span></code> which doesn’t correspond to any font or icon set. It inserts simple</dt><dd><p>css classes like <code class="docutils literal notranslate"><span class="pre">icon-edit-button</span></code> which you can write your own css for.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">IconStyleBootstrapIcons</span></code> You need to add the icon font CSS from</dt><dd><p><a class="reference external" href="https://icons.getbootstrap.com/#install">Bootstrap Icons</a>
+to your html templates to use this.</p>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 <section id="custom-action-buttons">
 <h2>Ação personalizada Botões<a class="headerlink" href="#custom-action-buttons" title="Link to this heading"></a></h2>
@@ -444,8 +470,8 @@ after the standard action buttons</p></li>
 buttons based on the template below (this is not provided with py4web).</p>
 <section id="sample-action-button-class">
 <h3>Botão Classe Ação Amostra<a class="headerlink" href="#sample-action-button-class" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridActionButton</span><span class="p">:</span>
- <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GridActionButton</span><span class="p">:</span>
+ <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
      <span class="bp">self</span><span class="p">,</span>
      <span class="n">url</span><span class="p">,</span>
      <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -477,8 +503,8 @@ buttons based on the template below (this is not provided with py4web).</p>
 <ul class="simple">
 <li><p>url: a página para navegar até quando o botão é clicado</p></li>
 <li><p>texto: texto para exibição no botão</p></li>
-<li><p>icon: the font-awesome icon to display before the text, for example
-«fa-calendar»</p></li>
+<li><p>icon: the icon corresponding to your icon-style to display before the text, for example
+«fa-calendar» for IconStyleFontawesome.</p></li>
 <li><p>additional_classes: uma lista separada por espaços de aulas para incluir no elemento botão</p></li>
 <li><p>additional_styles: a string containing additional styles to add to the button</p></li>
 <li><p>override_classes: a space-separated list of classes to place on the control that will replace the default classes</p></li>
@@ -520,13 +546,13 @@ of standard and custom Actions.</p>
 </ul>
 <p>Example usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example/&lt;path:path&gt;&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
         <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
             <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
             <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-plus&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="o">.</span><span class="n">add_button</span><span class="p">,</span> <span class="c1"># same as &quot;fa-plus&quot;</span>
             <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
         <span class="p">)</span>
@@ -594,7 +620,7 @@ or more submit buttons. You can then add logic to process the selected rows when
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage/&lt;path:path&gt;&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;manage.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">manage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">manage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
 
@@ -655,7 +681,7 @@ is selected).</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

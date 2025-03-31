@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating an app &mdash; py4web 20250125 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Creating an app &mdash; py4web 20250330 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=10d334e1"></script>
+      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -174,11 +174,11 @@ handled automatically based on the HTTP request headers.</p>
 <h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Link to this heading"></a></h2>
 <p>To create a dynamic page, you must create a function that returns the
 page content. For example edit the <code class="docutils literal notranslate"><span class="pre">myapp/__init__.py</span></code> as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">page</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">page</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;hello, now is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -209,7 +209,7 @@ dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
 add at the end</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">colors</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">colors</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]}</span>
 </pre></div>
 </div>
@@ -229,7 +229,7 @@ will provide an example shortly.</p>
 <p>It is possible to map patterns in the URL into arguments of the
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]:</span>
         <span class="k">return</span> <span class="s1">&#39;You picked color </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span>
     <span class="k">return</span> <span class="s1">&#39;Unknown color </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span>
@@ -266,18 +266,18 @@ route that has dynamic fragment of different types (int, path) in the
 same place.. Hence <strong>something like this is incorrect</strong> and will result
 in errors:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;code:int&gt;&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Color code: </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s1">&#39;</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name:path&gt;&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Color name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
 </pre></div>
 </div>
 <p>Instead, to accomplish a simmilar result, one needs to handle all the
 logic in one action:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;color_identifier:path&gt;&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">):</span>
    <span class="k">try</span><span class="p">:</span>
       <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Color code: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
    <span class="k">except</span><span class="p">:</span>
@@ -296,10 +296,10 @@ multiple routes.</p>
 <section id="the-request-object">
 <h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Link to this heading"></a></h3>
 <p>From py4web you can import <code class="docutils literal notranslate"><span class="pre">request</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">request</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">paint</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">paint</span><span class="p">():</span>
     <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="p">:</span>
        <span class="k">return</span> <span class="s1">&#39;Painting in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;You did not specify a color&#39;</span>
@@ -334,7 +334,7 @@ with one additional attribute:</p>
 <p>then modify the paint action to use the template and default to green.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;paint.html&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">paint</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">paint</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -390,14 +390,14 @@ create a new clone of it manually or using the Dashboard.</p>
 <p>Here is the tree structure of the <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app:</p>
 <img alt="_images/scaffold_tree.png" src="_images/scaffold_tree.png" />
 <p>The scaffold app contains an example of a more complex action:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="n">common</span> <span class="kn">import</span> <span class="nn">db</span><span class="o">,</span> <span class="nn">session</span><span class="o">,</span> <span class="nn">T</span><span class="o">,</span> <span class="nn">cache</span><span class="o">,</span> <span class="nn">auth</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span> <span class="n">common</span> <span class="kn">import</span><span class="w"> </span><span class="nn">db</span><span class="o">,</span><span class="w"> </span><span class="nn">session</span><span class="o">,</span><span class="w"> </span><span class="nn">T</span><span class="o">,</span><span class="w"> </span><span class="nn">cache</span><span class="o">,</span><span class="w"> </span><span class="nn">auth</span>
 
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
@@ -454,14 +454,14 @@ fully understand them: the key point here is that even non-python code
 could be reloaded automatically if you explicit it with the
 <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Watch SASS files and compile them when edited:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">app_watch_handler</span>
-<span class="kn">import</span> <span class="nn">sass</span> <span class="c1"># https://github.com/sass/libsass-python</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">app_watch_handler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sass</span> <span class="c1"># https://github.com/sass/libsass-python</span>
 
 <span class="nd">@app_watch_handler</span><span class="p">(</span>
     <span class="p">[</span><span class="s2">&quot;static_dev/sass/all.sass&quot;</span><span class="p">,</span>
      <span class="s2">&quot;static_dev/sass/main.sass&quot;</span><span class="p">,</span>
      <span class="s2">&quot;static_dev/sass/overrides.sass&quot;</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">sass_compile</span><span class="p">(</span><span class="n">changed_files</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sass_compile</span><span class="p">(</span><span class="n">changed_files</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">changed_files</span><span class="p">)</span> <span class="c1"># for info, files that changed, from a list of watched files above</span>
     <span class="c1">## ...</span>
     <span class="n">compiled_css</span> <span class="o">=</span> <span class="n">sass</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filep</span><span class="p">,</span> <span class="n">include_paths</span><span class="o">=</span><span class="n">includes</span><span class="p">,</span> <span class="n">output_style</span><span class="o">=</span><span class="s2">&quot;compressed&quot;</span><span class="p">)</span>
@@ -471,13 +471,13 @@ could be reloaded automatically if you explicit it with the
 </pre></div>
 </div>
 <p>Validate javascript syntax when edited:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">esprima</span> <span class="c1"># Python implementation of Esprima from Node.js</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">esprima</span> <span class="c1"># Python implementation of Esprima from Node.js</span>
 
 <span class="nd">@app_watch_handler</span><span class="p">(</span>
     <span class="p">[</span><span class="s2">&quot;static/js/index.js&quot;</span><span class="p">,</span>
      <span class="s2">&quot;static/js/utils.js&quot;</span><span class="p">,</span>
      <span class="s2">&quot;static/js/dbadmin.js&quot;</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">validate_js</span><span class="p">(</span><span class="n">changed_files</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_js</span><span class="p">(</span><span class="n">changed_files</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">changed_files</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;JS syntax validation: &quot;</span><span class="p">,</span> <span class="n">cf</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">cf</span><span class="p">))</span> <span class="k">as</span> <span class="n">code</span><span class="p">:</span>
@@ -549,16 +549,16 @@ default all HTTP error codes are handled automatically by py4web.</p>
 <p>It is however possible to override this behaviour. It can be done either
 per HTTP error code, or even for all errors.</p>
 <p>Here is an example for overriding HTTP code 404 (not found):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">ERROR_PAGES</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ERROR_PAGES</span>
 <span class="n">ERROR_PAGES</span><span class="p">[</span><span class="mi">404</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Page not found!&quot;</span>
 </pre></div>
 </div>
 <p>If one wants to replace _all_ default error pages, a special qualifier
 <code class="docutils literal notranslate"><span class="pre">&quot;*&quot;</span></code> should be used. Also, the returned value may contain HTML code as
 well:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">ERROR_PAGES</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ERROR_PAGES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
 
 <span class="n">ERROR_PAGES</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;We have encountered an error! (try: </span><span class="si">{</span><span class="n">A</span><span class="p">(</span><span class="s1">&#39;Main Page&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="n">scheme</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span>
 </pre></div>
@@ -607,7 +607,7 @@ apps</strong>.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>From web2py to py4web &mdash; py4web 20250125 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>From web2py to py4web &mdash; py4web 20250330 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=10d334e1"></script>
+      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -199,14 +199,14 @@ may change in the future.</p></li>
 <h3>“Hello world” example<a class="headerlink" href="#hello-world-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers/default.py</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
 </pre></div>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># file imported by __init__.py</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
 </pre></div>
 </div>
@@ -235,14 +235,14 @@ may change in the future.</p></li>
 <section id="returning-variables-example">
 <h3>“Returning variables” example<a class="headerlink" href="#returning-variables-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_vars</span><span class="o">.</span><span class="n">a</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 </pre></div>
@@ -251,7 +251,7 @@ may change in the future.</p></li>
 <section id="returning-args-example">
 <h3>“Returning args” example<a class="headerlink" href="#returning-args-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
    <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
@@ -259,7 +259,7 @@ may change in the future.</p></li>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index/&lt;a&gt;/&lt;b:int&gt;/&lt;c:int&gt;&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -267,7 +267,7 @@ may change in the future.</p></li>
 <section id="return-calling-methods-example">
 <h3>“Return calling methods” example<a class="headerlink" href="#return-calling-methods-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
       <span class="k">return</span> <span class="s2">&quot;GET&quot;</span>
    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
@@ -277,11 +277,11 @@ may change in the future.</p></li>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="k">return</span> <span class="s2">&quot;GET&quot;</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="k">return</span> <span class="s2">&quot;POST&quot;</span>
 </pre></div>
 </div>
@@ -289,13 +289,13 @@ may change in the future.</p></li>
 <section id="setting-up-a-counter-example">
 <h3>“Setting up a counter” example<a class="headerlink" href="#setting-up-a-counter-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">counter</span><span class="p">():</span>
    <span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">counter</span><span class="p">():</span>
    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">])</span>
 </pre></div>
@@ -327,7 +327,7 @@ may change in the future.</p></li>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">form</span> <span class="o">=</span> <span class="n">SQLFORM</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
    <span class="n">form</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
@@ -341,7 +341,7 @@ may change in the future.</p></li>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
       <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span>
@@ -365,7 +365,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 <section id="grid-example">
 <h3>“grid” example<a class="headerlink" href="#grid-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">grid</span> <span class="o">=</span> <span class="n">SQLFORM</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 </pre></div>
@@ -373,7 +373,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
    <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="kc">True</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
@@ -387,7 +387,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 </pre></div>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">APP_FOLDER</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">APP_FOLDER</span>
 <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">APP_FOLDER</span><span class="p">,</span> <span class="s1">&#39;file.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -399,12 +399,12 @@ So if you instantiate multiple Flash objects they share their data.</p>
 <span class="n">auth</span><span class="o">.</span><span class="n">define_tables</span><span class="p">()</span>
 
 <span class="nd">@requires_login</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">user_id</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span>
    <span class="n">user_email</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">email</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">user</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">user</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">auth</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -416,7 +416,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="n">user_id</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span>
    <span class="n">user_email</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
@@ -484,7 +484,7 @@ its session and its flash objects.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

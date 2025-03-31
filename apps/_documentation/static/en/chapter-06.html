@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 20250125 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Fixtures &mdash; py4web 20250330 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=10d334e1"></script>
+      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -178,12 +178,12 @@ need from the other fixtures, especially Inject() and Flash() that we’ll see l
 <h2>The Template fixture<a class="headerlink" href="#the-template-fixture" title="Link to this heading"></a></h2>
 <p>PY4WEB by default uses the YATL template language and provides a
 fixture for it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
-<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Template</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="s1">&#39;[[ ]]&#39;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -219,14 +219,14 @@ opposite</strong> in early py4web experimental versions (until February 2022)!</
 <p>As we’ve already seen in the last paragraph, you can combine many fixtures in
 one decorator. But you can even extend this decorator by passing different
 templates as needed. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">preferred</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="o">*</span><span class="n">optional</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">preferred</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="o">*</span><span class="n">optional</span><span class="p">):</span>
    <span class="k">return</span> <span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="o">*</span><span class="n">optional</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>And then:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@preferred</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -237,13 +237,13 @@ In this way you’ll have cleaner code and if needed you’ll be able to change 
 <h2>The Inject fixture<a class="headerlink" href="#the-inject-fixture" title="Link to this heading"></a></h2>
 <p>The Inject fixture is used for passing variables (and even python functions) to
 templates. Here is a simple example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">Inject</span>
 <span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
 
 <span class="o">...</span>
 
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">my_var</span><span class="o">=</span><span class="n">my_var</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
 
    <span class="o">...</span>
 </pre></div>
@@ -253,15 +253,15 @@ templates. Here is a simple example:</p>
 <section id="the-translator-fixture">
 <h2>The Translator fixture<a class="headerlink" href="#the-translator-fixture" title="Link to this heading"></a></h2>
 <p>Here is an example of usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Translator</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Translator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
 <span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">T_FOLDER</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The string <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code> will be translated based on the
@@ -271,9 +271,9 @@ best matches the HTTP <code class="docutils literal notranslate"><span class="pr
 <code class="docutils literal notranslate"><span class="pre">pluralize.Translator</span></code> and also implements the <code class="docutils literal notranslate"><span class="pre">Fixture</span></code> interface.</p>
 <p>We can easily combine multiple fixtures. Here, as example, we make
 action with a counter that counts “visits”.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.dbstore</span> <span class="kn">import</span> <span class="n">DBStore</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.dbstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBStore</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
 <span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
 <span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
@@ -281,7 +281,7 @@ action with a counter that counts “visits”.</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">counter</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
@@ -291,16 +291,16 @@ action with a counter that counts “visits”.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">T</span></code> fixture is to be used from inside a template you may want to pass it to the template:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or perhaps inject (same effect as above)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">Inject</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -351,7 +351,7 @@ It can be easily reached via the button <code class="docutils literal notranslat
 <p>If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">T</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">,</span> <span class="s2">&quot;it&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
@@ -376,13 +376,13 @@ displaying a message to the view, because flash messages:</p>
 <li><p>should be dismissible</p></li>
 </ul>
 <p>The Flash helper handles the server side of them. Here is an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Flash</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flash</span>
 
 <span class="n">flash</span> <span class="o">=</span> <span class="n">Flash</span><span class="p">()</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
@@ -502,7 +502,7 @@ not put too much into them.</p>
 <section id="server-side-session-in-memcache">
 <h3>Server-side session in memcache<a class="headerlink" href="#server-side-session-in-memcache" title="Link to this heading"></a></h3>
 <p>Requires memcache installed and configured.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">memcache</span><span class="o">,</span> <span class="nn">time</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">memcache</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
 <span class="n">conn</span> <span class="o">=</span> <span class="n">memcache</span><span class="o">.</span><span class="n">Client</span><span class="p">([</span><span class="s1">&#39;127.0.0.1:11211&#39;</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
 </pre></div>
@@ -511,7 +511,7 @@ not put too much into them.</p>
 <section id="server-side-session-in-redis">
 <h3>Server-side session in Redis<a class="headerlink" href="#server-side-session-in-redis" title="Link to this heading"></a></h3>
 <p>Requires <a class="reference external" href="https://redis.io/">Redis</a> installed and configured.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">redis</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">redis</span>
 <span class="n">conn</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">)</span>
 <span class="n">conn</span><span class="o">.</span><span class="n">set</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">cs</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">,</span> <span class="n">ct</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span> <span class="p">(</span><span class="n">cs</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">e</span> <span class="ow">and</span> <span class="n">ct</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
@@ -525,8 +525,8 @@ functionality.</p>
 </section>
 <section id="server-side-session-in-database">
 <h3>Server-side session in database<a class="headerlink" href="#server-side-session-in-database" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.dbstore</span> <span class="kn">import</span> <span class="n">DBStore</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.dbstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBStore</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
 <span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
 </pre></div>
@@ -553,19 +553,19 @@ are equivalent:</p>
 is provide to the <code class="docutils literal notranslate"><span class="pre">Session</span></code> object a <code class="docutils literal notranslate"><span class="pre">storage</span></code> object with both
 <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code> methods. For example, imagine you want to store
 sessions on your local filesystem:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 
-<span class="k">class</span> <span class="nc">FSStorage</span><span class="p">:</span>
-   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FSStorage</span><span class="p">:</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span>
-   <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
               <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
        <span class="k">return</span> <span class="kc">None</span>
-   <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
@@ -606,21 +606,21 @@ data from another app (app1) running on the same server:</p>
 given condition. For example to enforce a workflow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step1&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">step1</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step1</span><span class="p">():</span>
     <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;step2&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step2&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;step_completed&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">step2</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step2</span><span class="p">():</span>
     <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;step3&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step3&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;step_completed&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">step3</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step3</span><span class="p">():</span>
     <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
@@ -649,7 +649,7 @@ require that users action have specific group membership:</p>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;payroll&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
              <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;employees&#39;</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span> <span class="n">on_false</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)))</span>
-<span class="k">def</span> <span class="nf">payroll</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">payroll</span><span class="p">():</span>
     <span class="k">return</span>
 </pre></div>
 </div>
@@ -659,20 +659,20 @@ require that users action have specific group membership:</p>
 <p>A signed URL is a URL that provides limited permission and time to make an
 HTTP request by containing authentication information in its query string.
 The typical usage is as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils</span> <span class="kn">import</span> <span class="n">URLSigner</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">URLSigner</span>
 
 <span class="c1"># We build a URL signer.</span>
 <span class="n">url_signer</span> <span class="o">=</span> <span class="n">URLSigner</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/somepath&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">somepath</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">somepath</span><span class="p">():</span>
    <span class="c1"># This controller signs a URL.</span>
    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">signed_url</span> <span class="o">=</span> <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">,</span> <span class="n">signer</span><span class="o">=</span><span class="n">url_signer</span><span class="p">))</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="o">.</span><span class="n">verify</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">anotherpath</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">anotherpath</span><span class="p">():</span>
    <span class="c1"># The signature has been verified.</span>
    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
@@ -687,9 +687,9 @@ accessing the database, not just sessions.</p>
 which is documented in the next chapter. Here is an example, please
 remember to create the <code class="docutils literal notranslate"><span class="pre">databases</span></code> folder under your project in case
 it doesn’t exist:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -698,7 +698,7 @@ it doesn’t exist:</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">client_ip</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">visit_log</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">client_ip</span><span class="o">=</span><span class="n">client_ip</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
     <span class="k">return</span> <span class="s2">&quot;Your visit was stored in database&quot;</span>
@@ -716,9 +716,9 @@ and it commits <code class="docutils literal notranslate"><span class="pre">on_s
 <code class="docutils literal notranslate"><span class="pre">session</span></code> and <code class="docutils literal notranslate"><span class="pre">db</span></code>. Their role is to provide the action with
 authentication information.</p>
 <p>Auth is used as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">)</span>
 <span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
@@ -728,7 +728,7 @@ authentication information.</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span> <span class="ow">or</span> <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;auth/login&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
 </pre></div>
@@ -766,7 +766,7 @@ currently logged in user. If the user is not logged-in, it returns
 <code class="docutils literal notranslate"><span class="pre">auth.user</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
 </pre></div>
@@ -784,9 +784,9 @@ all the related details.</p>
 change their state because it would not be thread safe. There is one
 exception to this rule. Actions can change some attributes of database
 fields:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -794,7 +794,7 @@ fields:</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">writable</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
@@ -815,12 +815,12 @@ attributes.</p>
 <section id="custom-fixtures">
 <h2>Custom fixtures<a class="headerlink" href="#custom-fixtures" title="Link to this heading"></a></h2>
 <p>A fixture is an object with the following minimal structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Fixture</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fixture</span>
 
-<span class="k">class</span> <span class="nc">MyFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="k">pass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="k">pass</span>
 </pre></div>
 </div>
 <p>For example in the DAL fixture case, <code class="docutils literal notranslate"><span class="pre">on_request</span></code> starts a transaction,
@@ -853,24 +853,24 @@ and outer layers will call <code class="docutils literal notranslate"><span clas
 <p><code class="docutils literal notranslate"><span class="pre">on_success</span></code> and <code class="docutils literal notranslate"><span class="pre">on_error</span></code> can see the current <code class="docutils literal notranslate"><span class="pre">context['exception']</span></code> and
 transform it. They can see the current <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> and transform it as well.</p>
 <p>For example here is a fixture that transforms the output text to upper case:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UpperCase</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">UpperCase</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
 <span class="n">upper_case</span> <span class="o">=</span> <span class="n">UpperCase</span><span class="p">()</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">upper_case</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
 </pre></div>
 </div>
 <p>Notice that this fixture assumes the <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> is a string
 and therefore it must come before the template.</p>
 <p>Here is a fixture that logs exceptions tracebacks to a file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LogErrors</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LogErrors</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -878,7 +878,7 @@ and therefore it must come before the template.</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">errlog</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
 </pre></div>
 </div>
 <p>Fixtures also have a <code class="docutils literal notranslate"><span class="pre">__prerequisite__</span></code> attribute. If a fixture
@@ -914,9 +914,9 @@ and the fixture must be listed in the <code class="docutils literal notranslate"
 For example, suppose we want to create a fixture that grants access to a controller only
 to users whose email address is included in an ADMIN_EMAILS list.
 We can write the following fixture:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AdminAccess</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AdminAccess</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">admin_list</span><span class="p">,</span> <span class="n">redirect_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">admin_list</span><span class="p">,</span> <span class="n">redirect_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span> <span class="o">=</span> <span class="n">admin_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">auth</span>
@@ -926,12 +926,12 @@ We can write the following fixture:</p>
         <span class="c1"># initialization the full URL to redirect, but only the path.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span> <span class="o">=</span> <span class="n">redirect_url</span> <span class="ow">or</span> <span class="s1">&#39;index&#39;</span>
 
-    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
             <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span><span class="p">):</span>
             <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -940,7 +940,7 @@ We can write the following fixture:</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/admin-only&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;admin_only.html&#39;</span><span class="p">,</span> <span class="n">admin_access</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">admin_only</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">admin_only</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -949,12 +949,12 @@ We can write the following fixture:</p>
 <h3>Using local storage<a class="headerlink" href="#using-local-storage" title="Link to this heading"></a></h3>
 <p>Fixtures can use a thread-local storage for data they need.
 Here is an example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LocalStorageDemo</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LocalStorageDemo</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
 
-   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-   <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
        <span class="n">Fixture</span><span class="o">.</span><span class="n">local_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
        <span class="c1"># We can check whether the local storage is valid.</span>
        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_valid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -962,7 +962,7 @@ Here is an example:</p>
        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Storing content: </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
        <span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span> <span class="o">=</span> <span class="n">content</span>
 
-   <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
        <span class="c1"># The line below is used only to show that the thread-local object is in place.</span>
        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retrieved: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -983,7 +983,7 @@ but it’s mandatory that you always place the template as the <strong>first one
 Consider this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">func</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;Hello world&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;Hello world&quot;</span>
 </pre></div>
 </div>
 <p>Pre-processing (<code class="docutils literal notranslate"><span class="pre">on_request</span></code>) in the fixtures happen in the sequence they are listed
@@ -1019,13 +1019,13 @@ For now we recommend using a single call to <code class="docutils literal notran
 <p>py4web provides a cache in RAM object that implements the last recently
 used (LRU) algorithm. It can be used to cache any function via a
 decorator:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">action</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">action</span>
 <span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;hello/&lt;name&gt;&#39;</span><span class="p">)</span>
 <span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">expiration</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="s2">&quot;Hello </span><span class="si">%s</span><span class="s2"> your code is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -1044,13 +1044,13 @@ every time a template needs to be rendered.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> application, in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> defines two special
 convenience decorators using ActionFactory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@unauthenticated</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>and</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1071,12 +1071,12 @@ with &#64;action or &#64;action.uses</p>
 all HTTP methods (GET, POST, PUT, …) but you can also create separate
 controllers for each HTTP method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="c1"># only handle GET requests</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 
 <span class="nd">@authenticated</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index_form</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index_form</span><span class="p">():</span>
     <span class="c1"># only handle POST requests</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
@@ -1099,7 +1099,7 @@ controllers for each HTTP method:</p>
    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span>
    <span class="n">uses</span><span class="o">=</span><span class="p">[</span><span class="n">Inject</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">example</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1145,7 +1145,7 @@ See: <a class="reference internal" href="#fixtures-with-dependencies"><span clas
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

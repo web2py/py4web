@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20250125 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Authentication and authorization &mdash; py4web 20250330 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=10d334e1"></script>
+      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -69,12 +69,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-send">two_factor_send</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-validate">two_factor_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-tries">two_factor_tries</a></li>
-
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#captcha">Authentication with CAPTCHA</a><ul>
-  <li class="toctree-l4"><a class="reference internal" href="#reCAPTCHA">reCAPTCHA</a></li>
-  <li class="toctree-l4"><a class="reference internal" href="#hCAPTCHA">hCAPTCHA</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#auth-plugins">Auth Plugins</a><ul>
@@ -153,7 +147,7 @@ approve new users (by visiting the link logged on the console or
 by directly editing the database).</p>
 <p>To use the Auth object, first of all you need to import it, instantiate it, configure
 it, and enable it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
 <span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 <span class="c1"># (configure here)</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
@@ -242,7 +236,7 @@ we tell py4web that this action should have information about the user,
 trying to parse the session for a user session.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="k">return</span> <span class="s1">&#39;hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span> <span class="k">else</span> <span class="s1">&#39;not logged in&#39;</span>
 </pre></div>
@@ -250,7 +244,7 @@ trying to parse the session for a user session.</p>
 <p>The second one forces the login if needed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="k">return</span> <span class="s1">&#39;hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">)</span>
 </pre></div>
@@ -280,8 +274,8 @@ If your method returns True, then this login requires two factor.  If it returns
 is bypassed for this login.</p>
 <p>Sample <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> method</p>
 <p>This example shows how to allow users that are on a specific network.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">user_outside_network</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">ipaddress</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_outside_network</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ipaddress</span>
 
     <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;10.10.0.0/22&quot;</span><span class="p">]</span>
 
@@ -303,7 +297,7 @@ is bypassed for this login.</p>
 makes it possible to send it to the user. How this code is sent, is up to you. The <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code>
 argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
 <p>This example shows how to send an email with the two factor code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">auth</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
@@ -343,7 +337,7 @@ generated when validating the form submitted by the user.</p>
 </div></blockquote>
 <p>The primary use-case for this method is validation of time-based passwords.</p>
 <p>This example shows how to validate a time-based two factor code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validate_code</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_code</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
    <span class="k">try</span><span class="p">:</span>
       <span class="c1"># get the correct code from an external function</span>
       <span class="n">correct_code</span> <span class="o">=</span> <span class="n">generate_time_based_code</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
@@ -406,9 +400,7 @@ will fail if <code class="docutils literal notranslate"><span class="pre">two_fa
 <p>Important! If you filtered <code class="docutils literal notranslate"><span class="pre">ALLOWED_ACTIONS</span></code> in your app, make sure to whitelist the “two_factor” action
 so not to block the two factor API.</p>
 </section>
-<hr>
-
-
+</section>
 <section id="auth-plugins">
 <h3>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Link to this heading"></a></h3>
 <p>Plugins are defined in “py4web/utils/auth_plugins” and they have a
@@ -424,7 +416,7 @@ the default settings for the supported plugins.</p>
 <section id="pam">
 <h4>PAM<a class="headerlink" href="#pam" title="Link to this heading"></a></h4>
 <p>Configuring PAM is the easiest:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.pam_plugin</span> <span class="kn">import</span> <span class="n">PamPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.pam_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">PamPlugin</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">PamPlugin</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -443,7 +435,7 @@ Otherwise you can only authenticate the specific user that runs the py4web proce
 <section id="ldap">
 <h4>LDAP<a class="headerlink" href="#ldap" title="Link to this heading"></a></h4>
 <p>This is a common authentication method, especially using Microsoft Active Directory in enterprises.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.ldap_plugin</span> <span class="kn">import</span> <span class="n">LDAPPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.ldap_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">LDAPPlugin</span>
 <span class="n">LDAP_SETTING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;ad&#39;</span><span class="p">,</span>
     <span class="s1">&#39;server&#39;</span><span class="p">:</span> <span class="s1">&#39;my.domain.controller&#39;</span><span class="p">,</span>
@@ -460,7 +452,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 </section>
 <section id="oauth2-with-google">
 <h4>OAuth2 with Google<a class="headerlink" href="#oauth2-with-google" title="Link to this heading"></a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2google</span> <span class="kn">import</span> <span class="n">OAuth2Google</span> <span class="c1"># TESTED</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2google</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Google</span> <span class="c1"># TESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Google</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
     <span class="n">client_secret</span><span class="o">=</span><span class="n">CLIENT_SECRET</span><span class="p">,</span>
@@ -471,7 +463,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 </section>
 <section id="oauth2-with-facebook">
 <h4>OAuth2 with Facebook<a class="headerlink" href="#oauth2-with-facebook" title="Link to this heading"></a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2facebook</span> <span class="kn">import</span> <span class="n">OAuth2Facebook</span> <span class="c1"># UNTESTED</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2facebook</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Facebook</span> <span class="c1"># UNTESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Facebook</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
     <span class="n">client_secret</span><span class="o">=</span><span class="n">CLIENT_SECRET</span><span class="p">,</span>
@@ -482,7 +474,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 </section>
 <section id="oauth2-with-discord">
 <h4>OAuth2 with Discord<a class="headerlink" href="#oauth2-with-discord" title="Link to this heading"></a></h4>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2discord</span> <span class="kn">import</span> <span class="n">OAuth2Discord</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Discord</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Discord</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">DISCORD_CLIENT_ID</span><span class="p">,</span>
     <span class="n">client_secret</span><span class="o">=</span><span class="n">DISCORD_CLIENT_SECRET</span><span class="p">,</span>
@@ -498,127 +490,7 @@ You will also have to register your OAuth2 redirect URI in your created applicat
 Discord username as the first name and discriminator as the last name.</p>
 </div>
 </section>
-<hr>
-<section id="captcha">
-  <h3>Authentication with CAPTCHA<a class="headerlink" href="#captcha" title="Link to this heading"></a></h3>
-
-  <p>CAPTCHAs are essential security measures that prevent automated bot abuse on public forms. To implement Google reCAPTCHA or hCAPTCHA in your authentication form, follow these steps:</p>
-
-  <section id="reCAPTCHA">
-    <h4>Enabling reCAPTCHA<a class="headerlink" href="#reCAPTCHA" title="Link to this heading"></a></h4>
-    <p>in <code class="docutils literal notranslate">settings.py</code> add your keys:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          RECAPTCHA_API_SECRET_V3 = "your_recaptcha_secret_key_v3"
-          RECAPTCHA_API_KEY_V3 = "your_recaptcha_site_key_v3"
-           
-          RECAPTCHA_API_KEY_V2 = "your_recaptcha_site_key_v2"
-          RECAPTCHA_API_SECRET_V2 = "your_recaptcha_secret_key_v2"
-  
-      </pre>
-      </div>
-    </div>
-    
-    <p>in <code class="docutils literal notranslate">common.py</code> add:</p>
-  
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-        #import the functionality
-        <span class="kn">from</span> <span class="nn">. </span><span class="kn">import</span> settings
-        <span class="kn">from</span> <span class="nn">py4web.utils.recaptcha </span><span class="kn">import</span> ReCaptcha
-  
-        # <span class="s2">for recaptcha v3</span> 
-        <span class="nf">recaptcha</span> = <span class="nn">ReCaptcha</span>(<span class="nd">settings</span>.RECAPTCHA_API_KEY_V3, <span class="nd">settings</span>.RECAPTCHA_API_SECRET_V3, "v3")
-        or 
-        # <span class="s2">for recaptcha v2</span> 
-        <span class="nf">recaptcha</span> = <span class="nn">ReCaptcha</span>(<span class="nd">settings</span>.RECAPTCHA_API_KEY_V2, <span class="nd">settings</span>.RECAPTCHA_API_SECRET_V2, "v2")
-  
-  
-        # in the section that auth is defined
-        # Example:
-        auth = Auth(session, db, define_tables=False)
-  
-        # Add this line at the end of auth declaration to enable recaptcha on login, register and request_reset_password forms.
-        # or enable it on the action that you want by especifying the action name
-        
-        #Example:
-  
-        auth.extra_form_fields = {"login": [<span class="nf">recaptcha</span>.field], "register": [<span class="nf">recaptcha</span>.field], "request_reset_password": [<span class="nf">recaptcha</span>.field], }
-  
-  
-        #In section where auth is enabled, add the recaptcha fixture
-        # Example:
-  
-        # #######################################################
-        # Enable authentication
-        # #######################################################
-        auth.enable(uses=(session, T, db, <span class="nf">recaptcha</span>.fixture),env=dict(T=T))
-  
-      </pre>
-      
-    </div>
-    
-    </div>
-    <p>
-      After completing these steps, the reCAPTCHA field will be added to the login, register, and request_reset_password forms.
-    </p>
-  </section>
-  <hr>
-  <section id="hCAPTCHA">
-    <h4>Enabling hCAPTCHA<a class="headerlink" href="#hCAPTCHA" title="Link to this heading"></a></h4>
-    <p>in <code class="docutils literal notranslate">settings.py</code> add your HCAPTCHA_SITE_KEY and HCAPTCHA_SECRET_KEY:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          HCAPTCHA_SITE_KEY = "your_hcaptcha_site_key"
-          HCAPTCHA_SECRET_KEY = "your_hcaptcha_secret_key"
-      </pre>
-      </div>
-    </div>
-    <p>in <code class="docutils literal notranslate">common.py</code> add:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-        #import the functionality
-        <span class="kn">from</span> <span class="nn">. </span><span class="kn">import</span> settings
-        <span class="kn">from</span> <span class="nn">py4web.utils.hcaptcha </span><span class="kn">import</span> Hcaptcha
-  
-        <span class="nf">hcaptcha</span> = <span class="nn">Hcaptcha</span>(<span class="nd">settings</span>.HCAPTCHA_SITE_KEY, <span class="nd">settings</span>.HCAPTCHA_SECRET_KEY)
-        
-  
-        # in the section that auth is defined
-        # Example:
-        auth = Auth(session, db, define_tables=False)
-  
-        # Add this line at the end of auth declaration to enable hcaptcha on login, register and request_reset_password forms.
-        # or enable it on the action that you want by especifying the action name
-        
-        #Example:
-  
-        auth.extra_form_fields = {"login": [<span class="nf">hcaptcha</span>.field], "register": [<span class="nf">hcaptcha</span>.field], "request_reset_password": [<span class="nf">hcaptcha</span>.field], }
-  
-  
-        #In section where auth is enabled, add the hcaptcha fixture
-        # Example:
-  
-        # #######################################################
-        # Enable authentication
-        # #######################################################
-        auth.enable(uses=(session, T, db, <span class="nf">hcaptcha</span>.fixture),env=dict(T=T))
-  
-      </pre>
-      
-    </div>
-    
-    </div>
-    <p>
-      After completing these steps, the hCAPTCHA field will be added to the login, register, and request_reset_password forms.
-    </p>
-  </section>  
 </section>
-<hr>
 <section id="auth-api-plugins">
 <h3>Auth API Plugins<a class="headerlink" href="#auth-api-plugins" title="Link to this heading"></a></h3>
 <p>There are two types of web APIs, those called by the browser for example by a single page web app,
@@ -686,7 +558,7 @@ in order to avoid database access.</p>
 <section id="example-of-simpletokenplugin">
 <h4>Example of SimpleTokenPlugin<a class="headerlink" href="#example-of-simpletokenplugin" title="Link to this heading"></a></h4>
 <p>In common.py:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
 <span class="n">simple_token_plugin</span> <span class="o">=</span> <span class="n">SimpleTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simple_token_plugin</span><span class="p">)</span>
 </pre></div>
@@ -696,7 +568,7 @@ one called “auth_simple_token”.</p>
 <p>In controllers.py</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_api</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_api</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
@@ -707,7 +579,7 @@ one called “auth_simple_token”.</p>
 <p>In order to create and manage tokens you can use a grid. In controllers.py</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;tokens/&lt;path:path&gt;&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
    <span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span>
    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">==</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
@@ -717,7 +589,7 @@ one called “auth_simple_token”.</p>
 <section id="example-of-jwttokenplugin">
 <h4>Example of JwtTokenPlugin<a class="headerlink" href="#example-of-jwttokenplugin" title="Link to this heading"></a></h4>
 <p>In common.py:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
 <span class="n">jwt_token_plugin</span> <span class="o">=</span> <span class="n">JwtTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jwt_token_plugin</span><span class="p">)</span>
 </pre></div>
@@ -725,7 +597,7 @@ one called “auth_simple_token”.</p>
 <p>In controllers.py it works the same as SimpleTokenPlugin:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_api</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_api</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
@@ -737,7 +609,7 @@ one called “auth_simple_token”.</p>
 action for example that, when called, gives you a new token. In controllers.py</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;make_token&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">make_token</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_token</span><span class="p">():</span>
      <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">jwt_token_plugin</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
         <span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
         <span class="n">expiration</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">10</span><span class="p">)))</span>
@@ -750,8 +622,8 @@ action for example that, when called, gives you a new token. In controllers.py</
 For example here is a dumb and UNSAFE plugin that authorizes everybody as user 1 as long as
 the “Authentication” header is provided.</p>
 <p>from py4web import request</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomTokenPlugin</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCustomTokenPlugin</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">authorization</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authentication&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">authorization</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -786,7 +658,7 @@ for very complex apps.</p>
 </div>
 <p>To use the tagging system you first need to import the Tags module
 from <code class="docutils literal notranslate"><span class="pre">pydal.tools</span></code>. Then create a Tags object to tag a table:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.tools.tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tags</span>
 <span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">,</span> <span class="s1">&#39;groups&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -815,7 +687,7 @@ user is not a manager (or no one is logged in) py4web redirects to the
 py4web displays ‘hello manager’:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;manager&#39;</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]):</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;not_authorized&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="s1">&#39;hello manager&#39;</span>
@@ -825,7 +697,7 @@ py4web displays ‘hello manager’:</p>
 tag(s):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;find_by_tag/</span><span class="si">{group_name}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
     <span class="n">users</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">find</span><span class="p">([</span><span class="n">group_name</span><span class="p">]))</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">first_name</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">last_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">users</span><span class="p">}</span>
 </pre></div>
@@ -834,17 +706,17 @@ tag(s):</p>
 enables the following syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">requires_membership</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">requires_membership</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__prerequisites__</span> <span class="o">=</span> <span class="p">[</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">]</span> <span class="c1"># you must have a user before you can check</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">group</span>  <span class="o">=</span> <span class="n">group</span> <span class="c1"># store the group when action defined</span>
-    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="c1"># will be called if the action is called</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="c1"># will be called if the action is called</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span> <span class="c1"># check and do something</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">requires_membership</span><span class="p">(</span><span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="s1">&#39;hello teacher&#39;</span>
 </pre></div>
 </div>
@@ -852,7 +724,7 @@ enables the following syntax:</p>
 to enable the following syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">has_membership</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="s1">&#39;hello teacher&#39;</span>
 </pre></div>
 </div>
@@ -894,7 +766,7 @@ of the group:</p>
 <p>And you can check for a user permission via an explicit join:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;zap&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">zap</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zap</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;zap database&#39;</span>
     <span class="k">if</span> <span class="n">db</span><span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">permission</span><span class="p">))(</span>
@@ -917,7 +789,7 @@ the user has the permission.</p>
 Here is an example of an action to start impersonating and stop impersonating another user.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;impersonate/{user_id:int}&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">()</span> <span class="ow">and</span>
         <span class="n">user_id</span> <span class="ow">and</span>
         <span class="n">user_id</span> <span class="o">!=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span> <span class="ow">and</span>
@@ -927,7 +799,7 @@ Here is an example of an action to start impersonating and stop impersonating an
 
  <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;stop_impersonating&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
  <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
- <span class="k">def</span> <span class="nf">stop_impersonating</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">stop_impersonating</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">auth</span> <span class="ow">and</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">():</span>
         <span class="n">auth</span><span class="o">.</span><span class="n">stop_impersonating</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
     <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
@@ -973,7 +845,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250330
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

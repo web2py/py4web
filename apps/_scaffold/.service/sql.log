@@ -1,0 +1,13 @@
+timestamp: 2023-12-06T22:04:22.317786
+CREATE TABLE "py4web_error"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "uuid" CHAR(512),
+    "app_name" CHAR(512),
+    "method" CHAR(512),
+    "path" CHAR(512),
+    "timestamp" TIMESTAMP,
+    "client_ip" CHAR(512),
+    "error" CHAR(512),
+    "snapshot" TEXT
+);
+success!

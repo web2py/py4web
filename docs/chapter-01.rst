@@ -46,7 +46,7 @@ details if you come from web2py):
 
 -  PY4WEB, unlike web2py, requires Python 3.
 -  PY4WEB, unlike web2py, can be installed using pip, and its
-   dependencies are managed using requirements.txt.
+   dependencies are managed using pyproject.toml
 -  PY4WEB apps are regular Python modules. This is very different from
    web2py. In particular, we ditched the custom importer, and we rely
    now exclusively on the regular Python import mechanism.
