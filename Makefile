@@ -6,6 +6,8 @@ clean:
 	find . -name '*~' -delete
 	find . -name '#*' -delete
 	rm -rf dist/*
+	rm -rf build/*
+	rm -rf py4web.egg-info
 
 clean-assets: clean
 	rm -f py4web/assets/*
@@ -47,8 +49,8 @@ run: uv
 build: clean assets check test
 	uv build --sdist --wheel
 
-publish: build
-	uv publish
+publish:
+	uv run --extra manage -m twine upload dist/*
 
 upgrade-utils:
 	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;

@@ -63,6 +63,9 @@ docs = [
     "rinohtype==0.5.4",
     "sphinxcontrib-spelling",
 ]
+manage = [
+    "twine",
+]    
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
