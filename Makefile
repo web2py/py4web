@@ -18,23 +18,33 @@ py4web/assets/py4web.app.%.zip: apps/%
 	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm|ico)$$" | \
 	zip -@ $(addprefix ../../, $@)
 
-lock:
+uv:
+	which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
+
+
+lock: uv
 	uv lock
 
-docs:
+docs: uv
 	docs/updateDocs.sh html
 
-test:
+check: uv
+	uv tool run ruff check
+
+format: uv
+	uv tool run ruff format
+
+test: uv
 	uv run --extra test pytest --cov=py4web --cov-report html:cov.html -v tests/
 
-setup:
+setup: uv
 	uv run py4web.py setup apps
 	uv run py4web.py set_password
 
-run:
+run: uv
 	uv run py4web.py run -p password.txt apps -L20
 
-build: clean assets
+build: clean assets check test
 	uv build --sdist --wheel
 
 publish: build
