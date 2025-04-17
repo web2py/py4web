@@ -889,7 +889,7 @@ class Grid:
             attrs.update(self.attributes_plugin.link(url=url))
 
         link = A(
-            I(_class=self.icon_style.complete(icon)),
+            I(_class=self.icon_style.complete(icon)) if icon else "",
             _role="button",
             _message=message,
             _title=button_text,
