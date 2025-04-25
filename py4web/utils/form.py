@@ -593,7 +593,8 @@ class FormStyleFactory:
             ),
             _class=class_outer,
         )
-        form.append(submit)
+        if not readonly:
+            form.append(submit)
 
         return dict(form=form, controls=controls, json_controls=json_controls)
 
