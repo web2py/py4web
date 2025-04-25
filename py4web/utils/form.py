@@ -3,6 +3,7 @@ import json
 import os
 import time
 import uuid
+import base64
 
 import jwt
 from pydal._compat import to_native
@@ -259,6 +260,7 @@ class FormStyleFactory:
         "info": "",
         "error": "py4web-validation-error",
         "submit": "",
+        "back": "",
         "input": "",
         "input[type=text]": "",
         "input[type=date]": "",
@@ -267,6 +269,7 @@ class FormStyleFactory:
         "input[type=radio]": "",
         "input[type=checkbox]": "",
         "input[type=submit]": "",
+        "input[type=back]": "",
         "input[type=password]": "",
         "input[type=file]": "",
         "select": "",
@@ -316,6 +319,7 @@ class FormStyleFactory:
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
             submit="",
+            back="",
             delete="",
             end=XML("</form>"),
         )
@@ -335,6 +339,25 @@ class FormStyleFactory:
         class_inner = self.classes.get("inner") or None
         class_error = self.classes.get("error") or None
         class_info = self.classes.get("info") or None
+
+        referrer = request.query.get("_referrer")
+        if referrer:
+            back_url = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+
+            controls["back"] = A(
+                "Back",
+                _href=back_url,
+                _class=self.classes["input[type=back]"],
+            )
+
+            back = DIV(
+                DIV(
+                    controls["back"],
+                    _class=class_inner,
+                ),
+                _class=class_outer,
+            )
+            form.append(back)
 
         all_fields = [x for x in table]
         if "_virtual_fields" in dir(table):
@@ -610,6 +633,7 @@ FormStyleBulma.classes.update(
         "info": "help",
         "error": "help is-danger py4web-validation-error mt-1",
         "submit": "button is-primary",
+        "back": "button is-link",
         "input": "input",
         "input[type=text]": "input",
         "input[type=date]": "input",
@@ -618,6 +642,7 @@ FormStyleBulma.classes.update(
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
         "input[type=submit]": "button is-primary",
+        "input[type=back]": "button is-link",
         "input[type=password]": "input password",
         "input[type=file]": "file",
         "select": "control select",
@@ -636,6 +661,7 @@ FormStyleBootstrap4.classes.update(
         "info": "form-text",
         "error": "form-text text-danger py4web-validation-error",
         "submit": "btn btn-outline-info",
+        "back": "btn btn-outline-info",
         "input": "form-control",
         "input[type=text]": "form-control",
         "input[type=date]": "form-control",
@@ -644,6 +670,7 @@ FormStyleBootstrap4.classes.update(
         "input[type=radio]": "form-check-input",
         "input[type=checkbox]": "form-check-input",
         "input[type=submit]": "btn btn-outline-info",
+        "input[type=back]": "btn btn-outline-info",
         "input[type=password]": "form-control",
         "input[type=file]": "form-control-file",
         "select": "form-control",
@@ -660,6 +687,7 @@ FormStyleBootstrap5.classes.update(
         "info": "form-text",
         "error": "form-text text-danger py4web-validation-error",
         "submit": "btn btn-primary",
+        "back": "btn",
         "input": "form-control",
         "input[type=text]": "form-control",
         "input[type=date]": "form-control",
@@ -668,6 +696,7 @@ FormStyleBootstrap5.classes.update(
         "input[type=radio]": "form-check-input",
         "input[type=checkbox]": "form-check-input",
         "input[type=submit]": "btn btn-primary",
+        "input[type=back]": "btn",
         "input[type=password]": "form-control",
         "input[type=file]": "form-control",  # Bootstrap 5 doesn't have a specific 'form-control-file' class
         "select": "form-select",  # 'form-select' is used in Bootstrap 5 instead of 'form-control' for select elements
@@ -684,6 +713,7 @@ FormStyleTailwind.classes.update(
         "info": "text-gray-500 text-sm",
         "error": "text-red-600 text-sm mt-1",
         "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+        "back": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
         "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=text]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=date]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
@@ -692,6 +722,7 @@ FormStyleTailwind.classes.update(
         "input[type=radio]": "form-radio h-5 w-5 text-blue-600",
         "input[type=checkbox]": "form-checkbox h-5 w-5 text-blue-600",
         "input[type=submit]": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+        "input[type=back]": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
         "input[type=password]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=file]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm",
         "select": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
