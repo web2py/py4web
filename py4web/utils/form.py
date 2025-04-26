@@ -835,7 +835,6 @@ class Form(object):
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     uploaded_fields = set()
-                    uploaded_files = []
                     for field in self.table:
                         if field.writable and field.type != "id":
                             original_value = post_vars.get(field.name)
@@ -861,11 +860,14 @@ class Form(object):
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
-                                    if field.uploadfolder:
-                                        uploaded_files.append(tuple((field, value)))
-                                    validated_vars[field.name] = field.store(
-                                        value.file, value.filename, field.uploadfolder
-                                    )
+                                    if field.uploadfield:
+                                        validated_vars[field.name] = field.store(
+                                            value.file,
+                                            value.filename,
+                                            field.uploadfolder,
+                                        )
+                                    else:
+                                        validated_vars[field.name] = value
                                 elif self.record:
                                     if not delete:
                                         validated_vars[field.name] = self.record.get(
@@ -890,16 +892,6 @@ class Form(object):
                     if validation:
                         validation(self)
                     if not self.errors:
-                        """
-                        for file in uploaded_files:
-                            if field.name not in self.vars:
-                                field, value = file
-                                value = field.store(
-                                    value.file, value.filename, field.uploadfolder
-                                )
-                                if value is not None:
-                                    self.vars[field.name] = value
-                        """
                         self.accepted = True
                         if dbio:
                             self.update_or_insert(validated_vars)

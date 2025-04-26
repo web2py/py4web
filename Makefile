@@ -23,7 +23,6 @@ py4web/assets/py4web.app.%.zip: apps/%
 uv:
 	which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
 
-
 lock: uv
 	uv lock
 
