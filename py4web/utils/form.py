@@ -499,7 +499,8 @@ class FormStyleFactory:
                     DIV(
                         wrapped,
                         LABEL(
-                            " " + field.label,
+                            " ",
+                            field.label,
                             _for=input_id,
                             _class=class_label,
                             _style="display: inline !important",
