@@ -1,4 +1,4 @@
-"user strict";
+"use strict";
 
 // Allows "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})
 if (!String.prototype.format) {
