@@ -90,9 +90,12 @@
 	    if(field.type == "list:string" || field.type == "list:integer" || field.type.substr(0,14) == "list:reference"){
 		self.string_values[field.name] = JSON.stringify(item[field.name]);
 	    } else if (field.type == "datetime") {
-		output = field.default != null ? field.default : '';
-                output = output.split('.')[0];
-		Vue.set(this.item, field.name, output);
+		let value = item[field.name];
+		if (!value) {
+		    value = field.default != null ? field.default : '';
+                    value = value.split('.')[0];
+		    Vue.set(this.item, field.name, value);
+		}
 	    } else if(field.type == "reference"){
                 if (!(field.references in this.reference_options)){
                     Vue.set(this.reference_options, field.references, []);
