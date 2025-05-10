@@ -1271,9 +1271,7 @@ This validator is specifically designed to work with the following field:
     Field('emails', 'list:string',
           widget=SQLFORM.widgets.text.widget,
         requires=IS_LIST_OF_EMAILS(),
-        filter_in=lambda l: \\
-            IS_LIST_OF_EMAILS.split_emails.findall(l[0]) if l else l,
-        represent=lambda v, r: \\
+        represent=lambda v, r:
             XML(', '.join([A(x, _href='mailto:'+x).xml() for x in (v or [])]))
         )
 
@@ -1281,7 +1279,7 @@ Notice that due to the ``widget`` customization this field will be rendered by a
 section). This let you insert and edit multiple emails in a single input field (very much like normal mail client programs do),
 separating each email address with ``,``, ``;``, and blanks (space, newline, and tab characters).
 As a consequence now we need a validator which is able to operate on a single value input and a way to split the validated value into
-a list to be next processed by DAL, these are what the ``requires`` and ``filter_in`` arguments stand for.
+a list to be next processed by DAL. This is accomplished by the ``requires`` validator.
 As alternative to ``filter_in``, you can pass the following function to the ``onvalidation`` argument of form ``accepts``, ``process``,
 or ``validate`` method:
 
