@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forms &mdash; py4web 20250330 documentation</title>
+  <title>Forms &mdash; py4web 20250511 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
+      <script src="_static/documentation_options.js?v=5dd671af"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -1161,9 +1161,7 @@ A typical usage is validation of a <code class="docutils literal notranslate"><s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;list:string&#39;</span><span class="p">,</span>
       <span class="n">widget</span><span class="o">=</span><span class="n">SQLFORM</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span>
     <span class="n">requires</span><span class="o">=</span><span class="n">IS_LIST_OF_EMAILS</span><span class="p">(),</span>
-    <span class="n">filter_in</span><span class="o">=</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> \\
-        <span class="n">IS_LIST_OF_EMAILS</span><span class="o">.</span><span class="n">split_emails</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">l</span> <span class="k">else</span> <span class="n">l</span><span class="p">,</span>
-    <span class="n">represent</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> \\
+    <span class="n">represent</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span>
         <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="s1">&#39;mailto:&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">v</span> <span class="ow">or</span> <span class="p">[])]))</span>
     <span class="p">)</span>
 </pre></div>
@@ -1172,7 +1170,7 @@ A typical usage is validation of a <code class="docutils literal notranslate"><s
 section). This let you insert and edit multiple emails in a single input field (very much like normal mail client programs do),
 separating each email address with <code class="docutils literal notranslate"><span class="pre">,</span></code>, <code class="docutils literal notranslate"><span class="pre">;</span></code>, and blanks (space, newline, and tab characters).
 As a consequence now we need a validator which is able to operate on a single value input and a way to split the validated value into
-a list to be next processed by DAL, these are what the <code class="docutils literal notranslate"><span class="pre">requires</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_in</span></code> arguments stand for.
+a list to be next processed by DAL. This is accomplished by the <code class="docutils literal notranslate"><span class="pre">requires</span></code> validator.
 As alternative to <code class="docutils literal notranslate"><span class="pre">filter_in</span></code>, you can pass the following function to the <code class="docutils literal notranslate"><span class="pre">onvalidation</span></code> argument of form <code class="docutils literal notranslate"><span class="pre">accepts</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code>,
 or <code class="docutils literal notranslate"><span class="pre">validate</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">emails_onvalidation</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
@@ -1614,7 +1612,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250330
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

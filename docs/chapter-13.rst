@@ -382,9 +382,8 @@ OAuth2 with Google
 
 The client id and client secret must be provided by Google.
 
-By default, Google OAuth stores the user's first name, last name, and email in the auth_user table—but not the profile picture. You can include the profile picture URL with just two lines of code added to common.py.
-
-Add the following line here (adds a new field to auth_user):
+By default, Google OAuth stores the user's first name, last name, and email in the auth_user table—but not the profile picture.
+You can include the profile picture URL with just few lines of code added to common.py.
 
 .. code:: python
 
@@ -393,7 +392,7 @@ Add the following line here (adds a new field to auth_user):
    auth = Auth(session, db, define_tables=False)
    auth.extra_auth_user_fields = [
       Field('profile_picture', 'text', readable=False, writable=False)
-   ]                                  
+   ]
    ...
    OAuth2Google.maps['profile_picture'] = 'picture'
 

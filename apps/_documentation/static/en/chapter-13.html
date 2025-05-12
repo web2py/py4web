@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20250330 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 20250511 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cfbfeea9"></script>
+      <script src="_static/documentation_options.js?v=5dd671af"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -460,6 +460,19 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 </pre></div>
 </div>
 <p>The client id and client secret must be provided by Google.</p>
+<p>By default, Google OAuth stores the user’s first name, last name, and email in the auth_user table—but not the profile picture.
+You can include the profile picture URL with just few lines of code added to common.py.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2google</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Google</span>  <span class="c1"># TESTED</span>
+<span class="o">...</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">define_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">extra_auth_user_fields</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;profile_picture&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">readable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">writable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="o">...</span>
+<span class="n">OAuth2Google</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="s1">&#39;profile_picture&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;picture&#39;</span>
+</pre></div>
+</div>
+<p>Once the profile picture URL is stored in auth_user, you can easily use it along with other user information.</p>
 </section>
 <section id="oauth2-with-facebook">
 <h4>OAuth2 with Facebook<a class="headerlink" href="#oauth2-with-facebook" title="Link to this heading"></a></h4>
@@ -845,7 +858,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20250330
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
