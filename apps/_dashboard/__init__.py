@@ -248,7 +248,7 @@ if MODE in ("demo", "readonly", "full"):
         if not os.path.exists(top) or not os.path.isdir(top):
             return {"status": "error", "message": "folder does not exist"}
         store = {}
-        for root, dirs, files in os.walk(top, topdown=False):
+        for root, dirs, files in os.walk(top, topdown=False, followlinks=True):
             store[root] = {
                 "dirs": list(
                     sorted(
