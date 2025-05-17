@@ -50,6 +50,10 @@ def safe_int(text, default):
         return default
 
 
+def query_join(a, b):
+    return a + ("&" if "?" in a else "?") + b
+
+
 class GridClassStyle:
     """
     Default grid style
@@ -738,7 +742,7 @@ class Grid:
             referrer = parse_referer(request)
             url = self.endpoint + "/select"
             if referrer and referrer.query:
-                url += "?%s" % referrer.query
+                url = query_join(url, referrer.query)
             redirect(url)
 
         elif self.action == "select":
@@ -1140,7 +1144,7 @@ class Grid:
                 details_url = self.param.details
             else:
                 details_url = self.endpoint + "/details"
-            details_url += "/%s?%s" % (row_id, self.referrer)
+            details_url = query_join(f"{details_url}/{row_id}", self.referrer)
             cat.append(
                 self._make_action_button(
                     url=details_url,
@@ -1154,7 +1158,7 @@ class Grid:
                 edit_url = self.param.editable
             else:
                 edit_url = self.endpoint + "/edit"
-            edit_url += "/%s?%s" % (row_id, self.referrer)
+            edit_url = query_join(f"{edit_url}/{row_id}", self.referrer)
             cat.append(
                 self._make_action_button(
                     url=edit_url,
@@ -1169,7 +1173,7 @@ class Grid:
                 delete_url = self.param.deletable
             else:
                 delete_url = self.endpoint + "/delete"
-            delete_url += "/%s?%s" % (row_id, self.referrer)
+            delete_url = query_join(f"{delete_url}/{row_id}", self.referrer)
             attrs = self.attributes_plugin.confirm(
                 message=self.T("Are you sure you want to delete?")  # FIXME
             )
@@ -1265,7 +1269,7 @@ class Grid:
             else:
                 create_url = self.endpoint + "/new"
 
-            create_url += "?%s" % self.referrer
+            create_url = query_join(create_url, self.referrer)
 
             grid_header.append(
                 self._make_action_button(
