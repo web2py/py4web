@@ -385,7 +385,6 @@ class Grid:
 
     def __init__(
         self,
-        path,
         query,
         search_form=None,
         search_queries=None,
@@ -441,14 +440,6 @@ class Grid:
                               responsible for calling process().
         :param T: optional pluralize object
         """
-        if path in (None, "", "index"):
-            fullpath = request.fullpath.rstrip("/")
-            if path == "index":
-                fullpath = fullpath[:-6]
-            redirect(
-                f"{fullpath}/select"
-                + (f"?{request.query_string}" if request.query_string else "")
-            )
 
         # in case the query is a Table insteance
         if isinstance(query, query._db.Table):
@@ -457,7 +448,6 @@ class Grid:
         if fields and any(field.type == "id" for field in fields):
             show_id = True
 
-        self.path = path
         self.db = query._db
         self.T = T
         self.form_maker = form_maker
@@ -501,9 +491,9 @@ class Grid:
         )
 
         #  instance variables that will be computed
-        self.action = None
+        request.path = None
+        self.page = None
         self.current_page_number = None
-        self.endpoint = request.fullpath[: -len(self.path)].rstrip("/")
         self.hidden_fields = None
         self.form = None
         self.number_of_pages = None
@@ -573,8 +563,7 @@ class Grid:
         else:
             query &= self.param.query
 
-        parts = self.path.split("/")
-        self.action = parts[0] or "select"
+        self.page = request.query.get("page", "select")
 
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
@@ -582,7 +571,7 @@ class Grid:
             self.tablename = self.get_tablenames(self.param.query)[0]
             self.param.field_id = db[self.tablename]._id
 
-        self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
+        self.record_id = request.query.get("id")
 
         table = db[self.tablename]
         # if no column specified use all fields
@@ -672,34 +661,34 @@ class Grid:
         if self.record_id:
             record = table(self.record_id)
             if not record:
-                redirect(self.endpoint)
+                redirect(URL())
         else:
             record = None
 
         #  ensure the user has access for new/details/edit/delete if chosen
-        if self.action == "new" and not self.is_creatable():
+        if self.page == "new" and not self.is_creatable():
             raise HTTP(
                 403,
                 f"You do not have access to create a record in the {self.tablename} table.",
             )
-        if self.action == "details" and not self.is_readable(record):
+        if self.page == "details" and not self.is_readable(record):
             raise HTTP(
                 403,
                 f"You do not have access to read a record from the {self.tablename} table.",
             )
-        if self.action == "edit" and not self.is_editable(record):
+        if self.page == "edit" and not self.is_editable(record):
             raise HTTP(
                 403,
                 f"You do not have access to edit a record in the {self.tablename} table.",
             )
-        if self.action == "delete" and not self.is_deletable(record):
+        if self.page == "delete" and not self.is_deletable(record):
             raise HTTP(
                 403,
                 f"You do not have access to delete a record in the {self.tablename} table.",
             )
 
-        if self.action in ["new", "details", "edit"]:
-            readonly = self.action == "details"
+        if self.page in ["new", "details", "edit"]:
+            readonly = self.page == "details"
 
             attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
             self.form = self.form_maker(
@@ -712,17 +701,17 @@ class Grid:
                 show_id=self.param.show_id,
                 **attrs,
             )
-            if self.action == "new" and self.param.create:
+            if self.page == "new" and self.param.create:
                 if self.param.new_sidecar:
                     self.form.param.sidecar.append(self.param.new_sidecar)
                 if self.param.new_submit_value:
                     self.form.param.submit_value = self.param.new_submit_value
-            if self.action == "details" and self.is_readable(record):
+            if self.page == "details" and self.is_readable(record):
                 if self.param.details_sidecar:
                     self.form.param.sidecar.append(self.param.details_sidecar)
                 if self.param.details_submit_value:
                     self.form.param.submit_value = self.param.details_submit_value
-            if self.action == "edit" and self.is_editable(record):
+            if self.page == "edit" and self.is_editable(record):
                 if self.param.edit_sidecar:
                     self.form.param.sidecar.append(self.param.edit_sidecar)
                 if self.param.edit_submit_value:
@@ -734,18 +723,18 @@ class Grid:
                 if referrer:
                     redirect(base64.b16decode(referrer.encode("utf8")).decode("utf8"))
                 else:
-                    redirect(self.endpoint)
+                    redirect(URL())
 
-        elif self.action == "delete" and self.is_deletable(record):
+        elif self.page == "delete" and self.is_deletable(record):
             db(db[self.tablename]._id == self.record_id).delete()
 
             referrer = parse_referer(request)
-            url = self.endpoint + "/select"
+            url = URL()
             if referrer and referrer.query:
                 url = query_join(url, referrer.query)
             redirect(url)
 
-        elif self.action == "select":
+        elif self.page == "select":
             self.referrer = "_referrer=%s" % base64.b16encode(
                 request.url.encode("utf8")
             ).decode("utf8")
@@ -929,7 +918,7 @@ class Grid:
             for key in request.query
             if key not in ("search_type", "search_string")
         ]
-        attrs = self.attributes_plugin.link(url=self.endpoint)
+        attrs = self.attributes_plugin.link(url=URL())
         form = FORM(*hidden_fields, **attrs, _class=self.get_style("grid-search-form"))
         select = SELECT(
             *options,
@@ -1053,12 +1042,12 @@ class Grid:
         if orderby:
             if orderby == sort_order:
                 sort_query_parms["orderby"] = "~" + orderby
-                url = URL(self.endpoint, "select", vars=sort_query_parms)
+                url = URL(vars=sort_query_parms)
                 attrs = self.attributes_plugin.link(url=url)
                 col_header = A(heading, up, **attrs)
             else:
                 sort_query_parms["orderby"] = orderby
-                url = URL(self.endpoint, "select", vars=sort_query_parms)
+                url = URL(vars=sort_query_parms)
                 attrs = self.attributes_plugin.link(url=url)
                 col_header = A(
                     heading, dw if "~" + orderby == sort_order else "", **attrs
@@ -1141,10 +1130,10 @@ class Grid:
 
         if self.is_readable(row):
             if isinstance(self.param.details, str):
-                details_url = self.param.details
+                details_url = self.param.details.format(id=row_id)
             else:
-                details_url = self.endpoint + "/details"
-            details_url = query_join(f"{details_url}/{row_id}", self.referrer)
+                details_url = URL(vars=dict(page="details", id=row.id))
+            details_url = query_join(details_url, self.referrer)
             cat.append(
                 self._make_action_button(
                     url=details_url,
@@ -1155,10 +1144,10 @@ class Grid:
             )
         if self.is_editable(row):
             if isinstance(self.param.editable, str):
-                edit_url = self.param.editable
+                edit_url = self.param.editable.format(id=row_id)
             else:
-                edit_url = self.endpoint + "/edit"
-            edit_url = query_join(f"{edit_url}/{row_id}", self.referrer)
+                edit_url = URL(vars=dict(page="edit", id=row_id))
+            edit_url = query_join(edit_url, self.referrer)
             cat.append(
                 self._make_action_button(
                     url=edit_url,
@@ -1170,10 +1159,10 @@ class Grid:
             )
         if self.is_deletable(row):
             if isinstance(self.param.deletable, str):
-                delete_url = self.param.deletable
+                delete_url = self.param.deletable.format(id=row_id)
             else:
-                delete_url = self.endpoint + "/delete"
-            delete_url = query_join(f"{delete_url}/{row_id}", self.referrer)
+                delete_url = URL(vars=dict(page="delete", id=row_id))
+            delete_url = query_join(delete_url, self.referrer)
             attrs = self.attributes_plugin.confirm(
                 message=self.T("Are you sure you want to delete?")  # FIXME
             )
@@ -1245,7 +1234,7 @@ class Grid:
                 else "grid-pagination-button"
             )
             attrs = self.attributes_plugin.link(
-                url=URL(self.endpoint, "select", vars=pager_query_parms)
+                url=URL(vars=pager_query_parms)
             )
             pager.append(
                 A(
@@ -1267,7 +1256,7 @@ class Grid:
             if isinstance(self.param.create, str):
                 create_url = self.param.create
             else:
-                create_url = self.endpoint + "/new"
+                create_url = URL(vars=dict(page="new"))
 
             create_url = query_join(create_url, self.referrer)
 
@@ -1391,9 +1380,9 @@ class Grid:
 
         :return: html representation of the table or the py4web Form object
         """
-        if self.action == "select":
+        if self.page == "select":
             return self._make_table()
-        elif self.action in ["new", "details", "edit"]:
+        elif self.page in ["new", "details", "edit"]:
             return self.form
         raise HTTP(404)
 
@@ -1478,15 +1467,13 @@ def get_parent(path, parent_field):
     fn = parent_field.name
 
     #  if not found, search the record id of the parent from the child table record
-    if path:
-        parts = path.split("/")
-        record_id = parts[1] if len(parts) > 1 else None
-        if record_id:
-            record = child_table(record_id)
-            if record:
-                parent_id = record[fn]
-                if parent_id is not None:
-                    return int(parent_id)
+    record_id = request.query.get("id")
+    if record_id:
+        record = child_table(record_id)
+        if record:
+            parent_id = record[fn]
+            if parent_id is not None:
+                return int(parent_id)
 
     #  else, check in the form
     parent_id = request.forms.get(fn)
