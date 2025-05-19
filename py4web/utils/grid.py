@@ -452,6 +452,7 @@ class Grid:
         self.T = T
         self.form_maker = form_maker
         self.icon_style = icon_style
+        self.referrer = None
         self.param = Param(
             query=query,
             columns=columns or fields,
@@ -503,7 +504,9 @@ class Grid:
         self.page_start = None
         self.query_parms = safely(lambda: request.params, default={})
         self.record_id = None
+        self.record = None
         self.rows = None
+        self.table = None
         self.tablename = None
         self.total_number_of_rows = None
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
@@ -589,242 +592,256 @@ class Grid:
             raise HTTP(400)
 
         # SECURITY: if the record does not exist or does not match query, than we are not allowed
-        table = db[self.tablename]
+        self.table = db[self.tablename]
         if self.record_id:
-            record = table(self.record_id)
-            if not record:
+            self.record = self.table(self.record_id)
+            if not self.record:
                 redirect(URL())
         else:
-            record = None
+            self.record = None
 
         #  ensure the user has access for new/details/edit/delete if chosen
-        if self.mode == "new" and not self.is_creatable():
-            raise HTTP(
-                403,
-                f"You do not have access to create a record in the {self.tablename} table.",
-            )
-        if self.mode == "details" and not self.is_readable(record):
-            raise HTTP(
-                403,
-                f"You do not have access to read a record from the {self.tablename} table.",
-            )
-        if self.mode == "edit" and not self.is_editable(record):
-            raise HTTP(
-                403,
-                f"You do not have access to edit a record in the {self.tablename} table.",
-            )
-        if self.mode == "delete" and not self.is_deletable(record):
-            raise HTTP(
-                403,
-                f"You do not have access to delete a record in the {self.tablename} table.",
-            )
-
-        self.referrer = None
-
-        if self.mode in ["new", "details", "edit", "delete"]:
-            readonly = self.mode == "details" or self.mode == "delete"
-
-            self.form = self.form_maker(
-                table,
-                record=record,
-                readonly=readonly,
-                deletable=self.is_deletable(record),
-                formstyle=self.param.formstyle,
-                validation=self.param.validation,
-                show_id=self.param.show_id,
-            )
-            if self.mode == "new":
-                if self.param.new_sidecar:
-                    self.form.param.sidecar.append(self.param.new_sidecar)
-                if self.param.new_submit_value:
-                    self.form.param.submit_value = self.param.new_submit_value
-            elif self.mode == "details":
-                if self.param.details_sidecar:
-                    self.form.param.sidecar.append(self.param.details_sidecar)
-                if self.param.details_submit_value:
-                    self.form.param.submit_value = self.param.details_submit_value
-            elif self.mode == "edit":
-                if self.param.edit_sidecar:
-                    self.form.param.sidecar.append(self.param.edit_sidecar)
-                if self.param.edit_submit_value:
-                    self.form.param.submit_value = self.param.edit_submit_value
-            elif self.mode == "delete":
-                if self.param.delete_submit_value:
-                    self.form.param.submit_value = self.param.delete_submit_value
-                if request.method == "POST":
-                    record.delete_record()
-
-            encoded_referrer = request.query.get("referrer")
-            if encoded_referrer:
-                referrer = base64.b16decode(encoded_referrer.encode("utf8")).decode(
-                    "utf8"
-                )
-            if referrer and self.mode != "details":
-                self.form.param.sidecar.insert(
-                    0, A(self.param.back_button_value, _role="button", _href=referrer)
-                )
-
-            # redirect to the referrer
-            if self.form.accepted or (readonly and request.method == "POST"):
-                redirect(referrer or URL())
-
-        elif self.mode == "select":
-            # if no column specified use all fields
-            if not self.param.columns:
-                self.param.columns = [field for field in table if field.readable]
-            # convert to column object
-            self.columns = []
-
-            def title(col):
-                return str(col).replace('"', "")
-
-            def col2key(col):
-                return str(col).lower().replace(".", "-")
-
-            for index, col in enumerate(self.param.columns):
-                if isinstance(col, Column):
-                    if not col.key:
-                        col.key = f"column-{index}"
-                    self.columns.append(col)
-
-                elif isinstance(col, Field):
-
-                    def compute(row, col=col):
-                        value = row(str(col))
-                        if col.represent:
-                            value = col.represent(value, row)
-                        # deal with download links in special manner if no representation
-                        if (
-                            col.type == "upload"
-                            and value
-                            and hasattr(col, "download_url")
-                        ):
-                            value = A("download", _href=col.download_url(value))
-                        return value
-
-                    self.columns.append(
-                        Column(
-                            col.label,
-                            compute,
-                            orderby=col,
-                            required_fields=[col],
-                            key=col2key(col),
-                            col_type=col.type,
-                        )
-                    )
-                elif isinstance(col, FieldVirtual):
-
-                    def compute(row, col=col):
-                        return col.f(row) if "id" in row else col.f(row[col.tablename])
-
-                    self.columns.append(
-                        Column(
-                            col.label,
-                            compute,
-                            orderby=None,
-                            required_fields=db[col.tablename],
-                            key=col2key(col),
-                        )
-                    )
-                elif isinstance(col, Expression):
-
-                    def compute(row, name=str(col)):
-                        return row._extra(name)
-
-                    self.columns.append(
-                        Column(
-                            title(col),
-                            compute,
-                            orderby=None,
-                            required_fields=[col],
-                            key=f"column-{index}",
-                        )
-                    )
-                else:
-                    raise RuntimeError(f"Column not support {col}")
-
-            # join the set of all required fields
-            sets = [set(self.param.required_fields or [])]
-            sets += [set(col.required_fields) for col in self.columns]
-            self.needed_fields = list(
-                functools.reduce(lambda a, b: a | b, sets) | set([table._id])
-            )
-
-            self.referrer = base64.b16encode(request.url.encode("utf8")).decode("utf8")
-            self.current_page_number = safe_int(request.query.get("page"), default=1)
-
-            select_params = dict()
-            #  try getting sort order from the request
-            sort_order = request.query.get("orderby")
-
-            select_params["orderby"] = self.param.orderby
-            if sort_order:
-                parts = sort_order.lstrip("~").split(".")
-                if (
-                    len(parts) == 2
-                    and parts[0] in db.tables
-                    and parts[1] in db[parts[0]]
-                ):
-                    orderby = db[parts[0]][parts[1]]
-                    if sort_order.startswith("~"):
-                        orderby = ~orderby
-                    select_params["orderby"] = orderby
-
-            if self.param.left:
-                select_params["left"] = self.param.left
-
-            if self.param.groupby:
-                select_params["groupby"] = self.param.groupby
-
-            if self.param.groupby or self.param.left:
-                #  need groupby fields in select to get proper count
-                self.total_number_of_rows = len(
-                    db(query).select(db[self.tablename]._id, **select_params)
-                )
+        if self.mode == "select":
+            self._handle_mode_select()
+        elif self.mode == "new":
+            if self.is_creatable():
+                self._handle_mode_create()
             else:
-                self.total_number_of_rows = db(query).count()
-
-            #  if at a high page number and then filter causes less records to be displayed, reset to page 1
-            if (
-                self.current_page_number - 1
-            ) * self.param.rows_per_page > self.total_number_of_rows:
-                self.current_page_number = 1
-
-            if self.total_number_of_rows > self.param.rows_per_page:
-                self.page_start = self.param.rows_per_page * (
-                    self.current_page_number - 1
+                raise HTTP(
+                    403,
+                    f"You do not have access to create a record in the {self.tablename} table.",
                 )
-                self.page_end = self.page_start + self.param.rows_per_page
-                select_params["limitby"] = (self.page_start, self.page_end)
+        elif self.mode == "details":
+            if self.is_readable(self.record):
+                self._handle_mode_details()
             else:
-                self.page_start = 0
-                if self.total_number_of_rows > 1:
-                    self.page_start = 1
-                self.page_end = self.total_number_of_rows
+                raise HTTP(
+                    403,
+                    f"You do not have access to read a record from the {self.tablename} table.",
+                )
+        elif self.mode == "edit":
+            if self.is_editable(self.record):
+                self._handle_mode_edit()
+            else:
+                raise HTTP(
+                    403,
+                    f"You do not have access to edit a record in the {self.tablename} table.",
+                )
+        elif self.mode == "delete":
+            if self.is_deletable(self.record):
+                self._handle_mode_delete()
+            else:
+                raise HTTP(
+                    403,
+                    f"You do not have access to delete a record in the {self.tablename} table.",
+                )
 
-            # get the data
-            self.rows = db(query).select(*self.needed_fields, **select_params)
+    def _handle_mode_new(self):
+        self.form = self._make_form(readonly=False)
+        if self.param.new_sidecar:
+            self.form.param.sidecar.append(self.param.new_sidecar)
+        if self.param.new_submit_value:
+            self.form.param.submit_value = self.param.new_submit_value
+        self._handle_redirect_to_referrer(False, False)
 
-            self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
-            if self.total_number_of_rows % self.param.rows_per_page > 0:
-                self.number_of_pages += 1
+    def _handle_mode_details(self):
+        self.form = self._make_form(readonly=True)
+        if self.param.details_sidecar:
+            self.form.param.sidecar.append(self.param.details_sidecar)
+        if self.param.details_submit_value:
+            self.form.param.submit_value = self.param.details_submit_value
+        self._handle_redirect_to_referrer(False, True)
 
-            if (
-                self.param.pre_action_buttons
-                or self.param.details
-                or self.param.editable
-                or self.param.deletable
-                or self.param.post_action_buttons
-            ):
-                key = f"column-{len(self.columns)}"
+    def _handle_mode_edit(self):
+        self.form = self._make_form(readonly=False)
+        if self.param.edit_sidecar:
+            self.form.param.sidecar.append(self.param.edit_sidecar)
+        if self.param.edit_submit_value:
+            self.form.param.submit_value = self.param.edit_submit_value
+        self._handle_redirect_to_referrer(True, False)
+
+    def _handle_mode_delete(self):
+        self.form = self._make_form(readonly=True)
+        if self.param.delete_submit_value:
+            self.form.param.submit_value = self.param.delete_submit_value
+        if request.method == "POST":
+            self.record.delete_record()
+        self._handle_redirect_to_referrer(True, True)
+
+    def _handle_redirect_to_referrer(self, inject_back, redirect_on_post):
+        encoded_referrer = request.query.get("referrer")
+        if encoded_referrer:
+            referrer = base64.b16decode(encoded_referrer.encode("utf8")).decode("utf8")
+        else:
+            referrer = None
+        if referrer and inject_back:
+            self.form.param.sidecar.insert(
+                0, A(self.param.back_button_value, _role="button", _href=referrer)
+            )
+
+        # redirect to the referrer
+        if self.form.accepted or (redirect_on_post and request.method == "POST"):
+            redirect(referrer or URL())
+
+    def _handle_mode_select(self):
+        db = self.db
+        # if no column specified use all fields
+        if not self.param.columns:
+            self.param.columns = [field for field in self.table if field.readable]
+        # convert to column object
+        self.columns = []
+
+        def title(col):
+            return str(col).replace('"', "")
+
+        def col2key(col):
+            return str(col).lower().replace(".", "-")
+
+        for index, col in enumerate(self.param.columns):
+            if isinstance(col, Column):
+                if not col.key:
+                    col.key = f"column-{index}"
+                self.columns.append(col)
+
+            elif isinstance(col, Field):
+
+                def compute(row, col=col):
+                    value = row(str(col))
+                    if col.represent:
+                        value = col.represent(value, row)
+                    # deal with download links in special manner if no representation
+                    if col.type == "upload" and value and hasattr(col, "download_url"):
+                        value = A("download", _href=col.download_url(value))
+                    return value
+
                 self.columns.append(
                     Column(
-                        "",
-                        self.make_action_buttons,
-                        key=key,
-                        td_class_style=self.get_style("grid-td-buttons"),
+                        col.label,
+                        compute,
+                        orderby=col,
+                        required_fields=[col],
+                        key=col2key(col),
+                        col_type=col.type,
                     )
                 )
+            elif isinstance(col, FieldVirtual):
+
+                def compute(row, col=col):
+                    return col.f(row) if "id" in row else col.f(row[col.tablename])
+
+                self.columns.append(
+                    Column(
+                        col.label,
+                        compute,
+                        orderby=None,
+                        required_fields=db[col.tablename],
+                        key=col2key(col),
+                    )
+                )
+            elif isinstance(col, Expression):
+
+                def compute(row, name=str(col)):
+                    return row._extra(name)
+
+                self.columns.append(
+                    Column(
+                        title(col),
+                        compute,
+                        orderby=None,
+                        required_fields=[col],
+                        key=f"column-{index}",
+                    )
+                )
+            else:
+                raise RuntimeError(f"Column not support {col}")
+
+        # join the set of all required fields
+        sets = [set(self.param.required_fields or [])]
+        sets += [set(col.required_fields) for col in self.columns]
+        self.needed_fields = list(
+            functools.reduce(lambda a, b: a | b, sets) | set([self.table._id])
+        )
+
+        self.referrer = base64.b16encode(request.url.encode("utf8")).decode("utf8")
+        self.current_page_number = safe_int(request.query.get("page"), default=1)
+
+        select_params = dict()
+        #  try getting sort order from the request
+        sort_order = request.query.get("orderby")
+
+        select_params["orderby"] = self.param.orderby
+        if sort_order:
+            parts = sort_order.lstrip("~").split(".")
+            if len(parts) == 2 and parts[0] in db.tables and parts[1] in db[parts[0]]:
+                orderby = db[parts[0]][parts[1]]
+                if sort_order.startswith("~"):
+                    orderby = ~orderby
+                select_params["orderby"] = orderby
+
+        if self.param.left:
+            select_params["left"] = self.param.left
+
+        if self.param.groupby:
+            select_params["groupby"] = self.param.groupby
+
+        if self.param.groupby or self.param.left:
+            #  need groupby fields in select to get proper count
+            self.total_number_of_rows = len(
+                db(self.param.query).select(db[self.tablename]._id, **select_params)
+            )
+        else:
+            self.total_number_of_rows = db(self.param.query).count()
+
+        #  if at a high page number and then filter causes less records to be displayed, reset to page 1
+        if (
+            self.current_page_number - 1
+        ) * self.param.rows_per_page > self.total_number_of_rows:
+            self.current_page_number = 1
+
+        if self.total_number_of_rows > self.param.rows_per_page:
+            self.page_start = self.param.rows_per_page * (self.current_page_number - 1)
+            self.page_end = self.page_start + self.param.rows_per_page
+            select_params["limitby"] = (self.page_start, self.page_end)
+        else:
+            self.page_start = 0
+            if self.total_number_of_rows > 1:
+                self.page_start = 1
+            self.page_end = self.total_number_of_rows
+
+        # get the data
+        self.rows = db(self.param.query).select(*self.needed_fields, **select_params)
+
+        self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
+        if self.total_number_of_rows % self.param.rows_per_page > 0:
+            self.number_of_pages += 1
+
+        if (
+            self.param.pre_action_buttons
+            or self.param.details
+            or self.param.editable
+            or self.param.deletable
+            or self.param.post_action_buttons
+        ):
+            key = f"column-{len(self.columns)}"
+            self.columns.append(
+                Column(
+                    "",
+                    self.make_action_buttons,
+                    key=key,
+                    td_class_style=self.get_style("grid-td-buttons"),
+                )
+            )
+
+    def _make_form(self, readonly):
+        return self.form_maker(
+            self.table,
+            record=self.record,
+            readonly=readonly,
+            deletable=self.is_deletable(self.record),
+            formstyle=self.param.formstyle,
+            validation=self.param.validation,
+            show_id=self.param.show_id,
+        )
 
     def iter_pages(
         self,
@@ -1441,9 +1458,9 @@ def get_parent(path, parent_field):
     #  if not found, search the record id of the parent from the child table record
     record_id = request.query.get("id")
     if record_id:
-        record = child_table(record_id)
-        if record:
-            parent_id = record[fn]
+        self.record = child_table(record_id)
+        if self.record:
+            parent_id = self.record[fn]
             if parent_id is not None:
                 return int(parent_id)
 
