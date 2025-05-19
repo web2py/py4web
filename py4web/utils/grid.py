@@ -390,7 +390,7 @@ class Grid:
         search_queries=None,
         columns=None,
         field_id=None,
-        show_id=False,
+        show_id=None,
         orderby=None,
         left=None,
         headings=None,
@@ -441,20 +441,10 @@ class Grid:
         :param T: optional pluralize object
         """
 
-        # in case the query is a Table insteance
-        if isinstance(query, query._db.Table):
-            query = query._id != None
+        if show_id is None:
+            show_id = fields and any(field.type == "id" for field in fields)
 
-        if fields and any(field.type == "id" for field in fields):
-            show_id = True
-
-        self.db = query._db
-        self.T = T
-        self.form_maker = form_maker
-        self.icon_style = icon_style
-        self.referrer = None
         self.param = Param(
-            query=query,
             columns=columns or fields,
             field_id=field_id,
             show_id=show_id,
@@ -491,24 +481,33 @@ class Grid:
             header_elements=None,
             footer_elements=None,
             required_fields=required_fields or [],
+            icon_style=icon_style,
         )
 
+        # in case the query is a Table insteance
+        if isinstance(query, query._db.Table):
+            query = query._id != None
+
         #  instance variables that will be computed
-        request.path = None
-        self.mode = None
-        self.current_page_number = None
-        self.hidden_fields = None
-        self.form = None
-        self.number_of_pages = None
-        self.page_end = None
-        self.page_start = None
+        self.db = query._db  # the database
+        self.query = query  # the filter query
         self.query_parms = safely(lambda: request.params, default={})
-        self.record_id = None
-        self.record = None
-        self.rows = None
-        self.table = None
-        self.tablename = None
-        self.total_number_of_rows = None
+        self.T = T  # the translator
+        self.form_maker = form_maker  # the object that makes forms
+        self.referrer = None  # page referring this one
+        self.mode = None  # select, new, details, edit, delete
+        self.table = None  # selected table
+        self.tablename = None  # name of the selected table
+        self.total_number_of_rows = None  # total number of rows
+        self.rows = None  # selected rows
+        self.number_of_pages = None  # total number of pages for pagination
+        self.current_page_number = None  # number of the current page
+        self.page_end = None  # index of last element in page
+        self.page_start = None  # index of first element in page
+        self.record_id = None  # the record id to display or None
+        self.record = None  # the record to display or None
+        self.form = None  # the edit, new, details form
+        self.hidden_fields = None  # hidden fields to be embedded in form
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
 
         if auto_process:
@@ -567,9 +566,9 @@ class Grid:
                     pass  # flash a message here
 
         if not query:
-            query = self.param.query
+            query = self.query
         else:
-            query &= self.param.query
+            query &= self.query
 
         self.mode = request.query.get("mode", "select")
         self.record_id = request.query.get("id")
@@ -585,7 +584,7 @@ class Grid:
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
         else:
-            self.tablename = self._get_tablenames(self.param.query)[0]
+            self.tablename = self._get_tablenames(self.query)[0]
             self.param.field_id = db[self.tablename]._id
 
         if not self.tablename:
@@ -780,10 +779,10 @@ class Grid:
         if self.param.groupby or self.param.left:
             #  need groupby fields in select to get proper count
             self.total_number_of_rows = len(
-                db(self.param.query).select(db[self.tablename]._id, **select_params)
+                db(self.query).select(db[self.tablename]._id, **select_params)
             )
         else:
-            self.total_number_of_rows = db(self.param.query).count()
+            self.total_number_of_rows = db(self.query).count()
 
         #  if at a high page number and then filter causes less records to be displayed, reset to page 1
         if (
@@ -802,7 +801,7 @@ class Grid:
             self.page_end = self.total_number_of_rows
 
         # get the data
-        self.rows = db(self.param.query).select(*self.needed_fields, **select_params)
+        self.rows = db(self.query).select(*self.needed_fields, **select_params)
 
         self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
         if self.total_number_of_rows % self.param.rows_per_page > 0:
@@ -898,7 +897,7 @@ class Grid:
             url = url(row)
 
         link = A(
-            I(_class=self.icon_style.complete(icon)) if icon else "",
+            I(_class=self.param.icon_style.complete(icon)) if icon else "",
             _role="button",
             _message=message,
             _title=button_text,
@@ -1036,12 +1035,12 @@ class Grid:
     def _make_col_header(self, col, index, sort_order):
         up = I(
             _class=join_classes(
-                self.get_style("grid-sorter-icon-up"), self.icon_style.sort_up
+                self.get_style("grid-sorter-icon-up"), self.param.icon_style.sort_up
             )
         )
         dw = I(
             _class=join_classes(
-                self.get_style("grid-sorter-icon-down"), self.icon_style.sort_down
+                self.get_style("grid-sorter-icon-down"), self.param.icon_style.sort_down
             )
         )
 
@@ -1138,7 +1137,7 @@ class Grid:
                 self._make_action_button(
                     url=details_url,
                     button_text=self.T(self.param.details_action_button_text),
-                    icon=self.icon_style.details_button,
+                    icon=self.param.icon_style.details_button,
                     name="grid-details-button",
                 )
             )
@@ -1153,7 +1152,7 @@ class Grid:
                 self._make_action_button(
                     url=edit_url,
                     button_text=self.T(self.param.edit_action_button_text),
-                    icon=self.icon_style.edit_button,
+                    icon=self.param.icon_style.edit_button,
                     name="grid-edit-button",
                     _disabled=not self.is_editable(row),
                 )
@@ -1169,7 +1168,7 @@ class Grid:
                 self._make_action_button(
                     url=delete_url,
                     button_text=self.T(self.param.delete_action_button_text),
-                    icon=self.icon_style.delete_button,
+                    icon=self.param.icon_style.delete_button,
                     additional_classes="confirmation",
                     message="Delete record",
                     name="grid-delete-button",
@@ -1246,7 +1245,7 @@ class Grid:
                 self._make_action_button(
                     create_url,
                     self.T(self.param.new_action_button_text),
-                    icon=self.icon_style.add_button,
+                    icon=self.param.icon_style.add_button,
                     icon_size="normal",
                     override_classes=self.get_style("grid-new-button"),
                 )
@@ -1401,7 +1400,8 @@ class Grid:
         return list(self.db._adapter.tables(*args).keys())
 
     def _is_join(self):
-        items = [self.param.query]
+        """is this a left join?"""
+        items = [self.query]
         if self.param.left is not None:
             if isinstance(self.param.left, (list, tuple)):
                 items += [item for item in self.param.left]
