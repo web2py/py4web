@@ -585,7 +585,7 @@ class Grid:
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
         else:
-            self.tablename = self.get_tablenames(self.param.query)[0]
+            self.tablename = self._get_tablenames(self.param.query)[0]
             self.param.field_id = db[self.tablename]._id
 
         if not self.tablename:
@@ -604,47 +604,33 @@ class Grid:
         if self.mode == "select":
             self._handle_mode_select()
         elif self.mode == "new":
-            if self.is_creatable():
-                self._handle_mode_create()
-            else:
-                raise HTTP(
-                    403,
-                    f"You do not have access to create a record in the {self.tablename} table.",
-                )
+            self._handle_mode_new()
         elif self.mode == "details":
-            if self.is_readable(self.record):
-                self._handle_mode_details()
-            else:
-                raise HTTP(
-                    403,
-                    f"You do not have access to read a record from the {self.tablename} table.",
-                )
+            self._handle_mode_details()
         elif self.mode == "edit":
-            if self.is_editable(self.record):
-                self._handle_mode_edit()
-            else:
-                raise HTTP(
-                    403,
-                    f"You do not have access to edit a record in the {self.tablename} table.",
-                )
+            self._handle_mode_edit()
         elif self.mode == "delete":
-            if self.is_deletable(self.record):
-                self._handle_mode_delete()
-            else:
-                raise HTTP(
-                    403,
-                    f"You do not have access to delete a record in the {self.tablename} table.",
-                )
+            self._handle_mode_delete()
 
     def _handle_mode_new(self):
+        if not self.is_creatable():
+            raise HTTP(
+                403,
+                f"You do not have access to create a record in the {self.tablename} table.",
+            )
         self.form = self._make_form(readonly=False)
         if self.param.new_sidecar:
             self.form.param.sidecar.append(self.param.new_sidecar)
         if self.param.new_submit_value:
             self.form.param.submit_value = self.param.new_submit_value
-        self._handle_redirect_to_referrer(False, False)
+        self._handle_redirect_to_referrer(True, False)
 
     def _handle_mode_details(self):
+        if not self.is_readable(self.record):
+            raise HTTP(
+                403,
+                f"You do not have access to read a record from the {self.tablename} table.",
+            )
         self.form = self._make_form(readonly=True)
         if self.param.details_sidecar:
             self.form.param.sidecar.append(self.param.details_sidecar)
@@ -653,6 +639,11 @@ class Grid:
         self._handle_redirect_to_referrer(False, True)
 
     def _handle_mode_edit(self):
+        if not self.is_editable(self.record):
+            raise HTTP(
+                403,
+                f"You do not have access to edit a record in the {self.tablename} table.",
+            )
         self.form = self._make_form(readonly=False)
         if self.param.edit_sidecar:
             self.form.param.sidecar.append(self.param.edit_sidecar)
@@ -661,6 +652,8 @@ class Grid:
         self._handle_redirect_to_referrer(True, False)
 
     def _handle_mode_delete(self):
+        if not self.is_deletable(self.record):
+            self._handle_mode_delete()
         self.form = self._make_form(readonly=True)
         if self.param.delete_submit_value:
             self.form.param.submit_value = self.param.delete_submit_value
@@ -843,7 +836,7 @@ class Grid:
             show_id=self.param.show_id,
         )
 
-    def iter_pages(
+    def _iter_pages(
         self,
         current_page,
         num_pages,
@@ -886,7 +879,7 @@ class Grid:
         **attrs,
     ):
         if row_id:
-            url += "/%s" % row_id
+            url += f"/{row_id}"
 
         classes = self.get_style(name)
 
@@ -904,15 +897,13 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        attrs.update({"_href": url})
-
         link = A(
             I(_class=self.icon_style.complete(icon)) if icon else "",
             _role="button",
             _message=message,
             _title=button_text,
             _class=classes,
-            **attrs,
+            _href=url,
         )
         if self.param.include_action_button_text:
             link.append(
@@ -1036,7 +1027,7 @@ class Grid:
             col_header = self._make_col_header(col, index, sort_order)
             classes = join_classes(
                 self.get_style("grid-th"),
-                "grid-col-%s" % col.key,
+                f"grid-col-{col.key}",
             )
             thead.append(TH(col_header, _class=classes))
 
@@ -1215,7 +1206,7 @@ class Grid:
     def _make_table_pager(self):
         pager = DIV(_class=self.get_style("grid-pagination"))
         previous_page_number = None
-        for page_number in self.iter_pages(
+        for page_number in self._iter_pages(
             self.current_page_number, self.number_of_pages
         ):
             pager_query_parms = dict(self.query_parms)
@@ -1405,18 +1396,18 @@ class Grid:
             self.param.search_queries = []
         self.param.search_queries.append([name, query, requires])
 
-    def get_tablenames(self, *args):
+    def _get_tablenames(self, *args):
         """Returns the tablenames used by this grid"""
         return list(self.db._adapter.tables(*args).keys())
 
-    def is_join(self):
+    def _is_join(self):
         items = [self.param.query]
         if self.param.left is not None:
             if isinstance(self.param.left, (list, tuple)):
                 items += [item for item in self.param.left]
             else:
                 items += [self.param.left]
-        return len(self.get_tablenames(*items)) > 1
+        return len(self._get_tablenames(*items)) > 1
 
 
 def parse_referrer(r):
