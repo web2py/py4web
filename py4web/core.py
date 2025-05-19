@@ -906,7 +906,9 @@ def URL(  # pylint: disable=invalid-name
         signer.sign(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
-            f"{k}={urllib.parse.quote(str(v))}" for k, v in urlvars.items()
+            f"{k}={urllib.parse.quote(str(v))}"
+            for k, v in urlvars.items()
+            if v is not None
         )
     if hash:
         url += f"#{hash}"

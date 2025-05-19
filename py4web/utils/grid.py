@@ -477,14 +477,16 @@ class Grid:
             grid_class_style=grid_class_style,
             new_sidecar=None,
             new_submit_value=None,
-            new_action_button_text="New",
+            new_action_button_text=T("New"),
             details_sidecar=None,
-            details_submit_value=None,
-            details_action_button_text="Details",
+            details_submit_value=T("Back"),
+            details_action_button_text=T("Details"),
             edit_sidecar=None,
             edit_submit_value=None,
-            edit_action_button_text="Edit",
-            delete_action_button_text="Delete",
+            edit_action_button_text=T("Edit"),
+            delete_action_button_text=T("Delete"),
+            delete_submit_value=T("Confirm Delete"),
+            back_button_value=T("Back"),
             header_elements=None,
             footer_elements=None,
             required_fields=required_fields or [],
@@ -492,7 +494,7 @@ class Grid:
 
         #  instance variables that will be computed
         request.path = None
-        self.page = None
+        self.mode = None
         self.current_page_number = None
         self.hidden_fields = None
         self.form = None
@@ -505,7 +507,6 @@ class Grid:
         self.tablename = None
         self.total_number_of_rows = None
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
-        self.attributes_plugin = AttributesPlugin(request)
 
         if auto_process:
             self.process()
@@ -518,6 +519,8 @@ class Grid:
         return self.param.create
 
     def is_editable(self, row):
+        if row is None:
+            return False
         if self.param.groupby:
             return False
         if callable(self.param.editable):
@@ -525,6 +528,8 @@ class Grid:
         return self.param.editable
 
     def is_readable(self, row):
+        if row is None:
+            return False
         if callable(self.param.details):
             return self.param.details(row)
         return self.param.details
@@ -563,95 +568,22 @@ class Grid:
         else:
             query &= self.param.query
 
-        self.page = request.query.get("page", "select")
+        self.mode = request.query.get("mode", "select")
+        self.record_id = request.query.get("id")
+        # check invalid parameters]
+        if self.mode not in ("new", "edit", "select", "details", "delete"):
+            raise HTTP(400)
+        elif self.mode in ("edit", "details", "delete") and self.record_id is None:
+            raise HTTP(400)
+        # check implicit parameters
+        if self.mode == "select" and self.record_id is not None:
+            self.mode = "details"
 
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
         else:
             self.tablename = self.get_tablenames(self.param.query)[0]
             self.param.field_id = db[self.tablename]._id
-
-        self.record_id = request.query.get("id")
-
-        table = db[self.tablename]
-        # if no column specified use all fields
-        if not self.param.columns:
-            self.param.columns = [field for field in table if field.readable]
-        # convert to column object
-        self.columns = []
-
-        def title(col):
-            return str(col).replace('"', "")
-
-        def col2key(col):
-            return str(col).lower().replace(".", "-")
-
-        for index, col in enumerate(self.param.columns):
-            if isinstance(col, Column):
-                if not col.key:
-                    col.key = f"column-{index}"
-                self.columns.append(col)
-
-            elif isinstance(col, Field):
-
-                def compute(row, col=col):
-                    value = row(str(col))
-                    if col.represent:
-                        value = col.represent(value, row)
-                    # deal with download links in special manner if no representation
-                    if col.type == "upload" and value and hasattr(col, "download_url"):
-                        value = A("download", _href=col.download_url(value))
-                    return value
-
-                self.columns.append(
-                    Column(
-                        col.label,
-                        compute,
-                        orderby=col,
-                        required_fields=[col],
-                        key=col2key(col),
-                        col_type=col.type,
-                    )
-                )
-            elif isinstance(col, FieldVirtual):
-
-                def compute(row, col=col):
-                    return col.f(row) if "id" in row else col.f(row[col.tablename])
-
-                self.columns.append(
-                    Column(
-                        col.label,
-                        compute,
-                        orderby=None,
-                        required_fields=db[col.tablename],
-                        key=col2key(col),
-                    )
-                )
-            elif isinstance(col, Expression):
-
-                def compute(row, name=str(col)):
-                    return row._extra(name)
-
-                self.columns.append(
-                    Column(
-                        title(col),
-                        compute,
-                        orderby=None,
-                        required_fields=[col],
-                        key=f"column-{index}",
-                    )
-                )
-            else:
-                raise RuntimeError(f"Column not support {col}")
-
-        # join the set of all required fields
-        sets = [set(self.param.required_fields or [])]
-        sets += [set(col.required_fields) for col in self.columns]
-        self.needed_fields = list(
-            functools.reduce(lambda a, b: a | b, sets) | set([table._id])
-        )
-
-        self.referrer = None
 
         if not self.tablename:
             raise HTTP(400)
@@ -666,31 +598,32 @@ class Grid:
             record = None
 
         #  ensure the user has access for new/details/edit/delete if chosen
-        if self.page == "new" and not self.is_creatable():
+        if self.mode == "new" and not self.is_creatable():
             raise HTTP(
                 403,
                 f"You do not have access to create a record in the {self.tablename} table.",
             )
-        if self.page == "details" and not self.is_readable(record):
+        if self.mode == "details" and not self.is_readable(record):
             raise HTTP(
                 403,
                 f"You do not have access to read a record from the {self.tablename} table.",
             )
-        if self.page == "edit" and not self.is_editable(record):
+        if self.mode == "edit" and not self.is_editable(record):
             raise HTTP(
                 403,
                 f"You do not have access to edit a record in the {self.tablename} table.",
             )
-        if self.page == "delete" and not self.is_deletable(record):
+        if self.mode == "delete" and not self.is_deletable(record):
             raise HTTP(
                 403,
                 f"You do not have access to delete a record in the {self.tablename} table.",
             )
 
-        if self.page in ["new", "details", "edit"]:
-            readonly = self.page == "details"
+        self.referrer = None
 
-            attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
+        if self.mode in ["new", "details", "edit", "delete"]:
+            readonly = self.mode == "details" or self.mode == "delete"
+
             self.form = self.form_maker(
                 table,
                 record=record,
@@ -699,46 +632,125 @@ class Grid:
                 formstyle=self.param.formstyle,
                 validation=self.param.validation,
                 show_id=self.param.show_id,
-                **attrs,
             )
-            if self.page == "new" and self.param.create:
+            if self.mode == "new":
                 if self.param.new_sidecar:
                     self.form.param.sidecar.append(self.param.new_sidecar)
                 if self.param.new_submit_value:
                     self.form.param.submit_value = self.param.new_submit_value
-            if self.page == "details" and self.is_readable(record):
+            elif self.mode == "details":
                 if self.param.details_sidecar:
                     self.form.param.sidecar.append(self.param.details_sidecar)
                 if self.param.details_submit_value:
                     self.form.param.submit_value = self.param.details_submit_value
-            if self.page == "edit" and self.is_editable(record):
+            elif self.mode == "edit":
                 if self.param.edit_sidecar:
                     self.form.param.sidecar.append(self.param.edit_sidecar)
                 if self.param.edit_submit_value:
                     self.form.param.submit_value = self.param.edit_submit_value
+            elif self.mode == "delete":
+                if self.param.delete_submit_value:
+                    self.form.param.submit_value = self.param.delete_submit_value
+                if request.method == "POST":
+                    record.delete_record()
+
+            encoded_referrer = request.query.get("referrer")
+            if encoded_referrer:
+                referrer = base64.b16decode(encoded_referrer.encode("utf8")).decode(
+                    "utf8"
+                )
+            if referrer and self.mode != "details":
+                self.form.param.sidecar.insert(
+                    0, A(self.param.back_button_value, _role="button", _href=referrer)
+                )
 
             # redirect to the referrer
             if self.form.accepted or (readonly and request.method == "POST"):
-                referrer = request.query.get("_referrer")
-                if referrer:
-                    redirect(base64.b16decode(referrer.encode("utf8")).decode("utf8"))
+                redirect(referrer or URL())
+
+        elif self.mode == "select":
+            # if no column specified use all fields
+            if not self.param.columns:
+                self.param.columns = [field for field in table if field.readable]
+            # convert to column object
+            self.columns = []
+
+            def title(col):
+                return str(col).replace('"', "")
+
+            def col2key(col):
+                return str(col).lower().replace(".", "-")
+
+            for index, col in enumerate(self.param.columns):
+                if isinstance(col, Column):
+                    if not col.key:
+                        col.key = f"column-{index}"
+                    self.columns.append(col)
+
+                elif isinstance(col, Field):
+
+                    def compute(row, col=col):
+                        value = row(str(col))
+                        if col.represent:
+                            value = col.represent(value, row)
+                        # deal with download links in special manner if no representation
+                        if (
+                            col.type == "upload"
+                            and value
+                            and hasattr(col, "download_url")
+                        ):
+                            value = A("download", _href=col.download_url(value))
+                        return value
+
+                    self.columns.append(
+                        Column(
+                            col.label,
+                            compute,
+                            orderby=col,
+                            required_fields=[col],
+                            key=col2key(col),
+                            col_type=col.type,
+                        )
+                    )
+                elif isinstance(col, FieldVirtual):
+
+                    def compute(row, col=col):
+                        return col.f(row) if "id" in row else col.f(row[col.tablename])
+
+                    self.columns.append(
+                        Column(
+                            col.label,
+                            compute,
+                            orderby=None,
+                            required_fields=db[col.tablename],
+                            key=col2key(col),
+                        )
+                    )
+                elif isinstance(col, Expression):
+
+                    def compute(row, name=str(col)):
+                        return row._extra(name)
+
+                    self.columns.append(
+                        Column(
+                            title(col),
+                            compute,
+                            orderby=None,
+                            required_fields=[col],
+                            key=f"column-{index}",
+                        )
+                    )
                 else:
-                    redirect(URL())
+                    raise RuntimeError(f"Column not support {col}")
 
-        elif self.page == "delete" and self.is_deletable(record):
-            db(db[self.tablename]._id == self.record_id).delete()
+            # join the set of all required fields
+            sets = [set(self.param.required_fields or [])]
+            sets += [set(col.required_fields) for col in self.columns]
+            self.needed_fields = list(
+                functools.reduce(lambda a, b: a | b, sets) | set([table._id])
+            )
 
-            referrer = parse_referer(request)
-            url = URL()
-            if referrer and referrer.query:
-                url = query_join(url, referrer.query)
-            redirect(url)
-
-        elif self.page == "select":
-            self.referrer = "_referrer=%s" % base64.b16encode(
-                request.url.encode("utf8")
-            ).decode("utf8")
-
+            self.referrer = base64.b16encode(request.url.encode("utf8")).decode("utf8")
             self.current_page_number = safe_int(request.query.get("page"), default=1)
 
             select_params = dict()
@@ -797,22 +809,22 @@ class Grid:
             if self.total_number_of_rows % self.param.rows_per_page > 0:
                 self.number_of_pages += 1
 
-        if (
-            self.param.pre_action_buttons
-            or self.param.details
-            or self.param.editable
-            or self.param.deletable
-            or self.param.post_action_buttons
-        ):
-            key = f"column-{len(self.columns)}"
-            self.columns.append(
-                Column(
-                    "",
-                    self.make_action_buttons,
-                    key=key,
-                    td_class_style=self.get_style("grid-td-buttons"),
+            if (
+                self.param.pre_action_buttons
+                or self.param.details
+                or self.param.editable
+                or self.param.deletable
+                or self.param.post_action_buttons
+            ):
+                key = f"column-{len(self.columns)}"
+                self.columns.append(
+                    Column(
+                        "",
+                        self.make_action_buttons,
+                        key=key,
+                        td_class_style=self.get_style("grid-td-buttons"),
+                    )
                 )
-            )
 
     def iter_pages(
         self,
@@ -854,7 +866,6 @@ class Grid:
         row_id=None,
         name="grid-button",
         row=None,
-        ignore_attribute_plugin=False,
         **attrs,
     ):
         if row_id:
@@ -876,10 +887,7 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        if ignore_attribute_plugin:
-            attrs.update({"_href": url})
-        else:
-            attrs.update(self.attributes_plugin.link(url=url))
+        attrs.update({"_href": url})
 
         link = A(
             I(_class=self.icon_style.complete(icon)) if icon else "",
@@ -918,8 +926,7 @@ class Grid:
             for key in request.query
             if key not in ("search_type", "search_string")
         ]
-        attrs = self.attributes_plugin.link(url=URL())
-        form = FORM(*hidden_fields, **attrs, _class=self.get_style("grid-search-form"))
+        form = FORM(*hidden_fields, _class=self.get_style("grid-search-form"))
         select = SELECT(
             *options,
             _name="search_type",
@@ -1043,14 +1050,12 @@ class Grid:
             if orderby == sort_order:
                 sort_query_parms["orderby"] = "~" + orderby
                 url = URL(vars=sort_query_parms)
-                attrs = self.attributes_plugin.link(url=url)
-                col_header = A(heading, up, **attrs)
+                col_header = A(heading, up, _href=url)
             else:
                 sort_query_parms["orderby"] = orderby
                 url = URL(vars=sort_query_parms)
-                attrs = self.attributes_plugin.link(url=url)
                 col_header = A(
-                    heading, dw if "~" + orderby == sort_order else "", **attrs
+                    heading, dw if "~" + orderby == sort_order else "", _href=url
                 )
         else:
             col_header = heading
@@ -1102,12 +1107,6 @@ class Grid:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
-                attrs = (
-                    self.attributes_plugin.confirm(message=self.T(btn.message))
-                    if btn.message and btn.message != ""
-                    else btn.__dict__.get("attrs", dict())
-                )
-
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1119,12 +1118,6 @@ class Grid:
                         row_id=row_id if btn.append_id else None,
                         name=btn.__dict__.get("name"),
                         row=row,
-                        ignore_attribute_plugin=(
-                            btn.ignore_attribute_plugin
-                            if "ignore_attribute_plugin" in btn.__dict__
-                            else False
-                        ),
-                        **attrs,
                     )
                 )
 
@@ -1132,8 +1125,7 @@ class Grid:
             if isinstance(self.param.details, str):
                 details_url = self.param.details.format(id=row_id)
             else:
-                details_url = URL(vars=dict(page="details", id=row.id))
-            details_url = query_join(details_url, self.referrer)
+                details_url = URL(vars=dict(id=row.id, referrer=self.referrer))
             cat.append(
                 self._make_action_button(
                     url=details_url,
@@ -1146,8 +1138,9 @@ class Grid:
             if isinstance(self.param.editable, str):
                 edit_url = self.param.editable.format(id=row_id)
             else:
-                edit_url = URL(vars=dict(page="edit", id=row_id))
-            edit_url = query_join(edit_url, self.referrer)
+                edit_url = URL(
+                    vars=dict(mode="edit", id=row_id, referrer=self.referrer)
+                )
             cat.append(
                 self._make_action_button(
                     url=edit_url,
@@ -1161,11 +1154,9 @@ class Grid:
             if isinstance(self.param.deletable, str):
                 delete_url = self.param.deletable.format(id=row_id)
             else:
-                delete_url = URL(vars=dict(page="delete", id=row_id))
-            delete_url = query_join(delete_url, self.referrer)
-            attrs = self.attributes_plugin.confirm(
-                message=self.T("Are you sure you want to delete?")  # FIXME
-            )
+                delete_url = URL(
+                    vars=dict(mode="delete", id=row_id, referrer=self.referrer)
+                )
             cat.append(
                 self._make_action_button(
                     url=delete_url,
@@ -1175,7 +1166,6 @@ class Grid:
                     message="Delete record",
                     name="grid-delete-button",
                     _disabled=not self.is_deletable(row),
-                    **attrs,
                 )
             )
 
@@ -1189,11 +1179,6 @@ class Grid:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
-                attrs = (
-                    self.attributes_plugin.confirm(message=self.T(btn.message))
-                    if btn.message and btn.message != ""
-                    else btn.__dict__.get("attrs", dict())
-                )
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1205,12 +1190,6 @@ class Grid:
                         row_id=row_id if btn.append_id else None,
                         name=btn.__dict__.get("name"),
                         row=row,
-                        ignore_attribute_plugin=(
-                            btn.ignore_attribute_plugin
-                            if "ignore_attribute_plugin" in btn.__dict__
-                            else False
-                        ),
-                        **attrs,
                     )
                 )
 
@@ -1233,15 +1212,12 @@ class Grid:
                 if is_current
                 else "grid-pagination-button"
             )
-            attrs = self.attributes_plugin.link(
-                url=URL(vars=pager_query_parms)
-            )
             pager.append(
                 A(
                     page_number,
                     _class=self.get_style(page_name),
                     _role="button",
-                    **attrs,
+                    _href=URL(vars=pager_query_parms),
                 )
             )
             previous_page_number = page_number
@@ -1256,9 +1232,7 @@ class Grid:
             if isinstance(self.param.create, str):
                 create_url = self.param.create
             else:
-                create_url = URL(vars=dict(page="new"))
-
-            create_url = query_join(create_url, self.referrer)
+                create_url = URL(vars=dict(mode="new", referrer=self.referrer))
 
             grid_header.append(
                 self._make_action_button(
@@ -1292,7 +1266,6 @@ class Grid:
                             override_classes=override_classes,
                             message=element.message,
                             name=element.__dict__.get("name"),
-                            ignore_attribute_plugin=element.ignore_attribute_plugin,
                             **element.__dict__.get("attrs", dict()),
                         )
                     )
@@ -1367,7 +1340,6 @@ class Grid:
                             override_classes=override_classes,
                             message=element.message,
                             name=element.__dict__.get("name"),
-                            ignore_attribute_plugin=element.ignore_attribute_plugin,
                             **element.__dict__.get("attrs", dict()),
                         )
                     )
@@ -1380,9 +1352,9 @@ class Grid:
 
         :return: html representation of the table or the py4web Form object
         """
-        if self.page == "select":
+        if self.mode == "select":
             return self._make_table()
-        elif self.page in ["new", "details", "edit"]:
+        elif self.mode in ["new", "details", "edit", "delete"]:
             return self.form
         raise HTTP(404)
 
@@ -1430,7 +1402,7 @@ class Grid:
         return len(self.get_tablenames(*items)) > 1
 
 
-def parse_referer(r):
+def parse_referrer(r):
     """
     Get the referrer from the request query and use urlparse to parse it into a url object
 
@@ -1438,7 +1410,7 @@ def parse_referer(r):
 
     :return: the URL object or None if no URL object obtained/decoded
     """
-    referrer = r.query.get("_referrer")
+    referrer = r.query.get("referrer")
     url = None
     if referrer:
         url_string = base64.b16decode(referrer.encode("utf8")).decode("utf8")
@@ -1480,8 +1452,8 @@ def get_parent(path, parent_field):
     if parent_id is not None:
         return int(parent_id)
 
-    #  else, check in the referer
-    referrer = request.query.get("_referrer")
+    #  else, check in the referrer
+    referrer = request.query.get("referrer")
     if referrer:
         kvp = base64.b16decode(referrer.encode("utf8")).decode("utf8")
         if "parent_id" in kvp:
@@ -1489,48 +1461,3 @@ def get_parent(path, parent_field):
             return int(parent_id)
 
     return None
-
-
-class AttributesPlugin:
-    def __init__(self, target_element=None):
-        self.target_element = target_element
-        self.default_attrs = {}
-
-    def form(self, url):
-        attrs = copy.copy(self.default_attrs)
-        return attrs
-
-    def link(self, url):
-        attrs = copy.copy(self.default_attrs)
-        attrs["_href"] = url
-        return attrs
-
-    def confirm(self, message):
-        attrs = copy.copy(self.default_attrs)
-        attrs["_onclick"] = "if(!confirm('%s')) return false;" % message
-        return attrs
-
-
-class AttributesPluginHtmx(AttributesPlugin):
-    def __init__(self, target_element):
-        super().__init__(target_element)
-        self.default_attrs = {
-            "_hx-target": self.target_element,
-            "_hx-swap": "innerHTML",
-        }
-
-    def form(self, url):
-        attrs = copy.copy(self.default_attrs)
-        attrs["_hx-post"] = url
-        attrs["_hx-encoding"] = "multipart/form-data"
-        return attrs
-
-    def link(self, url):
-        attrs = copy.copy(self.default_attrs)
-        attrs["_hx-get"] = url
-        return attrs
-
-    def confirm(self, message):
-        attrs = copy.copy(self.default_attrs)
-        attrs["_hx-confirm"] = message
-        return attrs
