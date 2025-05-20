@@ -280,6 +280,9 @@ class FormStyleFactory:
         self.class_inner_exceptions = copy.copy(self._class_inner_exceptions)
         self.widgets = copy.copy(self._widgets)
 
+    def clone(self):
+        return copy.deepcopy(self)
+
     def __call__(
         self,
         table,

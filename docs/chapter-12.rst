@@ -100,8 +100,8 @@ Where:
 -  ``readonly``: set to True to make a readonly form
 -  ``deletable``: set to False to disallow deletion of record
 -  ``formstyle``: a function that renders the form using helpers.
-    Can be FormStyleDefault (default), FormStyleBulma,
-    FormStyleBootstrap4, or FormStyleBootstrap5
+    Can be ``FormStyleDefault`` (default), ``FormStyleBulma``,
+    ``FormStyleBootstrap4``, or ``FormStyleBootstrap5``.
 -  ``dbio``: set to False to prevent any DB writes
 -  ``keep_values``: if set to true, it remembers the values of the previously submitted form
 -  ``form_name``: the optional name of this form
@@ -111,6 +111,13 @@ Where:
 -  ``lifespan``: lifespan of CSRF token in seconds, to limit form validity
 -  ``signing_info``: information that should not change between when the CSRF token is signed and verified
   
+``FormStyleDefault`` is an object that is used by default for every form
+and it is defined in ``py4web.utils.form.FormStyleDefault``.
+You should never change it but you can make a copy and pass it as ``formstyle``.
+
+You can change the style of a field named, for example, ``color``
+by changing the attribute ``color`` of the FormStyle.
+
 
 A minimal form example without a database
 -----------------------------------------
@@ -352,8 +359,8 @@ Using widgets in forms is quite easy, and they'll let you have more control on i
 Custom widgets
 ~~~~~~~~~~~~~~
 
-You can also customize the widgets properties by subclassing the FormStyleDefault class. Let's have a quick look,
-improving again our Superhero example:
+You can also customize the widgets properties by cloning an modifying and existing style.
+Let's have a quick look, improving again our Superhero example:
 
 .. code:: python
 
@@ -383,7 +390,7 @@ improving again our Superhero example:
     @action("create_form", method=["GET", "POST"])
     @action.uses("form_custom_widgets.html", db)
     def create_form():
-        MyStyle = FormStyleDefault
+        MyStyle = FormStyleDefault.clone()
         MyStyle.classes = FormStyleDefault.classes
         MyStyle.widgets['name']=MyCustomWidget()
         MyStyle.widgets['color']=RadioWidget()
