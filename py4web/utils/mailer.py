@@ -826,7 +826,9 @@ class Mailer:
                         server.ehlo(self.settings.hostname)
                     if self.settings.login:
                         server.login(*self.settings.login.split(":", 1))
-                    result = server.sendmail(sender, to, payload.as_string())
+                    if "Message-ID" not in payload:
+                        payload["Message-ID"] = email.utils.make_msgid()
+                    result = server.sendmail(sender, to, payload.as_string())                    
                 finally:
                     # do not want to hide errors raising some exception here
                     try:
