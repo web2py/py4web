@@ -828,7 +828,7 @@ class Mailer:
                         server.login(*self.settings.login.split(":", 1))
                     if "Message-ID" not in payload:
                         payload["Message-ID"] = email.utils.make_msgid()
-                    result = server.sendmail(sender, to, payload.as_string())                    
+                    result = server.sendmail(sender, to, payload.as_string())
                 finally:
                     # do not want to hide errors raising some exception here
                     try:
