@@ -872,7 +872,9 @@ def URL(  # pylint: disable=invalid-name
         request.environ.get("SCRIPT_NAME", "")
         or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
-    if parts and parts[0].startswith("/"):
+    if not parts:
+        prefix = request.path
+    elif parts and parts[0].startswith("/"):
         prefix = ""
     elif has_appname and app_name != "_default":
         prefix = f"{script_name}/{app_name}/"
@@ -904,7 +906,9 @@ def URL(  # pylint: disable=invalid-name
         signer.sign(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
-            f"{k}={urllib.parse.quote(str(v))}" for k, v in urlvars.items()
+            f"{k}={urllib.parse.quote(str(v))}"
+            for k, v in urlvars.items()
+            if v is not None
         )
     if hash:
         url += f"#{hash}"
