@@ -552,6 +552,7 @@ class FormStyleFactory:
             controls["delete"] = INPUT(
                 _type=deletable_field_type,
                 _value=deletable_record_attributes["_value"],
+                _id=deletable_field_name,
                 _name=deletable_field_name,
                 _class=self.classes["input[type=checkbox]"],
             )
@@ -561,10 +562,10 @@ class FormStyleFactory:
                     SPAN(
                         controls["delete"],
                         _class=class_inner,
-                        _style="vertical-align: middle;",
                     ),
-                    P(
+                    LABEL(
                         deletable_record_attributes["_label"],
+                        _for=deletable_field_name,
                         _class="help",
                         _style="display: inline !important",
                     ),
