@@ -2,6 +2,7 @@
 This file defines cache, session, and translator T object for the app
 These are fixtures that every app needs so probably you will not be editing this file
 """
+
 import os
 import sys
 
@@ -132,8 +133,9 @@ if settings.OAUTH2GOOGLE_CLIENT_ID:
     )
 
 if settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE:
-    from py4web.utils.auth_plugins.oauth2google_scoped import \
-        OAuth2GoogleScoped  # TESTED
+    from py4web.utils.auth_plugins.oauth2google_scoped import (
+        OAuth2GoogleScoped,
+    )  # TESTED
 
     auth.register_plugin(
         OAuth2GoogleScoped(
@@ -155,8 +157,7 @@ if settings.OAUTH2GITHUB_CLIENT_ID:
     )
 
 if settings.OAUTH2FACEBOOK_CLIENT_ID:
-    from py4web.utils.auth_plugins.oauth2facebook import \
-        OAuth2Facebook  # UNTESTED
+    from py4web.utils.auth_plugins.oauth2facebook import OAuth2Facebook  # UNTESTED
 
     auth.register_plugin(
         OAuth2Facebook(

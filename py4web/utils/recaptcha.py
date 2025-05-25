@@ -15,7 +15,7 @@ class recaptcha_fixture(Fixture):
         if value:
             request.POST["g_recaptcha_response"] = value
             del request.POST["g-recaptcha-response"]
-       
+
     def on_success(self, context):
         if context:
             script_v2 = "".join(
@@ -52,9 +52,7 @@ class recaptcha_fixture(Fixture):
             }
             </script>
             <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-            """.split(
-                        "\n"
-                    ),
+            """.split("\n"),
                 )
             )
             script_v3 = "".join(
@@ -81,9 +79,7 @@ class recaptcha_fixture(Fixture):
             }
             </script>
             <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-            """.split(
-                        "\n"
-                    ),
+            """.split("\n"),
                 )
             )
             if context["output"] is None:
@@ -114,12 +110,9 @@ class ReCaptcha:
             "https://www.google.com/recaptcha/api/siteverify", data=data
         )
         try:
-           
-
             if res.json()["success"] == True:
                 return (True, None)
-                        
+
             return (False, "Please verify that you are not a robot")
         except Exception as exc:
             return (False, str(exc))
-

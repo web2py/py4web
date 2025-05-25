@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 20250125</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Advanced topics and examples &mdash; Documentação py4web 20250511</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59c536ae"></script>
+      <script src="_static/documentation_options.js?v=14c073e0"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
@@ -130,8 +130,8 @@ it is also possible to run multiple instances of the scheduler on different comp
 as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
 they all define the same tasks.</p>
 <p>Here is an example of how to use the scheduler:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">now</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.tools.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scheduler</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">now</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># create and start the scheduler</span>
 <span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">sleep_time</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_concurrent_runs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -161,7 +161,7 @@ they all define the same tasks.</p>
 <li><p>Always <code class="docutils literal notranslate"><span class="pre">db.commit()</span></code> as soon as possible after any insert/update/delete</p></li>
 <li><p>wrap your database logic in tasks in a try…except as in</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># do something</span>
         <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
@@ -175,10 +175,10 @@ they all define the same tasks.</p>
 <p>As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
 In this example we send them using SendGrid from Twilio (<a class="reference external" href="https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python">https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python</a>).</p>
 <p>Here is a possible scheduler task to send the email:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sendgrid</span>
-<span class="kn">from</span> <span class="nn">sendgrid.helpers.mail</span> <span class="kn">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">To</span><span class="p">,</span> <span class="n">Content</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sendgrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sendgrid.helpers.mail</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">To</span><span class="p">,</span> <span class="n">Content</span>
 
-<span class="k">def</span> <span class="nf">sendmail_task</span><span class="p">(</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">to_addrs</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sendmail_task</span><span class="p">(</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">to_addrs</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
     <span class="s2">&quot;&quot;</span>
     <span class="c1"># build the messages using sendgrid API</span>
     <span class="n">from_email</span> <span class="o">=</span> <span class="n">Email</span><span class="p">(</span><span class="n">from_addr</span><span class="p">)</span>  <span class="c1"># Must be your verified sender</span>
@@ -209,10 +209,10 @@ In this example we send them using SendGrid from Twilio (<a class="reference ext
 The <code class="docutils literal notranslate"><span class="pre">scheduled_for</span></code> argument is optional and allows you to specify when the email should be sent.
 You can use the Dashboard to see the status of your <code class="docutils literal notranslate"><span class="pre">task_run</span></code>s for the task called <code class="docutils literal notranslate"><span class="pre">sendmail</span></code>.</p>
 <p>You can also tell auth to tap into above mechanism for sending emails:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySendGridSender</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MySendGridSender</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_adds</span>
-    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
         <span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span><span class="p">,</span>
             <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">to_addr</span><span class="p">],</span>
@@ -282,24 +282,24 @@ form. For example, to add the hx-post and hx-target to the &lt;form&gt; element 
 to the browser will replace the html inside of the element with id=»detail-target».</p>
 <p>Let’s continue with a full example (started from scaffold).</p>
 <p><strong>controllers.py</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo.html&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">htmx_form_demo</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form_demo</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
 
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_list.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">htmx_list</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_list</span><span class="p">():</span>
     <span class="n">superheros</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">superheros</span><span class="o">=</span><span class="n">superheros</span><span class="p">)</span>
 
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
         <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
@@ -364,7 +364,7 @@ htmx.</p>
 <p><strong>controller.py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
         <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
@@ -384,7 +384,7 @@ htmx.</p>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid/&lt;path:path&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span> <span class="s2">&quot;htmx_grid.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">htmx_grid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_grid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">auto_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">grid</span><span class="o">.</span><span class="n">attributes_plugin</span> <span class="o">=</span> <span class="n">AttributesPluginHtmx</span><span class="p">(</span><span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">)</span>
@@ -434,13 +434,13 @@ of this code comes with py4web</em></p>
 <p>Again we’ll use the superheros database as defined in the examples app.</p>
 <p>Add the following to your controllers.py.  This code will build your autocomplete dropdowns as well as
 handle the database calls to get your data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
 
-<span class="kn">from</span> <span class="nn">yatl</span> <span class="kn">import</span> <span class="n">DIV</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">SCRIPT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIV</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">SCRIPT</span>
 
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">URL</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span>
 
 
 <span class="nd">@action</span><span class="p">(</span>
@@ -453,7 +453,7 @@ handle the database calls to get your data.</p>
     <span class="n">db</span><span class="p">,</span>
     <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">autocomplete</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">autocomplete</span><span class="p">():</span>
     <span class="n">tablename</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">tablename</span>
     <span class="n">fieldname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">fieldname</span>
     <span class="n">autocomplete_query</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">query</span>
@@ -503,8 +503,8 @@ handle the database calls to get your data.</p>
         <span class="n">data_label</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
     <span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">HtmxAutocompleteWidget</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simple_query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HtmxAutocompleteWidget</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simple_query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">simple_query</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span> <span class="k">else</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx/autocomplete&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
@@ -512,7 +512,7 @@ handle the database calls to get your data.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;simple_query&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1">#  TODO: handle readonly parameter</span>
         <span class="n">control</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;_table&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
@@ -826,7 +826,7 @@ are loaded via ajax and any form in those components will be trapped
 <p>And a different action serving the component:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;mycomponent&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">mycomponent</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mycomponent</span><span class="p">():</span>
     <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span><span class="n">Field</span><span class="p">(</span><span class="s2">&quot;your_name&quot;</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">DIV</span><span class="p">(</span>
@@ -881,7 +881,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

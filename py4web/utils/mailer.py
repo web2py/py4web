@@ -201,7 +201,6 @@ class Mailer:
             Encoders.encode_base64(self)
 
     def __init__(self, server=None, sender=None, login=None, tls=True, ssl=False):
-
         settings = self.settings = Settings()
         settings.logger = logging
         settings.server = server
@@ -421,7 +420,6 @@ class Mailer:
                 html = None
 
         if (text is not None or html is not None) and (not raw):
-
             if text is not None:
                 if not isinstance(text, basestring):
                     text = text.read()
@@ -505,7 +503,6 @@ class Mailer:
             #                   sign                   #
             ############################################
             if sign:
-
                 core.check_version(None)
                 pin = payload_in.as_string().replace("\n", "\r\n")
                 plain = core.Data(pin)
@@ -829,6 +826,8 @@ class Mailer:
                         server.ehlo(self.settings.hostname)
                     if self.settings.login:
                         server.login(*self.settings.login.split(":", 1))
+                    if "Message-ID" not in payload:
+                        payload["Message-ID"] = email.utils.make_msgid()
                     result = server.sendmail(sender, to, payload.as_string())
                 finally:
                     # do not want to hide errors raising some exception here
@@ -851,7 +850,6 @@ class Mailer:
 
 
 def dkim_sign(payload, dkim_key, dkim_selector):
-
     import dkim
 
     # sign all existing mail headers except those specified in

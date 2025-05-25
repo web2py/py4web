@@ -2,7 +2,6 @@ from .pam import authenticate
 
 
 class PamPlugin:
-
     name = "pam"
     label = "Pam"
 

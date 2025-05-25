@@ -5,6 +5,7 @@ This is an optional file that defined app level settings such as:
 - i18n settings
 This file is provided as an example:
 """
+
 import os
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")

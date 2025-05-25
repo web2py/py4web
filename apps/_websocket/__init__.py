@@ -6,13 +6,13 @@ from py4web import action, request
 def index():
     return dict()
 
-@action('websocket')
+
+@action("websocket")
 def echo():
-    ws  = request.environ.get("wsgi.websocket")
+    ws = request.environ.get("wsgi.websocket")
     while True:
         msg = ws.receive()
         if msg is not None:
             ws.send(msg)
-        else: break
-
-
+        else:
+            break

@@ -11,11 +11,24 @@ Provides an authenticate function that will allow the caller to authenticate
 a user against the Pluggable Authentication Modules (PAM) on the system.
 Implemented using ctypes, so no compilation is necessary.
 """
+
 __all__ = ["authenticate"]
 
 import sys
-from ctypes import (CDLL, CFUNCTYPE, POINTER, Structure, byref, c_char,
-                    c_char_p, c_int, c_uint, c_void_p, cast, sizeof)
+from ctypes import (
+    CDLL,
+    CFUNCTYPE,
+    POINTER,
+    Structure,
+    byref,
+    c_char,
+    c_char_p,
+    c_int,
+    c_uint,
+    c_void_p,
+    cast,
+    sizeof,
+)
 from ctypes.util import find_library
 
 libpam = CDLL(find_library("pam"))

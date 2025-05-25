@@ -6,7 +6,6 @@ from py4web.utils.url_signer import URLSigner
 
 
 class StarRater(Fixture):
-
     STARRATER = '<starrater url="{url}"></starrater>'
 
     def __init__(self, path, session, signer=None, db=None, auth=None):

@@ -3,7 +3,6 @@ import smtplib
 
 
 class EmailAuthPlugin:
-
     name = "email_auth"
     label = "Email"
 

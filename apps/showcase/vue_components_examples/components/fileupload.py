@@ -6,7 +6,6 @@ from py4web.utils.url_signer import URLSigner
 
 
 class FileUpload(Fixture):
-
     FILE_UPLOAD = '<fileupload url="{url}"></fileupload>'
 
     def __init__(self, path, session, signer=None, db=None, auth=None):

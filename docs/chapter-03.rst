@@ -133,7 +133,7 @@ folder
    cd py4web
    make assets
    make test
-   make install
+   python -m pip install .
    py4web setup apps
    py4web set_password
    py4web run apps
@@ -144,8 +144,8 @@ later with the ``make assets`` command.
 
 Notice that you also (and should) install py4web from source inside a virtual environment.
 
-Installing from source (locally)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running from source without installing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In this way all the requirements will be installed or upgraded on the
 system’s path, but py4web itself will only be copied
@@ -162,7 +162,7 @@ From the command line, go to a given working folder and then run
 
    git clone https://github.com/web2py/py4web.git
    cd py4web
-   python3 -m pip install  --upgrade -r requirements.txt
+   python3 -m pip install --upgrade -e .
 
 Once installed, you should always start it from there with:
 
@@ -245,6 +245,20 @@ If you installed py4web in any other way, you must upgrade it manually.
 First you have to make a backup of any personal py4web work you've done,
 then delete the old installation folder and re-install the framework
 again.
+
+Running Using uv
+~~~~~~~~~~~~~~~~
+
+This is the newest way to manage python packages.
+Install uv as shown here: https://docs.astral.sh/uv/getting-started/installation/
+Then run:
+
+::
+
+     uv run py4web.py run apps
+     
+More uv command examples are in the provided Makefile
+
 
 First run
 ---------

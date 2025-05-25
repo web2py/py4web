@@ -2,7 +2,7 @@ import sys
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSD-3-Clause"
-__version__ = "1.20250328.1"
+__version__ = "1.20250518.2"
 
 
 def _maybe_gevent():
@@ -23,5 +23,16 @@ from .core import Field  # pydal
 from .core import Translator  # from pluralize
 from .core import action  # main py4web decorator
 from .core import render  # yatl
-from .core import (DAL, Cache, Condition, Flash, Session, abort,
-                   check_compatible, redirect, request, response, safely)
+from .core import (
+    DAL,
+    Cache,
+    Condition,
+    Flash,
+    Session,
+    abort,
+    check_compatible,
+    redirect,
+    request,
+    response,
+    safely,
+)

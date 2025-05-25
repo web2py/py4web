@@ -9,8 +9,25 @@ import functools
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -31,6 +48,10 @@ def safe_int(text, default):
         return int(text)
     except (ValueError, TypeError):
         return default
+
+
+def query_join(a, b):
+    return a + ("&" if "?" in a else "?") + b
 
 
 class GridClassStyle:
@@ -200,6 +221,7 @@ class GridClassStyleBootstrap5(GridClassStyle):
         "grid-footer-element": "grid-footer-element btn btn-sm",
     }
 
+
 class IconStyle:
     sort_up = "icon-sort-up"
     sort_down = "icon-sort-down"
@@ -211,6 +233,7 @@ class IconStyle:
     @classmethod
     def complete(self, icontxt: str) -> str:
         return icontxt
+
 
 class IconStyleFontawsome(IconStyle):
     sort_up = "fas fa-sort-up"
@@ -241,6 +264,7 @@ class IconStyleBootstrapIcons(IconStyle):
             return f"bi {icontxt}"
         return icontxt
 
+
 class GridClassStyleTailwind(GridClassStyle):
     classes = {
         "grid-wrapper": "grid-wrapper space-y-4 bg-white shadow-md rounded-lg p-4",
@@ -267,7 +291,6 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-pagination": "grid-pagination flex gap-2",
         "grid-pagination-button": "px-3 py-1 bg-gray-200 rounded hover:bg-gray-300",
         "grid-pagination-button-current": "px-3 py-1 bg-blue-500 text-white rounded",
-
         # Cell styling
         "grid-cell-type-string": "text-left",
         "grid-cell-type-text": "text-left",
@@ -281,7 +304,6 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-cell-type-upload": "text-center",
         "grid-cell-type-list": "text-left",
         "grid-cell-type-id": "text-center",
-
         # Search form
         "grid-search-form": "flex flex-wrap gap-2 items-center border p-2 rounded-lg bg-gray-100",
         "grid-search-form-table": "w-full",
@@ -293,6 +315,7 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-header-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
         "grid-footer-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
     }
+
 
 class Column:
     """class used to represent a column in a grid"""
@@ -719,7 +742,7 @@ class Grid:
             referrer = parse_referer(request)
             url = self.endpoint + "/select"
             if referrer and referrer.query:
-                url += "?%s" % referrer.query
+                url = query_join(url, referrer.query)
             redirect(url)
 
         elif self.action == "select":
@@ -870,7 +893,7 @@ class Grid:
             attrs.update(self.attributes_plugin.link(url=url))
 
         link = A(
-            I(_class=self.icon_style.complete(icon)),
+            I(_class=self.icon_style.complete(icon)) if icon else "",
             _role="button",
             _message=message,
             _title=button_text,
@@ -1121,7 +1144,7 @@ class Grid:
                 details_url = self.param.details
             else:
                 details_url = self.endpoint + "/details"
-            details_url += "/%s?%s" % (row_id, self.referrer)
+            details_url = query_join(f"{details_url}/{row_id}", self.referrer)
             cat.append(
                 self._make_action_button(
                     url=details_url,
@@ -1135,7 +1158,7 @@ class Grid:
                 edit_url = self.param.editable
             else:
                 edit_url = self.endpoint + "/edit"
-            edit_url += "/%s?%s" % (row_id, self.referrer)
+            edit_url = query_join(f"{edit_url}/{row_id}", self.referrer)
             cat.append(
                 self._make_action_button(
                     url=edit_url,
@@ -1150,7 +1173,7 @@ class Grid:
                 delete_url = self.param.deletable
             else:
                 delete_url = self.endpoint + "/delete"
-            delete_url += "/%s?%s" % (row_id, self.referrer)
+            delete_url = query_join(f"{delete_url}/{row_id}", self.referrer)
             attrs = self.attributes_plugin.confirm(
                 message=self.T("Are you sure you want to delete?")  # FIXME
             )
@@ -1246,7 +1269,7 @@ class Grid:
             else:
                 create_url = self.endpoint + "/new"
 
-            create_url += "?%s" % self.referrer
+            create_url = query_join(create_url, self.referrer)
 
             grid_header.append(
                 self._make_action_button(

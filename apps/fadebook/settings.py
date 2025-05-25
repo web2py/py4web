@@ -5,6 +5,7 @@ This is an optional file that defined app level settings such as:
 - i18n settings
 This file is provided as an example:
 """
+
 import os
 
 from py4web.core import required_folder

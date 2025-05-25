@@ -60,7 +60,6 @@ class URLVerifier(Fixture):
 
 
 class URLSigner(Fixture):
-
     RESERVED_VARIABLES = ["_ts", "_signature"]
 
     def __init__(

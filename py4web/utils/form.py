@@ -280,6 +280,9 @@ class FormStyleFactory:
         self.class_inner_exceptions = copy.copy(self._class_inner_exceptions)
         self.widgets = copy.copy(self._widgets)
 
+    def clone(self):
+        return copy.deepcopy(self)
+
     def __call__(
         self,
         table,
@@ -499,7 +502,8 @@ class FormStyleFactory:
                     DIV(
                         wrapped,
                         LABEL(
-                            " " + field.label,
+                            " ",
+                            field.label,
                             _for=input_id,
                             _class=class_label,
                             _style="display: inline !important",
@@ -677,13 +681,13 @@ FormStyleBootstrap5.classes.update(
 FormStyleTailwind = FormStyleFactory()
 FormStyleTailwind.classes.update(
     {
-        "outer": "mb-4",  
+        "outer": "mb-4",
         "inner": "w-full flex flex-col space-y-1",
         "label": "block text-gray-700 font-medium",
-        "info": "text-gray-500 text-sm",  
+        "info": "text-gray-500 text-sm",
         "error": "text-red-600 text-sm mt-1",
-        "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",  
-        "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",  
+        "submit": "px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition",
+        "input": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=text]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=date]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
         "input[type=time]": "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
@@ -835,7 +839,6 @@ class Form(object):
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     uploaded_fields = set()
-                    uploaded_files = []
                     for field in self.table:
                         if field.writable and field.type != "id":
                             original_value = post_vars.get(field.name)
@@ -861,9 +864,14 @@ class Form(object):
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
-                                    if field.uploadfolder:
-                                        uploaded_files.append(tuple((field, value)))
-                                    validated_vars[field.name] = field.store(value.file, value.filename, field.uploadfolder)
+                                    if field.uploadfield:
+                                        validated_vars[field.name] = field.store(
+                                            value.file,
+                                            value.filename,
+                                            field.uploadfolder,
+                                        )
+                                    else:
+                                        validated_vars[field.name] = value
                                 elif self.record:
                                     if not delete:
                                         validated_vars[field.name] = self.record.get(
@@ -888,16 +896,6 @@ class Form(object):
                     if validation:
                         validation(self)
                     if not self.errors:
-                        """
-                        for file in uploaded_files:
-                            if field.name not in self.vars:
-                                field, value = file
-                                value = field.store(
-                                    value.file, value.filename, field.uploadfolder
-                                )
-                                if value is not None:
-                                    self.vars[field.name] = value
-                        """
                         self.accepted = True
                         if dbio:
                             self.update_or_insert(validated_vars)

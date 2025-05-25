@@ -35,7 +35,8 @@ fi
 #####################
 
 # go to py4web root folder
-cd ..
+cwd=$(dirname -- "$( readlink -f -- "$0"; )")
+cd $cwd/..
 
 project_name=py4web
 destination=apps/_documentation/static
@@ -60,7 +61,7 @@ fi
 set -o errexit
 
 # cleanup old sphinx builds
-make -C docs clean
+rm -rf _build
 
 languages='en '
 # find other available languages (translations)
@@ -75,26 +76,20 @@ for current_language in ${languages}; do
 	# make the current language available to conf.py
 	export current_language
 
-	# make spelling if english
-	#if [ ${current_language} = 'en' ]
-	#then
-	#sphinx-build -b spelling docs/ docs/_build/spelling
-	#fi	
-
 	# make HTML
 	# NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
-	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
+	uv run --extra docs sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
 	mkdir -p "${docroot}/${current_language}"
 
 	base_target="${docroot}/${current_language}/${project_name}_${current_language}"
 	if [ $t = 'all' ]
 	then
 		# make PDF
-		sphinx-build -b rinoh -D language="${current_language}" docs/ docs/_build/rinoh
+		uv run --extra docs sphinx-build -b rinoh -D language="${current_language}" docs/ docs/_build/rinoh
 		cp docs/_build/rinoh/target.pdf "${base_target}.pdf"
 
 		# make EPUB
-		sphinx-build -b epub -D language="${current_language}" docs/ docs/_build/epub
+		uv run --extra docs sphinx-build -b epub -D language="${current_language}" docs/ docs/_build/epub
 		cp docs/_build/epub/target.epub "${base_target}.epub"
 	else
 		# HTML only, backup previous pdf and epub if any
@@ -126,7 +121,7 @@ favicon=apps/_scaffold/static/favicon.ico
 cp ${favicon} ${docroot}
 
 # final cleanup
-make -C docs clean
+rm -rf _build
 
 # move docroot to destination
 rm -fr ${destination}

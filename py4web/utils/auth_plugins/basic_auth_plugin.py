@@ -4,7 +4,6 @@ from pydal._compat import urllib2, urlopen
 
 
 class BasicAuthPlugin:
-
     name = "basic"
     label = "Basic"
 

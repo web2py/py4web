@@ -5,7 +5,6 @@ from websocket import create_connection
 
 
 def short_lived_connection():
-
     ws = create_connection("ws://localhost:8000/")
     print("Sending 'Hello Server'...")
     ws.send("Hello, Server")

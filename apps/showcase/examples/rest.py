@@ -29,6 +29,7 @@ class AuthTokenVerify(Fixture):
 
 auth_token_verify = AuthTokenVerify()
 
+
 # put the id into the raw dict
 def to_dict(item):
     if not item or not item.raw:

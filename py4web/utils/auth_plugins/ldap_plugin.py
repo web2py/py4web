@@ -15,7 +15,6 @@ ldap.set_option(ldap.OPT_REFERRALS, 0)
 
 
 class LDAPPlugin(UsernamePassword):
-
     name = "ldap"
     label = "LDAP"
 
@@ -182,7 +181,6 @@ class LDAPPlugin(UsernamePassword):
         logger=logging,
         groups=None,
     ):
-
         self.server = server
         self.port = port
         self.base_dn = base_dn
@@ -219,7 +217,6 @@ class LDAPPlugin(UsernamePassword):
         self.groups = groups
 
     def check_credentials(self, username, password):
-
         server = self.server
         port = self.port
         base_dn = self.base_dn
@@ -557,7 +554,6 @@ class LDAPPlugin(UsernamePassword):
             return False
 
     def is_user_in_allowed_groups(self, username, password=None):
-
         server = self.server
         port = self.port
         base_dn = self.base_dn

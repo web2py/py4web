@@ -15,10 +15,18 @@ from pydal.restapi import Policy, RestAPI
 from pydal.validators import CRYPT
 
 import py4web
-from py4web import (HTTP, URL, Translator, __version__, abort, action,
-                    redirect, request, response)
-from py4web.core import (DAL, Fixture, Reloader, Session, dumps, error_logger,
-                         safely)
+from py4web import (
+    HTTP,
+    URL,
+    Translator,
+    __version__,
+    abort,
+    action,
+    redirect,
+    request,
+    response,
+)
+from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
 
 from .diff2kryten import diff2kryten
@@ -240,7 +248,7 @@ if MODE in ("demo", "readonly", "full"):
         if not os.path.exists(top) or not os.path.isdir(top):
             return {"status": "error", "message": "folder does not exist"}
         store = {}
-        for root, dirs, files in os.walk(top, topdown=False):
+        for root, dirs, files in os.walk(top, topdown=False, followlinks=True):
             store[root] = {
                 "dirs": list(
                     sorted(
@@ -395,7 +403,8 @@ if MODE in ("demo", "readonly", "full"):
 
             # must wrap into action uses to make sure it closes transactions
             data = action.uses(db)(
-                lambda: make_writable(args[2]) or RestAPI(db, policy)(
+                lambda: make_writable(args[2])
+                or RestAPI(db, policy)(
                     request.method, args[2], id, request.query, request.json
                 )
             )()

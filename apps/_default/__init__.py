@@ -4,6 +4,7 @@ from py4web import Cache, action
 
 cache = Cache(size=1000)
 
+
 @action("index")
 @cache.memoize(expiration=1)
 def index():

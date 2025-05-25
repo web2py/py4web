@@ -173,7 +173,7 @@ Q.tags_input = function(elem, options) {
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')
     elem.parentNode.insertBefore(repl, elem);
-    var keys = Q.eval(elem.value||'[]');
+    var keys = Q.eval(elem.value||'[]') || [];
     keys.map(function(x) { if(tags.indexOf(x)<0) tags.push(x); });
     var fill = function(elem, repl) {
       repl.innerHTML = '';

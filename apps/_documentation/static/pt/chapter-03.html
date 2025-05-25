@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 20250125</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 20250511</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59c536ae"></script>
+      <script src="_static/documentation_options.js?v=14c073e0"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
@@ -60,11 +60,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-using-a-virtual-environment">Installing from pip, using a virtual environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-without-virtual-environment">Installing from pip, without virtual environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source-globally">Instalação de fonte (globalmente)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installing-from-source-locally">Instalando a partir de fonte (localmente)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-from-source-without-installing">Running from source without installing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">Instalando a partir de binários</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#upgrading">Melhoramento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading">Melhoramento</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-using-uv">Running Using uv</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#first-run">Primeira corrida</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line-options">Opções de linha de comando</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#call-command-option">Opção `` comando call``</a></li>
@@ -220,7 +223,7 @@ folder</p>
 cd py4web
 make assets
 make test
-make install
+python -m pip install .
 py4web setup apps
 py4web set_password
 py4web run apps
@@ -231,8 +234,8 @@ py4web run apps
 later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
 <p>Notice that you also (and should) install py4web from source inside a virtual environment.</p>
 </section>
-<section id="installing-from-source-locally">
-<h3>Instalando a partir de fonte (localmente)<a class="headerlink" href="#installing-from-source-locally" title="Link to this heading"></a></h3>
+<section id="running-from-source-without-installing">
+<h3>Running from source without installing<a class="headerlink" href="#running-from-source-without-installing" title="Link to this heading"></a></h3>
 <p>In this way all the requirements will be installed or upgraded on the
 system’s path, but py4web itself will only be copied
 on a local folder. This is especially useful if you already have a
@@ -243,7 +246,7 @@ you will gain the latest (but potentially untested) code.</p>
 <p>From the command line, go to a given working folder and then run</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
 cd py4web
-python3 -m pip install  --upgrade -r requirements.txt
+python3 -m pip install --upgrade -e .
 </pre></div>
 </div>
 <p>Once installed, you should always start it from there with:</p>
@@ -304,6 +307,16 @@ keep them up to date.</p>
 First you have to make a backup of any personal py4web work you’ve done,
 then delete the old installation folder and re-install the framework
 again.</p>
+<section id="running-using-uv">
+<h3>Running Using uv<a class="headerlink" href="#running-using-uv" title="Link to this heading"></a></h3>
+<p>This is the newest way to manage python packages.
+Install uv as shown here: <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">https://docs.astral.sh/uv/getting-started/installation/</a>
+Then run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>uv run py4web.py run apps
+</pre></div>
+</div>
+<p>More uv command examples are in the provided Makefile</p>
+</section>
 </section>
 <section id="first-run">
 <h2>Primeira corrida<a class="headerlink" href="#first-run" title="Link to this heading"></a></h2>
@@ -516,9 +529,9 @@ Options:
 </div>
 <p>O shell de Py4web é apenas o shell python regular com aplicativos adicionados ao caminho de pesquisa. Note que o shell é para todos os aplicativos, não um único. Você pode então importar os módulos necessários a partir dos aplicativos que você precisa para acessar.</p>
 <p>Por exemplo, dentro de uma concha que puder</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">apps.myapp</span> <span class="kn">import</span> <span class="n">db</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">apps.myapp</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
 </pre></div>
 </div>
 </section>
@@ -582,7 +595,7 @@ with some tips and tricks.</p>
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
 create a python file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web_wsgi.py</span>
-<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">wsgi</span>
 <span class="n">application</span> <span class="o">=</span> <span class="n">wsgi</span><span class="p">(</span><span class="n">apps_folder</span><span class="o">=</span><span class="s2">&quot;apps&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -689,7 +702,7 @@ certificates. It optionally manage iptables, too.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forumlários &mdash; Documentação py4web 20250125</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>Forumlários &mdash; Documentação py4web 20250511</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59c536ae"></script>
+      <script src="_static/documentation_options.js?v=14c073e0"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
@@ -187,7 +187,7 @@ list of desired fields and/or from an existing database table.</p>
 <p>CRUD Create forms:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;create_thing&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">create_thing</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_thing</span><span class="p">():</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
         <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record created&quot;</span><span class="p">)</span>
@@ -198,7 +198,7 @@ list of desired fields and/or from an existing database table.</p>
 <p>CRUD Update forms:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;update_thing/&lt;thing_id:int&gt;&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">update_thing</span><span class="p">(</span><span class="n">thing_id</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_thing</span><span class="p">(</span><span class="n">thing_id</span><span class="p">):</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">thing_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
         <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record updated&quot;</span><span class="p">)</span>
@@ -209,7 +209,7 @@ list of desired fields and/or from an existing database table.</p>
 <p>Non-CRUD forms (not associated to a database):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;some_form&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">some_form</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_form</span><span class="p">():</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
         <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="s2">&quot;green&quot;</span><span class="p">])),</span>
@@ -262,8 +262,12 @@ an app derived from the scaffolding app:</p>
 <li><p>`` Record``: um registro DAL ou ID de registro</p></li>
 <li><p>`` Readonly``: Defina como true para fazer um formulário readonly</p></li>
 <li><p>`` Deletable``: definida para Falso ao apagamento disallow de registro</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">formstyle</span></code>: a function that renders the form using helpers. Can be FormStyleDefault (default),
-FormStyleBulma or FormStyleBootstrap4</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">formstyle</span></code>: a function that renders the form using helpers.</dt><dd><p>Can be FormStyleDefault (default), FormStyleBulma,
+FormStyleBootstrap4, or FormStyleBootstrap5</p>
+</dd>
+</dl>
+</li>
 <li><p>`` Dbio``: definida para Falso para evitar quaisquer gravações DB</p></li>
 <li><p>`` Keep_values``: se definido como verdadeiro, ele lembra os valores do formulário previamente submetidas</p></li>
 <li><p>`` Form_name``: o nome opcional desta forma</p></li>
@@ -279,13 +283,13 @@ FormStyleBulma or FormStyleBootstrap4</p></li>
 <p>Let’s start with a minimal working form example.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_minimal</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_minimal.html&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
         <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">])),</span>
@@ -300,7 +304,7 @@ Create a new minimal app called <code class="docutils literal notranslate"><span
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;accepted&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">accepted</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">accepted</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;form_example accepted&quot;</span>
 </pre></div>
 </div>
@@ -328,15 +332,15 @@ The next example will.</p>
 <p>In this next basic example we generate a CRUD create form from a database.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_basic</span></code> :</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_basic.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_form</span><span class="p">():</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
@@ -373,7 +377,7 @@ it second argument:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span># controllers definition
 @action(&quot;update_form/<span class="p">&lt;</span><span class="nt">thing_id:int</span><span class="p">&gt;</span>&quot;, method=[&quot;GET&quot;, &quot;POST&quot;])
 @action.uses(&quot;form_basic.html&quot;, db)
-def update_form():
+def update_form(thing_id):
     form = Form(db.thing, thing_id)
     rows = db(db.thing).select()
     return dict(form=form, rows=rows)
@@ -435,15 +439,15 @@ some of their properties.</p>
 </ul>
 <p>This is an improved “Basic Form Example” with a radio button widget:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_form</span><span class="p">():</span>
     <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -476,14 +480,14 @@ dropdown menu!</p>
 <p>You can also customize the widgets properties by subclassing the FormStyleDefault class. Let’s have a quick look,
 improving again our Superhero example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># custom widget class definition</span>
-<span class="k">class</span> <span class="nc">MyCustomWidget</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomWidget</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">tablename</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">_table</span> <span class="k">if</span> <span class="s2">&quot;_table&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;no_table&quot;</span>
         <span class="n">control</span> <span class="o">=</span> <span class="n">INPUT</span><span class="p">(</span>
             <span class="n">_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
@@ -500,7 +504,7 @@ improving again our Superhero example:</p>
 <span class="c1"># controllers definition</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_custom_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">create_form</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_form</span><span class="p">():</span>
     <span class="n">MyStyle</span> <span class="o">=</span> <span class="n">FormStyleDefault</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">classes</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
@@ -679,7 +683,7 @@ Notice that error messages are not translated by default unless you define them 
 <p>which returns a tuple <code class="docutils literal notranslate"><span class="pre">(value,</span> <span class="pre">error)</span></code> and <code class="docutils literal notranslate"><span class="pre">error</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> if the value validates.</p>
 <p>You can easily test most of the following validators directly using python only.
 For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">IS_ALPHANUMERIC</span><span class="p">()(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="go">(&#39;test&#39;, None)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">IS_ALPHANUMERIC</span><span class="p">()(</span><span class="s1">&#39;test!&#39;</span><span class="p">)</span>
@@ -693,7 +697,7 @@ For example:</p>
 <div class="admonition hint">
 <p class="admonition-title">Dica</p>
 <p>The DAL validators are well documented inside the python source code. You can easily check it by yourself for all the details!</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">validators</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal</span><span class="w"> </span><span class="kn">import</span> <span class="n">validators</span>
 <span class="nb">dir</span><span class="p">(</span><span class="n">validators</span><span class="p">)</span> <span class="c1"># get the list of all validators</span>
 <span class="n">help</span><span class="p">(</span><span class="n">validators</span><span class="o">.</span><span class="n">IS_URL</span><span class="p">)</span> <span class="c1"># get specific help for the IS_URL validator</span>
 </pre></div>
@@ -1158,9 +1162,7 @@ A typical usage is validation of a <code class="docutils literal notranslate"><s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;list:string&#39;</span><span class="p">,</span>
       <span class="n">widget</span><span class="o">=</span><span class="n">SQLFORM</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span>
     <span class="n">requires</span><span class="o">=</span><span class="n">IS_LIST_OF_EMAILS</span><span class="p">(),</span>
-    <span class="n">filter_in</span><span class="o">=</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> \\
-        <span class="n">IS_LIST_OF_EMAILS</span><span class="o">.</span><span class="n">split_emails</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">l</span> <span class="k">else</span> <span class="n">l</span><span class="p">,</span>
-    <span class="n">represent</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> \\
+    <span class="n">represent</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span>
         <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="s1">&#39;mailto:&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">v</span> <span class="ow">or</span> <span class="p">[])]))</span>
     <span class="p">)</span>
 </pre></div>
@@ -1169,10 +1171,10 @@ A typical usage is validation of a <code class="docutils literal notranslate"><s
 section). This let you insert and edit multiple emails in a single input field (very much like normal mail client programs do),
 separating each email address with <code class="docutils literal notranslate"><span class="pre">,</span></code>, <code class="docutils literal notranslate"><span class="pre">;</span></code>, and blanks (space, newline, and tab characters).
 As a consequence now we need a validator which is able to operate on a single value input and a way to split the validated value into
-a list to be next processed by DAL, these are what the <code class="docutils literal notranslate"><span class="pre">requires</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_in</span></code> arguments stand for.
+a list to be next processed by DAL. This is accomplished by the <code class="docutils literal notranslate"><span class="pre">requires</span></code> validator.
 As alternative to <code class="docutils literal notranslate"><span class="pre">filter_in</span></code>, you can pass the following function to the <code class="docutils literal notranslate"><span class="pre">onvalidation</span></code> argument of form <code class="docutils literal notranslate"><span class="pre">accepts</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code>,
 or <code class="docutils literal notranslate"><span class="pre">validate</span></code> method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">emails_onvalidation</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">emails_onvalidation</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
     <span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">emails</span> <span class="o">=</span> <span class="n">IS_LIST_OF_EMAILS</span><span class="o">.</span><span class="n">split_emails</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="o">.</span><span class="n">emails</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1470,7 +1472,7 @@ this results in a race condition and both records are accepted. It is therefore 
 </pre></div>
 </div>
 <p>The following code, for example, does not allow registration of two persons with the same name within 10 days of each other:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -1517,7 +1519,7 @@ this may be usefull when no <code class="docutils literal notranslate"><span cla
 <p>The first argument of the validator can be a database connection or a DAL Set, as in <code class="docutils literal notranslate"><span class="pre">IS_NOT_IN_DB</span></code>. This can be useful for example when
 wishing to limit the records in the drop-down list. In this example, we use <code class="docutils literal notranslate"><span class="pre">IS_IN_DB</span></code> in a controller to limit the records dynamically
 each time the controller is called:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="p">(</span><span class="o">...</span><span class="p">)</span>
     <span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span> <span class="c1"># in practice &#39;xyz&#39; would be a variable</span>
     <span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_IN_DB</span><span class="p">(</span><span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
@@ -1554,17 +1556,17 @@ function that takes the form and returns a dictionary, mapping field
 names to errors. If the dictionary is non-empty, the errors will be
 displayed to the user, and no database I/O will take place.</p>
 <p>Aqui está um exemplo:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_INT_IN_RANGE</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.validators</span><span class="w"> </span><span class="kn">import</span> <span class="n">IS_INT_IN_RANGE</span>
 
-<span class="k">def</span> <span class="nf">custom_check</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">custom_check</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">4</span>
         <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s2">&quot;too short&quot;</span><span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;form_example&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_example.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">form_example</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">form_example</span><span class="p">():</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">validation</span><span class="o">=</span><span class="n">custom_check</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
@@ -1611,7 +1613,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The RestAPI &mdash; py4web 20250125 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <title>The RestAPI &mdash; py4web 20250511 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=10d334e1"></script>
+      <script src="_static/documentation_options.js?v=5dd671af"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -116,9 +116,9 @@ for individual tables and individual fields.</p>
 </div>
 <p>In the examples below we assume a simple app called “superheroes”:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in superheroes/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">pydal.restapi</span> <span class="kn">import</span> <span class="n">RestAPI</span><span class="p">,</span> <span class="n">Policy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal.restapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">RestAPI</span><span class="p">,</span> <span class="n">Policy</span>
 
 <span class="c1"># database definition</span>
 <span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
@@ -180,7 +180,7 @@ for individual tables and individual fields.</p>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;api/&lt;tablename&gt;/&#39;</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;api/&lt;tablename&gt;/&lt;rec_id&gt;&#39;</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">rec_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">api</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">rec_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">RestAPI</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">policy</span><span class="p">)(</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
                             <span class="n">tablename</span><span class="p">,</span>
                             <span class="n">rec_id</span><span class="p">,</span>
@@ -189,7 +189,7 @@ for individual tables and individual fields.</p>
                             <span class="p">)</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;RestAPI example&quot;</span>
 </pre></div>
 </div>
@@ -1165,7 +1165,7 @@ identity!:real_identity[name]
      <label for="switch"></label>
      </span>
       
-      v: 20250125
+      v: 20250511
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

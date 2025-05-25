@@ -32,9 +32,9 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
         super().__init__(auth, condition=condition)
         self.db = db
         self.error_page = error_page
-        assert (
-            error_page is not None
-        ), "You need to specify an error page; can't use login."
+        assert error_page is not None, (
+            "You need to specify an error page; can't use login."
+        )
 
     def on_error(self, context):
         if isinstance(context.get("exception"), RefreshError):

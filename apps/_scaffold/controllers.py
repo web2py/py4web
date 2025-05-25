@@ -29,8 +29,17 @@ from yatl.helpers import A
 
 from py4web import URL, abort, action, redirect, request
 
-from .common import (T, auth, authenticated, cache, db, flash, logger, session,
-                     unauthenticated)
+from .common import (
+    T,
+    auth,
+    authenticated,
+    cache,
+    db,
+    flash,
+    logger,
+    session,
+    unauthenticated,
+)
 
 
 @action("index")
