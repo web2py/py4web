@@ -673,8 +673,8 @@ class Auth(Fixture):
             if not hasattr(plugin, "get_login_url"):
                 prevent_db_lookup = True
                 if plugin.check_credentials(email, password):
-                    # if the creadentials are independently validated
-                    # get of create the user (if does not exist)
+                    # if the credentials are independently validated
+                    # get or create the user (if does not exist)
                     user_info = {}
                     user_info["sso_id"] = plugin.name + ":" + email
                     if self.use_username or "@" not in email:
@@ -906,7 +906,7 @@ class Auth(Fixture):
                 row.update_record(**user)
                 # pass the full user
                 user = row.as_dict()
-        # othrewise we id the user via email
+        # otherwise we id the user via email
         elif user.get("email"):
             keyid = "email"
             # return a user if exists and has a verified email
@@ -924,7 +924,7 @@ class Auth(Fixture):
                     user["username"] = user[keyid]
                     # make sure the username is unique
                     if db(db.auth_user.username == user["username"]).count():
-                        raise HTTP(401, body=f"Conficting {user['username']} accounts")
+                        raise HTTP(401, body=f"Conflicting {user['username']} accounts")
             # create the user
             user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return user
@@ -945,8 +945,8 @@ class Auth(Fixture):
     # Other service methods (that can be overwritten)
 
     def send(self, name, user, **attrs):
-        """Extends the object and override the function to send messages with
-        twilio or onesignal or alternative method other than email
+        """Extends the object and overrides the function to send messages with
+        twilio or onesignal or an alternative method other than email
         """
 
         message = self.param.messages[name]
@@ -1522,7 +1522,7 @@ class DefaultAuthForms:
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
         if form.accepted:
-            # notice that here the form is alrealdy validated
+            # notice that here the form is already validated
             if not self.auth.password_in_db:  # password must not be written in db
                 # Prioritize PAM or LDAP logins if enabled
                 if "pam" in self.auth.plugins or "ldap" in self.auth.plugins:
@@ -1569,7 +1569,7 @@ class DefaultAuthForms:
         top_buttons = []
 
         for name, plugin in self.auth.plugins.items():
-            #  do not add a button for plugin that do not delegate to url
+            #  do not add a button for a plugin that does not delegate to url
             if not hasattr(plugin, "get_login_url"):
                 continue
 
