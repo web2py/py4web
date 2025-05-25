@@ -917,9 +917,7 @@ def URL(  # pylint: disable=invalid-name
             if domain_item
         ]
         if expected_domains and domain not in expected_domains:
-            logging.warning(
-                "Possible cache poisoning blocked: url=%s", original_url
-            )
+            logging.warning("Possible cache poisoning blocked: url=%s", original_url)
             domain = expected_domains[0]
         if scheme is True:
             scheme = orig_scheme

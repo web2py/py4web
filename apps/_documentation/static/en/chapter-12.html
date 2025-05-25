@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forms &mdash; py4web 20250511 documentation</title>
+  <title>Forms &mdash; py4web 20250518 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5dd671af"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/documentation_options.js?v=da3dc6b9"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -262,8 +262,8 @@ an app derived from the scaffolding app:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">readonly</span></code>: set to True to make a readonly form</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">deletable</span></code>: set to False to disallow deletion of record</p></li>
 <li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">formstyle</span></code>: a function that renders the form using helpers.</dt><dd><p>Can be FormStyleDefault (default), FormStyleBulma,
-FormStyleBootstrap4, or FormStyleBootstrap5</p>
+<dt><code class="docutils literal notranslate"><span class="pre">formstyle</span></code>: a function that renders the form using helpers.</dt><dd><p>Can be <code class="docutils literal notranslate"><span class="pre">FormStyleDefault</span></code> (default), <code class="docutils literal notranslate"><span class="pre">FormStyleBulma</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FormStyleBootstrap4</span></code>, or <code class="docutils literal notranslate"><span class="pre">FormStyleBootstrap5</span></code>.</p>
 </dd>
 </dl>
 </li>
@@ -276,6 +276,11 @@ FormStyleBootstrap4, or FormStyleBootstrap5</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">lifespan</span></code>: lifespan of CSRF token in seconds, to limit form validity</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signing_info</span></code>: information that should not change between when the CSRF token is signed and verified</p></li>
 </ul>
+<p><code class="docutils literal notranslate"><span class="pre">FormStyleDefault</span></code> is an object that is used by default for every form
+and it is defined in <code class="docutils literal notranslate"><span class="pre">py4web.utils.form.FormStyleDefault</span></code>.
+You should never change it but you can make a copy and pass it as <code class="docutils literal notranslate"><span class="pre">formstyle</span></code>.</p>
+<p>You can change the style of a field named, for example, <code class="docutils literal notranslate"><span class="pre">color</span></code>
+by changing the attribute <code class="docutils literal notranslate"><span class="pre">color</span></code> of the FormStyle.</p>
 </section>
 <section id="a-minimal-form-example-without-a-database">
 <h2>A minimal form example without a database<a class="headerlink" href="#a-minimal-form-example-without-a-database" title="Link to this heading"></a></h2>
@@ -476,8 +481,8 @@ dropdown menu!</p>
 </section>
 <section id="custom-widgets">
 <h3>Custom widgets<a class="headerlink" href="#custom-widgets" title="Link to this heading"></a></h3>
-<p>You can also customize the widgets properties by subclassing the FormStyleDefault class. Let’s have a quick look,
-improving again our Superhero example:</p>
+<p>You can also customize the widgets properties by cloning an modifying and existing style.
+Let’s have a quick look, improving again our Superhero example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
@@ -504,7 +509,7 @@ improving again our Superhero example:</p>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;create_form&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_custom_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_form</span><span class="p">():</span>
-    <span class="n">MyStyle</span> <span class="o">=</span> <span class="n">FormStyleDefault</span>
+    <span class="n">MyStyle</span> <span class="o">=</span> <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">classes</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
@@ -1612,7 +1617,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250511
+      v: 20250518
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

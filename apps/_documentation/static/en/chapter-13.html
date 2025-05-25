@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20250511 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 20250518 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5dd671af"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/documentation_options.js?v=da3dc6b9"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -503,151 +503,6 @@ You will also have to register your OAuth2 redirect URI in your created applicat
 Discord username as the first name and discriminator as the last name.</p>
 </div>
 </section>
-<hr>
-<section id="captcha">
-  <h3>Authentication with CAPTCHA<a class="headerlink" href="#captcha" title="Link to this heading"></a></h3>
-
-  <p>CAPTCHAs are essential security measures that prevent automated bot abuse on public forms. To implement Google reCAPTCHA or hCAPTCHA in your authentication form, follow these steps:</p>
-
-  <section id="reCAPTCHA">
-    <h4>Enabling reCAPTCHA<a class="headerlink" href="#reCAPTCHA" title="Link to this heading"></a></h4>
-    <p>in <code class="docutils literal notranslate">settings.py</code> add your keys:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          RECAPTCHA_API_SECRET_V3 = "your_recaptcha_secret_key_v3"
-          RECAPTCHA_API_KEY_V3 = "your_recaptcha_site_key_v3"
-           
-          RECAPTCHA_API_KEY_V2 = "your_recaptcha_site_key_v2"
-          RECAPTCHA_API_SECRET_V2 = "your_recaptcha_secret_key_v2"
-  
-      </pre>
-      </div>
-    </div>
-    
-    <p>in <code class="docutils literal notranslate">common.py</code> add:</p>
-  
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-        #import the functionality
-        <span class="kn">from</span> <span class="nn">. </span><span class="kn">import</span> settings
-        <span class="kn">from</span> <span class="nn">py4web.utils.recaptcha </span><span class="kn">import</span> ReCaptcha
-  
-        # <span class="s2">for recaptcha v3</span> 
-        <span class="nf">recaptcha</span> = <span class="nn">ReCaptcha</span>(<span class="nd">settings</span>.RECAPTCHA_API_KEY_V3, <span class="nd">settings</span>.RECAPTCHA_API_SECRET_V3, "v3")
-        or 
-        # <span class="s2">for recaptcha v2</span> 
-        <span class="nf">recaptcha</span> = <span class="nn">ReCaptcha</span>(<span class="nd">settings</span>.RECAPTCHA_API_KEY_V2, <span class="nd">settings</span>.RECAPTCHA_API_SECRET_V2, "v2")
-  
-  
-        # in the section that auth is defined
-        # Example:
-        auth = Auth(session, db, define_tables=False)
-  
-        # Add this line at the end of auth declaration to enable recaptcha on login, register and request_reset_password forms.
-        # or enable it on the action that you want by especifying the action name
-        
-        #Example:
-  
-        auth.extra_form_fields = {"login": [<span class="nf">recaptcha</span>.field], "register": [<span class="nf">recaptcha</span>.field], "request_reset_password": [<span class="nf">recaptcha</span>.field], }
-  
-  
-        #In section where auth is enabled, add the recaptcha fixture
-        # Example:
-  
-        # #######################################################
-        # Enable authentication
-        # #######################################################
-        auth.enable(uses=(session, T, db, <span class="nf">recaptcha</span>.fixture),env=dict(T=T))
-  
-      </pre>
-      
-    </div>
-    
-    </div>
-    <p>in <code class="docutils literal notranslate">auth.html</code> use:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          [[try:]]
-          [[=form]]
-          [[except:]]
-          [[pass]]
-          [[=recaptcha]]
-  
-      </pre>
-      </div>
-    </div>
-    <p>
-      After completing these steps, the reCAPTCHA field will be added to the login, register, and request_reset_password forms.
-    </p>
-  </section>
-  <hr>
-  <section id="hCAPTCHA">
-    <h4>Enabling hCAPTCHA<a class="headerlink" href="#hCAPTCHA" title="Link to this heading"></a></h4>
-    <p>in <code class="docutils literal notranslate">settings.py</code> add your HCAPTCHA_SITE_KEY and HCAPTCHA_SECRET_KEY:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          HCAPTCHA_SITE_KEY = "your_hcaptcha_site_key"
-          HCAPTCHA_SECRET_KEY = "your_hcaptcha_secret_key"
-      </pre>
-      </div>
-    </div>
-    <p>in <code class="docutils literal notranslate">common.py</code> add:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-        #import the functionality
-        <span class="kn">from</span> <span class="nn">. </span><span class="kn">import</span> settings
-        <span class="kn">from</span> <span class="nn">py4web.utils.hcaptcha </span><span class="kn">import</span> Hcaptcha
-  
-        <span class="nf">hcaptcha</span> = <span class="nn">Hcaptcha</span>(<span class="nd">settings</span>.HCAPTCHA_SITE_KEY, <span class="nd">settings</span>.HCAPTCHA_SECRET_KEY)
-        
-  
-        # in the section that auth is defined
-        # Example:
-        auth = Auth(session, db, define_tables=False)
-  
-        # Add this line at the end of auth declaration to enable hcaptcha on login, register and request_reset_password forms.
-        # or enable it on the action that you want by especifying the action name
-        
-        #Example:
-  
-        auth.extra_form_fields = {"login": [<span class="nf">hcaptcha</span>.field], "register": [<span class="nf">hcaptcha</span>.field], "request_reset_password": [<span class="nf">hcaptcha</span>.field], }
-  
-  
-        #In section where auth is enabled, add the hcaptcha fixture
-        # Example:
-  
-        # #######################################################
-        # Enable authentication
-        # #######################################################
-        auth.enable(uses=(session, T, db, <span class="nf">hcaptcha</span>.fixture),env=dict(T=T))
-  
-      </pre>
-      
-    </div>
-    
-    </div>
-    <p>in <code class="docutils literal notranslate">auth.html</code> use:</p>
-    <div class="highlight-python notranslate">
-      <div class="highlight">
-        <pre>
-          [[try:]]
-          [[=form]]
-          [[except:]]
-          [[pass]]
-          [[=hcaptcha]]
-  
-      </pre>
-      </div>
-    </div>
-    <p>
-      After completing these steps, the hCAPTCHA field will be added to the login, register, and request_reset_password forms.
-    </p>
-  </section>  
 </section>
 <section id="auth-api-plugins">
 <h3>Auth API Plugins<a class="headerlink" href="#auth-api-plugins" title="Link to this heading"></a></h3>
@@ -1003,7 +858,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20250511
+      v: 20250518
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
