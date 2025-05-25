@@ -26,7 +26,7 @@ if settings.USE_SCHEDULER:
     if db(db.task_run).count() < 1:
         scheduler.enqueue_run("my_task", inputs={}, timeout=2, period=10)
 
-# manage your tasks via dashboard or Grid(path, db.task_run)
+# manage your tasks via dashboard or Grid(db.task_run)
 
 # #######################################################
 # Optionally configure Celery

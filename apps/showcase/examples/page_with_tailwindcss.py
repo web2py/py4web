@@ -46,13 +46,11 @@ initialize_data()
 
 
 @action("page_with_tailwindcss", method=["POST", "GET"])
-@action("page_with_tailwindcss/<path:path>", method=["POST", "GET", "DELETE"])
 @action.uses("examples/page_with_tailwindcss.html", session, db)
-def page_with_tailwindcss(path=None):
+def page_with_tailwindcss():
     """Creates a simple Grid with TailwindCSS."""
     p = db.products
     grid = Grid(
-        path,
         query=(p.id > 0),
         columns=[p.name, p.category, p.price],
         headings=["Name", "Category", "Price"],

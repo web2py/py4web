@@ -523,11 +523,10 @@ In order to create and manage tokens you can use a grid. In controllers.py
 
 .. code:: python
 
-    @action("tokens/<path:path>")
-    @action.uses("generic.html", auth.user)
-    def _(path):
+    @action("tokens")
+    def _():
        db.auth_simple_token.user_id.default = auth.user_id
-       grid = Grid(path, db.auth_simple_token.user_id==auth.user_id, create=True, deletable=True)
+       grid = Grid(db.auth_simple_token.user_id==auth.user_id, create=True, deletable=True)
        return dict(grid=grid)
 
 

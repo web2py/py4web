@@ -9,12 +9,12 @@ from .common import T, auth, db, session
 
 @action("example_html_grid")
 def example_html_grid():
-    redirect(URL("example_html_grid/select"))
+    redirect(URL("example_html_grid2"))
 
 
-@action("example_html_grid/<path:path>", method=["POST", "GET"])
+@action("example_html_grid2", method=["POST", "GET"])
 @action.uses("examples/html_grid.html", session, db, auth, T)
-def example_html_grid(path=None):
+def example_html_grid2():
     #  controllers and used for all grids in the app
     grid_param = dict(
         rows_per_page=5,
@@ -39,7 +39,6 @@ def example_html_grid(path=None):
     columns = [field for field in db.thing if field.readable]
     columns.insert(0, Column("Custom", lambda row: A("click me")))
     grid = Grid(
-        path,
         query,
         columns=columns,
         search_queries=search_queries,

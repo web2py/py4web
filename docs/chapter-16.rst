@@ -56,7 +56,7 @@ Here is an example of how to use the scheduler:
 Notice that in scaffolding app, the scheduler is created and started in common if
 ``USE_SCHEDULER=True`` in ``settings.py``.
 
-You can manage your task runs busing the dashboard or using a ``Grid(path, db.task_run)``.
+You can manage your task runs busing the dashboard or using a ``Grid(db.task_run)``.
 
 To prevent database locks (in particular with sqlite) we recommend:
 
@@ -331,11 +331,10 @@ Here is an example building off the previous htmx forms example.
 
         return dict(form=form)
 
-    @action("htmx_grid", method=["GET", "POST"])
-    @action("htmx_grid/<path:path>", method=["GET", "POST"])
+    @action("htmx_grid")
     @action.uses( "htmx_grid.html", session, db)
-    def htmx_grid(path=None):
-        grid = Grid(path, db.superhero, auto_process=False)
+    def htmx_grid():
+        grid = Grid(db.superhero, auto_process=False)
 
         grid.attributes_plugin = AttributesPluginHtmx("#htmx-grid-demo")
         attrs = {

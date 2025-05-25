@@ -62,10 +62,9 @@ Create a new minimal app called ``grid``. Change it with the following content.
       db.commit()
 
    @action('index', method=['POST', 'GET'])
-   @action('index/<path:path>', method=['POST', 'GET'])
    @action.uses('grid.html', db)
-   def index(path=None):
-      grid = Grid(path,
+   def index():
+      grid = Grid(
                formstyle=FormStyleDefault, # FormStyleDefault, FormStyleBulma, FormStyleBootstrap4, or FormStyleBootstrap5
                grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5
                icon_style=IconStyleFontawesome, # IconStyle, IconStyleFontawesome, or IconStyleBootstrapIcons
@@ -520,8 +519,8 @@ Example usage:
 
 .. code:: python
 
-   @action("example/<path:path>")
-   def example(path=None):
+   @action("example")
+   def example():
 
        pre_action_buttons = [
            lambda row: GridActionButton(
@@ -544,7 +543,6 @@ Example usage:
        ]
 
        grid = Grid(
-           path=path,
            query=db.foo,
            pre_action_buttons=pre_action_buttons,
            post_action_buttons=post_action_buttons,
@@ -615,11 +613,10 @@ or more submit buttons. You can then add logic to process the selected rows when
    column = Column("select", lambda row: INPUT(_type="checkbox",_name="selected_id",_value=row.id))
 
    @action("manage")
-   @action("manage/<path:path>")
    @action.uses("manage.html", db)
-   def manage(path=None):
+   def manage():
 
-      grid = Grid(path, db.thing, columns=[column, db.thing.name])
+      grid = Grid(db.thing, columns=[column, db.thing.name])
 
       # if we are displaying a "select" grid page (not a form)
       if not grid.form:
