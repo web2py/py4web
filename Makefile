@@ -49,7 +49,7 @@ build: clean assets check test
 	uv build --sdist --wheel
 
 publish:
-	uv run --extra manage -m twine upload dist/*
+	uv run --extra manage python -m twine upload dist/*
 
 upgrade-utils:
 	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;
