@@ -500,10 +500,10 @@ class Grid:
 
         #  instance variables that will be computed
         self.db = query._db  # the database
-        self.query = query  # the filter query
-        self.query2 = None  # the query with additional filters
+        self.query_init = query  # the filter query
+        self.query = query  # the query with additional filters
         self.query_parms = safely(lambda: request.params, default={})
-        self.search_query_error = None # error to be displayed in case failed search
+        self.search_query_error = None  # error to be displayed in case failed search
         self.T = T  # the translator
         self.form_maker = form_maker  # the object that makes forms
         self.referrer = None  # page referring this one
@@ -599,21 +599,17 @@ class Grid:
         # apply the search query
         if not self.param.search_form and self.param.search_queries:
             search_type = safe_int(request.query.get("search_type", 0), default=0)
-            search_string = request.query.get("search_string")            
+            search_string = request.query.get("search_string")
             if search_type < len(self.param.search_queries) and search_string:
-                _, query_lambda, requires = self.param.search_queries[search_type]                
+                _, query_lambda, requires = self.param.search_queries[search_type]
                 if requires:
                     search_string, self.search_query_error = requires(search_string)
                 if not self.search_query_error:
                     try:
                         query = query_lambda(search_string)
+                        self.query = self.query_init & query
                     except Exception as e:
                         self.search_query_error = str(e)
-
-        if not query:
-            self.query2 = self.query
-        else:
-            self.query2 = self.query & query
 
         if self.record_id:
             self.record = self.table(self.record_id)
@@ -802,10 +798,10 @@ class Grid:
         if self.param.groupby or self.param.left:
             #  need groupby fields in select to get proper count
             self.total_number_of_rows = len(
-                db(self.query2).select(db[self.tablename]._id, **select_params)
+                db(self.query).select(db[self.tablename]._id, **select_params)
             )
         else:
-            self.total_number_of_rows = db(self.query2).count()
+            self.total_number_of_rows = db(self.query).count()
 
         #  if at a high page number and then filter causes less records to be displayed, reset to page 1
         if (
@@ -824,7 +820,7 @@ class Grid:
             self.page_end = self.total_number_of_rows
 
         # get the data
-        self.rows = db(self.query2).select(*self.needed_fields, **select_params)
+        self.rows = db(self.query).select(*self.needed_fields, **select_params)
 
         self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
         if self.total_number_of_rows % self.param.rows_per_page > 0:
@@ -990,9 +986,15 @@ class Grid:
         tr.append(TD(submit, clear, _class=td_classes))
         table = TABLE(tr, _class=self.get_style("grid-search-form-table"))
         if self.search_query_error:
-            table.append(TR(TD(self.search_query_error, 
-                               _colspan=3 if len(options)>1 else 2,
-                               _class=self.get_style("grid-search-form-error"))))
+            table.append(
+                TR(
+                    TD(
+                        self.search_query_error,
+                        _colspan=3 if len(options) > 1 else 2,
+                        _class=self.get_style("grid-search-form-error"),
+                    )
+                )
+            )
         form.append(table)
         div.append(form)
         return div
