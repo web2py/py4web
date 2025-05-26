@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 20250518</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 20250524</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=932bc4f6"></script>
+      <script src="_static/documentation_options.js?v=e1999d92"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=5f54a428"></script>
@@ -154,7 +154,7 @@ they all define the same tasks.</p>
 </div>
 <p>Notice that in scaffolding app, the scheduler is created and started in common if
 <code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
-<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(path,</span> <span class="pre">db.task_run)</span></code>.</p>
+<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(db.task_run)</span></code>.</p>
 <p>To prevent database locks (in particular with sqlite) we recommend:</p>
 <ul class="simple">
 <li><p>Use a different database for the scheduler and everything else</p></li>
@@ -381,11 +381,10 @@ htmx.</p>
 
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid/&lt;path:path&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span> <span class="s2">&quot;htmx_grid.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">htmx_grid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">auto_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_grid</span><span class="p">():</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">auto_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">grid</span><span class="o">.</span><span class="n">attributes_plugin</span> <span class="o">=</span> <span class="n">AttributesPluginHtmx</span><span class="p">(</span><span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">)</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
@@ -856,7 +855,7 @@ as well as modify other components.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2025, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -881,7 +880,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250518
+      v: 20250524
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

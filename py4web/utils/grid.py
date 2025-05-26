@@ -56,7 +56,13 @@ def query_join(a, b):
 
 
 def make_default_search_query(table):
-    return ["Query", lambda text, table=table: QueryBuilder().parse(table, text), None]
+    field_aliases = {
+        field.label.replace(" ", "_").lower(): field.name
+        for field in table
+        if field.readable
+    }
+    builder = QueryBuilder(table, field_aliases=field_aliases)
+    return ["Query", lambda text, builder=builder: builder.parse(text), None]
 
 
 class GridClassStyle:

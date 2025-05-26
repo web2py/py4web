@@ -1687,6 +1687,97 @@ Finally, you can drop tables and all data will be lost:
 
    db.person.drop()
 
+QueryBuilder
+~~~~~~~~~~~~
+
+You can generate DAL queries using natural language. This can be done as follows:
+
+.. code:: python
+
+   from py4web import DAL, Field
+   from pydal import QueryBuilder, QueryParseError
+
+   db = DAL("sqlite:memory")
+   db.define_table("thing", Field("name"), Field("solid", "boolean"))
+   builder = QueryBuilder(db.thing)
+   query = builder.parse('name is equal to Chair')
+   rows = db(query).select()
+
+Example of valid expressions are:
+
+- name is null
+- name is not null
+- name == Chair
+- name is Chair
+- name is equal Chair
+- name is equal to Chair
+- name is equal to "Chair"
+- name lower is equal to Chair
+- not name lower is equal to Chair
+- not (name lower is equal to Chair)
+- name == Chair or name == Table
+- name starts with C and name contains air
+- name in Chair, Table, Glass
+- name belongs Chair, Table, "Glass Top"
+- solid is true 
+- solid is false 
+
+Notice that quotes are optional and only for values. You can use brakets to group.
+It throws a QueryParseError exception on failure.
+You can pass optional parameters to QueryBuilder for internationalization purposes (Italian in example):
+
+.. code:: python
+
+   builder = QueryBuilder(db.thing, 
+               field_aliases={"id": "id", "nome": "name"},
+               token_aliases={"non è nullo": "is not null", "è uguale a": "=="})
+   query = builder.parse('nome non è nullo')
+   query = builder.parse('nome è uguale a Tavolo')
+
+If field_aliases is not provided, only readable fields can be searched.
+If field_aliases is provided, only explicitedly included field names can be searched.              
+
+You can, of course, use the translation operator T:
+
+.. code:: python
+
+   builder = QueryBuilder(db.thing, 
+               field_aliases={str(T(field.name)): field name for field in db.thing},
+               token_aliases={str(T(key):key) for key in QueryBuilder.token_ops})
+
+You can alias the following tokens:
+
+.. code:: python
+
+   {
+      # boolean tokens
+      "not",
+      "and",
+      "or",
+      # field transformers
+      "upper",
+      "lower",
+      # unary search expressions
+      "is null",
+      "is not null",
+      "is true",
+      "is false",
+      # binary search expressions
+      "==",
+      "!=",
+      "<",
+      ">",
+      "<=",
+      ">=",
+      "contains",
+      "startswith", # notice "starts with" is an alias!
+      # search in list
+      "belongs",
+   }
+
+The query builder is used in the Grid. In the Grid the field aliases
+are the field.label in lower case with the spaces replaced by underscore.
+
 Tagging records
 ~~~~~~~~~~~~~~~
 

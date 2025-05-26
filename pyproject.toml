@@ -26,7 +26,7 @@ dependencies = [
     "pluralize >= 20240515.1",
     "rocket3 >= 20241225.1",
     "yatl >= 20230507.3",
-    "pydal >= 20250525.3",
+    "pydal >= 20250526.2",
     "watchgod >= 0.6",
 ]
   

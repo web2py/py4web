@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rede &mdash; Documentação py4web 20250518</title>
+  <title>Rede &mdash; Documentação py4web 20250524</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=932bc4f6"></script>
+      <script src="_static/documentation_options.js?v=e1999d92"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/translations.js?v=5f54a428"></script>
@@ -165,10 +165,9 @@ hints &amp; tips.</p>
    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index/&lt;path:path&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;grid.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
             <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span> <span class="c1"># FormStyleDefault, FormStyleBulma, FormStyleBootstrap4, or FormStyleBootstrap5</span>
             <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5</span>
             <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawesome</span><span class="p">,</span> <span class="c1"># IconStyle, IconStyleFontawesome, or IconStyleBootstrapIcons</span>
@@ -545,8 +544,8 @@ of standard and custom Actions.</p>
 <li><p>override_styles</p></li>
 </ul>
 <p>Example usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example/&lt;path:path&gt;&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">():</span>
 
     <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
         <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
@@ -569,7 +568,6 @@ of standard and custom Actions.</p>
     <span class="p">]</span>
 
     <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
-        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
         <span class="n">query</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span>
         <span class="n">pre_action_buttons</span><span class="o">=</span><span class="n">pre_action_buttons</span><span class="p">,</span>
         <span class="n">post_action_buttons</span><span class="o">=</span><span class="n">post_action_buttons</span><span class="p">,</span>
@@ -618,11 +616,10 @@ or more submit buttons. You can then add logic to process the selected rows when
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span><span class="n">_name</span><span class="o">=</span><span class="s2">&quot;selected_id&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage&quot;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage/&lt;path:path&gt;&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;manage.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">manage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">manage</span><span class="p">():</span>
 
-   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
 
    <span class="c1"># if we are displaying a &quot;select&quot; grid page (not a form)</span>
    <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
@@ -656,7 +653,7 @@ is selected).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2025, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -681,7 +678,7 @@ is selected).</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250518
+      v: 20250524
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

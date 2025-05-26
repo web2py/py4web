@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20250518 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20250524 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=da3dc6b9"></script>
+      <script src="_static/documentation_options.js?v=a88f9fdd"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -118,6 +118,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#update-or-insert"><code class="docutils literal notranslate"><span class="pre">update_or_insert</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#validate-and-insert-validate-and-update"><code class="docutils literal notranslate"><span class="pre">validate_and_insert</span></code>, <code class="docutils literal notranslate"><span class="pre">validate_and_update</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#drop"><code class="docutils literal notranslate"><span class="pre">drop</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#querybuilder">QueryBuilder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tagging-records">Tagging records</a></li>
 </ul>
 </li>
@@ -1795,6 +1796,87 @@ will be in <code class="docutils literal notranslate"><span class="pre">ret[&quo
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
 </pre></div>
 </div>
+</section>
+<section id="querybuilder">
+<h3>QueryBuilder<a class="headerlink" href="#querybuilder" title="Link to this heading"></a></h3>
+<p>You can generate DAL queries using natural language. This can be done as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydal</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryBuilder</span><span class="p">,</span> <span class="n">QueryParseError</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;sqlite:memory&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s2">&quot;thing&quot;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;solid&quot;</span><span class="p">,</span> <span class="s2">&quot;boolean&quot;</span><span class="p">))</span>
+<span class="n">builder</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;name is equal to Chair&#39;</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example of valid expressions are:</p>
+<ul class="simple">
+<li><p>name is null</p></li>
+<li><p>name is not null</p></li>
+<li><p>name == Chair</p></li>
+<li><p>name is Chair</p></li>
+<li><p>name is equal Chair</p></li>
+<li><p>name is equal to Chair</p></li>
+<li><p>name is equal to “Chair”</p></li>
+<li><p>name lower is equal to Chair</p></li>
+<li><p>not name lower is equal to Chair</p></li>
+<li><p>not (name lower is equal to Chair)</p></li>
+<li><p>name == Chair or name == Table</p></li>
+<li><p>name starts with C and name contains air</p></li>
+<li><p>name in Chair, Table, Glass</p></li>
+<li><p>name belongs Chair, Table, “Glass Top”</p></li>
+<li><p>solid is true</p></li>
+<li><p>solid is false</p></li>
+</ul>
+<p>Notice that quotes are optional and only for values. You can use brakets to group.
+It throws a QueryParseError exception on failure.
+You can pass optional parameters to QueryBuilder for internationalization purposes (Italian in example):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">builder</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span>
+            <span class="n">field_aliases</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;nome&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">},</span>
+            <span class="n">token_aliases</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;non è nullo&quot;</span><span class="p">:</span> <span class="s2">&quot;is not null&quot;</span><span class="p">,</span> <span class="s2">&quot;è uguale a&quot;</span><span class="p">:</span> <span class="s2">&quot;==&quot;</span><span class="p">})</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;nome non è nullo&#39;</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;nome è uguale a Tavolo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If field_aliases is not provided, only readable fields can be searched.
+If field_aliases is provided, only explicitedly included field names can be searched.</p>
+<p>You can, of course, use the translation operator T:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">builder</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span>
+            <span class="n">field_aliases</span><span class="o">=</span><span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)):</span> <span class="n">field</span> <span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">},</span>
+            <span class="n">token_aliases</span><span class="o">=</span><span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="n">key</span><span class="p">):</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">QueryBuilder</span><span class="o">.</span><span class="n">token_ops</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>You can alias the following tokens:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="c1"># boolean tokens</span>
+   <span class="s2">&quot;not&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;and&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;or&quot;</span><span class="p">,</span>
+   <span class="c1"># field transformers</span>
+   <span class="s2">&quot;upper&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;lower&quot;</span><span class="p">,</span>
+   <span class="c1"># unary search expressions</span>
+   <span class="s2">&quot;is null&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;is not null&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;is true&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;is false&quot;</span><span class="p">,</span>
+   <span class="c1"># binary search expressions</span>
+   <span class="s2">&quot;==&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;!=&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;contains&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="c1"># notice &quot;starts with&quot; is an alias!</span>
+   <span class="c1"># search in list</span>
+   <span class="s2">&quot;belongs&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The query builder is used in the Grid. In the Grid the field aliases
+are the field.label in lower case with the spaces replaced by underscore.</p>
 </section>
 <section id="tagging-records">
 <h3>Tagging records<a class="headerlink" href="#tagging-records" title="Link to this heading"></a></h3>
@@ -4560,7 +4642,7 @@ than on SQL databases.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2025, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -4585,7 +4667,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250518
+      v: 20250524
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
