@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.9"
 
 [[package]]
@@ -208,7 +209,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -701,7 +702,7 @@ name = "portalocker"
 version = "3.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pywin32", marker = "platform_system == 'Windows'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ac/91/8bfe23e1f7f630f2061ef38b5225d9fda9068d6a30fcbc187951e678e630/portalocker-3.1.1.tar.gz", hash = "sha256:ec20f6dda2ad9ce89fa399a5f31f4f1495f515958f0cb7ca6543cef7bb5a749e", size = 43708 }
 wheels = [
@@ -710,7 +711,6 @@ wheels = [
 
 [[package]]
 name = "py4web"
-version = "1.20250518.2"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -763,7 +763,7 @@ requires-dist = [
     { name = "pluralize", specifier = ">=20240515.1" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20250501.2" },
+    { name = "pydal", specifier = ">=20250525.3" },
     { name = "pyjwt", specifier = ">=2.0.1" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
     { name = "pytest", marker = "extra == 'test'" },
@@ -784,6 +784,7 @@ requires-dist = [
     { name = "wheel" },
     { name = "yatl", specifier = ">=20230507.3" },
 ]
+provides-extras = ["docs", "manage", "test"]
 
 [[package]]
 name = "pycparser"
@@ -822,8 +823,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/59/fe/aae679b64363eb78326c7fdc9d06ec3de18bac68be4b612fc1fe8902693c/pycryptodome-3.23.0-cp37-abi3-win32.whl", hash = "sha256:507dbead45474b62b2bbe318eb1c4c8ee641077532067fec9c1aa82c31f84886", size = 1768484 },
     { url = "https://files.pythonhosted.org/packages/54/2f/e97a1b8294db0daaa87012c24a7bb714147c7ade7656973fd6c736b484ff/pycryptodome-3.23.0-cp37-abi3-win_amd64.whl", hash = "sha256:c75b52aacc6c0c260f204cbdd834f76edc9fb0d8e0da9fbf8352ef58202564e2", size = 1799636 },
     { url = "https://files.pythonhosted.org/packages/18/3d/f9441a0d798bf2b1e645adc3265e55706aead1255ccdad3856dbdcffec14/pycryptodome-3.23.0-cp37-abi3-win_arm64.whl", hash = "sha256:11eeeb6917903876f134b56ba11abe95c0b0fd5e3330def218083c7d98bbcb3c", size = 1703675 },
-    { url = "https://files.pythonhosted.org/packages/9f/7c/f5b0556590e7b4e710509105e668adb55aa9470a9f0e4dea9c40a4a11ce1/pycryptodome-3.23.0-pp27-pypy_73-manylinux2010_x86_64.whl", hash = "sha256:350ebc1eba1da729b35ab7627a833a1a355ee4e852d8ba0447fafe7b14504d56", size = 1705791 },
-    { url = "https://files.pythonhosted.org/packages/33/38/dcc795578d610ea1aaffef4b148b8cafcfcf4d126b1e58231ddc4e475c70/pycryptodome-3.23.0-pp27-pypy_73-win32.whl", hash = "sha256:93837e379a3e5fd2bb00302a47aee9fdf7940d83595be3915752c74033d17ca7", size = 1780265 },
     { url = "https://files.pythonhosted.org/packages/d9/12/e33935a0709c07de084d7d58d330ec3f4daf7910a18e77937affdb728452/pycryptodome-3.23.0-pp310-pypy310_pp73-macosx_10_15_x86_64.whl", hash = "sha256:ddb95b49df036ddd264a0ad246d1be5b672000f12d6961ea2c267083a5e19379", size = 1623886 },
     { url = "https://files.pythonhosted.org/packages/22/0b/aa8f9419f25870889bebf0b26b223c6986652bdf071f000623df11212c90/pycryptodome-3.23.0-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d8e95564beb8782abfd9e431c974e14563a794a4944c29d6d3b7b5ea042110b4", size = 1672151 },
     { url = "https://files.pythonhosted.org/packages/d4/5e/63f5cbde2342b7f70a39e591dbe75d9809d6338ce0b07c10406f1a140cdc/pycryptodome-3.23.0-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:14e15c081e912c4b0d75632acd8382dfce45b258667aa3c67caf7a4d4c13f630", size = 1664461 },
@@ -838,11 +837,11 @@ wheels = [
 
 [[package]]
 name = "pydal"
-version = "20250501.2"
+version = "20250525.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/31/37/72a7c4b2011284f555fc33b23e28b88cea650be567520a16d07d0504911b/pydal-20250501.2.tar.gz", hash = "sha256:58217aa7360c7f5116339f2818e8ad5c795d263f5132aac3f12cbc4c7a9fcd3d", size = 623393 }
+sdist = { url = "https://files.pythonhosted.org/packages/56/11/16364946a0c9d1dc80f1582f27964501aeb50926fd3b20b0843dc9fcd2a8/pydal-20250525.3.tar.gz", hash = "sha256:6bb5b7c875c6d2d734bbec7d29cd474c62c1e9e06b118c7cd13078c2462305f9", size = 628394 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/f3/d2d791a5bbf714183f82ee3a358517ff14c98af489ce9d4d50fc4ff29d52/pydal-20250501.2-py2.py3-none-any.whl", hash = "sha256:5ef957e0775d8a89d556eb34cef374a2e73e8ab8db8330657c7859e8aba86756", size = 247228 },
+    { url = "https://files.pythonhosted.org/packages/a6/7d/54b3a8415efec24cce28f8023a4ee9c4db7d842bd566775745107355afd3/pydal-20250525.3-py2.py3-none-any.whl", hash = "sha256:656ae332fd3cac12d2b6bcb14e50b6a934ffd5c2023fce39954918958a749c98", size = 250102 },
 ]
 
 [[package]]

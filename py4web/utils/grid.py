@@ -491,6 +491,7 @@ class Grid:
         #  instance variables that will be computed
         self.db = query._db  # the database
         self.query = query  # the filter query
+        self.query2 = None  # the query with additional filters
         self.query_parms = safely(lambda: request.params, default={})
         self.T = T  # the translator
         self.form_maker = form_maker  # the object that makes forms
@@ -562,13 +563,16 @@ class Grid:
                 query_lambda = self.param.search_queries[search_type][1]
                 try:
                     query = query_lambda(search_string)
-                except Exception:
-                    pass  # flash a message here
+                    print(query)
+                except Exception as e:
+                    import traceback
+                    print(traceback.format_exc())
+                    pass # TODO: display the error
 
         if not query:
-            query = self.query
+            self.query2 = self.query
         else:
-            query &= self.query
+            self.query2 = self.query & query
 
         self.mode = request.query.get("mode", "select")
         self.record_id = request.query.get("id")
@@ -779,10 +783,10 @@ class Grid:
         if self.param.groupby or self.param.left:
             #  need groupby fields in select to get proper count
             self.total_number_of_rows = len(
-                db(self.query).select(db[self.tablename]._id, **select_params)
+                db(self.query2).select(db[self.tablename]._id, **select_params)
             )
         else:
-            self.total_number_of_rows = db(self.query).count()
+            self.total_number_of_rows = db(self.query2).count()
 
         #  if at a high page number and then filter causes less records to be displayed, reset to page 1
         if (
@@ -801,7 +805,7 @@ class Grid:
             self.page_end = self.total_number_of_rows
 
         # get the data
-        self.rows = db(self.query).select(*self.needed_fields, **select_params)
+        self.rows = db(self.query2).select(*self.needed_fields, **select_params)
 
         self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
         if self.total_number_of_rows % self.param.rows_per_page > 0:
