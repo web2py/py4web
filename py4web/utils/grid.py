@@ -676,12 +676,11 @@ class Grid:
 
     def _handle_mode_select(self):
         db = self.db
+        query = self.query
 
-        # use the default search for the table
+        # use the default search for the table (we have to do this here because need self.table)
         if self.param.search_queries is None:
             self.param.search_queries = [make_default_search_query(self.table)]
-
-        query = self.query
 
         # apply the search query
         if not self.param.search_form and self.param.search_queries:
