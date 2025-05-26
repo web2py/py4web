@@ -9,6 +9,7 @@ import functools
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
+from pydal.querybuilder import QueryBuilder
 from yatl.helpers import (
     CAT,
     DIV,
@@ -52,6 +53,11 @@ def safe_int(text, default):
 
 def query_join(a, b):
     return a + ("&" if "?" in a else "?") + b
+
+
+def make_default_search_query(table):
+    builder = QueryBuilder()
+    return ["Query", (lambda text, table=table: builder.parse(table, text)), None]
 
 
 class GridClassStyle:
@@ -105,6 +111,7 @@ class GridClassStyle:
         "grid-search-form-td": "grid-search-form-td",
         "grid-search-form-input": "grid-search-form-input",
         "grid-search-form-select": "grid-search-form-select",
+        "grid-search-form-error": "py4web-validation-error",
         "grid-search-boolean": "grid-search-boolean",
         "grid-header-element": "grid-header-element info",
         "grid-footer-element": "grid-footer-element info",
@@ -163,6 +170,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-td": "grid-search-form-td pr-1",
         "grid-search-form-input": "grid-search-form-input input",
         "grid-search-form-select": "grid-search-form-input control select",
+        "grid-search-form-error": "py4web-validation-error",
         "grid-search-boolean": "grid-search-boolean",
         "grid-header-element": "grid-header-element button",
         "grid-footer-element": "grid-footer-element button",
@@ -216,6 +224,7 @@ class GridClassStyleBootstrap5(GridClassStyle):
         "grid-search-form-td": "grid-search-form-td pr-1",
         "grid-search-form-input": "grid-search-form-input form-control",
         "grid-search-form-select": "grid-search-form-input control select",
+        "grid-search-form-error": "py4web-validation-error",
         "grid-search-boolean": "grid-search-boolean",
         "grid-header-element": "grid-header-element btn btn-sm",
         "grid-footer-element": "grid-footer-element btn btn-sm",
@@ -311,6 +320,7 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-search-form-td": "p-2",
         "grid-search-form-input": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full",
         "grid-search-form-select": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full",
+        "grid-search-form-error": "p-2",
         "grid-search-boolean": "form-checkbox h-5 w-5 text-blue-600",
         "grid-header-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
         "grid-footer-element": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600",
@@ -493,6 +503,7 @@ class Grid:
         self.query = query  # the filter query
         self.query2 = None  # the query with additional filters
         self.query_parms = safely(lambda: request.params, default={})
+        self.search_query_error = None # error to be displayed in case failed search
         self.T = T  # the translator
         self.form_maker = form_maker  # the object that makes forms
         self.referrer = None  # page referring this one
@@ -556,23 +567,7 @@ class Grid:
     def process(self):
         query = None
         db = self.db
-        if not self.param.search_form and self.param.search_queries:
-            search_type = safe_int(request.query.get("search_type", 0), default=0)
-            search_string = request.query.get("search_string")
-            if search_type < len(self.param.search_queries) and search_string:
-                query_lambda = self.param.search_queries[search_type][1]
-                try:
-                    query = query_lambda(search_string)
-                    print(query)
-                except Exception as e:
-                    import traceback
-                    print(traceback.format_exc())
-                    pass # TODO: display the error
-
-        if not query:
-            self.query2 = self.query
-        else:
-            self.query2 = self.query & query
+        self.search_query_error = None
 
         self.mode = request.query.get("mode", "select")
         self.record_id = request.query.get("id")
@@ -596,6 +591,30 @@ class Grid:
 
         # SECURITY: if the record does not exist or does not match query, than we are not allowed
         self.table = db[self.tablename]
+
+        # use the default search for the table
+        if self.param.search_queries is None:
+            self.param.search_queries = [make_default_search_query(self.table)]
+
+        # apply the search query
+        if not self.param.search_form and self.param.search_queries:
+            search_type = safe_int(request.query.get("search_type", 0), default=0)
+            search_string = request.query.get("search_string")            
+            if search_type < len(self.param.search_queries) and search_string:
+                _, query_lambda, requires = self.param.search_queries[search_type]                
+                if requires:
+                    search_string, self.search_query_error = requires(search_string)
+                if not self.search_query_error:
+                    try:
+                        query = query_lambda(search_string)
+                    except Exception as e:
+                        self.search_query_error = str(e)
+
+        if not query:
+            self.query2 = self.query
+        else:
+            self.query2 = self.query & query
+
         if self.record_id:
             self.record = self.table(self.record_id)
             if not self.record:
@@ -969,7 +988,12 @@ class Grid:
             tr.append(TD(select, _class=td_classes))
         tr.append(TD(input, _class=td_classes))
         tr.append(TD(submit, clear, _class=td_classes))
-        form.append(TABLE(tr, _class=self.get_style("grid-search-form-table")))
+        table = TABLE(tr, _class=self.get_style("grid-search-form-table"))
+        if self.search_query_error:
+            table.append(TR(TD(self.search_query_error, 
+                               _colspan=3 if len(options)>1 else 2,
+                               _class=self.get_style("grid-search-form-error"))))
+        form.append(table)
         div.append(form)
         return div
 
@@ -1386,18 +1410,6 @@ class Grid:
             if self.tablename and self.record_id
             else None
         )
-
-    def add_search_query(self, name, query, requires):
-        if self.param.search_form:
-            raise ValueError(
-                "Cannot add search queries if a you provide a search_form to the grid call "
-                "or if auto_process is set to True.  Ensure no search_form is set, set "
-                "auto_process to False, add your search query and then call grid.process()."
-            )
-
-        if self.param.search_queries is None:
-            self.param.search_queries = []
-        self.param.search_queries.append([name, query, requires])
 
     def _get_tablenames(self, *args):
         """Returns the tablenames used by this grid"""
