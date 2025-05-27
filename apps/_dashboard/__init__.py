@@ -28,6 +28,8 @@ from py4web import (
 )
 from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
+from py4web.utils.grid import Grid
+from yatl.helpers import A
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -156,10 +158,51 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
-    @action("dbadmin")
+    @action("tickets/search")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
-        return dict(languages=dumps(getattr(T.local, "language", {})))
+        db = error_logger.database_logger.db
+
+        def make_grid():
+            make_safe(db)
+            table = db.py4web_error
+            columns = [field for field in table if not field.name == "snapshot"]
+            return Grid(table, columns=columns)
+
+        grid = action.uses(db)(make_grid)()
+        return dict(grid=grid)
+
+    @action("dbadmin/<app_name>/<db_name>/<table_name>")
+    @action.uses(Logged(session), "dbadmin.html")
+    def dbadmin(app_name, db_name, table_name):
+        module = Reloader.MODULES.get(app_name)
+        db = getattr(module, db_name)
+
+        def make_grid():
+            make_safe(db)
+            table = db[table_name]
+            for field in table:
+                field.readable = True
+                field.writable = True
+            columns = [
+                field
+                for field in table
+                if field.type
+                in (
+                    "id",
+                    "string",
+                    "integer",
+                    "double",
+                    "time",
+                    "date",
+                    "datetime",
+                    "boolean",
+                )
+            ]
+            return Grid(table, columns=columns)
+
+        grid = action.uses(db)(make_grid)()
+        return dict(grid=grid)
 
     @action("info")
     @session_secured
@@ -350,69 +393,25 @@ if MODE in ("demo", "readonly", "full"):
 
         if not module:
             raise HTTP(404)
-
-        def url(*args):
-            return request.url + "/" + "/".join(args)
-
         databases = [
             name for name in dir(module) if isinstance(getattr(module, name), DAL)
         ]
-        if len(args) == 1:
 
-            def tables(name):
-                db = getattr(module, name)
-                make_safe(db)
-                return [
-                    {
-                        "name": t._tablename,
-                        "fields": t.fields,
-                        "link": url(name, t._tablename) + "?model=true",
-                    }
-                    for t in getattr(module, name)
-                ]
-
-            return {
-                "databases": [
-                    {"name": name, "tables": tables(name)} for name in databases
-                ]
-            }
-        elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])
+        def tables(name):
+            db = getattr(module, name)
             make_safe(db)
-            id = args[3] if len(args) == 4 else None
-            policy = Policy()
-            for table in db:
-                policy.set(
-                    table._tablename,
-                    "GET",
-                    authorize=True,
-                    allowed_patterns=["**"],
-                    allow_lookup=True,
-                    fields=table.fields,
-                )
-                policy.set(table._tablename, "PUT", authorize=True, fields=table.fields)
-                policy.set(
-                    table._tablename, "POST", authorize=True, fields=table.fields
-                )
-                policy.set(table._tablename, "DELETE", authorize=True)
+            return [
+                {
+                    "name": t._tablename,
+                    "fields": t.fields,
+                    "link": URL("dbadmin", app_name, name, t._tablename),
+                }
+                for t in getattr(module, name)
+            ]
 
-            def make_writable(tablename):
-                if tablename in db:
-                    for field in db[tablename]:
-                        field.writable = True
-
-            # must wrap into action uses to make sure it closes transactions
-            data = action.uses(db)(
-                lambda: make_writable(args[2])
-                or RestAPI(db, policy)(
-                    request.method, args[2], id, request.query, request.json
-                )
-            )()
-        else:
-            data = {}
-        if "code" in data:
-            response.status = data["code"]
-        return data
+        return {
+            "databases": [{"name": name, "tables": tables(name)} for name in databases]
+        }
 
 
 if MODE == "full":
