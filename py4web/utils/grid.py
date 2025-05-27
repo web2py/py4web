@@ -57,7 +57,7 @@ def query_join(a, b):
 
 def make_default_search_query(table):
     field_aliases = {
-        field.label.replace(" ", "_").lower(): field.name
+        str(field.label).replace(" ", "_").lower(): field.name
         for field in table
         if field.readable
     }
