@@ -422,7 +422,7 @@ class FormStyleFactory:
             else:
                 if field.name in self.widgets:
                     widget = self.widgets[field.name]
-                elif field.type == "text":
+                elif field.type == "text" or field.type == "json":
                     widget = TextareaWidget()
                 elif field.type == "datetime":
                     widget = DateTimeWidget()
