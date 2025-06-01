@@ -11,9 +11,13 @@
     .grid-table-wrapper{overflow-x: auto;}
     body { background: black; color: white; }
     body > center > * { max-width: 90vw; }
-    form { max-width: 900px; margin: 0 auto; }
-    nav.black a, a, label { color: #33BFFF; }
+    form { max-width: 900px; margin: 0 0 0 20px; }
+    nav.black a, a { color: #33BFFF; }
+    label:not(.help) { color: black; background-color: #d1d1d1; padding: 2px 5px; margin: 5px 0 0 10px; border-top-left-radius: 5px; border-top-right-radius: 5px}
+    span ~ label { border-radius: 5px}
+    label ~ div { position: relative; top: -4px}
     button, a[role=button], input[type=submit], input[type=button] { background-color: #33BFFF; color: black}
+    p, input, textarea { margin: 5px}
     thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
     tr:hover {background:#111111}
     .grid-search-form {width:100%; max-width: 100%}
@@ -32,7 +36,7 @@
       </nav>
     </header>
     <!-- beginning of HTML inserted by extending template -->
-    <center>
+    <div>
       <div>
         <!-- Flash alert messages, first optional one in data-alert -->
         <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
@@ -41,7 +45,7 @@
         <!-- contect injected by extending page -->
         [[include]]
       </main>
-    </center>
+    </div>
     <!-- end of HTML inserted by extending template -->
     <footer class="black padded">
       <p>

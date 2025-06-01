@@ -180,7 +180,7 @@ if MODE in ("demo", "readonly", "full"):
             )
 
         grid = action.uses(db)(make_grid)()
-        return dict(grid=grid)
+        return dict(table_name="py4web_error", grid=grid)
 
     @action("dbadmin/<app_name>/<db_name>/<table_name>")
     @action.uses(Logged(session), "dbadmin.html")
@@ -212,7 +212,7 @@ if MODE in ("demo", "readonly", "full"):
             return Grid(table, columns=columns)
 
         grid = action.uses(db)(make_grid)()
-        return dict(grid=grid)
+        return dict(table_name=table_name, grid=grid)
 
     @action("info")
     @session_secured
