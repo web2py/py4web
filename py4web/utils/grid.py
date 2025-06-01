@@ -1188,7 +1188,7 @@ class Grid:
             if isinstance(self.param.details, str):
                 details_url = self.param.details.format(id=row_id)
             else:
-                details_url = URL(vars=dict(id=row.id, referrer=self.referrer))
+                details_url = URL(vars=dict(id=row_id, referrer=self.referrer))
             cat.append(
                 self._make_action_button(
                     url=details_url,
