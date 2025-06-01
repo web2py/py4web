@@ -1350,7 +1350,7 @@ def parse_referrer(r):
     return url
 
 
-def get_parent(path, parent_field):
+def get_parent(parent_field):
     """
     try to find the parent id for a parent/child table relationship
 
