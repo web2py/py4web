@@ -354,11 +354,24 @@ class Column:
         self.td_class_style = td_class_style
 
 
-class Button:
-    def __init__(self, text, url, **kwargs):
-        self.__dict__.update(kwargs)
+class ActionButton:
+    def __init__(
+        self,
+        url,
+        text=None,
+        icon=None,
+        additional_classes="",
+        message="",
+        append_id=False,
+        ignore_attribute_plugin=False,
+    ):
         self.url = url
         self.text = text
+        self.icon = icon
+        self.additional_classes = additional_classes
+        self.message = message
+        self.append_id = append_id
+        self.ignore_attribute_plugin = ignore_attribute_plugin
 
 
 class Grid:
