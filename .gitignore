@@ -21,6 +21,7 @@ Thumbs.db
 ./docs
 ./logs
 ./*.zip
+requirements.txt
 apps/_documentation/static/*/*.pdf
 apps/_documentation/static/*/*.epub
 apps*/*/*

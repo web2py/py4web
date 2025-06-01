@@ -57,3 +57,7 @@ upgrade-utils:
 upgrade-vue:
 	curl -L https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
+
+requirements.txt:
+	uv sync --no-dev
+	uv pip freeze > requirements.txt
