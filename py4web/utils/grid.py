@@ -360,11 +360,10 @@ class ActionButton:
         text,
         url,
         icon=None,
-        additional_classes="",
-        override_classes="",
+        additional_classes=None,
+        override_classes=None,
         message="",
-        ignore_attribute_plugin=False,
-        name="",
+        name="grid-button",
     ):
         self.text = text
         self.url = url
@@ -372,7 +371,6 @@ class ActionButton:
         self.additional_classes = additional_classes
         self.override_classes = override_classes
         self.message = message
-        self.ignore_attribute_plugin = ignore_attribute_plugin
         self.name = name
 
 
@@ -927,17 +925,18 @@ class Grid:
         if row_id:
             url += f"/{row_id}"
 
-        classes = self.get_style(name)
-
         if callable(additional_classes):
             additional_classes = additional_classes(row)
 
         if callable(override_classes):
             override_classes = override_classes(row)
 
-        if override_classes:
-            classes = join_classes(override_classes)
-        elif additional_classes:
+        if override_classes in (None, False):
+            classes = self.get_style(name)
+        else:
+            classes = override_classes
+
+        if additional_classes:
             classes = join_classes(classes, additional_classes)
 
         if callable(url):
@@ -1313,7 +1312,7 @@ class Grid:
                 elif callable(element):
                     grid_header.append(element())
                 else:
-                    override_classes = element.__dict__.get("override_classes", None)
+                    override_classes = element.override_classes
                     if not override_classes:
                         override_classes = join_classes(
                             self.get_style("grid-header-element"),
@@ -1328,8 +1327,8 @@ class Grid:
                             additional_classes=element.additional_classes,
                             override_classes=override_classes,
                             message=element.message,
-                            name=element.__dict__.get("name"),
-                            **element.__dict__.get("attrs", dict()),
+                            name=element.name,
+                            **element.attrs,
                         )
                     )
 
@@ -1387,7 +1386,7 @@ class Grid:
                 elif callable(element):
                     html.append(element())
                 else:
-                    override_classes = element.__dict__.get("override_classes", None)
+                    override_classes = element.override_classes
                     if not override_classes:
                         override_classes = join_classes(
                             self.get_style("grid-footer-element"),
@@ -1402,8 +1401,8 @@ class Grid:
                             additional_classes=element.additional_classes,
                             override_classes=override_classes,
                             message=element.message,
-                            name=element.__dict__.get("name"),
-                            **element.__dict__.get("attrs", dict()),
+                            name=element.name,
+                            **element.attrs,
                         )
                     )
 
