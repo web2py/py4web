@@ -12,7 +12,7 @@
     body { background: black; color: white; }
     body > center > * { max-width: 90vw; }
     form { max-width: 900px; margin: 0 auto; }
-    a, label { color: #33BFFF; }
+    nav.black a, a, label { color: #33BFFF; }
     button, a[role=button], input[type=submit], input[type=button] { background-color: #33BFFF; color: black}
     thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
     tr:hover {background:#111111}
@@ -26,10 +26,9 @@
     <header>
       <!-- Navigation bar -->
       <nav class="black">
-        <!-- Logo -->
-        <a href="[[=URL('index')]]">
-          <b>py4web/_dashboard/dbadmin</b>
-        </a>
+        <ul>
+          <li><a href="[[=URL('index')]]">Dashboard</a> / dbadmin</li>
+        </ul>
       </nav>
     </header>
     <!-- beginning of HTML inserted by extending template -->
@@ -46,7 +45,7 @@
     <!-- end of HTML inserted by extending template -->
     <footer class="black padded">
       <p>
-        Made with py4web
+        Part of <a href="https://py4web.com">py4web</a>
       </p>
     </footer>
   </body>

@@ -28,7 +28,7 @@ from py4web import (
 )
 from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
-from py4web.utils.grid import Grid
+from py4web.utils.grid import Button, Grid
 from yatl.helpers import A
 
 from .diff2kryten import diff2kryten
@@ -167,7 +167,17 @@ if MODE in ("demo", "readonly", "full"):
             make_safe(db)
             table = db.py4web_error
             columns = [field for field in table if not field.name == "snapshot"]
-            return Grid(table, columns=columns)
+            return Grid(
+                table,
+                columns=columns,
+                details=False,
+                editable=False,
+                pre_action_buttons=[
+                    lambda row: Button(
+                        "Show", url=URL("ticket", row.uuid), icon="fa-eye"
+                    )
+                ],
+            )
 
         grid = action.uses(db)(make_grid)()
         return dict(grid=grid)

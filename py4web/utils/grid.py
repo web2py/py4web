@@ -354,6 +354,13 @@ class Column:
         self.td_class_style = td_class_style
 
 
+class Button:
+    def __init__(self, text, url, **kwargs):
+        self.__dict__.update(kwargs)
+        self.url = url
+        self.text = text
+
+
 class Grid:
     FORMATTERS_BY_TYPE = {
         "NoneType": lambda value: "",
@@ -1154,12 +1161,12 @@ class Grid:
                     self._make_action_button(
                         url=btn.url,
                         button_text=self.T(btn.text),
-                        icon=btn.icon,
-                        additional_classes=btn.additional_classes,
-                        override_classes=btn.__dict__.get("override_classes"),
-                        message=btn.message,
-                        row_id=row_id if btn.append_id else None,
-                        name=btn.__dict__.get("name"),
+                        icon=getattr(btn, "icon", None),
+                        additional_classes=getattr(btn, "additional_classes", None),
+                        override_classes=getattr(btn, "override_classes", None),
+                        message=getattr(btn, "message", None),
+                        row_id=row_id if getattr(btn, "append_id", None) else None,
+                        name=getattr(btn, "name", None),
                         row=row,
                     )
                 )
@@ -1226,12 +1233,12 @@ class Grid:
                     self._make_action_button(
                         url=btn.url,
                         button_text=self.T(btn.text),
-                        icon=btn.icon,
-                        additional_classes=btn.additional_classes,
-                        override_classes=btn.__dict__.get("override_classes"),
-                        message=btn.message,
-                        row_id=row_id if btn.append_id else None,
-                        name=btn.__dict__.get("name"),
+                        icon=getattr(btn, "icon", None),
+                        additional_classes=getattr(btn, "additional_classes", None),
+                        override_classes=getattr(btn, "override_classes", None),
+                        message=getattr(btn, "message", None),
+                        row_id=row_id if getattr(btn, "append_id", None) else None,
+                        name=getattr(btn, "name", None),
                         row=row,
                     )
                 )
