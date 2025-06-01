@@ -28,7 +28,7 @@ from py4web import (
 )
 from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
-from py4web.utils.grid import ActionButton, Grid
+from py4web.utils.grid import Grid
 from yatl.helpers import A
 
 from .diff2kryten import diff2kryten
@@ -173,9 +173,11 @@ if MODE in ("demo", "readonly", "full"):
                 details=False,
                 editable=False,
                 pre_action_buttons=[
-                    lambda row: ActionButton(
-                        "Show", URL("ticket", row.uuid), icon="fa-eye"
-                    )
+                    lambda row: {
+                        "text": "Show",
+                        "url": URL("ticket", row.uuid),
+                        "icon": "fa-eye",
+                    }
                 ],
             )
 

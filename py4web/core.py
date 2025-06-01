@@ -897,7 +897,11 @@ def URL(  # pylint: disable=invalid-name
             broken_parts.insert(1, "_" + static_version)
 
     url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
-    url = url_prefix + prefix + "/".join(urllib.parse.quote(part, safe=r":/{}") for part in broken_parts)
+    url = (
+        url_prefix
+        + prefix
+        + "/".join(urllib.parse.quote(part, safe=r":/{}") for part in broken_parts)
+    )
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = dict(vars) if vars else {}
     if signer:

@@ -354,24 +354,11 @@ class Column:
         self.td_class_style = td_class_style
 
 
-class ActionButton:
-    def __init__(
-        self,
-        text,
-        url,
-        icon=None,
-        additional_classes=None,
-        override_classes=None,
-        message="",
-        name="grid-button",
-    ):
-        self.text = text
-        self.url = url
-        self.icon = icon
-        self.additional_classes = additional_classes
-        self.override_classes = override_classes
-        self.message = message
-        self.name = name
+def maybe_call(obj, *args, **kwargs):
+    """If the object is callable, call it with the args, kwargs"""
+    if not callable(obj):
+        return obj
+    return obj(*args, **kwargs)
 
 
 class Grid:
@@ -550,40 +537,24 @@ class Grid:
             self.process()
 
     def is_creatable(self):
-        if self.param.groupby:
-            return False
-        if callable(self.param.create):
-            return self.param.create()
-        return self.param.create
+        return False if self.param.groupby else maybe_call(self.param.create)
 
     def is_editable(self, row):
-        if row is None:
-            return False
-        if self.param.groupby:
-            return False
-        if callable(self.param.editable):
-            return self.param.editable(row)
-        return self.param.editable
+        return (
+            False
+            if not row or self.param.groupby
+            else maybe_call(self.param.editable, row)
+        )
 
     def is_readable(self, row):
-        if row is None:
-            return False
-        if callable(self.param.details):
-            return self.param.details(row)
-        return self.param.details
+        return False if not row else maybe_call(self.param.details, row)
 
     def is_deletable(self, row):
-        # cannot delete a record that does not exist
-        if row is None:
-            return False
-        # cannot delete if the a record is grouped
-        if self.param.groupby:
-            return False
-        # if deletable is callable, call it
-        if callable(self.param.deletable):
-            return self.param.deletable(row)
-        # if deletable is boolean, check it
-        return self.param.deletable
+        return (
+            False
+            if not row or self.param.groupby
+            else maybe_call(self.param.deletable, row)
+        )
 
     def get_style(self, element, default=None):
         return self.param.grid_class_style.get(element, default)
@@ -911,51 +882,30 @@ class Grid:
 
     def _make_action_button(
         self,
+        text,
         url,
-        button_text,
-        icon,
-        additional_classes=None,
-        override_classes=None,
-        message=None,
-        row_id=None,
-        name="grid-button",
-        row=None,
+        icon=None,
+        classes=None,
+        kind="grid-button",
         **attrs,
     ):
-        if row_id:
-            url += f"/{row_id}"
+        if kind:
+            classes = join_classes(classes, self.get_style(kind))
 
-        if callable(additional_classes):
-            additional_classes = additional_classes(row)
-
-        if callable(override_classes):
-            override_classes = override_classes(row)
-
-        if override_classes in (None, False):
-            classes = self.get_style(name)
-        else:
-            classes = override_classes
-
-        if additional_classes:
-            classes = join_classes(classes, additional_classes)
-
-        if callable(url):
-            url = url(row)
-
+        if not "_role" in attrs:
+            attrs["_role"] = "button"
         link = A(
             I(_class=self.param.icon_style.complete(icon)) if icon else "",
-            _role="button",
-            _message=message,
-            _title=button_text,
             _class=classes,
             _href=url,
+            **attrs,
         )
         if self.param.include_action_button_text:
             link.append(
                 SPAN(
                     XML("&nbsp;"),
-                    button_text,
-                    _class=self.get_style("grid-action-button-text"),
+                    text,
+                    _class=self.get_style(kind + "-text") if kind else None,
                 )
             )
 
@@ -1127,26 +1077,16 @@ class Grid:
 
     def _make_table_body(self):
         tbody = TBODY()
-        for index, row in enumerate(self.rows):
+        for row in self.rows:
             #  find the row id - there may be nested tables....
 
-            tr = TR(
-                _role="row",
-                _class=self.get_style("grid-tr"),
-            )
+            tr = TR(_role="row", _class=self.get_style("grid-tr"))
 
             #  add all the fields to the row
             for col in self.columns:
                 classes = join_classes(
                     [
-                        self.get_style(
-                            col.td_class_style,
-                            (
-                                col.td_class_style(row)
-                                if callable(col.td_class_style)
-                                else self.get_style("grid-td")
-                            ),
-                        ),
+                        self.get_style(maybe_call(col.td_class_style, row), "grid-td"),
                         f"grid-cell-{col.key}",
                     ]
                 )
@@ -1163,26 +1103,14 @@ class Grid:
         row_id = row[self.param.field_id] if self.param.field_id else row.id
         if self.param.pre_action_buttons and len(self.param.pre_action_buttons) > 0:
             for btn in self.param.pre_action_buttons:
-                if callable(btn):
-                    # a button can be a callable, to indicate whether or not a button should
-                    # be displayed. call the function with the row object
-                    btn = btn(row)
-                    if btn is None:
-                        # if None was returned, no button is available for this row: ignore this value in the
-                        # list
-                        continue
-                cat.append(
-                    self._make_action_button(
-                        url=btn.url.format(row_id=row_id),
-                        button_text=self.T(btn.text),
-                        icon=btn.icon,
-                        additional_classes=btn.additional_classes,
-                        override_classes=btn.override_classes,
-                        message=btn.message,
-                        name=btn.name,
-                        row=row,
-                    )
-                )
+                btn = maybe_call(btn, row)
+                if btn is None:
+                    # if None, no button
+                    continue
+                if isinstance(btn, dict):
+                    cat.append(self._make_action_button(**btn))
+                else:
+                    cat.append(btn)
 
         if self.is_readable(row):
             if isinstance(self.param.details, str):
@@ -1191,10 +1119,10 @@ class Grid:
                 details_url = URL(vars=dict(id=row_id, referrer=self.referrer))
             cat.append(
                 self._make_action_button(
+                    text=self.T(self.param.details_action_button_text),
                     url=details_url,
-                    button_text=self.T(self.param.details_action_button_text),
                     icon=self.param.icon_style.details_button,
-                    name="grid-details-button",
+                    kind="grid-details-button",
                 )
             )
         if self.is_editable(row):
@@ -1206,10 +1134,10 @@ class Grid:
                 )
             cat.append(
                 self._make_action_button(
+                    text=self.T(self.param.edit_action_button_text),
                     url=edit_url,
-                    button_text=self.T(self.param.edit_action_button_text),
                     icon=self.param.icon_style.edit_button,
-                    name="grid-edit-button",
+                    kind="grid-edit-button",
                     _disabled=not self.is_editable(row),
                 )
             )
@@ -1222,38 +1150,25 @@ class Grid:
                 )
             cat.append(
                 self._make_action_button(
+                    text=self.T(self.param.delete_action_button_text),
                     url=delete_url,
-                    button_text=self.T(self.param.delete_action_button_text),
                     icon=self.param.icon_style.delete_button,
                     additional_classes="confirmation",
-                    message="Delete record",
-                    name="grid-delete-button",
+                    kind="grid-delete-button",
                     _disabled=not self.is_deletable(row),
                 )
             )
 
         if self.param.post_action_buttons and len(self.param.post_action_buttons) > 0:
             for btn in self.param.post_action_buttons:
-                if callable(btn):
-                    # a button can be a callable, to indicate whether or not a button should
-                    # be displayed. call the function with the row object
-                    btn = btn(row)
-                    if btn is None:
-                        # if None was returned, no button is available for this row: ignore this value in the
-                        # list
-                        continue
-                cat.append(
-                    self._make_action_button(
-                        url=btn.url.format(row_id=row_id),
-                        button_text=self.T(btn.text),
-                        icon=btn.icon,
-                        additional_classes=btn.additional_classes,
-                        override_classes=btn.override_classes,
-                        message=btn.message,
-                        name=btn.name,
-                        row=row,
-                    )
-                )
+                btn = maybe_call(btn, row)
+                if btn is None:
+                    # if None, no button
+                    continue
+                if isinstance(btn, dict):
+                    cat.append(self._make_action_button(*btn))
+                else:
+                    cat.append(btn)
 
         return cat
 
@@ -1298,39 +1213,21 @@ class Grid:
 
             grid_header.append(
                 self._make_action_button(
-                    create_url,
                     self.T(self.param.new_action_button_text),
+                    create_url,
                     icon=self.param.icon_style.add_button,
-                    icon_size="normal",
-                    override_classes=self.get_style("grid-new-button"),
+                    kind="grid-new-button",
                 )
             )
         if self.param.header_elements and len(self.param.header_elements) > 0:
             for element in self.param.header_elements:
-                if isinstance(element, str):
-                    html.append(XML(element))
-                elif callable(element):
-                    grid_header.append(element())
+                element = maybe_call(element)
+                if isinstance(element, dict):
+                    element = copy.copy(element)
+                    element["kind"] = element.get("kind", "grid-header-element")
+                    grid_header.append(self._make_action_button(**element))
                 else:
-                    override_classes = element.override_classes
-                    if not override_classes:
-                        override_classes = join_classes(
-                            self.get_style("grid-header-element"),
-                            element.additional_classes,
-                        )
-                    grid_header.append(
-                        self._make_action_button(
-                            url=element.url,
-                            button_text=self.T(element.text),
-                            icon=element.icon,
-                            icon_size="normal",
-                            additional_classes=element.additional_classes,
-                            override_classes=override_classes,
-                            message=element.message,
-                            name=element.name,
-                            **element.attrs,
-                        )
-                    )
+                    grid_header.append(element)
 
         #  build the search form if provided
         if self.param.search_form:
@@ -1377,35 +1274,17 @@ class Grid:
         if self.number_of_pages > 1:
             footer.append(self._make_table_pager())
 
-        html.append(footer)
-
         if self.param.footer_elements and len(self.param.footer_elements) > 0:
             for element in self.param.footer_elements:
-                if isinstance(element, str):
-                    html.append(XML(element))
-                elif callable(element):
-                    html.append(element())
+                element = maybe_call(element)
+                if isinstance(element, dict):
+                    element = copy.copy(element)
+                    element["kind"] = element.get("kind", "grid-footer-element")
+                    footer.append(self._make_action_button(**element))
                 else:
-                    override_classes = element.override_classes
-                    if not override_classes:
-                        override_classes = join_classes(
-                            self.get_style("grid-footer-element"),
-                            element.additional_classes,
-                        )
-                    html.append(
-                        self._make_action_button(
-                            url=element.url,
-                            button_text=self.T(element.text),
-                            icon=element.icon,
-                            icon_size="normal",
-                            additional_classes=element.additional_classes,
-                            override_classes=override_classes,
-                            message=element.message,
-                            name=element.name,
-                            **element.attrs,
-                        )
-                    )
+                    footer.append(element)
 
+        html.append(footer)
         return html
 
     def render(self):
