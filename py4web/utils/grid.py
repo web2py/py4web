@@ -357,21 +357,23 @@ class Column:
 class ActionButton:
     def __init__(
         self,
+        text,
         url,
-        text=None,
         icon=None,
         additional_classes="",
+        override_classes="",
         message="",
-        append_id=False,
         ignore_attribute_plugin=False,
+        name="",
     ):
-        self.url = url
         self.text = text
+        self.url = url
         self.icon = icon
         self.additional_classes = additional_classes
+        self.override_classes = override_classes
         self.message = message
-        self.append_id = append_id
         self.ignore_attribute_plugin = ignore_attribute_plugin
+        self.name = name
 
 
 class Grid:
@@ -713,8 +715,10 @@ class Grid:
             search_type = safe_int(request.query.get("search_type", 0), default=0)
             search_string = request.query.get("search_string")
             if search_type < len(self.param.search_queries) and search_string:
-                _, query_lambda, requires = self.param.search_queries[search_type]
-                if requires:
+                parts = self.param.search_queries[search_type]
+                query_lambda = parts[1]
+                if len(parts) == 3 and parts[2]:
+                    requires = parts[2]
                     search_string, self.search_query_error = requires(search_string)
                 if not self.search_query_error:
                     try:
@@ -912,11 +916,9 @@ class Grid:
         url,
         button_text,
         icon,
-        icon_size="small",  # deprecated
         additional_classes=None,
         override_classes=None,
         message=None,
-        onclick=None,  # deprecated
         row_id=None,
         name="grid-button",
         row=None,
@@ -1172,14 +1174,13 @@ class Grid:
                         continue
                 cat.append(
                     self._make_action_button(
-                        url=btn.url,
+                        url=btn.url.format(row_id=row_id),
                         button_text=self.T(btn.text),
-                        icon=getattr(btn, "icon", None),
-                        additional_classes=getattr(btn, "additional_classes", None),
-                        override_classes=getattr(btn, "override_classes", None),
-                        message=getattr(btn, "message", None),
-                        row_id=row_id if getattr(btn, "append_id", None) else None,
-                        name=getattr(btn, "name", None),
+                        icon=btn.icon,
+                        additional_classes=btn.additional_classes,
+                        override_classes=btn.override_classes,
+                        message=btn.message,
+                        name=btn.name,
                         row=row,
                     )
                 )
@@ -1244,14 +1245,13 @@ class Grid:
                         continue
                 cat.append(
                     self._make_action_button(
-                        url=btn.url,
+                        url=btn.url.format(row_id=row_id),
                         button_text=self.T(btn.text),
-                        icon=getattr(btn, "icon", None),
-                        additional_classes=getattr(btn, "additional_classes", None),
-                        override_classes=getattr(btn, "override_classes", None),
-                        message=getattr(btn, "message", None),
-                        row_id=row_id if getattr(btn, "append_id", None) else None,
-                        name=getattr(btn, "name", None),
+                        icon=btn.icon,
+                        additional_classes=btn.additional_classes,
+                        override_classes=btn.override_classes,
+                        message=btn.message,
+                        name=btn.name,
                         row=row,
                     )
                 )

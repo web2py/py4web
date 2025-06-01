@@ -173,8 +173,8 @@ if MODE in ("demo", "readonly", "full"):
                 details=False,
                 editable=False,
                 pre_action_buttons=[
-                    lambda row: Button(
-                        "Show", url=URL("ticket", row.uuid), icon="fa-eye"
+                    lambda row: ActionButton(
+                        "Show", URL("ticket", row.uuid), icon="fa-eye"
                     )
                 ],
             )
