@@ -6,10 +6,21 @@
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" href="css/no.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
-    <style>
+    <style>      
     .py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red;}
     .grid-table-wrapper{overflow-x: auto;}
+    body { background: black; color: white; }
+    body > center > * { max-width: 90vw; }
+    form { max-width: 900px; margin: 0 auto; }
+    a, label { color: #33BFFF; }
+    button, a[role=button], input[type=submit], input[type=button] { background-color: #33BFFF; color: black}
+    thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
+    tr:hover {background:#111111}
+    .grid-search-form {width:100%; max-width: 100%}
+    tbody tr:hover { background-color:#002233 }
+    .grid-search-form-tr {border-bottom: none}
     </style>
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
     <header>
@@ -17,7 +28,7 @@
       <nav class="black">
         <!-- Logo -->
         <a href="[[=URL('index')]]">
-          <b>py4web_dashboard/dbadmin</b>
+          <b>py4web/_dashboard/dbadmin</b>
         </a>
       </nav>
     </header>
@@ -41,4 +52,5 @@
   </body>
   <!-- You've gotta have utils.js -->
   <script src="js/utils.js"></script>
+  [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

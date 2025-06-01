@@ -124,7 +124,7 @@
                         <tbody v-for="db in databases">
                             <tr v-for="table in db.tables">
                                 <td width="10%">
-                                    <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
+                                    <button style="width:100%" v-bind:onclick="'window.open(\''+table.link+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
                                 </td>
                                 <td style="padding-top:9px">
                                     <span v-for="name in table.fields" class="tag">{{name}}</span>
@@ -166,7 +166,7 @@
                                 <td>{{ticket.method}}</td>
                                 <td>{{ticket.path}}</td>
                                 <td><a target="blank" v-bind:href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
-                                <td><a class="button" target="blank" v-bind:href="'[[=URL('dbadmin')]]?app=_dashboard&dbname=db&tablename=py4web_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
+                                <td><a class="button" target="blank" v-bind:href="'[[=URL('tickets/search')]]?search_string=path is '+ticket.path+' and error is &quot;'+ticket.error+'&quot;'">Search</a></td>
                             </tr>
                         </tbody>
                     </table>
