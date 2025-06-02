@@ -86,6 +86,7 @@ class GridClassStyle:
         "grid-th": "",
         "grid-td": "",
         "grid-td-buttons": "",
+        "grid-back-button": "info",
         "grid-button": "info",
         "grid-details-button": "grid-details-button info",
         "grid-edit-button": "grid-edit-button info",
@@ -145,6 +146,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-th": "",
         "grid-td": "is-small",
         "grid-td-buttons": "is-small is-narrow",
+        "grid-back-button": "grid-button button",
         "grid-button": "grid-button button is-small",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
@@ -199,6 +201,7 @@ class GridClassStyleBootstrap5(GridClassStyle):
         "grid-th": "small",
         "grid-td": "small",
         "grid-td-buttons": "",
+        "grid-back-button": "grid-button btn",
         "grid-button": "grid-button btn btn-sm btn-outline-secondary",
         "grid-details-button": "grid-details-button btn btn-sm btn-outline-secondary",
         "grid-edit-button": "grid-edit-button btn btn-sm btn-outline-secondary",
@@ -294,6 +297,7 @@ class GridClassStyleTailwind(GridClassStyle):
         "grid-th": "px-4 py-2 text-left font-semibold",
         "grid-td": "px-4 py-2 text-gray-700",
         "grid-td-buttons": "px-4 py-2 flex gap-2",
+        "grid-back-button": "px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow",
         "grid-button": "px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 shadow",
         "grid-details-button": "px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 shadow",
         "grid-edit-button": "px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 shadow",
@@ -663,8 +667,15 @@ class Grid:
         else:
             referrer = None
         if referrer and inject_back:
+            classes = self.get_style("grid-back-button")
             self.form.param.sidecar.insert(
-                0, A(self.param.back_button_value, _role="button", _href=referrer)
+                0,
+                A(
+                    self.param.back_button_value,
+                    _role="button",
+                    _class=classes,
+                    _href=referrer,
+                ),
             )
 
         # redirect to the referrer
@@ -1371,9 +1382,9 @@ def get_parent(parent_field):
     #  if not found, search the record id of the parent from the child table record
     record_id = request.query.get("id")
     if record_id:
-        self.record = child_table(record_id)
-        if self.record:
-            parent_id = self.record[fn]
+        record = child_table(record_id)
+        if record:
+            parent_id = record[fn]
             if parent_id is not None:
                 return int(parent_id)
 
