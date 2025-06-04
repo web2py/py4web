@@ -217,36 +217,20 @@ class LDAPPlugin(UsernamePassword):
         self.groups = groups
 
     def check_credentials(self, username, password):
-        server = self.server
-        port = self.port
         base_dn = self.base_dn
         mode = self.mode
-        secure = self.secure
-        self_signed_certificate = self.self_signed_certificate
-        cert_path = self.cert_path
-        cert_file = self.cert_file
-        cacert_path = self.cacert_path
-        cacert_file = self.cacert_file
-        key_file = self.key_file
         bind_dn = self.bind_dn
         bind_pw = self.bind_pw
         filterstr = self.filterstr
         username_attrib = self.username_attrib
         custom_scope = self.custom_scope
-        allowed_groups = self.allowed_groups
         manage_user = self.manage_user
         user_firstname_attrib = self.user_firstname_attrib
         user_lastname_attrib = self.user_lastname_attrib
         user_mail_attrib = self.user_mail_attrib
         manage_groups = self.manage_groups
-        manage_groups_callback = self.manage_groups_callback
         db = self.db
-        group_dn = self.db
-        group_name_attrib = self.group_name_attrib
-        group_member_attrib = self.group_member_attrib
-        group_filterstr = self.group_filterstr
         group_mapping = self.group_mapping
-        tls = self.tls
         logger = self.logger
 
         if password == "":  # http://tools.ietf.org/html/rfc4513#section-5.1.2
@@ -554,37 +538,7 @@ class LDAPPlugin(UsernamePassword):
             return False
 
     def is_user_in_allowed_groups(self, username, password=None):
-        server = self.server
-        port = self.port
-        base_dn = self.base_dn
-        mode = self.mode
-        secure = self.secure
-        self_signed_certificate = self.self_signed_certificate
-        cert_path = self.cert_path
-        cert_file = self.cert_file
-        cacert_path = self.cacert_path
-        cacert_file = self.cacert_file
-        key_file = self.key_file
-        bind_dn = self.bind_dn
-        bind_pw = self.bind_pw
-        filterstr = self.filterstr
-        username_attrib = self.username_attrib
-        custom_scope = self.custom_scope
         allowed_groups = self.allowed_groups
-        manage_user = self.manage_user
-        user_firstname_attrib = self.user_firstname_attrib
-        user_lastname_attrib = self.user_lastname_attrib
-        user_mail_attrib = self.user_mail_attrib
-        manage_groups = self.manage_groups
-        manage_groups_callback = self.manage_groups_callback
-        db = self.db
-        group_dn = self.db
-        group_name_attrib = self.group_name_attrib
-        group_member_attrib = self.group_member_attrib
-        group_filterstr = self.group_filterstr
-        group_mapping = self.group_mapping
-        tls = self.tls
-        logger = self.logger
 
         """
         Figure out if the username is a member of an allowed group
@@ -613,36 +567,9 @@ class LDAPPlugin(UsernamePassword):
         ones in py4web's application database or create new groups
         according to ldap.
         """
-        server = self.server
-        port = self.port
-        base_dn = self.base_dn
-        mode = self.mode
-        secure = self.secure
-        self_signed_certificate = self.self_signed_certificate
-        cert_path = self.cert_path
-        cert_file = self.cert_file
-        cacert_path = self.cacert_path
-        cacert_file = self.cacert_file
-        key_file = self.key_file
-        bind_dn = self.bind_dn
-        bind_pw = self.bind_pw
-        filterstr = self.filterstr
-        username_attrib = self.username_attrib
-        custom_scope = self.custom_scope
-        allowed_groups = self.allowed_groups
-        manage_user = self.manage_user
-        user_firstname_attrib = self.user_firstname_attrib
-        user_lastname_attrib = self.user_lastname_attrib
-        user_mail_attrib = self.user_mail_attrib
-        manage_groups = self.manage_groups
         manage_groups_callback = self.manage_groups_callback
         db = self.db
-        group_dn = self.db
-        group_name_attrib = self.group_name_attrib
-        group_member_attrib = self.group_member_attrib
-        group_filterstr = self.group_filterstr
         group_mapping = self.group_mapping
-        tls = self.tls
         logger = self.logger
         groups = self.groups
 
@@ -732,33 +659,12 @@ class LDAPPlugin(UsernamePassword):
 
         server = self.server
         port = self.port
-        base_dn = self.base_dn
-        mode = self.mode
         secure = self.secure
         self_signed_certificate = self.self_signed_certificate
-        cert_path = self.cert_path
         cert_file = self.cert_file
         cacert_path = self.cacert_path
         cacert_file = self.cacert_file
         key_file = self.key_file
-        bind_dn = self.bind_dn
-        bind_pw = self.bind_pw
-        filterstr = self.filterstr
-        username_attrib = self.username_attrib
-        custom_scope = self.custom_scope
-        allowed_groups = self.allowed_groups
-        manage_user = self.manage_user
-        user_firstname_attrib = self.user_firstname_attrib
-        user_lastname_attrib = self.user_lastname_attrib
-        user_mail_attrib = self.user_mail_attrib
-        manage_groups = self.manage_groups
-        manage_groups_callback = self.manage_groups_callback
-        db = self.db
-        group_dn = self.db
-        group_name_attrib = self.group_name_attrib
-        group_member_attrib = self.group_member_attrib
-        group_filterstr = self.group_filterstr
-        group_mapping = self.group_mapping
         tls = self.tls
         logger = self.logger
 
@@ -794,43 +700,23 @@ class LDAPPlugin(UsernamePassword):
             con.start_tls_s()
         return con
 
-    def get_user_groups_from_ldap(self, con, username):
+    def get_user_groups_from_ldap(self, username=None, password=None):
         """
         Get all group names from ldap where the user is in
         """
-
-        server = self.server
-        port = self.port
+        bind_dn = self.bind_dn
         base_dn = self.base_dn
         mode = self.mode
-        secure = self.secure
-        self_signed_certificate = self.self_signed_certificate
-        cert_path = self.cert_path
-        cert_file = self.cert_file
-        cacert_path = self.cacert_path
-        cacert_file = self.cacert_file
-        key_file = self.key_file
-        bind_dn = self.bind_dn
-        bind_pw = self.bind_pw
         filterstr = self.filterstr
-        username_attrib = self.username_attrib
-        custom_scope = self.custom_scope
-        allowed_groups = self.allowed_groups
-        manage_user = self.manage_user
-        user_firstname_attrib = self.user_firstname_attrib
-        user_lastname_attrib = self.user_lastname_attrib
-        user_mail_attrib = self.user_mail_attrib
-        manage_groups = self.manage_groups
-        manage_groups_callback = self.manage_groups_callback
-        db = self.db
         group_dn = self.group_dn
         group_name_attrib = self.group_name_attrib
         group_member_attrib = self.group_member_attrib
         group_filterstr = self.group_filterstr
-        group_mapping = self.group_mapping
-        tls = self.tls
         logger = self.logger
-        groups = self.groups
+
+        # if username is None, return empty list
+        if username is None:
+            return []
 
         logger.info("[%s] Get user groups from ldap" % str(username))
         #
@@ -847,7 +733,17 @@ class LDAPPlugin(UsernamePassword):
                         domain.append(x.split("=")[-1])
                 username = "%s@%s" % (username, ".".join(domain))
             username_bare = username.split("@")[0]
+            con = self._init_ldap()
             con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
+            try:
+                if bind_dn:
+                    # need to search directory with an admin account 1st
+                    con.simple_bind_s(bind_dn, bind_pw)
+                else:
+                    # credentials should be in the form of user...@domain.tld
+                    con.simple_bind_s(username, password)
+            except (ldap.INVALID_CREDENTIALS, ldap.OPERATIONS_ERROR):
+                return []
             # In cases where ForestDnsZones and DomainDnsZones are found,
             # result will look like the following:
             # ['ldap://ForestDnsZones.domain.com/DC=ForestDnsZones,
@@ -880,14 +776,9 @@ class LDAPPlugin(UsernamePassword):
                 ldap_groups_of_the_user.append(
                     str(group[group_name_attrib][0], encoding="utf-8")
                 )
-                print(ldap_groups_of_the_user)
 
         logger.debug("User groups: %s" % ldap_groups_of_the_user)
         return list(ldap_groups_of_the_user)
-
-        if filterstr[0] == "(" and filterstr[-1] == ")":  # rfc4515 syntax
-            filterstr = filterstr[1:-1]  # parens added again where used
-        return []
 
     def check_credentials(self, username, password):
         return self.is_user_in_allowed_groups(username, password)
