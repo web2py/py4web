@@ -705,6 +705,7 @@ class LDAPPlugin(UsernamePassword):
         Get all group names from ldap where the user is in
         """
         bind_dn = self.bind_dn
+        bind_pw = self.bind_pw
         base_dn = self.base_dn
         mode = self.mode
         filterstr = self.filterstr
@@ -779,6 +780,3 @@ class LDAPPlugin(UsernamePassword):
 
         logger.debug("User groups: %s" % ldap_groups_of_the_user)
         return list(ldap_groups_of_the_user)
-
-    def check_credentials(self, username, password):
-        return self.is_user_in_allowed_groups(username, password)
