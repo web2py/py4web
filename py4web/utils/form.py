@@ -865,7 +865,13 @@ class Form(object):
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
-                                    if field.uploadfield:
+                                    if field.uploadfield == True and field.uploadfolder:
+                                        validated_vars[field.name] = field.store(
+                                            value.file,
+                                            value.filename,
+                                            field.uploadfolder,
+                                        )
+                                    elif field.uploadfield and field.db:
                                         validated_vars[field.name] = field.store(
                                             value.file,
                                             value.filename,
