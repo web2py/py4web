@@ -521,7 +521,7 @@ class Grid:
         self.search_query_error = None  # error to be displayed in case failed search
         self.T = T  # the translator
         self.form_maker = form_maker  # the object that makes forms
-        self.referrer = None  # page referring this one
+        self.this_url = None  # page referring this one
         self.mode = None  # select, new, details, edit, delete
         self.table = None  # selected table
         self.tablename = None  # name of the selected table
@@ -563,21 +563,31 @@ class Grid:
     def get_style(self, element, default=None):
         return self.param.grid_class_style.get(element, default)
 
+    @staticmethod
+    def parse(query):
+        mode = query.get("mode", "select")
+        record_id = query.get("id", None)
+        if record_id and mode == "select":
+            mode = "details"
+        referrer = query.get("referrer")
+        if referrer:
+            referrer = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+        return {"mode": mode, "record_id": record_id, "referrer": referrer}
+
     def process(self):
         query = None
         db = self.db
         self.search_query_error = None
 
-        self.mode = request.query.get("mode", "select")
-        self.record_id = request.query.get("id")
+        parsed = Grid.parse(request.query)
+        self.mode = parsed["mode"]
+        self.record_id = parsed["record_id"]
+        self.referrer = parsed["referrer"]
         # check invalid parameters]
         if self.mode not in ("new", "edit", "select", "details", "delete"):
             raise HTTP(400)
         elif self.mode in ("edit", "details", "delete") and self.record_id is None:
             raise HTTP(400)
-        # check implicit parameters
-        if self.mode == "select" and self.record_id is not None:
-            self.mode = "details"
 
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
@@ -661,12 +671,7 @@ class Grid:
         self._handle_redirect_to_referrer(True, True)
 
     def _handle_redirect_to_referrer(self, inject_back, redirect_on_post):
-        encoded_referrer = request.query.get("referrer")
-        if encoded_referrer:
-            referrer = base64.b16decode(encoded_referrer.encode("utf8")).decode("utf8")
-        else:
-            referrer = None
-        if referrer and inject_back:
+        if self.referrer and inject_back:
             classes = self.get_style("grid-back-button")
             self.form.param.sidecar.insert(
                 0,
@@ -674,13 +679,13 @@ class Grid:
                     self.param.back_button_value,
                     _role="button",
                     _class=classes,
-                    _href=referrer,
+                    _href=self.referrer,
                 ),
             )
 
         # redirect to the referrer
         if self.form.accepted or (redirect_on_post and request.method == "POST"):
-            redirect(referrer or URL())
+            redirect(self.referrer or URL())
 
     def _handle_mode_select(self):
         db = self.db
@@ -783,7 +788,7 @@ class Grid:
             functools.reduce(lambda a, b: a | b, sets) | set([self.table._id])
         )
 
-        self.referrer = base64.b16encode(request.url.encode("utf8")).decode("utf8")
+        self.this_url = base64.b16encode(request.url.encode("utf8")).decode("utf8")
         self.current_page_number = safe_int(request.query.get("page"), default=1)
 
         select_params = dict()
@@ -1127,7 +1132,7 @@ class Grid:
             if isinstance(self.param.details, str):
                 details_url = self.param.details.format(id=row_id)
             else:
-                details_url = URL(vars=dict(id=row_id, referrer=self.referrer))
+                details_url = URL(vars=dict(id=row_id, referrer=self.this_url))
             cat.append(
                 self._make_action_button(
                     text=self.T(self.param.details_action_button_text),
@@ -1141,7 +1146,7 @@ class Grid:
                 edit_url = self.param.editable.format(id=row_id)
             else:
                 edit_url = URL(
-                    vars=dict(mode="edit", id=row_id, referrer=self.referrer)
+                    vars=dict(mode="edit", id=row_id, referrer=self.this_url)
                 )
             cat.append(
                 self._make_action_button(
@@ -1157,7 +1162,7 @@ class Grid:
                 delete_url = self.param.deletable.format(id=row_id)
             else:
                 delete_url = URL(
-                    vars=dict(mode="delete", id=row_id, referrer=self.referrer)
+                    vars=dict(mode="delete", id=row_id, referrer=self.this_url)
                 )
             cat.append(
                 self._make_action_button(
@@ -1220,7 +1225,7 @@ class Grid:
             if isinstance(self.param.create, str):
                 create_url = self.param.create
             else:
-                create_url = URL(vars=dict(mode="new", referrer=self.referrer))
+                create_url = URL(vars=dict(mode="new", referrer=self.this_url))
 
             grid_header.append(
                 self._make_action_button(
