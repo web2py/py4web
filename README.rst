@@ -39,35 +39,71 @@ Installation
 
 PY4WEB runs fine on Windows, MacOS and Linux. There are many installation procedures `(see the official documentation for details) <https://py4web.com/_documentation/static/en/chapter-03.html>`__ but only two of them are summarized here.
 
-The **simplest way** to install py4web is using binaries, but it's only available for Windows and MacOS. It's meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from `this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it on a local folder and open a command line there. Finally run the commands (omit './' if you're using Windows)
-
-
-.. code:: bash
-
-   ./py4web set_password
-   ./py4web run apps
-
-
-
-
-The **standard installation procedure** for py4web on Windows, MacOS and Linux  is using pip. Its only prerequisite is Python 3.7+.
+The **standard installation procedure** for py4web on Windows, MacOS and Linux is using pip. Its only prerequisite is Python 3.9+.
 
 .. code:: bash
 
-   python3 -m pip install --upgrade py4web --no-cache-dir --user
+   $ python -m pip install --upgrade --no-cache-dir --user py4web
+   $ python -m py4web setup apps
+   Create app _scaffold? [y/N]: n
+   Create app showcase? [y/N]: n
+   Create app _documentation? [y/N]: n
+   Create app _dashboard? [y/N]: y
+   [X] Unzipping app py4web.app._dashboard.zip
+   Pick a password: ******
+   Repeat for confirmation: ******
+   Create app _minimal? [y/N]: n
+   Create app _default? [y/N]: 
+   Done!
+
+   Type "py4web.py run apps" "to start the py4web server.
+   $ python -m py4web run apps
+
+On Linux and OSX you can omit the ``python -m`` part.   
+
+You can use a virtual environment:
+
+.. code:: bash
+
+   $ python -m venv .venv
+   $ . .venv/bin/activate
+   $ pip install --upgrade --no-cache-dir
+   $ py4web setup apps
+   ...
+   $ py4web run apps
 
 
-but do **not** type the ''--user'' option with virtualenv or a standard Windows installation which is already per-user.
-Also, if ''python3'' does not work, try with the simple ''python'' command instead.
+You can use uv (highly recommended):
 
+.. code:: bash
+ 
+   # install uv
+   $ curl -LsSf https://astral.sh/uv/install.sh | sh
+   # setup py4web
+   uv run --with py4web python 3.12 py4web setup apps
+   # run py4web
+   uv run --with py4web python 3.12 py4web run apps
 
-This will install the latest stable release of py4web and all its dependencies on the system's path only. After the installation you'll be able to start py4web on any given working folder with
+If you do not have Python installed you can use the binaries from the web site, but it's only available for Windows. It's meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from `this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it on a local folder and open a command line there.
 
 .. code:: bash
 
    py4web setup apps
-   py4web set_password
    py4web run apps
+
+Notice that if you have both python 2 and python 3 installed you may need to replace python with python3.
+
+Reset password
+##############
+ 
+If you have installed the _dashboard app (recommended for development) you may need to reset the password:
+
+.. code:: bash
+
+   $ py4web set_password
+   Pick a password: ******
+   Repeat for confirmation: ******
+
 
 Launch Arguments
 ################

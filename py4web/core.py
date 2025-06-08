@@ -94,6 +94,8 @@ PY4WEB_CMD = sys.argv[0]
 
 REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
+PASSWORD_FILENAME = "password.txt"
+
 DEFAULTS = dict(
     PY4WEB_APPS_FOLDER="apps",
     PY4WEB_SERVICE_FOLDER=".service",
@@ -1817,7 +1819,7 @@ class MetaPathRouter:
         return None
 
 
-def install_args(kwargs, reinstall_apps=False):  # pylint: disable=too-many-statements
+def install_args(kwargs):  # pylint: disable=too-many-statements
     """Handles the command line argumens and adds them to the os.environ"""
     # always convert apps_folder to an absolute path
     apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
@@ -1871,24 +1873,47 @@ def install_args(kwargs, reinstall_apps=False):  # pylint: disable=too-many-stat
     # after everything is setup but before installing apps, init
     error_logger.initialize()
 
+
+def set_password(password, password_file):
+    """Set administrator's password for the Dashboard"""
+    click.echo(f'Storing the hashed password in file "{password_file}"\n')
+    with open(password_file, "w", encoding="utf8") as fp:
+        fp.write(str(pydal.validators.CRYPT()(password)[0]))
+
+
+def reinstall_apps(kwargs):
     # Reinstall apps from zipped ones in assets
-    if reinstall_apps:
-        assets_dir = os.path.join(os.path.dirname(__file__), "assets")
-        if os.path.exists(assets_dir):
-            apps = os.listdir(assets_dir)
-            for filename in apps:
-                zip_filename = os.path.join(assets_dir, filename)
-                # These filenames do not necessarily exist if one has
-                # downloaded from source and deleted them.
-                app_name = filename.split(".")[-2]
-                target_dir = os.path.join(apps_folder, app_name)
-                if not os.path.exists(target_dir):
-                    if yes or click.confirm(f"Create app {app_name}?"):
-                        click.echo(f"[ ] Unzipping app {filename}")
-                        with zipfile.ZipFile(zip_filename, "r") as zip_file:
-                            os.makedirs(target_dir)
-                            zip_file.extractall(target_dir)
-                            click.echo("\x1b[A[X]")
+    apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
+    yes = kwargs.get("yes", False)
+    assets_dir = os.path.join(os.path.dirname(__file__), "assets")
+    if os.path.exists(assets_dir):
+        apps = os.listdir(assets_dir)
+        for filename in apps:
+            zip_filename = os.path.join(assets_dir, filename)
+            # These filenames do not necessarily exist if one has
+            # downloaded from source and deleted them.
+            app_name = filename.split(".")[-2]
+            target_dir = os.path.join(apps_folder, app_name)
+            if not os.path.exists(target_dir):
+                if yes or click.confirm(f"Create app {app_name}?"):
+                    click.echo(f"[ ] Unzipping app {filename}")
+                    with zipfile.ZipFile(zip_filename, "r") as zip_file:
+                        os.makedirs(target_dir)
+                        zip_file.extractall(target_dir)
+                        click.echo("\x1b[A[X]")
+                    if (
+                        app_name == "_dashboard"
+                        and not yes
+                        and not os.path.exists(kwargs["password_file"])
+                    ):
+                        set_password(
+                            click.prompt(
+                                "Pick a password",
+                                hide_input=True,
+                                confirmation_prompt=True,
+                            ),
+                            kwargs["password_file"],
+                        )
 
 
 def wsgi(**kwargs):
@@ -1939,9 +1964,21 @@ def version(verbose=False):
     help="No prompt, assume yes to questions",
     show_default=True,
 )
+@click.option(
+    "-p",
+    "--password_file",
+    default=PASSWORD_FILENAME,
+    help="File for the encrypted password",
+    show_default=True,
+)
 def setup(**kwargs):
     """Setup new apps folder or reinstall it"""
-    install_args(kwargs, reinstall_apps=True)
+    install_args(kwargs)
+    reinstall_apps(kwargs)
+    apps_folder = os.path.relpath(kwargs["apps_folder"], os.getcwd())
+    click.echo(
+        f'Done!\n\nType "{sys.argv[0]} run {apps_folder}" "to start the py4web server.'
+    )
 
 
 @cli.command()
@@ -2004,15 +2041,13 @@ def call(apps_folder, func, yes, args):
 @click.option(
     "-p",
     "--password_file",
-    default="password.txt",
+    default=PASSWORD_FILENAME,
     help="File for the encrypted password",
     show_default=True,
 )
-def set_password(password, password_file):
+def _set_password(password, password_file):
     """Set administrator's password for the Dashboard"""
-    click.echo(f'Storing the hashed password in file "{password_file}"\n')
-    with open(password_file, "w", encoding="utf8") as fp:
-        fp.write(str(pydal.validators.CRYPT()(password)[0]))
+    set_password(password, password_file)
 
 
 @cli.command(name="new_app")
@@ -2076,7 +2111,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
 @click.option(
     "-p",
     "--password_file",
-    default="password.txt",
+    default=PASSWORD_FILENAME,
     help="File for the encrypted password",
     show_default=True,
 )
