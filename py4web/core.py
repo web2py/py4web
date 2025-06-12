@@ -1888,6 +1888,8 @@ def reinstall_apps(kwargs):
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
     if os.path.exists(assets_dir):
         apps = os.listdir(assets_dir)
+        password_set = os.path.exists(kwargs["password_file"])
+        installed_dashboard = False
         for filename in apps:
             zip_filename = os.path.join(assets_dir, filename)
             # These filenames do not necessarily exist if one has
@@ -1901,19 +1903,17 @@ def reinstall_apps(kwargs):
                         os.makedirs(target_dir)
                         zip_file.extractall(target_dir)
                         click.echo("\x1b[A[X]")
-                    if (
-                        app_name == "_dashboard"
-                        and not yes
-                        and not os.path.exists(kwargs["password_file"])
-                    ):
-                        set_password(
-                            click.prompt(
-                                "Pick a password",
-                                hide_input=True,
-                                confirmation_prompt=True,
-                            ),
-                            kwargs["password_file"],
-                        )
+                    if app_name == "_dashboard":
+                        installed_dashboard = True
+        if installed_dashboard and not yes and not password_set:
+            set_password(
+                click.prompt(
+                    "Pick a password for the dashboard",
+                    hide_input=True,
+                    confirmation_prompt=True,
+                ),
+                kwargs["password_file"],
+            )
 
 
 def wsgi(**kwargs):
