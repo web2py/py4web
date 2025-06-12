@@ -35,6 +35,7 @@ html, body {
   max-width: 100vw;
   overflow-x: hidden;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 body {
@@ -75,6 +76,10 @@ a:hover {
 h1,h2,h3,h4,h5,h6{
   font-weight:bold;
   line-height: 1em;
+  padding: 5px 10px;
+  background:#33BFFF;;
+  color: black;
+  width:100%;
 }
 
 h1{
@@ -170,12 +175,13 @@ thead th {
 [role="button"], button, input[type='button'], input[type='reset'], input[type='submit'] {
   background-color: #0074d9;
   border-radius: 5px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 1px;
   color: #fff;
   cursor: pointer;
   display: inline-block;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 300;
   height: 1.8rem;
   line-height: 1.8rem;
@@ -183,7 +189,7 @@ thead th {
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
-  min-width: 100px;
+  min-width: 50px;
 }
 
 [role="button"]:focus, [role="button"]:hover, button:focus, button:hover, input[type='button']:focus, input[type='button']:hover, input[type='reset']:focus, input[type='reset']:hover, input[type='submit']:focus, input[type='submit']:hover {
@@ -202,7 +208,7 @@ input[type='color'], input[type='date'], input[type='datetime'], input[type='tim
   box-shadow: none;
   box-sizing: inherit;
   font-family: monospace;
-  font-size: 1.2em;
+  font-size: 1em;
   padding: .5em 1.0em .5em;
   width: 100%;
 }
@@ -344,7 +350,7 @@ nav > input[type=checkbox], nav > label {
     display: inline-block;
     top: 5px;
     right: 20px;
-    font-size: 2em;
+    font-size: 1.2em;
   }
   nav > a {
     display: inline-block;
@@ -522,22 +528,39 @@ input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
 }
 
 ul.tags-list {
-  padding-left: 0;
+  padding: 5px 0 0 5px;
 }
 
 ul.tags-list li {
   display: inline-block;
-  border-radius: 100px;
-  background-color: #111111;
-  color: white;
-  padding: 0.3em 0.8em 0.2em 0.8em;
+  border-radius: 5px;
+  color: #111111;
+  background-color: #999;
+  padding: 0.1em 0.5em 0.1em 0.5em;
   line-height: 1.2em;
   margin: 2px;
   cursor: pointer;
-  opacity: 0.2;
-  text-transform: capitalize;
+  opacity: 0.5;
 }
 
 ul.tags-list li[data-selected=true] {
   opacity: 1.0;
 }
+
+.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red;}
+.grid-table-wrapper{overflow-x: auto;}
+body { background: black; color: white; }
+body > center > * { max-width: 90vw; }
+form { max-width: 900px; }
+nav.black a, a { color: #33BFFF; }
+label:not(.help) { color: black; background-color: #CCC; padding: 2px 5px; margin: 5px 0 0 10px; border-top-left-radius: 5px; border-top-right-radius: 5px}
+span ~ label { border-radius: 5px;}
+label ~ div { position: relative; top: -5px}
+button, a[role=button], input[type=submit], input[type=button] { background-color: #33BFFF; color: black}
+p, input, textarea { margin: 5px}
+thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
+tr:hover {background:#111111}
+.grid-search-form {width:100%; max-width: 100%}
+tbody tr:hover { background-color:#002233 }
+.grid-search-form-tr {border-bottom: none}
+.grid-td:last-child {text-align: right}
