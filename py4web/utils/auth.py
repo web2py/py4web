@@ -80,7 +80,8 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
-        self.auth.flash.set(message)
+        if message and str(message):
+            self.auth.flash.set(message)
         redirect(
             URL(
                 self.auth.route,
@@ -120,7 +121,8 @@ class AuthEnforcer(Fixture):
         self.auth.on_request(context)
 
         if "user" not in self.auth.session or "id" not in self.auth.session["user"]:
-            self.goto_login(message="Login required")
+            message=self.auth.param.messages["flash"].get("login-required")
+            self.goto_login(message=message)
 
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
@@ -151,6 +153,7 @@ class Auth(Fixture):
             "user-logout": "User logout",
             "email-verified": "Email verified",
             "link-expired": "Link invalid or expired",
+            "login-required": "Login required,"
         },
         "labels": {
             "username": "Username",
