@@ -80,7 +80,7 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
-        if message and str(message):
+        if message and str(message) and str(message) != "\ufeff":
             self.auth.flash.set(message)
         redirect(
             URL(
@@ -2067,7 +2067,9 @@ class DefaultAuthForms:
         self._postprocessing("verify_email")
 
     def _set_flash(self, key):
-        self.auth.flash.set(self.auth.param.messages["flash"].get(key, key))
+        message = self.auth.param.messages["flash"].get(key, key)
+        if message and str(message) and str(message) != "\ufeff":
+            self.auth.flash.set(message)
 
     def _postprocessing(self, action, form=None, user=None):
         if action in self.auth.on_accept:
