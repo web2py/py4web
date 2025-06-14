@@ -1,5 +1,5 @@
 // initialize the app
-var app = {data:{}, methods:{}};
+const app = {data:{}, methods:{}};
 // data exposed to the view
 app.api = '/' + window.location.href.split('/')[3] + '/api';
 app.data.items = [];
@@ -14,16 +14,22 @@ app.methods.remove = function(item_id) {
         });
 };
 app.methods.save = function(item_id) { 
-    var data = {};
+    const data = {};
     data.info = app.vue.input;
     Q.post(app.api, data).then(function(res){            
-            if (app.vue.input) app.vue.items.unshift({id:res.json().id, info: app.vue.input});
-            app.vue.input='';
-        });
+        if (app.vue.input) app.vue.items.unshift({id:res.json().id, info: app.vue.input});
+        app.vue.input='';
+    });
 };
 
-// start the app
-app.vue = new Vue({el:"#vue", data: app.data, methods: app.methods});
+// start the app (Vue 3 version)
+app.vue = Vue.createApp({
+    data() {            // data is now a function
+        return app.data;
+    },
+    methods: app.methods
+}).mount("#vue");
+
 Q.get(app.api).then(function(res){
-        app.vue.items = res.json().items;
-    });
+    app.vue.items = res.json().items;
+});
