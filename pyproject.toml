@@ -27,7 +27,7 @@ dependencies = [
     "rocket3 >= 20241225.1",
     "yatl >= 20230507.3",
     "pydal >= 20250607.2",
-    "watchgod >= 0.6",
+    "watchfiles",
 ]
 
 [tool.setuptools.dynamic]

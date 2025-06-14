@@ -38,7 +38,7 @@ from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
 
 import portalocker
-from watchgod import awatch
+from watchfiles import awatch
 
 # Optional web servers for speed
 try:
