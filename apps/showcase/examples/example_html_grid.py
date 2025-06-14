@@ -36,11 +36,22 @@ def example_html_grid2():
 
     query = db.thing.id > 0
     orderby = [db.thing.name]
-    columns = [field for field in db.thing if field.readable]
-    columns.insert(0, Column("Custom", lambda row: A("click me")))
     grid = Grid(
         query,
-        columns=columns,
+        columns=[
+            Column("Custom",
+                   represent=lambda row: A("click me")
+                   ),
+            db.thing.name,
+            Column("Color", 
+                   required_fields=[db.thing.color], 
+                   represent=lambda row: I(_class="fa fa-circle", _style="color:" + row.color )
+                   ),
+            db.thing.is_ready,
+            db.thing.time_created,
+            db.thing.date_created,
+            db.thing.timetime_created,
+        ],
         search_queries=search_queries,
         orderby=orderby,
         show_id=False,
@@ -48,8 +59,5 @@ def example_html_grid2():
         **grid_param,
     )
 
-    grid.columns[3].represent = lambda row: I(
-        _class="fa fa-circle", _style="color:" + row.color
-    )
 
     return dict(grid=grid)
