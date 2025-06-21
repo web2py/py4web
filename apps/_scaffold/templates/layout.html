@@ -10,6 +10,7 @@
     .py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red;}
     .grid-table-wrapper{overflow-x: auto;}
     </style>
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
     <header>
@@ -17,8 +18,36 @@
       <nav class="black">
         <!-- Logo -->
         <a href="[[=URL('index')]]">
-          <b>py4web_dashboard/dbadmin</b>
+          <b>py4web <script>document.write(window.location.href.split('/')[3]);</script></b>
         </a>
+        <!-- Do not touch this -->
+        <label for="hamburger">☰</label>
+        <input type="checkbox" id="hamburger">
+        <!-- Left menu ul/li -->
+        [[block page_left_menu]][[end]]
+        <!-- Right menu ul/li -->
+        <ul>
+          [[if globals().get('user'):]]
+          <li>
+            <a class="navbar-link is-primary">
+              [[=globals().get('user',{}).get('email')]]
+            </a>
+            <ul>
+              <li><a href="[[=URL('auth/profile')]]">Edit Profile</a></li>
+              <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
+              <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
+            </ul>
+          </li>
+          [[else:]]
+          <li>
+            Login
+            <ul>
+              <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
+              <li><a href="[[=URL('auth/login')]]">Log in</a></li>
+            </ul>
+          </li>
+          [[pass]]
+        </ul>
       </nav>
     </header>
     <!-- beginning of HTML inserted by extending template -->
@@ -41,4 +70,5 @@
   </body>
   <!-- You've gotta have utils.js -->
   <script src="js/utils.js"></script>
+  [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>
