@@ -921,11 +921,7 @@ class Form(object):
             # The table is just a list of fields.
             return {field.name: self.record.get(field.name) for field in table}
         else:
-            return {
-                name: table[name].formatter(self.record[name])
-                for name in table.fields
-                if name in self.record
-            }
+            return dict(self.record)
 
     def _make_key(self):
         if self.csrf_session is not None:
