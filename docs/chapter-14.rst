@@ -404,13 +404,14 @@ You can even build your own class_style to be used with the css framework of
 your choice.
 
 With icon_style, you can customize the icon font used. Currently, the following exist:
+
 - ``IconStyleFontawsome`` is the current default (for backwards compatibility). You need
-   to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use this.
+  to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use this.
 - ``IconStyle`` which doesn't correspond to any font or icon set. It inserts simple
-   css classes like ``icon-edit-button`` which you can write your own css for.
+  css classes like ``icon-edit-button`` which you can write your own css for.
 - ``IconStyleBootstrapIcons`` You need to add the icon font CSS from
-   `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__
-   to your html templates to use this.
+  `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__
+  to your html templates to use this.
 
 Custom Action Buttons
 ---------------------
