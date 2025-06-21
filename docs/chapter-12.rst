@@ -359,7 +359,7 @@ Using widgets in forms is quite easy, and they'll let you have more control on i
 Custom widgets
 ~~~~~~~~~~~~~~
 
-You can also customize the widgets properties by cloning an modifying and existing style.
+You can also customize the widgets properties by cloning and modifying and existing style.
 Let's have a quick look, improving again our Superhero example:
 
 .. code:: python
