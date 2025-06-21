@@ -454,17 +454,20 @@ two practical plugins that are sufficient in most cases. The two plugins are cal
 SimpleTokenPlugin and JwtTokenPlugin. The first one of the two is recommended in most of the cases.
 
 What all plugins have in common:
+
 - They have a way for a user to create a token which is a string.
 - When an HTTP(S) request is made to an action that @actiion.uses(auth) or @action.uses(auth.user)
   py4web will identify the user if the token is present, as if the user was logged-in.
 
 What SimpleTokenPlugin and JwtTokenPlugin have in common:
+
 - When an HTTP(S) request is made, the token must be put in the "Authentication" header.
   You will need to create your own plugin if you want to pass it in some other manner.
 - Each user can create as many tokens as desired.
 - Users can create tokens for other users if the application logic requires/allows it.
 
 Unique features of SimpleTokenPlugin:
+
 - A token is a UUID.
 - Tokens can be managed serverside (created, deleted, expired, change expiration).
 - Current tokens are stored in a adatabase table.
@@ -475,6 +478,7 @@ Unique features of SimpleTokenPlugin:
 - Under the hood veryfing a token requires a database query.
 
 Unique features of JwtTokenPlugin:
+
 - The token is an encrypted and digitally signed dict that stores the user_id and expiration.
 - The author of the token can add any metadata to into the token at creation.
 - The token is not stored anywhere serverside and there is no database table.
