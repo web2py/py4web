@@ -808,7 +808,8 @@ class Auth(Fixture):
                     }
                 }
             if self.param.block_previous_password_num:
-                past_pwds = user.get("past_passwords_hash", [])[
+                past_passwords_hash = user.get("past_passwords_hash") or []
+                past_pwds = past_passwords_hash[
                     : self.param.block_previous_password_num
                 ]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):

@@ -139,7 +139,6 @@ class ListWidget:
             _class = "type-list-integer"
         else:
             _class = ""
-        print("list value", repr(field.formatter(value)))
         return INPUT(
             _value=field.formatter("" if value is None else value),
             _type="text",
@@ -388,7 +387,6 @@ class FormStyleFactory:
             if is_virtual:
                 value = None
             if field.name in vars:
-                print("vars", vars)
                 value = vars.get(field.name)
             else:
                 default = getattr(field, "default", None)
