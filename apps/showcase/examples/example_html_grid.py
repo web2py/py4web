@@ -39,14 +39,15 @@ def example_html_grid2():
     grid = Grid(
         query,
         columns=[
-            Column("Custom",
-                   represent=lambda row: A("click me")
-                   ),
+            Column("Custom", represent=lambda row: A("click me")),
             db.thing.name,
-            Column("Color", 
-                   required_fields=[db.thing.color], 
-                   represent=lambda row: I(_class="fa fa-circle", _style="color:" + row.color )
-                   ),
+            Column(
+                "Color",
+                required_fields=[db.thing.color],
+                represent=lambda row: I(
+                    _class="fa fa-circle", _style="color:" + row.color
+                ),
+            ),
             db.thing.is_ready,
             db.thing.time_created,
             db.thing.date_created,
@@ -58,6 +59,5 @@ def example_html_grid2():
         T=T,
         **grid_param,
     )
-
 
     return dict(grid=grid)

@@ -32,6 +32,7 @@ def to_id(field):
 
 
 def compat_represent(field, value, row):
+    """Same as field.represent(value, row) but backward compatible in case field.represent only takes value"""
     represent = field.represent
     if not represent:
         return value or ""
@@ -76,7 +77,7 @@ class Widget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         """converts the widget to an HTML helper"""
         return INPUT(
-            _value=value,
+            _value=field.formatter(value),
             _type=self.type_map.get(field.type, "text"),
             _id=to_id(field),
             _name=field.name,
@@ -92,7 +93,7 @@ class DateTimeWidget:
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return INPUT(
-            _value=str(value).replace(" ", "T")[:16],
+            _value=field.formatter(value),
             _type=self.input_type,
             _id=to_id(field),
             _name=field.name,
@@ -105,7 +106,7 @@ class DateTimeWidget:
 class TextareaWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return TEXTAREA(
-            value if value else "",
+            field.formatter(value),
             _id=to_id(field),
             _name=field.name,
             _placeholder=placeholder,
@@ -138,9 +139,9 @@ class ListWidget:
             _class = "type-list-integer"
         else:
             _class = ""
-
+        print("list value", repr(field.formatter(value)))
         return INPUT(
-            _value=json.dumps(value or []),
+            _value=field.formatter(value),
             _type="text",
             _id=to_id(field),
             _name=field.name,
@@ -154,7 +155,7 @@ class ListWidget:
 class PasswordWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return INPUT(
-            _value=value,
+            _value=field.formatter(value),
             _type="password",
             _id=to_id(field),
             _name=field.name,
@@ -384,10 +385,16 @@ class FormStyleFactory:
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = to_id(field)
-            default = getattr(field, "default", None)
-            if callable(default):
-                default = default()
-            value = vars.get(field.name, default) if not is_virtual else None
+            if is_virtual:
+                value = None
+            if field.name in vars:
+                print("vars", vars)
+                value = vars.get(field.name)
+            else:
+                default = getattr(field, "default", None)
+                if callable(default):
+                    default = default()
+                value = default
 
             error = errors.get(field.name)
             field_class = "type-" + field.type.split()[0].replace(":", "-")
@@ -453,6 +460,7 @@ class FormStyleFactory:
                     widget = ListWidget()
                 else:
                     widget = Widget()
+                    value = field.formatter(value)
 
                 control = widget.make(field, value, error, title, placeholder)
 
@@ -846,17 +854,8 @@ class Form(object):
                             if isinstance(original_value, list):
                                 if len(original_value) == 1:
                                     original_value = original_value[0]
-
                                 elif len(original_value) == 0:
                                     original_value = None
-                            if field.type.startswith("list:") and isinstance(
-                                original_value, str
-                            ):
-                                try:
-                                    original_value = json.loads(original_value or "[]")
-                                except json.decoder.JSONDecodeError:
-                                    # this happens if posting a single value
-                                    pass
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
                                 continue
@@ -919,9 +918,7 @@ class Form(object):
             return {field.name: self.record.get(field.name) for field in table}
         else:
             return {
-                name: table[name].formatter(self.record[name])
-                for name in table.fields
-                if name in self.record
+                name: self.record[name] for name in table.fields if name in self.record
             }
 
     def _make_key(self):

@@ -204,6 +204,23 @@ Q.throttle = (callback, delay) => {
     return throttledEventHandler;
 };
 
+// parse a comma separated list of strings which may be quoted
+Q.parse_list = function(line) {
+  let a = [], i = 0, s = '', q = false, esc = false;
+  for (; i <= line.length; i++) {
+    let c = line[i] || ',', eol = i === line.length;
+    if (q) {
+      if (esc) s += c, esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') q = false;
+      else s += c;
+    } else if (c === '"') q = true;
+    else if (c === ',' || eol) a.push(s.trim()), s = '';
+    else s += c;
+  }
+  return a;
+}
+
 // Renders a JSON field with tags_input
 Q.tags_input = function(elem, options) {
     if (typeof elem === typeof '') elem = Q(elem)[0];
@@ -227,7 +244,14 @@ Q.tags_input = function(elem, options) {
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')
     elem.parentNode.insertBefore(repl, elem);
-    var keys = Q.eval(elem.value||'[]') || [];
+    var keys = [];
+    // case elem.value is missing
+    if (!elem.value) keys = [];
+    // case elem.value is an array
+    else if (elem.value.substr(0,1) == "[") keys = Q.eval(elem.value);
+    // case elem.value is comma separated values
+    else keys = Q.parse_list(elem.value);
+    console.log("keys", keys);
     keys.map(function(x) { if(tags.indexOf(x)<0) tags.push(x); });
     var fill = function(elem, repl) {
       repl.innerHTML = '';
@@ -253,9 +277,9 @@ Q.tags_input = function(elem, options) {
       inp.placeholder = options.placeholder;
       inp.setAttribute('list',  options.autocomplete_list);
       inp.onchange = function(evt) {
-        inp.value.split(',').map(function(x){
-	  x = options.transform(x.trim());
-	  if (options.regex && !x.match(options.regex)) return;
+        Q.parse_list(inp.value).map(function(x){
+	      x = options.transform(x.trim());
+	      if (options.regex && !x.match(options.regex)) return;
           if (x && tags.indexOf(x)<0) tags.push(x); 
           if (x && keys.indexOf(x)<0) keys.push(x); 
         });
