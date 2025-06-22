@@ -2,6 +2,11 @@
 
 var UNVERIFIED = "\uFEFF";
 
+/**
+ * Translation Manager App 2.0 for vue3
+ * 
+ * Manages language translations with verification system
+ */
 var init_app = function() {
     var self = [];
     self.base = window.location.href.split('/')[3];
@@ -17,20 +22,25 @@ var init_app = function() {
         self.vue.selected_language = name;
         self.vue.selected_translations = self.vue.translations[name];
     };
+    
     self.methods.delete_translation = function(name, num) {
         console.log("deleting", name, num);
-        Vue.delete(self.vue.selected_translations[name], num);
+        delete self.vue.selected_translations[name][num];
         if (Object.keys(self.vue.selected_translations[name]).length == 0)
-            Vue.delee(self.vue.selected_translations, name);
+            delete self.vue.selected_translations[name];
     };
+    
     self.methods.add_translation = function(name) {
-        Vue.set(self.vue.selected_translations[name], self.vue.num[name], self.vue.string[name]);
+        self.vue.selected_translations[name] = self.vue.selected_translations[name] || {};
+        self.vue.selected_translations[name][self.vue.num[name]] = self.vue.string[name];
         self.vue.num[name] = "";
         self.vue.string[name] = "";
     };
+    
     self.methods.is_unverified = function(text) {
         return text.length > 0 && text[0] == UNVERIFIED;
     };
+    
     self.methods.save_languages = function() {
         let data = self.vue.translations;
         Q.post('/' + self.base + '/api/translations/' + self.app, data).then(
@@ -38,6 +48,7 @@ var init_app = function() {
             function(res) { alert("Error Saving"); }
         );
     };
+    
     self.methods.update_languages = function() {
         Q.get('/' + self.base + '/api/translations/' + self.app + '/search').then(
             function(res) {
@@ -45,15 +56,21 @@ var init_app = function() {
                 for (var lang in self.vue.translations) {
                     var translations = self.vue.translations[lang];
                     words.map(function(key) {
-                        if (!(key in translations))
-                            Vue.set(translations, key, { "0": UNVERIFIED + key, "1": UNVERIFIED + key, "2": UNVERIFIED + key });
+                        if (!(key in translations)) {
+                            translations[key] = { 
+                                "0": UNVERIFIED + key, 
+                                "1": UNVERIFIED + key, 
+                                "2": UNVERIFIED + key 
+                            };
+                        }
                     });
                 }
             }
         );
     };
+    
     self.methods.add_language = function() {
-        let language = prompt("Language name (exxample en-US):");
+        let language = prompt("Language name (example en-US):");
         if (language in self.vue.translations) {
             alert("Language already exists!");
             return;
@@ -71,16 +88,31 @@ var init_app = function() {
             }
         }
         words.sort();
-        Vue.set(self.vue.translations, language, {});
+        self.vue.translations[language] = {};
         words.map(function(key) {
-            Vue.set(self.vue.translations[language], key, { "0": UNVERIFIED + key, "1": UNVERIFIED + key, "2": UNVERIFIED + key });
+            self.vue.translations[language][key] = { 
+                "0": UNVERIFIED + key, 
+                "1": UNVERIFIED + key, 
+                "2": UNVERIFIED + key 
+            };
         });
         self.methods.select_language(language);
     };
-    self.vue = new Vue({ el: '#vue', data: self.data, methods: self.methods });
+
+    // Vue 3 initialization
+    const { createApp } = Vue;
+    self.vue = createApp({
+        data() {
+            return self.data;
+        },
+        methods: self.methods
+    }).mount('#vue');
+
+    // Load initial translations
     Q.get('/' + self.base + '/api/translations/' + self.app).then(
         function(res) { self.vue.translations = res.json(); }
     );
+    
     return self;
 }
 
