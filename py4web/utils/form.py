@@ -910,9 +910,6 @@ class Form(object):
                     self.accepted = True
                     self.deleted = True
                     self.record.delete_record()
-            elif self.record:
-                # This form should not be processed.  We return the same as for GET.
-                self.vars = self._read_vars_from_record(table)
         if self.csrf_protection:
             self._sign_form()
 
