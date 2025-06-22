@@ -535,7 +535,6 @@ ul.tags-list li {
   margin: 2px;
   cursor: pointer;
   opacity: 0.2;
-  text-transform: capitalize;
 }
 
 ul.tags-list li[data-selected=true] {
