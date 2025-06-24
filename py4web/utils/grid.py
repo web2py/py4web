@@ -1182,7 +1182,7 @@ class Grid:
                     # if None, no button
                     continue
                 if isinstance(btn, dict):
-                    cat.append(self._make_action_button(*btn))
+                    cat.append(self._make_action_button(**btn))
                 else:
                     cat.append(btn)
 
