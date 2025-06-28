@@ -45,6 +45,7 @@ def make_logger(name, loggers_info):
     # This ensures that all messages at or above this level are processed by the logger,
     # and not filtered out before reaching the handlers.
     root.setLevel(min_level)
+    root.propagate = False  # Prevent double logging with same name to root logger
     return root
 
 
