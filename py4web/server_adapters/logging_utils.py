@@ -24,19 +24,28 @@ def make_logger(name, loggers_info):
     root = logging.getLogger(name)
     list(map(root.removeHandler, root.handlers))
     list(map(root.removeFilter, root.filters))
+    min_level = logging.CRITICAL
     for logger in loggers_info:
         logger += ":stderr" if logger.count(":") == 0 else ""
         logger += ":" if logger.count(":") == 1 else ""
         level, filename, formatter = logger.split(":", 2)
         if not formatter:
             formatter = default_formatter
+        handler_level = getattr(logging, level.upper(), logging.DEBUG)
+        if handler_level < min_level:
+            min_level = handler_level
         if filename in ("stdout", "stderr"):
             handler = logging.StreamHandler(getattr(sys, filename))
         else:
             handler = logging.FileHandler(filename)
         handler.setFormatter(logging.Formatter(formatter))
-        handler.setLevel(getattr(logging, level.upper(), "DEBUG"))
+        handler.setLevel(handler_level)
         root.addHandler(handler)
+    # Set the logger's level to the lowest handler level found.
+    # This ensures that all messages at or above this level are processed by the logger,
+    # and not filtered out before reaching the handlers.
+    root.setLevel(min_level)
+    root.propagate = False  # Prevent double logging with same name to root logger
     return root
 
 
