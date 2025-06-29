@@ -161,7 +161,7 @@ def diff2kryten(data):
         + '</style></head><body><div style="text-align:right">'
         + "</div>"
         + div
-        + '<script src="/_dashboard/static/js/jquery.min.js"></script>'
+        + '<script src="https://unpkg.com/jquery.min.js"></script>'
         + '<script src="/_dashboard/static/js/highlight.min.js"></script>'
         + "<script>"
         + (script % block)
