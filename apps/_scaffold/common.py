@@ -1,6 +1,20 @@
 """
-This file defines cache, session, and translator T object for the app
-These are fixtures that every app needs so probably you will not be editing this file
+This module sets up core fixtures and utilities for a py4web application, including:
+
+- Logging: Configures a custom logger using application settings.
+- Database: Connects to the database using settings from the configuration.
+- Caching: Instantiates a cache object for use throughout the app.
+- Translation: Sets up the translation object for internationalization.
+- Session Management: Selects and configures the session backend (cookies, Redis, Memcache, or database) based on settings.
+- Authentication: Initializes the Auth object, configures its parameters, and defines authentication tables and actions.
+- Email: Configures the email sender for authentication-related emails if SMTP settings are provided.
+- User Groups: Sets up tagging for user groups if the authentication database is available.
+- Auth Plugins: Optionally registers authentication plugins (PAM, LDAP, OAuth2 for Google, GitHub, Facebook, Okta) based on settings.
+- File Download: Defines an action for downloading uploaded files if an upload folder is specified.
+- Scheduler: Optionally starts a background scheduler for running tasks if enabled in settings.
+- Decorators: Provides convenience action factories for authenticated and unauthenticated routes.
+
+This file is intended to be a foundational part of the application and typically does not require modification.
 """
 
 import os
@@ -47,7 +61,7 @@ if settings.SESSION_TYPE == "cookies":
     session = Session(secret=settings.SESSION_SECRET_KEY)
 
 elif settings.SESSION_TYPE == "redis":
-    import redis
+    import redis # type: ignore[reportMissingImports]
 
     host, port = settings.REDIS_SERVER.split(":")
     # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
@@ -62,7 +76,7 @@ elif settings.SESSION_TYPE == "redis":
 elif settings.SESSION_TYPE == "memcache":
     import time
 
-    import memcache
+    import memcache # type: ignore[reportMissingImports]
 
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
