@@ -272,8 +272,14 @@ Q.throttle = (callback, delay) => {
     return throttledEventHandler;
 };
 
-// parse a comma separated list of strings which may be quoted
+/**
+ * parse a comma separated list of strings which may be quoted
+ * @param {string} line
+ * @returns
+ */
 Q.parse_list = function (line) {
+    // handle empty string case
+    if (line.length === 0) return [];
     let a = [],
         i = 0,
         s = "",
@@ -314,9 +320,9 @@ Q.parse_list = function (line) {
 Q.tags_input = function (elem_arg, options) {
     /** @type {HTMLInputElement} */
     let elem;
-    if (typeof elem === "string") {
+    if (typeof elem_arg === "string") {
         // @ts-ignore
-        elem = Q(elem)[0];
+        elem = Q(elem_arg)[0];
         if (!elem) {
             console.log("Q.tags_input: elem " + elem_arg + " not found");
             return;
