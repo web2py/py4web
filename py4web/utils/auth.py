@@ -1673,8 +1673,12 @@ class DefaultAuthForms:
                 return form
 
             # If there are no errors, continue with the login process.
+
+            # Get plain text password directly from request, on Windows this is needed
+            # because form.vars.get("password", "") returns an hashed password.
+            plain_password = request.forms.get("password", "")
             user, error = self.auth.login(
-                form.vars.get("email", ""), form.vars.get("password", "")
+                form.vars.get("email", ""), plain_password
             )
             form.accepted = not error
 
