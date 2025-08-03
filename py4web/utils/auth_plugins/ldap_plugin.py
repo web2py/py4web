@@ -242,7 +242,7 @@ class LDAPPlugin(UsernamePassword):
             return False
         logger.debug(
             f"mode: {str(mode)}, manage_user: {str(manage_user)}, \
-            custom_scope: {str(custom_scope)}, manage_groups: {str(manage_groups)}" \
+            custom_scope: {str(custom_scope)}, manage_groups: {str(manage_groups)}"
         )
         if manage_user:
             if user_firstname_attrib.count(":") > 0:
@@ -279,7 +279,7 @@ class LDAPPlugin(UsernamePassword):
                     for x in base_dn.split(","):
                         if "DC=" in x.upper():
                             domain.append(x.split("=")[-1])
-                    username = f"{username}@{".".join(domain)}"
+                    username = f"{username}@{'.'.join(domain)}"
                 username_bare = username.split("@")[0]
                 con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
                 # In cases where ForestDnsZones and DomainDnsZones are found,
@@ -351,7 +351,7 @@ class LDAPPlugin(UsernamePassword):
                     con.simple_bind_s(bind_dn, bind_pw)
                     dn = "uid=" + username + "," + base_dn
                     dn = con.search_s(
-                        base_dn, ldap.SCOPE_SUBTREE, f"(uid={username, [""]})"
+                        base_dn, ldap.SCOPE_SUBTREE, f"(uid={username, ['']})"
                     )[0][0]
                 else:
                     dn = "uid=" + username + "," + base_dn
@@ -393,7 +393,9 @@ class LDAPPlugin(UsernamePassword):
                     basedns = base_dn
                 else:
                     basedns = [base_dn]
-                filter = f"(&(uid={ldap.filter.escape_filter_chars(username)})({filterstr}))"
+                filter = (
+                    f"(&(uid={ldap.filter.escape_filter_chars(username)})({filterstr}))"
+                )
                 found = False
                 for basedn in basedns:
                     try:
@@ -726,7 +728,7 @@ class LDAPPlugin(UsernamePassword):
                 for x in base_dn.split(","):
                     if "DC=" in x.upper():
                         domain.append(x.split("=")[-1])
-                username = f"{username}@{".".join(domain)}" 
+                username = f"{username}@{'.'.join(domain)}"
             username_bare = username.split("@")[0]
             con = self._init_ldap()
             con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)

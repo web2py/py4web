@@ -37,11 +37,6 @@ from . import settings
 # #######################################################
 logger = make_logger("py4web:" + settings.APP_NAME, settings.LOGGERS)
 
-# this export the logger to the auth module
-# so that it can be used in auth plugins
-import py4web.utils.auth as auth_module
-auth_module.logger = logger
-
 # #######################################################
 # connect to db
 # #######################################################
@@ -66,7 +61,7 @@ if settings.SESSION_TYPE == "cookies":
     session = Session(secret=settings.SESSION_SECRET_KEY)
 
 elif settings.SESSION_TYPE == "redis":
-    import redis # type: ignore[reportMissingImports]
+    import redis  # type: ignore[reportMissingImports]
 
     host, port = settings.REDIS_SERVER.split(":")
     # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
@@ -81,7 +76,7 @@ elif settings.SESSION_TYPE == "redis":
 elif settings.SESSION_TYPE == "memcache":
     import time
 
-    import memcache # type: ignore[reportMissingImports]
+    import memcache  # type: ignore[reportMissingImports]
 
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
@@ -106,6 +101,7 @@ auth.param.block_previous_password_num = 3
 auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
 auth.define_tables()
 auth.fix_actions()
+auth.logger = logger
 
 flash = auth.flash
 
@@ -138,7 +134,7 @@ if settings.USE_PAM:
 if settings.USE_LDAP:
     from py4web.utils.auth_plugins.ldap_plugin import LDAPPlugin
 
-    auth.register_plugin(LDAPPlugin(db=db, groups=groups, logger=logger, **settings.LDAP_SETTINGS))
+    auth.register_plugin(LDAPPlugin(db=db, groups=groups, **settings.LDAP_SETTINGS))
 
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2google import OAuth2Google  # TESTED

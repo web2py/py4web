@@ -38,17 +38,17 @@ from py4web.utils.param import Param
 [ ] Force new password every x days.
 """
 
+
 # Allow logger to be set externally before importing this module
-try:
-    logger  # type: ignore  # pylance: ignore undefined
-except NameError:
-    # If not set, define a default logger
-    logger = logging.getLogger("py4web.auth")
+def make_default_logger(name="py4web.auth"):
+    """Makes a default logger"""
+    logger = logging.getLogger(name)
     if not logger.hasHandlers():
         handler = logging.StreamHandler()
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+    return logger
 
 
 def b16e(text):
@@ -244,6 +244,7 @@ class Auth(Fixture):
         two_factor_send=None,
         two_factor_validate=None,
         template_args=None,
+        logger=None,
     ):
         # configuration parameters
         self.param = Param(
@@ -290,6 +291,7 @@ class Auth(Fixture):
         self.session = session
         self.sender = sender
         self.route = "auth"
+        self.logger = logger or make_default_logger()
         self.use_username = use_username  # if False, uses email only
         self.password_in_db = password_in_db  # if False, password is never saved in db
         self.use_phone_number = use_phone_number
@@ -689,9 +691,13 @@ class Auth(Fixture):
         for plugin in self.plugins.values():
             if not hasattr(plugin, "get_login_url"):
                 prevent_db_lookup = True
-                logger.debug(f"Trying plugin: {plugin.name}, mode: {getattr(plugin, 'mode', None)}")
+                self.logger.debug(
+                    f"Trying plugin: {plugin.name}, mode: {getattr(plugin, 'mode', None)}"
+                )
                 if plugin.check_credentials(email, password):
-                    logger.debug(f"Plugin {plugin.name} accepted credentials for {email}")
+                    self.logger.debug(
+                        f"Plugin {plugin.name} accepted credentials for {email}"
+                    )
                     user_info = {}
                     user_info["sso_id"] = plugin.name + ":" + email
                     if self.use_username or "@" not in email:
@@ -699,10 +705,12 @@ class Auth(Fixture):
                     if "@" in email:
                         user_info["email"] = email
                     else:
-                        logger.debug(f"Constructing email from username: {email}@example.com")
+                        self.logger.debug(
+                            f"Constructing email from username: {email}@example.com"
+                        )
                         user_info["email"] = email + "@example.com"
                     user = self.get_or_register_user(user_info)
-                    logger.debug(f"User after get_or_register_user: {user}")
+                    self.logger.debug(f"User after get_or_register_user: {user}")
                     break
 
         # else check against database
@@ -1295,9 +1303,13 @@ class AuthAPI:
         if "pam" in auth.plugins or "ldap" in auth.plugins:
             plugin_name = "pam" if "pam" in auth.plugins else "ldap"
             plugin = auth.plugins[plugin_name]
-            logger.debug(f"AuthAPI.login: Trying plugin {plugin_name} for user {username}")
+            self.logger.debug(
+                f"AuthAPI.login: Trying plugin {plugin_name} for user {username}"
+            )
             check = plugin.check_credentials(username, password)
-            logger.debug(f"AuthAPI.login: plugin.check_credentials returned {check}")
+            self.logger.debug(
+                f"AuthAPI.login: plugin.check_credentials returned {check}"
+            )
             if check:
                 data = {
                     "username": username,
@@ -1306,13 +1318,19 @@ class AuthAPI:
                 }
                 # and register the user if we have one, just in case
                 if auth.db:
-                    logger.debug(f"AuthAPI.login: Calling get_or_register_user with data={data}")
+                    self.logger.debug(
+                        f"AuthAPI.login: Calling get_or_register_user with data={data}"
+                    )
                     user = auth.get_or_register_user(data)
-                    logger.debug(f"AuthAPI.login: User after get_or_register_user: {user}")
+                    self.logger.debug(
+                        f"AuthAPI.login: User after get_or_register_user: {user}"
+                    )
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
-                logger.debug(f"AuthAPI.login: plugin.check_credentials failed for {username}")
+                self.logger.debug(
+                    f"AuthAPI.login: plugin.check_credentials failed for {username}"
+                )
                 data = auth._error(
                     auth.param.messages["errors"].get("invalid_credentials")
                 )
@@ -1699,9 +1717,7 @@ class DefaultAuthForms:
             # Get plain text password directly from request, on Windows this is needed
             # because form.vars.get("password", "") returns an hashed password.
             plain_password = request.forms.get("password", "")
-            user, error = self.auth.login(
-                form.vars.get("email", ""), plain_password
-            )
+            user, error = self.auth.login(form.vars.get("email", ""), plain_password)
             form.accepted = not error
 
             # Stops processing if there is a login error
