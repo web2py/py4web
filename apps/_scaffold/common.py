@@ -37,6 +37,11 @@ from . import settings
 # #######################################################
 logger = make_logger("py4web:" + settings.APP_NAME, settings.LOGGERS)
 
+# this export the logger to the auth module
+# so that it can be used in auth plugins
+import py4web.utils.auth as auth_module
+auth_module.logger = logger
+
 # #######################################################
 # connect to db
 # #######################################################
@@ -133,7 +138,7 @@ if settings.USE_PAM:
 if settings.USE_LDAP:
     from py4web.utils.auth_plugins.ldap_plugin import LDAPPlugin
 
-    auth.register_plugin(LDAPPlugin(db=db, groups=groups, **settings.LDAP_SETTINGS))
+    auth.register_plugin(LDAPPlugin(db=db, groups=groups, logger=logger, **settings.LDAP_SETTINGS))
 
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2google import OAuth2Google  # TESTED

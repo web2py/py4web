@@ -6,6 +6,7 @@ import random
 import re
 import time
 import uuid
+import logging
 
 import jwt
 
@@ -36,6 +37,18 @@ from py4web.utils.param import Param
 [ ] Lock account after x failed login attempts.
 [ ] Force new password every x days.
 """
+
+# Allow logger to be set externally before importing this module
+try:
+    logger  # type: ignore  # pylance: ignore undefined
+except NameError:
+    # If not set, define a default logger
+    logger = logging.getLogger("py4web.auth")
+    if not logger.hasHandlers():
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
 
 def b16e(text):
@@ -124,6 +137,7 @@ class AuthEnforcer(Fixture):
             message = self.auth.param.messages["flash"].get("login-required")
             self.goto_login(message=message)
 
+        user = self.auth.session.get("user")
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
 
@@ -153,7 +167,7 @@ class Auth(Fixture):
             "user-logout": "User logout",
             "email-verified": "Email verified",
             "link-expired": "Link invalid or expired",
-            "login-required": "Login required,",
+            "login-required": "Login required",
         },
         "labels": {
             "username": "Username",
@@ -675,9 +689,9 @@ class Auth(Fixture):
         for plugin in self.plugins.values():
             if not hasattr(plugin, "get_login_url"):
                 prevent_db_lookup = True
+                logger.debug(f"Trying plugin: {plugin.name}, mode: {getattr(plugin, 'mode', None)}")
                 if plugin.check_credentials(email, password):
-                    # if the credentials are independently validated
-                    # get or create the user (if does not exist)
+                    logger.debug(f"Plugin {plugin.name} accepted credentials for {email}")
                     user_info = {}
                     user_info["sso_id"] = plugin.name + ":" + email
                     if self.use_username or "@" not in email:
@@ -685,8 +699,10 @@ class Auth(Fixture):
                     if "@" in email:
                         user_info["email"] = email
                     else:
+                        logger.debug(f"Constructing email from username: {email}@example.com")
                         user_info["email"] = email + "@example.com"
                     user = self.get_or_register_user(user_info)
+                    logger.debug(f"User after get_or_register_user: {user}")
                     break
 
         # else check against database
@@ -1278,7 +1294,10 @@ class AuthAPI:
         # Prioritize PAM or LDAP logins if enabled
         if "pam" in auth.plugins or "ldap" in auth.plugins:
             plugin_name = "pam" if "pam" in auth.plugins else "ldap"
-            check = auth.plugins[plugin_name].check_credentials(username, password)
+            plugin = auth.plugins[plugin_name]
+            logger.debug(f"AuthAPI.login: Trying plugin {plugin_name} for user {username}")
+            check = plugin.check_credentials(username, password)
+            logger.debug(f"AuthAPI.login: plugin.check_credentials returned {check}")
             if check:
                 data = {
                     "username": username,
@@ -1287,10 +1306,13 @@ class AuthAPI:
                 }
                 # and register the user if we have one, just in case
                 if auth.db:
+                    logger.debug(f"AuthAPI.login: Calling get_or_register_user with data={data}")
                     user = auth.get_or_register_user(data)
+                    logger.debug(f"AuthAPI.login: User after get_or_register_user: {user}")
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
+                logger.debug(f"AuthAPI.login: plugin.check_credentials failed for {username}")
                 data = auth._error(
                     auth.param.messages["errors"].get("invalid_credentials")
                 )
