@@ -1021,3 +1021,63 @@ For a custom authentication form, you can follow a similar approach. Make sure t
    [[form.structure.insert(-1,XML('<altcha-widget></altcha-widget></br>'))]]
 
    <div class="auth-container">[[=form]]</div>
+
+To enable Altcha in the auth form, you can use the following fixture:
+
+.. code-block:: python
+
+    class AltchaServerFixture(Fixture):
+        def __init__(self, hmac_key=ALTCHA_HMAC_KEY):
+            super().__init__()
+            self._name = "altcha_server"
+            self.hmac_key = hmac_key
+
+        def on_success(self, context):
+            # Only verify Altcha for POST requests
+            if request.method != "POST":
+                return
+            payload = request.POST.get("altcha")
+            if not payload:
+                raise HTTP(400, "ALTCHA payload not received")
+            try:
+                verified, err = verify_solution(payload, self.hmac_key, True)
+                if not verified:
+                    raise HTTP(400, "Invalid ALTCHA")
+                return {"success": True, "message": "Altcha verification passed"}
+            except Exception as e:
+                raise HTTP(500, "Exception in Altcha verification")
+
+        @property
+        def name(self):
+            return self._name
+
+Make sure ``AltchaServerFixture`` is accessible in ``common.py`` where ``auth`` is instantiated:
+
+.. code-block:: python
+
+    from .fixtures import AltchaServerFixture
+    auth.enable(uses=(session, T, db, AltchaServerFixture()), env=dict(T=T))
+
+This will ensure Altcha verification is performed for POST requests in your authentication forms.
+
+You can also use the ``AltchaServerFixture`` in a form:
+
+.. code-block:: python
+
+    @action('other_form', method=['GET', 'POST'])
+    @action.uses('form_altcha.html', session, flash, AltchaServerFixture())
+    def other_form():
+        fields = [
+            Field("name", requires=IS_NOT_EMPTY()),
+            Field("color", type="string", requires=IS_IN_SET(["red","blue","green"])),
+        ]
+        form = Form(fields, 
+                    csrf_session=session, 
+                    submit_button=T("Submit"))
+        antes_submit = len(form.structure) - 3
+        form.structure.insert(antes_submit, XML('<altcha-widget></altcha-widget></br>'))
+        if form.accepted:
+            # You can assume here that the Altcha payload was verified by the fixture
+            flash.set("Form and Altcha successfully verified.")
+            # Process the form data here
+        return dict(form=form)
