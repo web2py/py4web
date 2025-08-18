@@ -206,7 +206,7 @@ class Widget(ABC):
 
 class WidgetRegistry:
     def __init__(self):
-        self.widgets: List[Type[Widget]] = {}
+        self.widgets: List[Type[Widget]] = []
 
     # class-decorator for registering a widget
     def register_widget(self, cls: Type[Widget]):
