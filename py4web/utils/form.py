@@ -3,11 +3,11 @@ import os
 import time
 import uuid
 from abc import ABC
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type, Union
 
 import jwt
 from pydal._compat import to_native
-from pydal.objects import Field, FieldVirtual
+from pydal.objects import Field, FieldVirtual, SQLCustomType
 from yatl.helpers import (
     CAT,
     DIV,
@@ -81,6 +81,14 @@ def join_classes(*args):
     return " ".join(sorted(classes))
 
 
+def is_hashable(obj) -> bool:
+    try:
+        hash(obj)
+        return True
+    except TypeError:
+        return False
+
+
 class Widget(ABC):
     """Prototype widget object for all form widgets"""
 
@@ -90,7 +98,7 @@ class Widget(ABC):
     @classmethod
     def matches(cls, field: Field) -> bool:
         "Checks if this widget can be used for the field"
-        return cls.type_name == field.type
+        return cls.type_name == str(field.type)
 
     def __init__(
         self,
@@ -209,14 +217,19 @@ class WidgetRegistry:
         vars: Any,
         error: Optional[str] = None,
     ) -> Widget:
-        if field.type in self.widgets:
-            return self.widgets[field.type](field, form_style, vars, error=error)
+        # default to TextInputWidget if none found
+        widget = TextInputWidget
 
-        for widget in self.widgets.values():
-            if widget.matches(field):
-                return widget(field, form_style, vars, error=error)
-
-        return TextInputWidget(field, form_style, vars, error=error)
+        # try to find the widget by type name
+        if is_hashable(field.type) and field.type in self.widgets:
+            widget = self.widgets[field.type]
+        else:
+            # if it didn't work, call .matches() until one is found
+            for w in self.widgets.values():
+                if w.matches(field):
+                    widget = w
+                    break
+        return widget(field, form_style, vars, error=error)
 
 
 # global widget registry, for associating widgets to types
@@ -409,7 +422,7 @@ class ListWidget(Widget, MakeReadonlyMixin):
 
     @classmethod
     def matches(cls, field: Field):
-        return field.type.startswith(cls.type_name)
+        return str(field.type).startswith(cls.type_name)
 
     def make_editable(self, value):
         # Seems like this is a less flexible version of the _class in Widget.__init__?
