@@ -89,6 +89,12 @@ def is_hashable(obj) -> bool:
         return False
 
 
+class IgnoreWidget(Exception):
+    "Exception which widgets can raise to be completely skipped"
+
+    pass
+
+
 class Widget(ABC):
     """Prototype widget object for all form widgets"""
 
@@ -592,6 +598,14 @@ class FileUploadWidget(Widget):
         return control
 
 
+@widgets.register_widget
+class BlobWidget(Widget):
+    type_name = "blob"
+
+    def make(self, readonly=False):
+        raise IgnoreWidget("Blob fields have no default widget")
+
+
 class FormStyleFactory:
     _classes = {
         "outer": "",
@@ -707,10 +721,6 @@ class FormStyleFactory:
             elif not showreadonly and not field.writable:
                 continue
 
-            # ignore blob fields
-            if field.type == "blob":  # never display blobs (mistake?)
-                continue
-
             # ignore fields of type id its value is equal to None
             if field.type == "id" and vars.get(field.name) is None:
                 field.writable = False
@@ -731,7 +741,10 @@ class FormStyleFactory:
                 readonly or not field.writable or field.type == "id" or is_virtual
             )
 
-            wrapped, html = widget.form_html(readonly=is_readonly)
+            try:
+                wrapped, html = widget.form_html(readonly=is_readonly)
+            except IgnoreWidget:
+                continue
 
             # Add to the controls dict
             controls.wrappers[field.name] = wrapped
