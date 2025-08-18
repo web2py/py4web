@@ -1,9 +1,10 @@
 import copy
+import functools
 import os
 import time
 import uuid
 from abc import ABC
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union
 
 import jwt
 from pydal._compat import to_native
@@ -81,14 +82,6 @@ def join_classes(*args):
     return " ".join(sorted(classes))
 
 
-def is_hashable(obj) -> bool:
-    try:
-        hash(obj)
-        return True
-    except TypeError:
-        return False
-
-
 class IgnoreWidget(Exception):
     "Exception which widgets can raise to be completely skipped"
 
@@ -98,21 +91,26 @@ class IgnoreWidget(Exception):
 class Widget(ABC):
     """Prototype widget object for all form widgets"""
 
-    type_name: str
-    "type_name used for naive type-only matching"
-
     @classmethod
     def matches(cls, field: Field) -> bool:
         "Checks if this widget can be used for the field"
-        return cls.type_name == str(field.type)
+        return False  # if this method hasn't been overwritten, this widget should never be matched
 
     def __init__(
         self,
-        field: Field,
-        form_style: "FormStyleFactory",
-        vars: Any,
+        field: Field = None,
+        form_style: "FormStyleFactory" = None,
+        vars: Any = None,
         error: Optional[str] = None,
     ):
+        if field is None or form_style is None or vars is None:
+            raise TypeError(
+                "The usage of custom widgets has changed.\n"
+                "If you used to override the widget for a field, "
+                "don't instantiate the class anymore:\n"
+                'old: FormStyle.widgets["fieldname"] = RadioWidget()\n'
+                'new: FormStyle.widgets["fieldname"] = RadioWidget\n',
+            )
         self.field = field
         self.form_style = form_style
         self.vars = vars
@@ -208,11 +206,11 @@ class Widget(ABC):
 
 class WidgetRegistry:
     def __init__(self):
-        self.widgets: Dict[str, Type[Widget]] = {}
+        self.widgets: List[Type[Widget]] = {}
 
     # class-decorator for registering a widget
     def register_widget(self, cls: Type[Widget]):
-        self.widgets[cls.type_name] = cls
+        self.widgets.append(cls)
         # so that the class isn't set to None when this is used as a decorator
         return cls
 
@@ -226,15 +224,11 @@ class WidgetRegistry:
         # default to TextInputWidget if none found
         widget = TextInputWidget
 
-        # try to find the widget by type name
-        if is_hashable(field.type) and field.type in self.widgets:
-            widget = self.widgets[field.type]
-        else:
-            # if it didn't work, call .matches() until one is found
-            for w in self.widgets.values():
-                if w.matches(field):
-                    widget = w
-                    break
+        # loop over in reverse order, so custom user widgets are preferred
+        for w in reversed(self.widgets):
+            if w.matches(field):
+                widget = w
+                break
         return widget(field, form_style, vars, error=error)
 
 
@@ -264,20 +258,35 @@ class FieldDefinedWidget(Widget):
         return control
 
 
-class FormDefinedWidget(Widget):
-    "Handles widgets set for a specific form name on the form-style"
+class OldWidgetCompat(Widget):
+    """Handles custom widgets from the older style,
+    which have a .make(self, field, value, error, title, placeholder="", readonly=False)
+    and don't inherit from Widget"""
 
-    def make_editable(self, value):
-        control = self.form_style.widgets[self.field.name].make(self.field, value)
+    def __init__(self, old_widget, field, form_style, vars, error=None):
+        super().__init__(field, form_style, vars, error)
+        self.old_widget = old_widget
 
-        key = control.name.rstrip("/")
-        if key == "input":
-            key += "[type=%s]" % (control["_type"] or "text")
+    def make(self, readonly):
+        if isinstance(self.field, FieldVirtual):
+            value = None
+        if self.field.name in self.vars:
+            value = self.vars.get(self.field.name)
+        else:
+            default = getattr(self.field, "default", None)
+            if callable(default):
+                default = default()
+            value = default
 
-        if hasattr(control, "attributes"):
-            control["_class"] = join_classes(
-                control.attributes.get("_class"), self.form_style.classes.get(key)
-            )
+        control = self.old_widget.make(
+            self.field,
+            value,
+            self.error,
+            self.title,
+            placeholder=self.placeholder,
+            readonly=readonly,
+        )
+        self.controls["widgets"] = control
         return control
 
 
@@ -291,6 +300,10 @@ class MakeReadonlyMixin:
 
 class InputTypeWidget(Widget, MakeReadonlyMixin):
     html_input_type = "text"
+
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return cls.type_name == str(field.type)
 
     def make_editable(self, value):
         """converts the widget to a HTML helper"""
@@ -368,7 +381,9 @@ class DateTimeWidget(InputTypeWidget):
 
 @widgets.register_widget
 class TextareaWidget(Widget, MakeReadonlyMixin):
-    type_name = "text"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "text"
 
     def make_editable(self, value):
         return TEXTAREA(
@@ -383,12 +398,16 @@ class TextareaWidget(Widget, MakeReadonlyMixin):
 
 @widgets.register_widget
 class JsonWidget(TextareaWidget):
-    type_name = "json"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "json"
 
 
 @widgets.register_widget
 class CheckboxWidget(Widget, MakeReadonlyMixin):
-    type_name = "boolean"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "boolean"
 
     def make_editable(self, value):
         return INPUT(
@@ -424,11 +443,9 @@ class CheckboxWidget(Widget, MakeReadonlyMixin):
 
 @widgets.register_widget
 class ListWidget(Widget, MakeReadonlyMixin):
-    type_name = "list:"
-
     @classmethod
     def matches(cls, field: Field):
-        return str(field.type).startswith(cls.type_name)
+        return str(field.type).startswith("list:")
 
     def make_editable(self, value):
         # Seems like this is a less flexible version of the _class in Widget.__init__?
@@ -451,7 +468,9 @@ class ListWidget(Widget, MakeReadonlyMixin):
 
 @widgets.register_widget
 class PasswordWidget(Widget, MakeReadonlyMixin):
-    type_name = "password"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "password"
 
     def make_editable(self, value):
         return INPUT(
@@ -468,7 +487,9 @@ class PasswordWidget(Widget, MakeReadonlyMixin):
 
 @widgets.register_widget
 class SelectWidget(Widget, MakeReadonlyMixin):
-    type_name = "select"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "select"
 
     @classmethod
     def matches(cls, field: Field) -> bool:
@@ -501,7 +522,9 @@ class SelectWidget(Widget, MakeReadonlyMixin):
 
 @widgets.register_widget
 class RadioWidget(Widget):
-    type_name = "radio"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "radio"
 
     def make_editable(self, value):
         control = CAT()
@@ -535,7 +558,9 @@ class RadioWidget(Widget):
 
 @widgets.register_widget
 class FileUploadWidget(Widget):
-    type_name = "upload"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "upload"
 
     def url(self, value):
         return getattr(self.field, "download_url", lambda value: "#")(value)
@@ -600,7 +625,9 @@ class FileUploadWidget(Widget):
 
 @widgets.register_widget
 class BlobWidget(Widget):
-    type_name = "blob"
+    @classmethod
+    def matches(cls, field: Field) -> bool:
+        return str(field.type) == "blob"
 
     def make(self, readonly=False):
         raise IgnoreWidget("Blob fields have no default widget")
@@ -630,12 +657,12 @@ class FormStyleFactory:
         "textarea": "",
     }
     _class_inner_exceptions = {}
-    _widgets = {}
+    _widgets: Dict[str, Type[Widget]] = {}
 
     def __init__(self):
         self.classes = copy.copy(self._classes)
         self.class_inner_exceptions = copy.copy(self._class_inner_exceptions)
-        self.widgets = copy.copy(self._widgets)
+        self.widgets: Dict[str, Type[Widget]] = copy.copy(self._widgets)
 
     def clone(self):
         return copy.deepcopy(self)
@@ -732,7 +759,13 @@ class FormStyleFactory:
             if field.widget:
                 widget = FieldDefinedWidget(field, self, table, vars, error=error)
             elif field.name in self.widgets:
-                widget = FormDefinedWidget(field, self, vars, error)
+                usr_widget = self.widgets[field.name]
+                # allow specifying `formstyle.widgest["field"] = SelectWidget` (note: class, not instance)
+                if issubclass(usr_widget, Widget):
+                    widget = usr_widget
+                else:
+                    # compat with widgets expecting widget.make(self, field, value, error, title, placeholder="", readonly=False)
+                    widget = OldWidgetCompat(usr_widget, field, self, vars, error)
             else:
                 widget = widgets.get_widget_for(field, self, vars, error)
 
