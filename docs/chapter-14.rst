@@ -435,109 +435,42 @@ the Grid **init** method.
 You can build your own Action Button class to pass to pre/post action
 buttons based on the template below (this is not provided with py4web).
 
-Sample Action Button Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Here is an example:
 
 .. code:: python
 
-   class GridActionButton:
-    def __init__(
-        self,
-        url,
-        text=None,
-        icon=None,
-        additional_classes="",
-        additional_styles="",
-        override_classes="",
-        override_styles="",
-        message="",
-        append_id=False,
-        name=None,
-        ignore_attribute_plugin=False,
-        **attrs
-    ):
-        self.url = url
-        self.text = text
-        self.icon = icon
-        self.additional_classes = additional_classes
-        self.additional_styles = additional_styles
-        self.override_classes = override_classes
-        self.override_styles = override_styles
-        self.message = message
-        self.append_id = append_id
-        self.name = name
-        self.ignore_attribute_plugin = ignore_attribute_plugin
-        self.attrs = attrs
-
-   "fa-calendar" for IconStyleFontawesome.
-   the button element
-   added to additional classes
-   for the button
-
-After defining the custom GridActionButton class, you need to define
-your Action buttons:
-
-.. code:: python
-
-    pre_action_buttons = [
-        lambda row: GridActionButton(
-            lambda row: f"https://www.google.com/search?q={row.superhero}", 
-            text= f"Google for {row.superhero}",
-        )
-    ]
-
-Finally, you need to reference them in the Grid definition:
-
-.. code:: python
+   pre_action_buttons = [
+       lambda row: dict(
+           url = f"https://www.google.com/search?q={row.superhero}", 
+           text = f"Google for {row.superhero}",
+           _style = "font-weight: 200"
+       )
+   ]
 
    grid = Grid(... pre_action_buttons = pre_action_buttons  ...) 
 
+Notice that a button can be represented by a dict with the following keys:
 
-Using callable parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~
+- url: the url the button points to (required)
+- text: the text of the button (required)
+- icon: the optional name of the icon in the button, for example ``fa-gear``
+- classes: optional classes to be added to the button tag
+- kind: optional kind of button used to retrieve style infro from the GridStyle. Defaults to "grid-button"
+- _{name}: optional attributes to be passed to the ``A(..., _{name}=...)`` helper building the button.
 
-A recent improvement to py4web allows you to pass a **callable** instead of a GridActionButton. This allow you to more easily change the behaviour
-of standard and custom Actions.
-
-
-- override_classes
-- override_styles
-
-
-Example usage:
+A button can also be built explicitely using helpers for added flexibility and less magic:
 
 .. code:: python
 
-   @action("example")
-   def example():
+   pre_action_buttons = [
+       lambda row: A(
+           f"Google for {row.superhero}",
+           _href = f"https://www.google.com/search?q={row.superhero}",
+           _style = "font-weight: 200",
+       )
+   ]
 
-      pre_action_buttons = [
-         lambda row: GridActionButton(
-            URL("test", row.id),
-            text="Click me",
-            icon=IconStyleFontawsome.add_button, # same as "fa-plus"
-            additional_classes=row.id,
-            additional_styles=["height: 10px" if row.bar else None],
-         )
-      ]
-
-      post_action_buttons = [
-         lambda row: GridActionButton(
-            URL("test", row.id),
-            text="Click me!!!",
-            icon="fa-plus",
-            additional_classes=row.id,
-            additional_styles=["height: 10px" if row.bar else None],
-         )
-      ]
-
-      grid = Grid(
-         query=db.foo,
-         pre_action_buttons=pre_action_buttons,
-         post_action_buttons=post_action_buttons,
-      )
-
-      return dict(grid=grid.render())
+   grid = Grid(... pre_action_buttons = pre_action_buttons  ...) 
 
 
 Reference Fields
