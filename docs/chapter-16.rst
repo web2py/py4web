@@ -816,7 +816,6 @@ You need to style the tags. For example:
       line-height: 1.2em;
       margin: 2px;
       cursor: pointer;
-      opacity: 0.2;
       text-transform: capitalize;
     }
     ul.tags-list li[data-selected=true] {
@@ -873,3 +872,212 @@ but the entire page will be redirected.
 
 The contents of the component html can contain `<script>...</script>` and they can modify global page variables
 as well as modify other components.
+
+.. _altcha_captcha:
+
+Adding a Captcha Solution with Altcha
+-------------------------------------
+
+This section provides a simple captcha implementation for your py4web applications using the **Altcha** library. While not exhaustively tested, it serves as a practical example for integrating a robust, client-side captcha solution.
+More information in https://altcha.org
+
+Prerequisites
+^^^^^^^^^^^^^
+
+First, you need to install the Altcha library. You can do this using pip:
+
+.. code-block:: bash
+
+   python3 -m pip install --upgrade altcha
+
+You also need a secret key for HMAC verification. It's recommended to store this in your application's settings. For this example, we'll assume you have a file like ``.settings.py`` with the following variable:
+
+.. code-block:: python
+
+   # .settings.py
+   ALTCHA_HMAC_KEY = "your-very-secret-key-here"
+
+Controller Logic
+^^^^^^^^^^^^^^^^
+
+Next, you need to add the necessary actions to your controller file. The following code provides two actions: one to generate the captcha challenge (``altcha``) and another to handle a form with the captcha (``some_form``).
+
+.. code-block:: python
+
+   # controllers/default.py
+   from altcha import (
+       create_challenge,
+       verify_solution,
+       ChallengeOptions,
+   )
+   from py4web import action, response, request, URL, Field, flash, Form
+   from py4web.utils.form import XML, T
+   from .settings import ALTCHA_HMAC_KEY
+
+   @action("altcha", method=["GET"])
+   def get_altcha():
+       """Generates and returns an Altcha challenge."""
+       try:
+           challenge = create_challenge(
+               ChallengeOptions(
+                   hmac_key=ALTCHA_HMAC_KEY,
+                   max_number=50000,
+               )
+           )
+           response.headers["Content-Type"] = "application/json"
+           return challenge.__dict__
+       except Exception as e:
+           response.status = 500
+           return {"error": f"Failed to create challenge: {str(e)}"}
+
+   @action.uses("form_altcha.html", session, flash)
+   def some_form():
+       """An example form that uses the Altcha captcha."""
+       fields = [
+           Field("name", requires=IS_NOT_EMPTY()),
+           Field("color", type="string", requires=IS_IN_SET(["red", "blue", "green"])),
+       ]
+       form = Form(fields,
+                   csrf_session=session,
+                   submit_button=T("Submit"))
+
+       # Insert the Altcha widget HTML before the submit button
+       form.structure.insert(-1, XML('<altcha-widget></altcha-widget></br>'))
+
+       if form.accepted:
+           altcha_payload = request.POST.get("altcha")
+           if not altcha_payload:
+               response.status = 400
+               flash.set("NO ALTCHA payload")
+               print("NO ALTCHA payload")
+           else:
+               ok, error = verify_solution(altcha_payload, ALTCHA_HMAC_KEY)
+               if not ok:
+                   response.status = 400
+                   flash.set(f"ALTCHA verification fail: {error}")
+                   print("ALTCHA verification fail:", error)
+               else:
+                   flash.set("ALTCHA verified.")
+
+       return dict(form=form)
+
+View Templates
+^^^^^^^^^^^^^^
+
+You need to include the Altcha JavaScript library and configure the widget in your HTML templates.
+
+``form_altcha.html``
+""""""""""""""""""""
+
+This template works with the ``some_form`` action. It loads the Altcha script and sets the ``challengeurl`` attribute to point to our ``altcha`` action.
+
+.. code-block:: html
+
+   [[extend 'layout.html']]
+
+   <script async defer src="https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js" type="module"></script>
+   <script>
+       document.addEventListener("DOMContentLoaded", function () {
+           const altchaWidget = document.querySelector("altcha-widget");
+           if (altchaWidget) {
+               altchaWidget.setAttribute("challengeurl", "[[=URL('altcha')]]");
+           }
+       });
+   </script>
+   <div class="section">
+       <div class="vars">[[=form]]</div>
+   </div>
+
+Custom Auth Form
+""""""""""""""""
+
+For a custom authentication form, you can follow a similar approach. Make sure to insert the ``<altcha-widget>`` tag into the form's structure and include the necessary JavaScript.
+
+.. code-block:: html
+
+   [[extend "layout.html"]]
+   <script async defer src="https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js" type="module"></script>
+
+   <script>
+       document.addEventListener("DOMContentLoaded", function () {
+           const altchaWidget = document.querySelector("altcha-widget");
+           if (altchaWidget) {
+               altchaWidget.setAttribute("challengeurl", "[[=URL('altcha')]]");
+           }
+       });
+   </script>
+   <style>
+       .auth-container {
+           max-width: 80%;
+           min-width: 400px;
+           margin-left: auto;
+           margin-right: auto;
+           border: 1px solid #e1e1e1;
+           border-radius: 10px;
+           padding: 20px;
+       }
+   </style>
+
+   [[form.structure.insert(-1,XML('<altcha-widget></altcha-widget></br>'))]]
+
+   <div class="auth-container">[[=form]]</div>
+
+To enable Altcha in the auth form, you can use the following fixture:
+
+.. code-block:: python
+
+    class AltchaServerFixture(Fixture):
+        def __init__(self, hmac_key=ALTCHA_HMAC_KEY):
+            super().__init__()
+            self._name = "altcha_server"
+            self.hmac_key = hmac_key
+
+        def on_success(self, context):
+            # Only verify Altcha for POST requests
+            if request.method != "POST":
+                return
+            payload = request.POST.get("altcha")
+            if not payload:
+                raise HTTP(400, "ALTCHA payload not received")
+            try:
+                verified, err = verify_solution(payload, self.hmac_key, True)
+                if not verified:
+                    raise HTTP(400, "Invalid ALTCHA")
+                return {"success": True, "message": "Altcha verification passed"}
+            except Exception as e:
+                raise HTTP(500, "Exception in Altcha verification")
+
+        @property
+        def name(self):
+            return self._name
+
+Make sure ``AltchaServerFixture`` is accessible in ``common.py`` where ``auth`` is instantiated:
+
+.. code-block:: python
+
+    from .fixtures import AltchaServerFixture
+    auth.enable(uses=(session, T, db, AltchaServerFixture()), env=dict(T=T))
+
+This will ensure Altcha verification is performed for POST requests in your authentication forms.
+
+You can also use the ``AltchaServerFixture`` in a form:
+
+.. code-block:: python
+
+    @action('other_form', method=['GET', 'POST'])
+    @action.uses('form_altcha.html', session, flash, AltchaServerFixture())
+    def other_form():
+        fields = [
+            Field("name", requires=IS_NOT_EMPTY()),
+            Field("color", type="string", requires=IS_IN_SET(["red","blue","green"])),
+        ]
+        form = Form(fields, 
+                    csrf_session=session, 
+                    submit_button=T("Submit"))
+        antes_submit = len(form.structure) - 3
+        form.structure.insert(antes_submit, XML('<altcha-widget></altcha-widget></br>'))
+        if form.accepted:
+            # You can assume here that the Altcha payload was verified by the fixture
+            flash.set("Form and Altcha successfully verified.")
+            # Process the form data here
+        return dict(form=form)

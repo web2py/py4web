@@ -67,8 +67,8 @@ You can use a virtual environment:
 
    $ python -m venv .venv
    $ . .venv/bin/activate
-   $ pip install --upgrade --no-cache-dir
-   $ py4web setup apps
+   $ pip install --upgrade --no-cache-dir py4web   
+   $ py4web setup --yes apps
    ...
    $ py4web run apps
 
