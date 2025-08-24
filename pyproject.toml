@@ -20,7 +20,7 @@ dependencies = [
     "tornado",
     "renoir >= 1.4.0",
     "requests",
-    "threadsafevariable >= 20230507.1",
+    "threadsafevariable >= 20250716.1",
     "pyjwt >= 2.0.1",
     "pycryptodome",
     "pluralize >= 20240515.1",
