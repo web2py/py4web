@@ -45,6 +45,7 @@ There are many tutorials and videos available. Here are some of them:
 - the `South Breeze Enterprises demo app <https://github.com/jpsteil/southbreeze>`__ by `Jim Steil <https://github.com/jpsteil>`__.  It is built around
   the structure of the Microsoft Northwind database,
   but converted to SQLite. You can view the final result online `here <https://southbreeze.pythonbench.com>`__
+- the `py4web blog in spanish <https://py4web-tutoriales.blogspot.com>`__ by Alan Etkin, wich covers the basics to start with the framework plus examples. It is thought as a resource for sudents and aims to provide a full web development course
 
 The sources on GitHub
 ---------------------
