@@ -45,6 +45,9 @@ setup: uv
 run: uv
 	uv run py4web.py run -p password.txt apps -L20
 
+shell: uv
+	uv run py4web.py shell apps
+
 build: clean assets check test
 	uv build --sdist --wheel
 

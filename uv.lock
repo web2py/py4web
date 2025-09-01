@@ -777,7 +777,7 @@ requires-dist = [
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'" },
     { name = "sphinx-tabs", marker = "extra == 'docs'" },
     { name = "sphinxcontrib-spelling", marker = "extra == 'docs'" },
-    { name = "threadsafevariable", specifier = ">=20230507.1" },
+    { name = "threadsafevariable", specifier = ">=20250716.1" },
     { name = "tornado" },
     { name = "twine", marker = "extra == 'manage'" },
     { name = "watchgod", specifier = ">=0.6" },
@@ -1342,11 +1342,11 @@ wheels = [
 
 [[package]]
 name = "threadsafevariable"
-version = "20230507.1"
+version = "20250716.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5b/4d/b85162a28c4c6e3e0e4e4b5071b8110be3c4ef330a151e18622a9b13004a/threadsafevariable-20230507.1.tar.gz", hash = "sha256:0849b5535fd2cc11fb659e7ff7cd3a6e617cffea4891c262a0a1b068c2664551", size = 2412, upload-time = "2023-05-08T00:17:56.365Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/02/ecd9c2b0da62a4f4de74b24e7de996f5aa06eeeaaa55587b7b40f3ecb9a5/threadsafevariable-20250716.1.tar.gz", hash = "sha256:b7d6915a72f52dc1881385d61ffa5978bfda55c2711648c95d267255c8963f21", size = 2491, upload-time = "2025-08-24T20:55:37.502Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/70/101c3bd85ad659aafdcf3ddf38096f4cd69bf478d57a8aae6787ac7d9b44/threadsafevariable-20230507.1-py3-none-any.whl", hash = "sha256:45d86e8b8bb20f3d540457d5c0e814fe05aeda42758ee763bef476df28248d7e", size = 2471, upload-time = "2023-05-08T00:17:54.562Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/ff/8845cd7d50a09716fa121bd5283f5a6c5f2c27e60d6b2dec71b62eb015a5/threadsafevariable-20250716.1-py3-none-any.whl", hash = "sha256:f0293e56749a523a3c6e2b117fa6db9704000afd8c5b44d59c862d8fa26bf50c", size = 2515, upload-time = "2025-08-24T20:55:36.408Z" },
 ]
 
 [[package]]
