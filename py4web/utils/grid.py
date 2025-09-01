@@ -365,48 +365,73 @@ def maybe_call(obj, *args, **kwargs):
     return obj(*args, **kwargs)
 
 
+def reference_represent(value):
+    """
+    Assumes value is a pydal.objects.Reference value and represts is using the
+    table._format of the referenced table
+    """
+    table = value._table
+    row = table(row)
+    if isinstance(table._format, str):
+        return table._format % row
+    elif callable(table._format):
+        return table._format(row)
+    else:
+        return str(value)
+
+
+def datetime_represent(value):
+    """Represents a datetime value"""
+    if not value or not isinstance(value, datetime.datetime):
+        return value or ""
+    return XML(
+        "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
+        % (
+            value.year,
+            value.month - 1,
+            value.day,
+            value.hour,
+            value.minute,
+            value.second,
+        )
+    )
+
+
+def date_represent(value):
+    """Represents a date value"""
+    if not value or not isinstance(value, datetime.date):
+        return value or ""
+    return XML(
+        '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
+        % (
+            value.year,
+            value.month - 1,
+            value.day,
+        )
+    )
+
+
+def time_represent(value):
+    """Represents a time value"""
+    if not value or not isinstance(value, datetime.time):
+        return value or ""
+    return XML(
+        "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
+        % (value.hour, value.minute, value.second)
+    )
+
+
 class Grid:
     FORMATTERS_BY_TYPE = {
         "NoneType": lambda value: "",
         "bool": lambda value: "☑" if value else "☐" if value is False else "",
         "float": lambda value: "%.2f" % value,
         "double": lambda value: "%.2f" % value,
-        "datetime": lambda value: (
-            XML(
-                "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
-                % (
-                    value.year,
-                    value.month - 1,
-                    value.day,
-                    value.hour,
-                    value.minute,
-                    value.second,
-                )
-            )
-            if value and isinstance(value, datetime.datetime)
-            else (value or "")
-        ),
-        "time": lambda value: (
-            XML(
-                "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
-                % (value.hour, value.minute, value.second)
-            )
-            if value and isinstance(value, datetime.time)
-            else (value or "")
-        ),
-        "date": lambda value: (
-            XML(
-                '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
-                % (
-                    value.year,
-                    value.month - 1,
-                    value.day,
-                )
-            )
-            if value and isinstance(value, datetime.date)
-            else (value or "")
-        ),
-        "list": lambda value: ", ".join(x for x in value) or "",
+        "Reference": reference_represent,
+        "datetime": datetime_represent,
+        "date": date_represent,
+        "time": time_represent,
+        "list": lambda value: ", ".join(str(x) for x in value) or "",
     }
 
     def __init__(
