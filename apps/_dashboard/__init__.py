@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import uuid
 import zipfile
 
@@ -503,10 +504,36 @@ if MODE == "full":
             if source.endswith(".zip"):  # install from the web (zip file)
                 res = requests.get(source)
                 mem_zip = io.BytesIO(res.content)
-                zfile = zipfile.ZipFile(mem_zip, "r")
-                zfile.extractall(target_dir)
-                zfile.close()
-            elif source.endswith(".git"):  # clone from a git repo
+                with zipfile.ZipFile(mem_zip, "r") as zfile:
+                    allfiles = zfile.infolist()
+                    if "__init__.py" in allfiles:
+                        # the app is at top level
+                        zfile.extractall(target_dir)
+                        zfile.close()
+                    else:
+                        # check for subfolders that contain __init__.py
+                        roots = list(
+                            set(
+                                path[:-12]
+                                for path in allfiles
+                                if path.count("/") == 1
+                                and path.endswith("/__init__.py")
+                            )
+                        )
+                        # there can be only one
+                        if len(roots) != 1:
+                            abort(500)
+                        # extract only the subfolder
+                        with tempfile.TemporaryDirectory() as tmpdir:
+                            zfile.extractall(tmpdir)
+                            zfile.close()
+                            shutil.copytree(
+                                os.path.join(tmpdir, roots[0]),
+                                target_dir,
+                                dirs_exist_ok=True,
+                            )
+            elif source.endswith(".git"):
+                # clone from a git repo
                 process = subprocess.Popen(
                     ["git", "clone", source, form["name"]], cwd=FOLDER
                 )
