@@ -690,11 +690,11 @@ wheels = [
 
 [[package]]
 name = "pluralize"
-version = "20240519.3"
+version = "20250901.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/95/c6/59290019829430eb1b17064a41f32c8614a5082691a7b812a25efe5cf543/pluralize-20240519.3.tar.gz", hash = "sha256:efb23e2304d816d4d8a3c9b60faac33a39e0d72067a184570ef4d57d519527d0", size = 4581, upload-time = "2024-05-19T19:56:34.098Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/c6/f5b3fdfa5fa88eb0ed13ac3d9485965259f48980c1e644286201d9639c8c/pluralize-20250901.2.tar.gz", hash = "sha256:b35b7b309acd41a62725d64d47f41638e476cec62279c0012081662ea0a74b23", size = 4904, upload-time = "2025-09-01T17:20:33.158Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/fe/cfbd43621f5a9b8a4edc5ebcbef5dd27664fcfe1352877a0b4cc347891c9/pluralize-20240519.3-py3-none-any.whl", hash = "sha256:8538b1e01d0251e86389ed9969dfb620ad66f2583f7b711d4278ba34bd7781e8", size = 4346, upload-time = "2024-05-19T19:56:32.499Z" },
+    { url = "https://files.pythonhosted.org/packages/e1/0e/63bf05bb75f82a8433049c6abfb2bc8340e9faffcecd8fa9003ea2a2cfda/pluralize-20250901.2-py3-none-any.whl", hash = "sha256:2bbdbbf41035730d6a789bcd8273ac187d33c328c5c0a3298210e77608772053", size = 4431, upload-time = "2025-09-01T17:20:31.994Z" },
 ]
 
 [[package]]
@@ -760,7 +760,7 @@ requires-dist = [
     { name = "docutils", marker = "extra == 'docs'" },
     { name = "mechanize", marker = "extra == 'test'", specifier = "==0.4.6" },
     { name = "ombott", specifier = ">=2.4" },
-    { name = "pluralize", specifier = ">=20240515.1" },
+    { name = "pluralize", specifier = ">=20250901.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
     { name = "pydal", specifier = ">=20250629.2" },

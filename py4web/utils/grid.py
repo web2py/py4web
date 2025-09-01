@@ -733,11 +733,13 @@ class Grid:
 
                 def compute(row, col=col):
                     value = row(str(col))
-                    if col.represent:
-                        value = col.represent(value, row)
                     # deal with download links in special manner if no representation
                     if col.type == "upload" and value and hasattr(col, "download_url"):
                         value = A("download", _href=col.download_url(value))
+                    elif type(value).__name__ in self.formatters_by_type:
+                        value = self.formatters_by_type[type(value).__name__](value)
+                    elif col.represent:
+                        value = col.represent(value, row)
                     return value
 
                 self.columns.append(
@@ -927,12 +929,6 @@ class Grid:
 
         return link
 
-    def reformat(self, value):
-        type_name = type(value).__name__
-        if type_name in self.formatters_by_type:
-            return self.formatters_by_type[type_name](value)
-        return value
-
     def _make_default_form(self):
         search_type = safe_int(request.query.get("search_type", 0), default=0)
         search_string = request.query.get("search_string")
@@ -1107,8 +1103,7 @@ class Grid:
                     ]
                 )
                 value = col.represent(row)
-                reformatted_value = self.reformat(value)
-                tr.append(TD(reformatted_value, _class=classes))
+                tr.append(TD(value, _class=classes))
 
             tbody.append(tr)
 
