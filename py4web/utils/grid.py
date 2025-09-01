@@ -371,7 +371,9 @@ def reference_represent(value):
     table._format of the referenced table
     """
     table = value._table
-    row = table(row)
+    row = table(value)
+    if not row:
+        return ""
     if isinstance(table._format, str):
         return table._format % row
     elif callable(table._format):
