@@ -1154,13 +1154,13 @@ class Form(object):
                         if field.uploadfield == True and field.uploadfolder:
                             validated_vars[field.name] = field.store(
                                 value.file,
-                                value.filename,
+                                value.raw_filename,
                                 field.uploadfolder,
                             )
                         elif field.uploadfield and field.db:
                             validated_vars[field.name] = field.store(
                                 value.file,
-                                value.filename,
+                                value.raw_filename,
                                 field.uploadfolder,
                             )
                         else:
