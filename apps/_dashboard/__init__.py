@@ -427,6 +427,36 @@ if MODE in ("demo", "readonly", "full"):
         }
 
 
+def extract(source, target_dir):
+    with zipfile.ZipFile(source, "r") as zfile:
+        allfiles = [info.filename for info in zfile.infolist()]
+        if "__init__.py" in allfiles:
+            # the app is at top level
+            zfile.extractall(target_dir)
+            zfile.close()
+        else:
+            # check for subfolders that contain __init__.py
+            roots = list(
+                set(
+                    path[:-12]
+                    for path in allfiles
+                    if path.count("/") == 1 and path.endswith("/__init__.py")
+                )
+            )
+            # there can be only one
+            if len(roots) != 1:
+                abort(500)
+            # extract only the subfolder
+            with tempfile.TemporaryDirectory() as tmpdir:
+                zfile.extractall(tmpdir)
+                zfile.close()
+                shutil.copytree(
+                    os.path.join(tmpdir, roots[0]),
+                    target_dir,
+                    dirs_exist_ok=True,
+                )
+
+
 if MODE == "full":
 
     @action("reload")
@@ -462,9 +492,7 @@ if MODE == "full":
         """Installs an app by either unzipping it (if py4web installed from pip)
         or by copying the directory tree (if installed from source)."""
         if os.path.exists(source):
-            zfile = zipfile.ZipFile(source, "r")
-            zfile.extractall(target_dir)
-            zfile.close()
+            extract(source, target_dir)
         else:
             shutil.copytree(source_dir, target_dir)
 
@@ -504,34 +532,7 @@ if MODE == "full":
             if source.endswith(".zip"):  # install from the web (zip file)
                 res = requests.get(source)
                 mem_zip = io.BytesIO(res.content)
-                with zipfile.ZipFile(mem_zip, "r") as zfile:
-                    allfiles = zfile.infolist()
-                    if "__init__.py" in allfiles:
-                        # the app is at top level
-                        zfile.extractall(target_dir)
-                        zfile.close()
-                    else:
-                        # check for subfolders that contain __init__.py
-                        roots = list(
-                            set(
-                                path[:-12]
-                                for path in allfiles
-                                if path.count("/") == 1
-                                and path.endswith("/__init__.py")
-                            )
-                        )
-                        # there can be only one
-                        if len(roots) != 1:
-                            abort(500)
-                        # extract only the subfolder
-                        with tempfile.TemporaryDirectory() as tmpdir:
-                            zfile.extractall(tmpdir)
-                            zfile.close()
-                            shutil.copytree(
-                                os.path.join(tmpdir, roots[0]),
-                                target_dir,
-                                dirs_exist_ok=True,
-                            )
+                extract(mem_zip, target_dir)
             elif source.endswith(".git"):
                 # clone from a git repo
                 process = subprocess.Popen(
@@ -543,9 +544,7 @@ if MODE == "full":
         elif form["type"] == "upload":
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
-            zfile = zipfile.ZipFile(source_stream, "r")
-            zfile.extractall(target_dir)
-            zfile.close()
+            extract(source_stream, target_dir)
         else:
             abort(500)
         settings = os.path.join(target_dir, "settings.py")
