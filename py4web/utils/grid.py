@@ -8,7 +8,7 @@ import datetime
 import functools
 from urllib.parse import urlparse
 
-from pydal.objects import Expression, Field, FieldVirtual
+from pydal.objects import Expression, Field, FieldVirtual, get_default_represent
 from pydal.querybuilder import QueryBuilder
 from yatl.helpers import (
     CAT,
@@ -36,6 +36,8 @@ from py4web.utils.param import Param
 
 NAV = TAG.nav
 HEADER = TAG.header
+
+PYDAL_DEFAULT_REPRESENTS = [get_default_represent(""), get_default_represent("list:")]
 
 
 def title(text):
@@ -763,8 +765,9 @@ class Grid:
                     # deal with download links in special manner if no representation
                     if col.type == "upload" and value and hasattr(col, "download_url"):
                         value = A("download", _href=col.download_url(value))
-                    elif type(value).__name__ in self.formatters_by_type:
-                        value = self.formatters_by_type[type(value).__name__](value)
+                    elif col.represent in PYDAL_DEFAULT_REPRESENTS:
+                        if type(value).__name__ in self.formatters_by_type:
+                            value = self.formatters_by_type[type(value).__name__](value)
                     elif col.represent:
                         value = col.represent(value, row)
                     return value
