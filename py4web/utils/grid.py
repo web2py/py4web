@@ -6,6 +6,7 @@ import base64
 import copy
 import datetime
 import functools
+import re
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
@@ -63,6 +64,11 @@ def make_default_search_query(table):
     }
     builder = QueryBuilder(table, field_aliases=field_aliases)
     return ["Query", lambda text, builder=builder: builder.parse(text), None]
+
+
+def strip_field_type(type_name, regex=re.compile(r"^\w+")):
+    """list:string -> list, reference table->reference, decimal(3,7)->decimal"""
+    return regex.match(str(type_name)).group()
 
 
 class GridClassStyle:
@@ -342,7 +348,7 @@ class Column:
     def __init__(
         self,
         name,
-        represent,
+        represent_col,
         key=None,
         required_fields=None,  # must be a list or none
         orderby=None,
@@ -350,11 +356,12 @@ class Column:
         td_class_style=None,
     ):
         self.name = name
-        self.represent = represent
+        self.represent_col = represent_col
         self.orderby = orderby
         self.required_fields = required_fields or []
         self.key = key
-        self.type = (col_type,)
+        # col type is not quite a field type but we support field types
+        self.type = col_type
         self.td_class_style = td_class_style
 
 
@@ -424,16 +431,18 @@ def time_represent(value):
 
 
 class Grid:
-    FORMATTERS_BY_TYPE = {
-        "NoneType": lambda value: "",
-        "bool": lambda value: "☑" if value else "☐" if value is False else "",
+    represent_by_type = {
+        "id": lambda value: f"#{value}",
+        "boolean": lambda value: "☑" if value else "☐" if value is False else "",
         "float": lambda value: "%.2f" % value,
         "double": lambda value: "%.2f" % value,
-        "Reference": reference_represent,
+        "decimal": lambda value: "%.2f" % value,
+        "reference": reference_represent,
         "datetime": datetime_represent,
         "date": date_represent,
         "time": time_represent,
         "list": lambda value: ", ".join(str(x) for x in value) or "",
+        "password": lambda value: "******",
     }
 
     def __init__(
@@ -562,7 +571,7 @@ class Grid:
         self.record = None  # the record to display or None
         self.form = None  # the edit, new, details form
         self.hidden_fields = None  # hidden fields to be embedded in form
-        self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
+        self.represent_by_type = copy.copy(Grid.represent_by_type)
 
         if auto_process:
             self.process()
@@ -757,26 +766,36 @@ class Grid:
                 self.columns.append(col)
 
             elif isinstance(col, Field):
-
-                def compute(row, col=col):
-                    value = row(str(col))
-                    # deal with download links in special manner if no representation
-                    if col.type == "upload" and value and hasattr(col, "download_url"):
-                        value = A("download", _href=col.download_url(value))
-                    elif type(value).__name__ in self.formatters_by_type:
-                        value = self.formatters_by_type[type(value).__name__](value)
-                    elif col.represent:
-                        value = col.represent(value, row)
-                    return value
+                # deal with download links in special manner if no representation
+                type_name = strip_field_type(col.type)
+                # upload type is always special!
+                if type_name == "upload" and hasattr(col, "download_url"):
+                    represent_col = (
+                        lambda row, name=str(col), f=col.download_url: row[name]
+                        and A("download", _href=f(row[name]))
+                        or ""
+                    )
+                # field represent override default formatters by type
+                elif col.represent:
+                    represent_col = lambda row, name=str(col), f=col.represent: f(
+                        row[name], row
+                    )
+                # we do not know better, use formatters by type (type is the stripped Field type)
+                elif type_name in self.represent_by_type:
+                    represent_col = lambda row, name=str(col), f=self.represent_by_type[
+                        type_name
+                    ]: f(row[name])
+                else:
+                    represent_col = lambda row, name=str(col): row[name]
 
                 self.columns.append(
                     Column(
                         col.label,
-                        compute,
+                        represent_col,
                         orderby=col,
                         required_fields=[col],
                         key=col2key(col),
-                        col_type=col.type,
+                        col_type=type_name,
                     )
                 )
             elif isinstance(col, FieldVirtual):
@@ -1129,7 +1148,7 @@ class Grid:
                         f"grid-cell-{col.key}",
                     ]
                 )
-                value = col.represent(row)
+                value = col.represent_col(row)
                 tr.append(TD(value, _class=classes))
 
             tbody.append(tr)

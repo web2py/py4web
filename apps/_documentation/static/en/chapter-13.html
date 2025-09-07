@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 20250524 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 20250902 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=a88f9fdd"></script>
+      <script src="_static/documentation_options.js?v=2a8d5aee"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -522,44 +522,38 @@ This is also referred to as “Authentication bearer”.</p>
 <p>Py4web provides a plugin system that gives you a lot of flexibility but it also provides
 two practical plugins that are sufficient in most cases. The two plugins are called:
 SimpleTokenPlugin and JwtTokenPlugin. The first one of the two is recommended in most of the cases.</p>
-<p>What all plugins have in common:
-- They have a way for a user to create a token which is a string.
-- When an HTTP(S) request is made to an action that &#64;actiion.uses(auth) or &#64;action.uses(auth.user)</p>
-<blockquote>
-<div><p>py4web will identify the user if the token is present, as if the user was logged-in.</p>
-</div></blockquote>
-<p>What SimpleTokenPlugin and JwtTokenPlugin have in common:
-- When an HTTP(S) request is made, the token must be put in the “Authentication” header.</p>
-<blockquote>
-<div><p>You will need to create your own plugin if you want to pass it in some other manner.</p>
-</div></blockquote>
+<p>What all plugins have in common:</p>
 <ul class="simple">
+<li><p>They have a way for a user to create a token which is a string.</p></li>
+<li><p>When an HTTP(S) request is made to an action that &#64;actiion.uses(auth) or &#64;action.uses(auth.user)
+py4web will identify the user if the token is present, as if the user was logged-in.</p></li>
+</ul>
+<p>What SimpleTokenPlugin and JwtTokenPlugin have in common:</p>
+<ul class="simple">
+<li><p>When an HTTP(S) request is made, the token must be put in the “Authentication” header.
+You will need to create your own plugin if you want to pass it in some other manner.</p></li>
 <li><p>Each user can create as many tokens as desired.</p></li>
 <li><p>Users can create tokens for other users if the application logic requires/allows it.</p></li>
 </ul>
-<p>Unique features of SimpleTokenPlugin:
-- A token is a UUID.
-- Tokens can be managed serverside (created, deleted, expired, change expiration).
-- Current tokens are stored in a adatabase table.
-- The default table associates token with the owner and a textual description.</p>
-<blockquote>
-<div><p>Users can nevertheless provide their own table and add any desired metadata to tokens
-which the app can retrieve to distinguish different tokens from the same user.
-This is done by adding fields to the table.</p>
-</div></blockquote>
+<p>Unique features of SimpleTokenPlugin:</p>
 <ul class="simple">
+<li><p>A token is a UUID.</p></li>
+<li><p>Tokens can be managed serverside (created, deleted, expired, change expiration).</p></li>
+<li><p>Current tokens are stored in a adatabase table.</p></li>
+<li><p>The default table associates token with the owner and a textual description.
+Users can nevertheless provide their own table and add any desired metadata to tokens
+which the app can retrieve to distinguish different tokens from the same user.
+This is done by adding fields to the table.</p></li>
 <li><p>Under the hood veryfing a token requires a database query.</p></li>
 </ul>
-<p>Unique features of JwtTokenPlugin:
-- The token is an encrypted and digitally signed dict that stores the user_id and expiration.
-- The author of the token can add any metadata to into the token at creation.
-- The token is not stored anywhere serverside and there is no database table.
-- Tokens can be created (and there is a function to do so) but they cannot be managed.</p>
-<blockquote>
-<div><p>The server cannot expire tokens or change expiration. This would require the tokens
-to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.</p>
-</div></blockquote>
+<p>Unique features of JwtTokenPlugin:</p>
 <ul class="simple">
+<li><p>The token is an encrypted and digitally signed dict that stores the user_id and expiration.</p></li>
+<li><p>The author of the token can add any metadata to into the token at creation.</p></li>
+<li><p>The token is not stored anywhere serverside and there is no database table.</p></li>
+<li><p>Tokens can be created (and there is a function to do so) but they cannot be managed.
+The server cannot expire tokens or change expiration. This would require the tokens
+to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.</p></li>
 <li><p>The only way to expire a token is by changing the serverside secret using for validation
 so when a token is expired, all tokens are expired.</p></li>
 </ul>
@@ -832,7 +826,7 @@ Here is an example of an action to start impersonating and stop impersonating an
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -857,7 +851,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20250524
+      v: 20250902
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

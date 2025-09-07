@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 20250524 documentation</title>
+  <title>Fixtures &mdash; py4web 20250902 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=a88f9fdd"></script>
+      <script src="_static/documentation_options.js?v=2a8d5aee"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -804,13 +804,8 @@ fields:</p>
 after submit, additional code needs to be added, as we will see later
 on. This example is assuming that you created the application from the
 scaffolding app, so that a generic.html is already created for you.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">readable</span></code>, <code class="docutils literal notranslate"><span class="pre">writable</span></code>, <code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, and <code class="docutils literal notranslate"><span class="pre">require</span></code>
-attributes of <code class="docutils literal notranslate"><span class="pre">db.{table}.{field}</span></code> are special objects of class
-<code class="docutils literal notranslate"><span class="pre">ThreadSafeVariable</span></code> defined the <code class="docutils literal notranslate"><span class="pre">threadsafevariable</span></code> module. These
-objects are very much like Python thread local objects but they are
-re-initialized at every request using the value specified outside of the
-action. This means that actions can safely change the values of these
-attributes.</p>
+<p>The full list of database field attributes which can be changed safely
+is found here: <a class="reference internal" href="chapter-07.html#thread-safety-and-field-attributes"><span class="std std-ref">Thread safety and Field attributes</span></a></p>
 </section>
 <section id="custom-fixtures">
 <h2>Custom fixtures<a class="headerlink" href="#custom-fixtures" title="Link to this heading"></a></h2>
@@ -1120,7 +1115,7 @@ See: <a class="reference internal" href="#fixtures-with-dependencies"><span clas
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, BSDv3 License.</p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
@@ -1145,7 +1140,7 @@ See: <a class="reference internal" href="#fixtures-with-dependencies"><span clas
      <label for="switch"></label>
      </span>
       
-      v: 20250524
+      v: 20250902
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
