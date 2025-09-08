@@ -13,7 +13,7 @@
         PY4WEB Dashboard 2.0 - Vue 3 Conversion
     -->
     <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png" /></a>
-    <div id="target" class="my-effects">
+    <div id="target" class="my-effects" v-cloak>
         <div class="login" v-if="!user">
             <h1>PY4WEB</h1>
             <h2><i class="fa fa-lock fa-2x"></i></h2>
@@ -35,6 +35,11 @@
             <img src="images/widget.gif" class="spinner-top" />
             <span class="logo">py4web Dashboard</span>
         </div>
+        <div v-if="last_error" class="dialog-error">
+            <h2>API error</h2>
+            <pre v-text="last_error"></pre>
+            <button v-on:click="close_dialog_error">Ignore and Dismiss</button>
+        </div>"
         <div class="panel accordion">
             <input type="checkbox" id="applications">
             <label for="applications">Installed Applications</label>
@@ -250,7 +255,7 @@
                                 <td></td>
                                 <td style="padding-top: 20px">
                                     <input type="radio" name="mode" v-model="modal.form.mode" value="new" /> New App
-                                    <input type="radio" name="mode" v-model="modal.form.mode" value="replace" /> Replace
+                                    <input type="radio" name="mode" v-model="modal.form.mode" value="update" /> Update
                                 </td>
                             </tr>
                         </table>

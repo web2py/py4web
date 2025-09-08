@@ -1,6 +1,7 @@
 import base64
 import copy
 import datetime
+import functools
 import io
 import json
 import os
@@ -8,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import traceback
 import uuid
 import zipfile
 
@@ -61,6 +63,20 @@ def make_safe(db):
                 field.default = make_safe_field(field.default)
             if callable(field.update):
                 field.update = make_safe_field(field.update)
+
+
+def catch_errors(func):
+    """Wraps APIs that return a status=success/error and includes a traceback in response"""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+        except Exception:
+            result = {"status": "error", "traceback": traceback.format_exc()}
+        return result
+
+    return wrapper
 
 
 def run(command, project):
@@ -219,6 +235,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("info")
     @session_secured
+    @catch_errors
     def info():
         vars = [{"name": "python", "version": sys.version}]
         for module in sorted(sys.modules):
@@ -233,6 +250,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("routes")
     @session_secured
+    @catch_errors
     def routes():
         """Returns current registered routes"""
         sorted_routes = {
@@ -243,6 +261,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("apps")
     @session_secured
+    @catch_errors
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
@@ -260,6 +279,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("delete_app/<name:re:\\w+>", method="POST")
     @session_secured
+    @catch_errors
     def delete_app(name):
         """delete the app"""
         path = os.path.join(FOLDER, name)
@@ -298,6 +318,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("walk/<path:path>")
     @session_secured
+    @catch_errors
     def walk(path):
         """Returns a nested folder structure as a tree"""
         top = os.path.join(FOLDER, path)
@@ -330,6 +351,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("load/<path:path>")
     @session_secured
+    @catch_errors
     def load(path):
         """Loads a text file"""
         path = safe_join(FOLDER, path) or abort()
@@ -370,10 +392,11 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("tickets")
     @session_secured
+    @catch_errors
     def tickets():
         """Returns most recent tickets grouped by path+error"""
         tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
-        return {"payload": tickets or []}
+        return {"payload": tickets or [], "status": "success"}
 
     @action("clear")
     @session_secured
@@ -396,6 +419,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
+    @catch_errors
     def api(path):
         # this is not final, requires pydal 19.5
         args = path.split("/")
@@ -405,7 +429,7 @@ if MODE in ("demo", "readonly", "full"):
         module = Reloader.MODULES.get(app_name)
 
         if not module:
-            raise HTTP(404)
+            return {"status": "success", "databases": []}
         databases = [
             name for name in dir(module) if isinstance(getattr(module, name), DAL)
         ]
@@ -423,18 +447,16 @@ if MODE in ("demo", "readonly", "full"):
             ]
 
         return {
-            "databases": [{"name": name, "tables": tables(name)} for name in databases]
+            "status": "success",
+            "databases": [{"name": name, "tables": tables(name)} for name in databases],
         }
 
 
 def extract(source, target_dir):
     with zipfile.ZipFile(source, "r") as zfile:
         allfiles = [info.filename for info in zfile.infolist()]
-        if "__init__.py" in allfiles:
-            # the app is at top level
-            zfile.extractall(target_dir)
-            zfile.close()
-        else:
+        roots = None
+        if not "__init__.py" in allfiles:
             # check for subfolders that contain __init__.py
             roots = list(
                 set(
@@ -446,15 +468,20 @@ def extract(source, target_dir):
             # there can be only one
             if len(roots) != 1:
                 abort(500)
-            # extract only the subfolder
-            with tempfile.TemporaryDirectory() as tmpdir:
-                zfile.extractall(tmpdir)
-                zfile.close()
-                shutil.copytree(
-                    os.path.join(tmpdir, roots[0]),
-                    target_dir,
-                    dirs_exist_ok=True,
-                )
+        # extract only the subfolder
+        with tempfile.TemporaryDirectory() as tmpdir:
+            zfile.extractall(tmpdir)
+            zfile.close()
+            source_dir = tmpdir if roots is None else os.path.join(tmpdir, roots[0])
+            # make sure we do not override the databases and uploads folders:
+            for folder in ["databases", "uploads"]:
+                if os.path.exists(os.path.join(target_dir, folder)):
+                    shutil.rmtree(os.path.join(source_dir, folder))
+            shutil.copytree(
+                source_dir,
+                target_dir,
+                dirs_exist_ok=True,
+            )
 
 
 if MODE == "full":
@@ -462,13 +489,15 @@ if MODE == "full":
     @action("reload")
     @action("reload/<name>")
     @session_secured
+    @catch_errors
     def reload(name=None):
         """Reloads installed apps"""
         Reloader.import_app(name) if name else Reloader.import_apps()
-        return {"status": "ok"}
+        return {"status": "success"}
 
     @action("save/<path:path>", method="POST")
     @session_secured
+    @catch_errors
     def save(path, reload_app=True):
         """Saves a file"""
         app_name = path.split("/")[0]
@@ -482,6 +511,7 @@ if MODE == "full":
 
     @action("delete/<path:path>", method="POST")
     @session_secured
+    @catch_errors
     def delete(path):
         """Deletes a file"""
         fullpath = safe_join(FOLDER, path) or abort()
@@ -502,14 +532,13 @@ if MODE == "full":
         if form["mode"] == "new":
             if os.path.exists(target_dir):
                 abort(500)  # already validated client side
-        elif form["mode"] == "replace":
-            if os.path.exists(target_dir):
-                shutil.rmtree(target_dir)
-            else:
-                abort(500)  # not a replacement
+        elif form["mode"] == "update":
+            if not os.path.exists(target_dir):
+                abort(500)  # not an update
 
     @action("new_app", method="POST")
     @session_secured
+    @catch_errors
     def new_app():
         form = request.json
         # Directory for zipped assets
@@ -566,13 +595,18 @@ if MODE == "full":
 
     @action("gitlog/<project>")
     @action.uses(Logged(session), "gitlog.html")
+    @catch_errors
     def gitlog(project):
         if not is_git_repo(project):
             return "Project is not a GIT repo"
         branches = get_branches(project)
         commits = get_commits(project)
         return dict(
-            commits=commits, checkout=checkout, project=project, branches=branches
+            status="success",
+            commits=commits,
+            checkout=checkout,
+            project=project,
+            branches=branches,
         )
 
     @authenticated.callback()

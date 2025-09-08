@@ -9,6 +9,7 @@ html {
    font-size: 14px;
    font-family: helvetica;
 }
+[v-cloak] { display: none; }
 .scrollx {
    overflow: auto;
 }
@@ -253,6 +254,21 @@ label {
   background-image: url(../images/widget.gif);
   background-repeat: no-repeat;
   background-position: center center;
+}
+.dialog-error {
+   position: fixed;
+   z-index: 1000;
+   top:20px;
+   left:20px;
+   right:20px;
+   padding: 20px;
+   border: 5px solid red;
+   background: rgba(0,0,0,0.8);
+   min-height: 50vw;
+}
+.dialog-error pre {
+   margin: 20px 0;
+   font-size: 1.2em;
 }
 .right {
   text-align: right;

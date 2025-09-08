@@ -57,7 +57,8 @@ const app = Vue.createApp({
       tickets:[],
       modal: null,
       editor: null,
-      modelist: null
+      modelist: null,
+      last_error: ""
     };
   },
   
@@ -70,7 +71,19 @@ const app = Vue.createApp({
       this.selected_app = appobj;
       this.reload_files();
     },
-    
+    to_json(r) {
+      let json = {};
+      try {
+        console.log(r.data);
+        json = r.json();
+        console.log(json);
+      } catch (e) {
+        app.vue.last_error = "Invalid JSON:\n" + r.data;
+        return {};
+      }      
+      if (json.status === "error") { app.vue.last_error = json.traceback; return {}; }
+      return json;
+    },
     activate_editor(path, payload) {
       this.files[path] = payload;
       if (!this.editor) {
@@ -87,11 +100,12 @@ const app = Vue.createApp({
       this.editor.session.setMode(mode);
     },
     
-    select_filename(path, force) {                
+    select_filename(path, force) {           
+      let vue = this;     
       if(this.selected_filename)
         this.files[this.selected_filename] = this.editor.getValue();
 
-      var lpath = path.toLowerCase();
+      let lpath = path.toLowerCase();
       if(lpath.endsWith('.mp4','.mov','.mpg','.mpeg')) this.selected_type = 'video';
       else if(lpath.endsWith('.wav') || lpath.endsWith('.mp3') || lpath.endsWith('.ogg')) 
           this.selected_type = 'audio';
@@ -104,10 +118,11 @@ const app = Vue.createApp({
           if(!force && path in this.files) {
               this.activate_editor(path, this.files[path]);
           } else {            
-              var url = '../load/'+path;
+              let url = '../load/'+path;
               if(this.selected_type != 'text') url = '../load_bytes/'+path;
               Q.get(url).then(r=>{
-                  this.activate_editor(path, r.json().payload);
+                  let payload = vue.to_json(r).payload;
+                  if (payload) this.activate_editor(path, payload);
               });
           }
       }
@@ -129,7 +144,7 @@ const app = Vue.createApp({
     },
 
     load_file() {
-      var path = this.selected_filename;
+      let path = this.selected_filename;
       this.select_filename(path, true);
     },
 
@@ -142,13 +157,13 @@ const app = Vue.createApp({
         alert("Unable to save this file, it is not of type text");
         return;
       }
-      var path = this.selected_filename;
+      let path = this.selected_filename;
       this.files[path] = this.editor.getValue();
       Q.post('../save/'+path, this.files[path]).then(()=>this.file_saved());
     },
 
     download_selected_app() {
-      var url = '../packed/py4web.app.' + this.selected_app.name + '.zip?' + (new Date()).getTime();
+      let url = '../packed/py4web.app.' + this.selected_app.name + '.zip?' + (new Date()).getTime();
       window.open(url, 'Download');
     },
 
@@ -157,12 +172,16 @@ const app = Vue.createApp({
     },
 
     confirm(title, color, message, callback) {
-      var buttons = [{text: 'Yes', onclick:callback}, {text:'No', onclick: this.modal_dismiss}];
+      let buttons = [{text: 'Yes', onclick:callback}, {text:'No', onclick: this.modal_dismiss}];
       this.modal = {title: title, color:color, message:message, buttons:buttons};
     },
 
+    close_dialog_error() {
+      this.last_error = "";
+    },
+
     process_new_app() {
-      var form = this.modal.form;
+      let form = this.modal.form;
       console.log(form);
       if(!form.name) alert('An app name must be provided');
       else if(!form.name.match(/^[\w_]+$/)) alert('Invalid file name');
@@ -174,13 +193,15 @@ const app = Vue.createApp({
     },
 
     process_new_file() {
-      var app_name = this.selected_app.name;
-      var form = this.modal.form;
+      let app_name = this.selected_app.name;
+      let form = this.modal.form;
       if(!form.filename) { alert('A file name must be provided'); return; }
       /*reload entire page needed to see the new file listed*/
       Q.post('../new_file/'+app_name+'/'+form.filename).then(()=>{
         this.walk = [];
-        Q.get('../walk/'+app_name).then(r=>{this.walk=r.json().payload;});
+        let payload = this.to_json(r).payload;
+        if (!payload) return;
+        Q.get('../walk/'+app_name).then(r=>{this.walk=payload;});
         this.modal_dismiss();
       });
     }, 
@@ -202,7 +223,7 @@ const app = Vue.createApp({
     },
 
     create_new_file() { 
-      var app_name = this.selected_app.name;
+      let app_name = this.selected_app.name;
       this.modal = {
         title:'Create a new file under ' + app_name, 
         color:'green', 
@@ -219,30 +240,30 @@ const app = Vue.createApp({
     },
 
     delete_selected_file() {
-      var name = this.selected_filename;
+      let name = this.selected_filename;
       this.confirm("Delete File","blue","Do you really want to delete "+name+"?",()=>{
         this.modal_dismiss();
-        Q.post('../delete/'+name).then(()=>this.init());
+        Q.post('../delete/'+name).then((r)=>{this.to_json(r); this.init();});
       });
     },
 
     delete_selected_app() {
-      var name = this.selected_app.name;
+      let name = this.selected_app.name;
       this.confirm("Delete App","blue","Do you really want to delete "+name+"?",()=>{
         this.modal_dismiss();
-        Q.post('../delete_app/'+name).then(()=>this.init());
+        Q.post('../delete_app/'+name).then((r)=>{this.to_json(r); this.init();});
       });
     },
 
     reload_info() {
       Q.get('../info').then(r=>{
-        this.info=r.json().payload || [];
+        this.info=this.to_json(r).payload || [];
       });
     },
 
     reload_apps() {
       Q.get('../apps').then(r=>{
-        this.apps=r.json().payload || [];
+        this.apps=this.to_json(r).payload || [];
         // Update selected_app if it exists
         if(this.selected_app) {
           this.selected_app = this.apps.filter((a) => {
@@ -254,14 +275,14 @@ const app = Vue.createApp({
 
     reload_routes() {
       Q.get('../routes').then(r=>{
-        this.routes=r.json().payload || [];
+        this.routes=this.to_json(r).payload || [];
       });
     },
 
     reload_tickets() {
       this.tickets = [];
       Q.get('../tickets').then(r=>{
-        this.tickets = r.json().payload || [];
+        this.tickets = this.to_json(r).payload || [];
       });
     },
 
@@ -270,16 +291,16 @@ const app = Vue.createApp({
         return;
       }
       this.walk = { files: [], dirs: [] }; // Always reset to an object
-      var name = this.selected_app.name;
+      let name = this.selected_app.name;
       Q.get('../walk/' + name).then(r => {
-        const payload = r.json().payload;
+        const payload = this.to_json(r).payload;
         if (payload && Array.isArray(payload.files) && Array.isArray(payload.dirs)) {
           this.walk = payload;
         } else {
           this.walk = { files: [], dirs: [] };
         }
       });
-      Q.get('../rest/' + name).then(r => { this.databases = r.json().databases; });
+      Q.get('../rest/' + name).then(r => { this.databases = this.to_json(r).databases || []; });
       this.selected_filename = null;
     },
 
@@ -291,7 +312,7 @@ const app = Vue.createApp({
     login() {
       Q.post('../login', { password: this.password })
         .then (r => {
-          if (r.json().user) {
+          if (this.to_json(r).user) {
             this.user = true;
             this.password = '';
             this.init();
@@ -324,4 +345,4 @@ const app = Vue.createApp({
 // **Register globally for recursion to work**
 app.component('TreeFiles', TreeFiles);
 
-app.mount('#target');
+app.vue = app.mount('#target');
