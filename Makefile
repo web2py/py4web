@@ -51,7 +51,7 @@ shell: uv
 build: clean assets check test
 	uv build --sdist --wheel
 
-publish:
+publish: build
 	uv run --extra manage python -m twine upload dist/*
 
 upgrade-utils:
