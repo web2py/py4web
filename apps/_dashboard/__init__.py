@@ -474,9 +474,11 @@ def extract(source, target_dir):
             zfile.close()
             source_dir = tmpdir if roots is None else os.path.join(tmpdir, roots[0])
             # make sure we do not override the databases and uploads folders:
-            for folder in ["databases", "uploads"]:
-                if os.path.exists(os.path.join(target_dir, folder)):
-                    shutil.rmtree(os.path.join(source_dir, folder))
+            if os.path.exists(target_dir):
+                for folder in ["databases", "uploads"]:
+                    source_folder = os.path.join(source_dir, folder)
+                    if os.path.exists(source_folder):
+                        shutil.rmtree(source_folder)
             shutil.copytree(
                 source_dir,
                 target_dir,
