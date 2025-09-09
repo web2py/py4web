@@ -14,7 +14,7 @@ def run_cli():
     runner = CliRunner()
 
     testargs = ["setup", dir]
-    res = runner.invoke(cli, testargs, input="y")
+    res = runner.invoke(cli, testargs, input="y\ny\ny\ny\ny\ny\ny\npassword")
     if res.exception:
         raise res.exception
 
