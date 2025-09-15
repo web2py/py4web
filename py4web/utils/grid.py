@@ -372,21 +372,24 @@ def maybe_call(obj, *args, **kwargs):
     return obj(*args, **kwargs)
 
 
-def reference_represent(value):
+def reference_represent(field, value):
     """
     Assumes value is a pydal.objects.Reference value and represts is using the
     table._format of the referenced table
     """
-    table = value._table
+    if not value:
+        return ""
+    table = field.referenced_table()
+    if not table:
+        return "#{value}"
     row = table(value)
     if not row:
-        return ""
+        return "#{value}(missing)"
     if isinstance(table._format, str):
         return table._format % row
     elif callable(table._format):
         return table._format(row)
-    else:
-        return str(value)
+    return str(value)
 
 
 def datetime_represent(value):
@@ -432,17 +435,20 @@ def time_represent(value):
 
 class Grid:
     represent_by_type = {
-        "id": lambda value: f"#{value}",
-        "boolean": lambda value: "☑" if value else "☐" if value is False else "",
-        "float": lambda value: "%.2f" % value,
-        "double": lambda value: "%.2f" % value,
-        "decimal": lambda value: "%.2f" % value,
+        "id": lambda field, value: f"#{value}",
+        "boolean": lambda field, value: "☑" if value else "☐" if value is False else "",
+        "integer": lambda field, value: str(value) if value is not None else "",
+        "bigint": lambda field, value: str(value) if value is not None else "",
+        "float": lambda field, value: "%.2f" % value if value is not None else "",
+        "double": lambda field, value: "%.2f" % value if value is not None else "",
+        "decimal": lambda field, value: "%.2f" % value if value is not None else "",
         "reference": reference_represent,
-        "datetime": datetime_represent,
-        "date": date_represent,
-        "time": time_represent,
-        "list": lambda value: ", ".join(str(x) for x in value) or "",
-        "password": lambda value: "******",
+        "big-reference": reference_represent,
+        "datetime": lambda field, value: datetime_represent(value),
+        "date": lambda field, value: date_represent(value),
+        "time": lambda field, value: time_represent(value),
+        "list": lambda field, value: ", ".join(str(x) for x in value) or "",
+        "password": lambda field, value: "******",
     }
 
     def __init__(
@@ -775,16 +781,16 @@ class Grid:
                         and A("download", _href=f(row[name]))
                         or ""
                     )
-                # field represent override default formatters by type
+                # field represent override default representation by type
                 elif col.represent:
                     represent_col = lambda row, name=str(col), f=col.represent: f(
                         row[name], row
                     )
-                # we do not know better, use formatters by type (type is the stripped Field type)
+                # we do not know better, use formarepresent by type (type is the stripped Field type)
                 elif type_name in self.represent_by_type:
-                    represent_col = lambda row, name=str(col), f=self.represent_by_type[
-                        type_name
-                    ]: f(row[name])
+                    represent_col = lambda row, col=col, f=self.represent_by_type[
+                        col.type_name
+                    ]: f(col, row[str(col)])
                 else:
                     represent_col = lambda row, name=str(col): row[name]
 
