@@ -1032,25 +1032,31 @@ class Form(object):
         )
 
         if isinstance(table, list):
-            if len(table) == 0:
+            fields_list = table
+            if len(fields_list) == 0:
                 raise ValueError("Cannot build form with empty list of fields")
             # using _table to check if Field.bind was called
             # and the field is bound to a table, since unlike `tablename`, `_table` is
             # only set in Field.bind()
             all_tablenames = list(
                 set(
-                    str(getattr(field, "_table", None) or "no_table") for field in table
+                    str(getattr(field, "_table", None) or "no_table")
+                    for field in fields_list
                 )
             )
 
-            # only disable dbio if the fields are from multiple tables
+            # disable dbio if there are no fields or the fields are from multiple tables
             # this allows making forms for a subset of fields easily:
             #   Form([db.tbl.field1, db.tbl.field2])
-            if len(all_tablenames) > 1 or all_tablenames[0] in "no_table":
+            if (
+                not all_tablenames
+                or all_tablenames[0] in "no_table"
+                or len(all_tablenames) > 1
+            ):
                 dbio = False
                 # Mimic a table from a list of fields without calling define_table
                 form_name = form_name or "no_table"
-                for field in table:
+                for field in fields_list:
                     field.tablename = getattr(field, "tablename", form_name)
             else:
                 # if we just have 1 table, use it as the form name
