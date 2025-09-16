@@ -1033,8 +1033,6 @@ class Form(object):
 
         if isinstance(table, list):
             fields_list = table
-            if len(fields_list) == 0:
-                raise ValueError("Cannot build form with empty list of fields")
             # using _table to check if Field.bind was called
             # and the field is bound to a table, since unlike `tablename`, `_table` is
             # only set in Field.bind()
