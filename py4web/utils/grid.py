@@ -397,15 +397,8 @@ def datetime_represent(value):
     if not value or not isinstance(value, datetime.datetime):
         return value or ""
     return XML(
-        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
-        % (
-            value.year,
-            value.month - 1,
-            value.day,
-            value.hour,
-            value.minute,
-            value.second,
-        )
+        "<script>document.currentScript.insertAdjacentText('afterend',"
+        f"(new Date('{value.isoformat(timespec='seconds')}')).toLocaleString())</script>"
     )
 
 
@@ -414,12 +407,8 @@ def date_represent(value):
     if not value or not isinstance(value, datetime.date):
         return value or ""
     return XML(
-        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(%s,%s,%s)).toLocaleDateString())</script>"
-        % (
-            value.year,
-            value.month - 1,
-            value.day,
-        )
+        "<script>document.currentScript.insertAdjacentText('afterend',"
+        f"(new Date('{value.isoformat()}')).toLocaleDateString())</script>"
     )
 
 
@@ -428,8 +417,8 @@ def time_represent(value):
     if not value or not isinstance(value, datetime.time):
         return value or ""
     return XML(
-        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(0, 0, 0,%s,%s,%s)).toLocaleTimeString())</script>"
-        % (value.hour, value.minute, value.second)
+        "<script>document.currentScript.insertAdjacentText('afterend',"
+        f"(new Date('0000T{value.isoformat('seconds')}')).toLocaleTimeString())</script>"
     )
 
 
