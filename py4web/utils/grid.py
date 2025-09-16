@@ -397,7 +397,7 @@ def datetime_represent(value):
     if not value or not isinstance(value, datetime.datetime):
         return value or ""
     return XML(
-        "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
+        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
         % (
             value.year,
             value.month - 1,
@@ -414,7 +414,7 @@ def date_represent(value):
     if not value or not isinstance(value, datetime.date):
         return value or ""
     return XML(
-        '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
+        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(%s,%s,%s)).toLocaleDateString())</script>"
         % (
             value.year,
             value.month - 1,
@@ -428,7 +428,7 @@ def time_represent(value):
     if not value or not isinstance(value, datetime.time):
         return value or ""
     return XML(
-        "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
+        "<script>document.currentScript.insertAdjacentText('afterend',(new Date(0, 0, 0,%s,%s,%s)).toLocaleTimeString())</script>"
         % (value.hour, value.minute, value.second)
     )
 
