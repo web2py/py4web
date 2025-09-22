@@ -337,8 +337,9 @@ like in this improved 'Basic Form Example' with a radio button widget:
     @action("create_form", method=["GET", "POST"])
     @action.uses("form_widgets.html", db)
     def create_form():
-        FormStyleDefault.widgets['color'] = RadioWidget
-        form = Form(db.thing, formstyle=FormStyleDefault)
+        MyStyle = FormStyleDefault.clone()
+        MyStyle.widgets['color'] = RadioWidget
+        form = Form(db.thing, formstyle=MyStyle)
         rows = db(db.thing).select()
         return dict(form=form, rows=rows)
 
@@ -355,8 +356,8 @@ beginning of the chapter:
     corresponding to your field name to the desired Widget
 
     .. code:: python
-
-        FormStyleDefault.widgets['color'] = RadioWidget
+        MyStyle = FormStyleDefault.clone()
+        MyStyle.widgets['color'] = RadioWidget
 
 The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!
