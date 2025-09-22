@@ -343,8 +343,9 @@ like in this improved 'Basic Form Example' with a radio button widget:
         return dict(form=form, rows=rows)
 
 .. note::
-    The way Widgets work was changed in a recent update. You used to pass a instance of a Widget
-    but now you pass the Widget class. ``RadioWidget`` instead of ``RadioWidget()``.
+    The way Widgets work was changed in a recent update. For backwards compatibility, you can still pass a
+    instance of a older style implicit widget, but for built-in widgets and Widget subclasses,
+    you need to pass pass the Widget class without instantiating it. ``RadioWidget`` instead of ``RadioWidget()``.
 
 Notice the differences from the 'Basic Form example' we've seen at the
 beginning of the chapter:
@@ -359,7 +360,6 @@ beginning of the chapter:
 
 The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!
-
 
 Using widgets in forms is quite easy, and they'll let you have more control on its pieces.
 
