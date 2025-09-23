@@ -760,7 +760,7 @@ class FormStyleFactory:
             elif field.name in self.widgets:
                 usr_widget = self.widgets[field.name]
                 # allow specifying `formstyle.widgest["field"] = SelectWidget` (note: class, not instance)
-                if issubclass(usr_widget, Widget):
+                if isinstance(usr_widget, type) and issubclass(usr_widget, Widget):
                     widget = usr_widget(field, self, vars, error)
                 else:
                     # compat with widgets expecting widget.make(self, field, value, error, title, placeholder="", readonly=False)
