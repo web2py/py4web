@@ -348,7 +348,7 @@ class Column:
     def __init__(
         self,
         name,
-        represent_col,
+        represent,
         key=None,
         required_fields=None,  # must be a list or none
         orderby=None,
@@ -356,7 +356,7 @@ class Column:
         td_class_style=None,
     ):
         self.name = name
-        self.represent_col = represent_col
+        self.represent = represent
         self.orderby = orderby
         self.required_fields = required_fields or []
         self.key = key
@@ -1143,7 +1143,7 @@ class Grid:
                         f"grid-cell-{col.key}",
                     ]
                 )
-                value = col.represent_col(row)
+                value = col.represent(row)
                 tr.append(TD(value, _class=classes))
 
             tbody.append(tr)
