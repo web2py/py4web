@@ -204,7 +204,7 @@ Create a new minimal app called ``form_basic`` :
         return dict(form=form, rows=rows)
 
 
-Note the import of two simple validators on top, in order to be used later
+Note the import of validators at the top. This will be used later
 with the ``requires`` parameter. We'll fully explain them
 on the :ref:`Form validation` paragraph.
 
@@ -240,7 +240,7 @@ like to experiment, the database content can be fully seen and changed with the 
 You can turn a create form into a CRUD update form by passing a record or a record id
 it second argument:
 
-.. code:: html
+.. code:: python
 
     # controllers definition
     @action("update_form/<thing_id:int>", method=["GET", "POST"])
@@ -300,51 +300,64 @@ Widgets
 Standard widgets
 ~~~~~~~~~~~~~~~~
 
-Py4web provides many widgets in the py4web.utility.form library. They are simple plugins
-that easily allow you to specify the type of the input elements in a form, along with
-some of their properties.
+Py4web provides many widgets in the py4web.utility.form library. They are used by ``Form`` to generate
+the HTML of form fields. All widgets inherit from the ``Widget`` Abstract Base Class, and should be
+registered to the ``widgets`` registry object.
 
-Here is the full list:
+Here is the full list of the pydal types and their widgets:
 
--  CheckboxWidget
--  DateTimeWidget
--  FileUploadWidget
--  ListWidget
--  PasswordWidget
--  RadioWidget
--  SelectWidget
--  TextareaWidget
+- ``string``: TextInputWidget
+- ``date``: DateInputWidget
+- ``time``: TimeInputWidget
+- ``integer``: IntegerInputWidget
+- ``numeric``: FloatInputWidget
+- ``datetime``: DateTimeWidget
+- ``text``: TextareaWidget
+- ``json``: JsonWidget
+- ``boolean``: CheckboxWidget
+- ``list``:: ListWidget
+- ``password``: PasswordWidget
+- ``select``: SelectWidget
+- ``radio``: RadioWidget
+- ``upload``: FileUploadWidget
+- ``blob``: BlobWidget - no-op widget, can be overwritten but does nothing by default
 
 
-This is an improved 'Basic Form Example' with a radio button widget:
-
+By default Widgets are chosen based on DAL Field type. You can also use choose widgets for individual fields,
+like in this improved 'Basic Form Example' with a radio button widget:
 
 .. code:: python
 
     # in controllers.py
     from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form, FormStyleDefault, RadioWidget
-    from pydal.validators import *
     from .common import db
 
     # controllers definition
     @action("create_form", method=["GET", "POST"])
     @action.uses("form_widgets.html", db)
     def create_form():
-        FormStyleDefault.widgets['color']=RadioWidget()
-        form = Form(db.thing, formstyle=FormStyleDefault)
+        MyStyle = FormStyleDefault.clone()
+        MyStyle.widgets['color'] = RadioWidget
+        form = Form(db.thing, formstyle=MyStyle)
         rows = db(db.thing).select()
         return dict(form=form, rows=rows)
+
+.. note::
+    The way Widgets work was changed in a recent update. For backwards compatibility, you can still pass a
+    instance of a older style implicit widget, but for built-in widgets and Widget subclasses,
+    you need to pass pass the Widget class without instantiating it. ``RadioWidget`` instead of ``RadioWidget()``.
 
 Notice the differences from the 'Basic Form example' we've seen at the
 beginning of the chapter:
 
 - you need to import the widget from the py4web.utils.form library
-- before the form definition, you define the ``color`` field form style with the line:
+- before the form definition, you set the widgets dictionary entry
+    corresponding to your field name to the desired Widget
 
     .. code:: python
-
-        FormStyleDefault.widgets['color']=RadioWidget()
+        MyStyle = FormStyleDefault.clone()
+        MyStyle.widgets['color'] = RadioWidget
 
 The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!
@@ -359,41 +372,58 @@ Using widgets in forms is quite easy, and they'll let you have more control on i
 Custom widgets
 ~~~~~~~~~~~~~~
 
-You can also customize the widgets properties by cloning and modifying and existing style.
-Let's have a quick look, improving again our Superhero example:
+You can also customize the widgets properties by implementing custom widgets.
+
+There are broadly 2 options to make ``Form`` use custom widgets:
+
+- per-Field widgets, as shown above. Gives you more control, but has to be set for each Field/column individually.
+- Registered widgets with a matching method. Allows global matching on any characteristic of a Field.
+
+When creating a custom widget, be aware of the methods you can and should overwrite:
+
+- ``make_editable`` is for normal form inputs, this should be an input the user can change
+- ``make_readonly`` is for readonly displays of this field, for example when ``field.writable = False``
+- ``make`` gets the value and calls the 2 above. Generally, you should prefer overwriting the 2 above
+- ``form_html`` calls ``make`` and generates the final HTML to be inserted into the form. It handles the HTML
+    surrounding the bare form inputs, labels, field comment display, etc.
+
+
+Custom per-Field Widget
+"""""""""""""""""""""""
 
 .. code:: python
 
     # in controllers.py
     from py4web import action, redirect, URL, Field
-    from py4web.utils.form import Form, FormStyleDefault, RadioWidget
-    from pydal.validators import *
+    from py4web.utils.form import Form, FormStyleDefault, Widget, RadioWidget, to_id
     from .common import db
     
     # custom widget class definition
-    class MyCustomWidget:
-        def make(self, field, value, error, title, placeholder, readonly=False):
-            tablename = field._table if "_table" in dir(field) else "no_table"
-            control = INPUT(
+    class MyCustomWidget(Widget):
+        def make_editable(self, value):
+            return INPUT(
                 _type="text",
-                _id="%s_%s" % (tablename, field.name),
-                _name=field.name,
+                _id=to_id(self.field),
+                _name=self.field.name,
                 _value=value,
                 _class="input",
-                _placeholder=placeholder if placeholder and placeholder != "" else "..",
-                _title=title,
+                _placeholder=self.placeholder,
+                _title=self.title,
                 _style="font-size: x-large;color: red; background-color: black;",
             )
-            return control
-    
+        
+        # optionally overwrite the default readonly style
+        # def make_readonly(self, value):
+        #     return DIV(str(value))
+
     # controllers definition
     @action("create_form", method=["GET", "POST"])
     @action.uses("form_custom_widgets.html", db)
     def create_form():
         MyStyle = FormStyleDefault.clone()
-        MyStyle.classes = FormStyleDefault.classes
-        MyStyle.widgets['name']=MyCustomWidget()
-        MyStyle.widgets['color']=RadioWidget()
+
+        MyStyle.widgets['name'] = MyCustomWidget
+        MyStyle.widgets['color'] = RadioWidget
         
         form = Form(db.thing, deletable=False, formstyle=MyStyle)
         rows = db(db.thing).select()
@@ -401,9 +431,59 @@ Let's have a quick look, improving again our Superhero example:
     
 
 The result is similar to the previous ones, but now we have a custom input field, 
-with foreground color red and background color black,
+with foreground color red and background color black.
 
-Even the radio button widget has changed, from red to blue.
+Registered Widget
+"""""""""""""""""
+A registered Widget is globally registered to the widget registry at ``py4web.utils.form.widgets``.
+This is how default widgets work, and allows you to overwrite default widgets or defines custom ones
+which apply to any matching field automatically.
+
+To do this, a ``matches`` classmethod is used, which is checked when generating a form to determine
+the correct widget for a Field.
+
+The most basic version just checks against the field type.
+
+Note that matching occurs in reversed order of registration, which means Widgets defined (and imported)
+later will get checked first. This is what allows you to overwrite default fields, as those are
+always defined first.
+
+In this example we will style all "string" fields which start with "n".
+We'll also inherit from the default TextInputWidget and only change its style and ``matches``.
+
+.. code:: python
+
+    # in controllers.py
+    from py4web import action, redirect, URL, Field
+    from py4web.utils.form import Form, FormStyleDefault, TextInputWidget, widgets
+    from .common import db
+    
+    # custom widget class definition
+    @widgets.register_widget
+    class MyCustomWidget(TextInputWidget):
+
+        @classmethod
+        def matches(cls, field: Field) -> bool:
+            return str(field.type) == "string" and field.name.startswith("n")
+
+        # since we don't need access to the value or structure
+        # we can style the element whether its readonly or not
+        def make(self, readonly: bool = False):
+            elem = super().make(readonly)
+            elem._style = "font-size: x-large; color: red; background-color: black;"
+            return elem
+
+
+    # the controller doesn't need to do anything special
+    # since the Widget is registered
+    @action("create_form", method=["GET", "POST"])
+    @action.uses("form_custom_widgets.html", db)
+    def create_form():    
+        form = Form(db.thing, deletable=False)
+        rows = db(db.thing).select()
+        return dict(form=form, rows=rows)
+
+
 
 Advanced form design
 --------------------
@@ -413,13 +493,18 @@ Form structure manipulation
 
 In py4web a form is rendered by YATL helpers. This means the tree structure of a form
 can be manipulated before the form is serialized in HTML. 
-Here is an example of how to manipulate the generate HTML structure:
+Here is an example of how to manipulate the generated HTML structure:
 
 .. code:: python
 
     db.define_table('paint', Field('color'))
     form = Form(db.paint)
     form.structure.find('[name=color]')[0]['_class'] = 'my-class'
+
+.. note::
+
+    For demonstration purposes. For changes like this, you should consider
+    adjusting the FormStyle or using a custom Widget instead.
 
 Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use ``.find(...)``
 to find matching elements. The argument of ``find`` is a string following the filter syntax of jQuery. In the above case
