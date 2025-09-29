@@ -899,6 +899,8 @@ def URL(  # pylint: disable=invalid-name
             broken_parts.insert(1, "_" + static_version)
 
     url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
+    if url_prefix and prefix and prefix.startswith(url_prefix):
+        url_prefix = ""
     url = (
         url_prefix
         + prefix
