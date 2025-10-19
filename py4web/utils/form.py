@@ -2,12 +2,10 @@ import copy
 import os
 import time
 import uuid
-from abc import ABC
-from typing import Any, Dict, List, Optional, Type, Union
 
 import jwt
 from pydal._compat import to_native
-from pydal.objects import Field, FieldVirtual, SQLCustomType
+from pydal.objects import FieldVirtual
 from yatl.helpers import (
     CAT,
     DIV,
@@ -17,7 +15,6 @@ from yatl.helpers import (
     OPTION,
     SELECT,
     SPAN,
-    TAGGER,
     TEXTAREA,
     XML,
     A,
@@ -59,20 +56,6 @@ def get_options(validators):
     return options
 
 
-def get_min_max(validators):
-    min = None
-    max = None
-    if validators:
-        if not isinstance(validators, (list, tuple)):
-            validators = [validators]
-        for item in validators:
-            if hasattr(item, "minimum") and hasattr(item, "maximum"):
-                min = item.minimum
-                max = item.maximum
-                break
-    return min, max
-
-
 def join_classes(*args):
     lists = [[] if a is None else a.split() if isinstance(a, str) else a for a in args]
     classes = set(
@@ -81,426 +64,114 @@ def join_classes(*args):
     return " ".join(sorted(classes))
 
 
-class IgnoreWidget(Exception):
-    "Exception which widgets can raise to be completely skipped"
-
-    pass
-
-
-class Widget(ABC):
+class Widget:
     """Prototype widget object for all form widgets"""
 
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        "Checks if this widget can be used for the field"
-        return False  # if this method hasn't been overwritten, this widget should never be matched
+    type_map = {
+        "string": "text",
+        "date": "date",
+        "time": "time",
+    }
 
-    def __init__(
-        self,
-        field: Field = None,
-        form_style: "FormStyleFactory" = None,
-        vars: Any = None,
-        error: Optional[str] = None,
-    ):
-        if field is None or form_style is None or vars is None:
-            raise TypeError(
-                "The usage of custom widgets has changed.\n"
-                "If you used to override the widget for a field, "
-                "don't instantiate the class anymore:\n"
-                'old: FormStyle.widgets["fieldname"] = RadioWidget()\n'
-                'new: FormStyle.widgets["fieldname"] = RadioWidget\n',
-            )
-        self.field = field
-        self.form_style = form_style
-        self.vars = vars
-        self.error = error
-        self.title = self.field.__dict__.get("_title")
-        self.placeholder = self.field.__dict__.get("_placeholder")
-        _class = "type-" + str(self.field.type).split()[0].replace(":", "-")
-        self.attributes = {
-            "_id": to_id(self.field),
-            "_name": self.field.name,
-            "_class": _class,
-            "_type": str(self.field.type).replace(" ", "-"),
-            "_label": self.field.label,
-            "_comment": self.field.comment or "",
-            "_title": self.title,
-            "_placeholder": self.placeholder,
-            "_error": error,
-        }
-        self.form_values = {
-            self.field.name: None,
-        }
-        self.controls = {
-            "labels": self.field.label,
-            "comments": self.field.comment or "",
-            "titles": self.title,
-            "placeholders": self.placeholder,
-            "errors": error,
-        }
-        # Primary usecase: FileUploadWidget
-        self.extra_attributes = []
-
-    @property
-    def field_value(self):
-        return self.form_values[self.field.name]
-
-    @field_value.setter
-    def field_value(self, value: Any):
-        self._field_value = value
-        self.form_values[self.field.name] = value
-        self.attributes["_disabled"] = True
-
-    def make(self, readonly: bool = False) -> TAGGER:
-        if isinstance(self.field, FieldVirtual):
-            value = None
-        if self.field.name in self.vars:
-            value = self.vars.get(self.field.name)
-        else:
-            default = getattr(self.field, "default", None)
-            if callable(default):
-                default = default()
-            value = default
-
-        if readonly:
-            control = self.make_readonly(value)
-        else:
-            control = self.make_editable(value)
-        self.controls["widgets"] = control
-        return control
-
-    def make_editable(self, value: Any) -> TAGGER: ...
-
-    def make_readonly(self, value: Any) -> TAGGER:
-        "fallback readonly style, most widgets use their input set to readonly + disabled"
-        if isinstance(self.field, FieldVirtual):
-            self.field_value = self.field.f(self.vars)
-        else:
-            self.field_value = compat_represent(self.field, value, self.vars)
-        return DIV(
-            self.field_value,
-            _class=self.form_style.classes.get("div"),
-        )
-
-    def form_html(self, readonly=False):
-        control = self.make(readonly=readonly)
-        c = self.form_style.classes
-        wrapped = DIV(
-            control,
-            _class=self.form_style.class_inner_exceptions.get(
-                control.name, c.get("inner")
-            ),
-        )
-        return (
-            wrapped,
-            DIV(
-                LABEL(self.field.label, _for=to_id(self.field), _class=c.get("label")),
-                wrapped,
-                P(self.error, _class=c.get("error")) if self.error else "",
-                P(self.field.comment or "", _class=c.get("info")),
-                _class=c.get("outer"),
-            ),
-        )
-
-
-class WidgetRegistry:
-    def __init__(self):
-        self.widgets: List[Type[Widget]] = []
-
-    # class-decorator for registering a widget
-    def register_widget(self, cls: Type[Widget]):
-        self.widgets.append(cls)
-        # so that the class isn't set to None when this is used as a decorator
-        return cls
-
-    def get_widget_for(
-        self,
-        field: Field,
-        form_style: "FormStyleFactory",
-        vars: Any,
-        error: Optional[str] = None,
-    ) -> Widget:
-        # default to TextInputWidget if none found
-        widget = TextInputWidget
-
-        # loop over in reverse order, so custom user widgets are preferred
-        for w in reversed(self.widgets):
-            if w.matches(field):
-                widget = w
-                break
-        return widget(field, form_style, vars, error=error)
-
-
-# global widget registry, for associating widgets to types
-widgets = WidgetRegistry()
-
-
-class FieldDefinedWidget(Widget):
-    "Handles widgets defined by a field"
-
-    def __init__(self, field, form_style, table, vars, error=None):
-        super().__init__(field, form_style, error)
-        self.table = table
-        self.vars = vars
-
-    def make_editable(self, value: Any):
-        control: TAGGER = self.field.widget(self.table, self.vars)
-
-        key = control.name.rstrip("/")
-        if key == "input":
-            key += "[type=%s]" % (control["_type"] or "text")
-
-        if hasattr(control, "attributes"):
-            control["_class"] = join_classes(
-                control.attributes.get("_class"), self.form_style.classes.get(key)
-            )
-        return control
-
-
-class OldWidgetCompat(Widget):
-    """Handles custom widgets from the older style,
-    which have a .make(self, field, value, error, title, placeholder="", readonly=False)
-    and don't inherit from Widget"""
-
-    def __init__(self, old_widget, field, form_style, vars, error=None):
-        super().__init__(field, form_style, vars, error)
-        self.old_widget = old_widget
-
-    def make(self, readonly):
-        if isinstance(self.field, FieldVirtual):
-            value = None
-        if self.field.name in self.vars:
-            value = self.vars.get(self.field.name)
-        else:
-            default = getattr(self.field, "default", None)
-            if callable(default):
-                default = default()
-            value = default
-
-        control = self.old_widget.make(
-            self.field,
-            value,
-            self.error,
-            self.title,
-            placeholder=self.placeholder,
-            readonly=readonly,
-        )
-        self.controls["widgets"] = control
-        return control
-
-
-class MakeReadonlyMixin:
-    def make_readonly(self, value):
-        control = self.make_editable(value)
-        control["_readonly"] = True
-        control["_disabled"] = True
-        return control
-
-
-class InputTypeWidget(Widget, MakeReadonlyMixin):
-    html_input_type = "text"
-
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return cls.type_name == str(field.type)
-
-    def make_editable(self, value):
-        """converts the widget to a HTML helper"""
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        """converts the widget to an HTML helper"""
         return INPUT(
-            _value=self.field.formatter("" if value is None else value),
-            _type=self.html_input_type,
-            _id=to_id(self.field),
-            _name=self.field.name,
-            _placeholder=self.placeholder,
-            _title=self.title,
-            _class=self.form_style.classes.get(f"input[type={self.html_input_type}]"),
+            _value=field.formatter("" if value is None else value),
+            _type=self.type_map.get(field.type, "text"),
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
         )
 
 
-@widgets.register_widget
-class TextInputWidget(InputTypeWidget):
-    type_name = "string"
-    html_input_type = "text"
+class DateTimeWidget:
+    def __init__(self, input_type="datetime-local"):
+        self.input_type = input_type
+
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return INPUT(
+            _value=field.formatter("" if value is None else value),
+            _type=self.input_type,
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+        )
 
 
-@widgets.register_widget
-class DateInputWidget(InputTypeWidget):
-    type_name = "date"
-    html_input_type = "date"
-
-
-@widgets.register_widget
-class TimeInputWidget(InputTypeWidget):
-    type_name = "time"
-    html_input_type = "time"
-
-
-@widgets.register_widget
-class IntegerInputWidget(InputTypeWidget):
-    type_name = "integer"
-    html_input_type = "number"
-
-    def make_editable(self, value):
-        """converts the widget to a HTML helper"""
-        input_elem = super().make_editable(value)
-        min, max = get_min_max(self.field.requires)
-        input_elem["_min"] = min
-        input_elem["_max"] = max
-        input_elem["_step"] = 1
-        return input_elem
-
-
-@widgets.register_widget
-class FloatInputWidget(InputTypeWidget):
-    type_name = "numeric"
-    html_input_type = "number"
-
-    def make_editable(self, value):
-        """converts the widget to a HTML helper"""
-        input_elem = super().make_editable(value)
-        min, max = get_min_max(self.field.requires)
-        input_elem["_min"] = min
-        input_elem["_max"] = max
-        input_elem["_step"] = 0.01
-        return input_elem
-
-
-@widgets.register_widget
-class DateTimeWidget(InputTypeWidget):
-    type_name = "datetime"
-    html_input_type = "datetime-local"
-
-    def make_editable(self, value):
-        input_elem = super().make_editable(value)
-        min, max = get_min_max(self.field.requires)
-        input_elem["_min"] = min and min.strftime("%Y-%m-%dT%H:%M")
-        input_elem["_max"] = max and max.strftime("%Y-%m-%dT%H:%M")
-        return input_elem
-
-
-@widgets.register_widget
-class TextareaWidget(Widget, MakeReadonlyMixin):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "text"
-
-    def make_editable(self, value):
+class TextareaWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
         return TEXTAREA(
-            self.field.formatter(value or ""),
-            _id=to_id(self.field),
-            _name=self.field.name,
-            _placeholder=self.placeholder,
-            _title=self.title,
-            _class=self.form_style.classes.get("textarea"),
+            field.formatter("" if value is None else value),
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
         )
 
 
-@widgets.register_widget
-class JsonWidget(TextareaWidget):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "json"
-
-
-@widgets.register_widget
-class CheckboxWidget(Widget, MakeReadonlyMixin):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "boolean"
-
-    def make_editable(self, value):
+class CheckboxWidget:
+    def make(self, field, value, error, title, placeholder=None, readonly=False):
+        attrs = {}
+        if readonly:
+            attrs = {"_disabled": True}
         return INPUT(
             _type="checkbox",
-            _id=to_id(self.field),
-            _name=self.field.name,
+            _id=to_id(field),
+            _name=field.name,
             _value="ON",
             _checked=value,
-            _class=self.form_style.classes.get("input[type=checkbox]"),
-        )
-
-    def form_html(self, readonly=False):
-        control = self.make(readonly=readonly)
-        c = self.form_style.classes
-        wrapped = SPAN(control, _class=c.get("inner"))
-        return (
-            wrapped,
-            DIV(
-                wrapped,
-                LABEL(
-                    " ",
-                    self.field.label,
-                    _for=to_id(self.field),
-                    _class=c.get("label"),
-                    _style="display: inline !important",
-                ),
-                P(self.error, _class=c.get("error")) if self.error else "",
-                P(self.field.comment or "", _class=c.get("info")),
-                _class=c.get("outer"),
-            ),
+            _readonly=readonly,
+            **attrs,
         )
 
 
-@widgets.register_widget
-class ListWidget(Widget, MakeReadonlyMixin):
-    @classmethod
-    def matches(cls, field: Field):
-        return str(field.type).startswith("list:")
-
-    def make_editable(self, value):
-        # Seems like this is a less flexible version of the _class in Widget.__init__?
-        if self.field.type == "list:string":
+class ListWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        if field.type == "list:string":
             _class = "type-list-string"
-        elif self.field.type == "list:integer":
+        elif field.type == "list:integer":
             _class = "type-list-integer"
         else:
             _class = ""
         return INPUT(
-            _value=self.field.formatter("" if value is None else value),
+            _value=field.formatter("" if value is None else value),
             _type="text",
-            _id=to_id(self.field),
-            _name=self.field.name,
-            _placeholder=self.placeholder,
-            _title=self.title,
-            _class=_class + self.form_style.classes.get("input[type=text]"),
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+            _class=_class,
         )
 
 
-@widgets.register_widget
-class PasswordWidget(Widget, MakeReadonlyMixin):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "password"
-
-    def make_editable(self, value):
+class PasswordWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
         return INPUT(
-            _value=self.field.formatter("" if value is None else value),
+            _value=field.formatter("" if value is None else value),
             _type="password",
-            _id=to_id(self.field),
-            _name=self.field.name,
-            _placeholder=self.placeholder,
-            _title=self.title,
-            _autocomplete="off",
-            _class=self.form_style.classes.get("input[type=password]"),
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _autocomplete="OFF",
+            _readonly=readonly,
         )
 
 
-@widgets.register_widget
-class SelectWidget(Widget, MakeReadonlyMixin):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "select"
-
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return get_options(field.requires) is not None
-
-    def make_editable(self, value):
-        multiple = self.field.type.startswith("list:")
+class SelectWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        multiple = field.type.startswith("list:")
         value = list(map(str, value if isinstance(value, list) else [value]))
 
         field_options = [
             [k, v, (k is not None and k in value)]
-            for k, v in get_options(self.field.requires)
+            for k, v in get_options(field.requires)
         ]
         option_tags = [
             OPTION(v, _value=k, _selected=_selected)
@@ -509,29 +180,24 @@ class SelectWidget(Widget, MakeReadonlyMixin):
 
         control = SELECT(
             *option_tags,
-            _id=to_id(self.field),
-            _name=self.field.name,
+            _id=to_id(field),
+            _name=field.name,
             _multiple=multiple,
-            _title=self.title,
-            _class=self.form_style.classes.get("select"),
+            _title=title,
+            _readonly=readonly,
         )
 
         return control
 
 
-@widgets.register_widget
-class RadioWidget(Widget):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "radio"
-
-    def make_editable(self, value):
+class RadioWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
         control = CAT()
-        field_id = to_id(self.field)
+        field_id = to_id(field)
         value = list(map(str, value if isinstance(value, list) else [value]))
         field_options = [
             [k, v, (k is not None and k in value)]
-            for k, v in get_options(self.field.requires)
+            for k, v in get_options(field.requires)
             if k != ""
         ]
         for k, v, selected in field_options:
@@ -540,96 +206,48 @@ class RadioWidget(Widget):
                 _id=_id,
                 _value=k,
                 _label=v,
-                _name=self.field.name,
+                _name=field.name,
                 _type="radio",
                 _checked=selected,
-                _class=self.form_style.classes.get("input[type=radio]"),
             )
-            control.append(
-                LABEL(
-                    inp, " ", v, _class=self.form_style.classes.get("label[type=radio]")
-                )
-            )
+            control.append(LABEL(inp, " ", v))
         return control
 
-    # currently RadioWidget uses default readonly display, which is probably not ideal
 
+class FileUploadWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        field_id = to_id(field)
+        control = DIV()
+        if value and not error:
+            download_div = DIV()
 
-@widgets.register_widget
-class FileUploadWidget(Widget):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "upload"
-
-    def url(self, value):
-        return getattr(self.field, "download_url", lambda value: "#")(value)
-
-    def make_editable(self, value):
-        field_id = to_id(self.field)
-        delete_name = "_delete_" + self.field.name
-        control = DIV(_class=self.form_style.classes.get("div[type=file]"))
-        if value and not self.error:
-            control.append(
-                DIV(
+            if not readonly:
+                download_div.append(
                     LABEL(
                         "Currently:  ",
-                    ),
-                    A(" download ", _href=self.url(value)),
+                    )
+                )
+            url = getattr(field, "download_url", lambda value: "#")(value)
+            download_div.append(A(" download ", _href=url))
+
+            if not readonly:
+                download_div.append(
                     INPUT(
                         _type="checkbox",
                         _value="ON",
-                        _name=delete_name,
-                        _title=self.title,
-                    ),
-                    " (check to remove)",
+                        _name="_delete_" + field.name,
+                        _title=title,
+                    )
                 )
-            )
+                download_div.append(" (check to remove)")
+
+            control.append(download_div)
+
             control.append(LABEL("Change: "))
         else:
             control.append(LABEL("Upload: "))
-        control.append(
-            INPUT(
-                _type="file",
-                _id=field_id,
-                _name=self.field.name,
-                _class=self.form_style.classes.get("input[type=file]"),
-            )
-        )
-
-        # Set the download url.
-        self.attributes["_download_url"] = self.url(value)
-        # Set the flag determining whether the file is an image.
-        self.attributes["_is_image"] = (self.url(value) != "#") and Form.is_image(value)
-
-        # do we need the variables below?
-        self.extra_attributes.append(
-            {
-                "_label": "Remove",
-                "_value": "ON",
-                "_type": "checkbox",
-                "_name": delete_name,
-            }
-        )
-        self.form_values[delete_name] = None
+        control.append(INPUT(_type="file", _id=field_id, _name=field.name))
         return control
-
-    def make_readonly(self, value):
-        control = DIV(_class=self.form_style.classes.get("div[type=file]"))
-        if value and not self.error:
-            control.append(A("Download", _href=self.url(value)))
-        else:
-            control.append(A("No file"))
-        return control
-
-
-@widgets.register_widget
-class BlobWidget(Widget):
-    @classmethod
-    def matches(cls, field: Field) -> bool:
-        return str(field.type) == "blob"
-
-    def make(self, readonly=False):
-        raise IgnoreWidget("Blob fields have no default widget")
 
 
 class FormStyleFactory:
@@ -646,22 +264,20 @@ class FormStyleFactory:
         "input[type=time]": "",
         "input[type=datetime-local]": "",
         "input[type=radio]": "",
-        "label[type=radio]": "",
         "input[type=checkbox]": "",
         "input[type=submit]": "",
         "input[type=password]": "",
         "input[type=file]": "",
-        "div[type=file]": "",
         "select": "",
         "textarea": "",
     }
     _class_inner_exceptions = {}
-    _widgets: Dict[str, Type[Widget]] = {}
+    _widgets = {}
 
     def __init__(self):
         self.classes = copy.copy(self._classes)
         self.class_inner_exceptions = copy.copy(self._class_inner_exceptions)
-        self.widgets: Dict[str, Type[Widget]] = copy.copy(self._widgets)
+        self.widgets = copy.copy(self._widgets)
 
     def clone(self):
         return copy.deepcopy(self)
@@ -716,8 +332,11 @@ class FormStyleFactory:
             **kwargs,
         )
 
+        class_label = self.classes.get("label") or None
         class_outer = self.classes.get("outer") or None
         class_inner = self.classes.get("inner") or None
+        class_error = self.classes.get("error") or None
+        class_info = self.classes.get("info") or None
 
         all_fields = [x for x in table]
         if "_virtual_fields" in dir(table):
@@ -747,49 +366,172 @@ class FormStyleFactory:
             elif not showreadonly and not field.writable:
                 continue
 
+            # ignore blob fields
+            if field.type == "blob":  # never display blobs (mistake?)
+                continue
+
             # ignore fields of type id its value is equal to None
             if field.type == "id" and vars.get(field.name) is None:
                 field.writable = False
                 continue
 
-            error = errors.get(field.name)
+            # Reset the json control fields.
+            field_attributes = dict()
+            field_value = None
 
-            # if we have a field.widget for the field use it but this logic is deprecated
-            if field.widget:
-                widget = FieldDefinedWidget(field, self, table, vars, error=error)
-            elif field.name in self.widgets:
-                usr_widget = self.widgets[field.name]
-                # allow specifying `formstyle.widgest["field"] = SelectWidget` (note: class, not instance)
-                if isinstance(usr_widget, type) and issubclass(usr_widget, Widget):
-                    widget = usr_widget(field, self, vars, error)
-                else:
-                    # compat with widgets expecting widget.make(self, field, value, error, title, placeholder="", readonly=False)
-                    widget = OldWidgetCompat(usr_widget, field, self, vars, error)
+            field_name = field.name
+            field_comment = field.comment if field.comment else ""
+            field_label = field.label
+            input_id = to_id(field)
+            if is_virtual:
+                value = None
+            if field.name in vars:
+                value = vars.get(field.name)
             else:
-                widget = widgets.get_widget_for(field, self, vars, error)
+                default = getattr(field, "default", None)
+                if callable(default):
+                    default = default()
+                value = default
+
+            error = errors.get(field.name)
+            field_class = "type-" + field.type.split()[0].replace(":", "-")
+            placeholder = (
+                field._placeholder if "_placeholder" in field.__dict__ else None
+            )
+
+            title = field._title if "_title" in field.__dict__ else None
+            field_disabled = False
 
             # if the form is readonly or this is an id type field, display it as readonly
-            is_readonly = (
-                readonly or not field.writable or field.type == "id" or is_virtual
-            )
+            if readonly or not field.writable or field.type == "id" or is_virtual:
+                # for boolean readonly we use a readonly checbox
+                if field.type == "boolean":
+                    control = CheckboxWidget().make(
+                        field, value, error, title, readonly=True
+                    )
+                # for all othe readonly fields we use represent or a string
+                else:
+                    if is_virtual:
+                        field_value = field.f(vars)
+                    else:
+                        field_value = compat_represent(field, value, vars)
+                    control = DIV(field_value)
 
-            try:
-                wrapped, html = widget.form_html(readonly=is_readonly)
-            except IgnoreWidget:
-                continue
+                field_disabled = True
 
-            # Add to the controls dict
-            controls.wrappers[field.name] = wrapped
-            for key, value in widget.controls.items():
-                controls[key][field.name] = value
+            # if we have a field.widget for the field use it but this logic is deprecated
+            elif field.widget:
+                control = field.widget(table, vars)
+            # else we pick the right widget
+            else:
+                if field.name in self.widgets:
+                    widget = self.widgets[field.name]
+                elif field.type == "text" or field.type == "json":
+                    widget = TextareaWidget()
+                elif field.type == "datetime":
+                    widget = DateTimeWidget()
+                elif field.type == "boolean":
+                    widget = CheckboxWidget()
+                elif field.type == "upload":
+                    widget = FileUploadWidget()
+                    url = getattr(field, "download_url", lambda value: "#")(value)
+                    # Set the download url.
+                    field_attributes["_download_url"] = url
+                    # Set the flag determining whether the file is an image.
+                    field_attributes["_is_image"] = (url != "#") and Form.is_image(
+                        value
+                    )
+                    # do we need the variables below?
+                    delete_field_attributes = dict()
+                    delete_field_attributes["_label"] = "Remove"
+                    delete_field_attributes["_value"] = "ON"
+                    delete_field_attributes["_type"] = "checkbox"
+                    delete_field_attributes["_name"] = "_delete_" + field.name
+                    json_controls["form_fields"] += [delete_field_attributes]
+                    json_controls["form_values"]["_delete_" + field.name] = None
+                elif get_options(field.requires) is not None:
+                    widget = SelectWidget()
+                elif field.type == "password":
+                    widget = PasswordWidget()
+                elif field.type.startswith("list:"):
+                    widget = ListWidget()
+                else:
+                    widget = Widget()
+
+                control = widget.make(field, value, error, title, placeholder)
+
+            key = control.name.rstrip("/")
+
+            if key == "input":
+                key += "[type=%s]" % (control["_type"] or "text")
+
+            if hasattr(control, "attributes"):
+                control["_class"] = join_classes(
+                    control.attributes.get("_class"), self.classes.get(key)
+                )
+
+            # Set the form controls.
+            controls["labels"][field_name] = field_label
+            controls["widgets"][field_name] = control
+            controls["comments"][field_name] = field_comment
+            controls["titles"][field_name] = title
+            controls["placeholders"][field_name] = placeholder
+
+            field_type = str(field.type).replace(" ", "-")
+
+            # Set the remain json field attributes.
+            field_attributes["_title"] = title
+            field_attributes["_label"] = field_label
+            field_attributes["_comment"] = field_comment
+            field_attributes["_id"] = to_id(field)
+            field_attributes["_class"] = field_class
+            field_attributes["_name"] = field.name
+            field_attributes["_type"] = field_type
+            field_attributes["_placeholder"] = placeholder
+            field_attributes["_error"] = error
+            field_attributes["_disabled"] = field_disabled
 
             # Add to the json controls.
-            json_controls["form_fields"].extend(
-                [widget.attributes, *widget.extra_attributes]
-            )
-            json_controls["form_values"].update(widget.form_values)
+            json_controls["form_fields"] += [field_attributes]
+            json_controls["form_values"][field_name] = field_value
 
-            form.append(html)
+            if error:
+                controls["errors"][field.name] = error
+
+            if field.type == "boolean":
+                controls.wrappers[field.name] = wrapped = SPAN(
+                    control, _class=class_inner
+                )
+                form.append(
+                    DIV(
+                        wrapped,
+                        LABEL(
+                            " ",
+                            field.label,
+                            _for=input_id,
+                            _class=class_label,
+                            _style="display: inline !important",
+                        ),
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
+                )
+            else:
+                controls.wrappers[field.name] = wrapped = DIV(
+                    control,
+                    _class=self.class_inner_exceptions.get(control.name, class_inner),
+                )
+
+                form.append(
+                    DIV(
+                        LABEL(field.label, _for=input_id, _class=class_label),
+                        wrapped,
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
+                )
 
         if vars.get("id"):
             form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
