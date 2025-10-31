@@ -702,7 +702,16 @@ class Auth(Fixture):
                     user_info["sso_id"] = plugin.name + ":" + email
                     if self.use_username or "@" not in email:
                         user_info["username"] = email
-                    if "@" in email:
+                    # --- LDAP/AD: use real email if available ---
+                    if (
+                        plugin.name == "ldap"
+                        and getattr(plugin, "mode", None) == "ad"
+                        and getattr(plugin, "last_user_mail", None)
+                    ):
+                        self.logger.debug(f"Using AD email from LDAP plugin: {plugin.last_user_mail}")
+                        user_info["email"] = plugin.last_user_mail
+                    elif "@" in email:
+                        self.logger.debug(f"Using email from login: {email}")
                         user_info["email"] = email
                     else:
                         self.logger.debug(
@@ -1303,11 +1312,11 @@ class AuthAPI:
         if "pam" in auth.plugins or "ldap" in auth.plugins:
             plugin_name = "pam" if "pam" in auth.plugins else "ldap"
             plugin = auth.plugins[plugin_name]
-            self.logger.debug(
+            auth.logger.debug(
                 f"AuthAPI.login: Trying plugin {plugin_name} for user {username}"
             )
             check = plugin.check_credentials(username, password)
-            self.logger.debug(
+            auth.logger.debug(
                 f"AuthAPI.login: plugin.check_credentials returned {check}"
             )
             if check:
@@ -1316,19 +1325,29 @@ class AuthAPI:
                     # "email": username + "@localhost",
                     "sso_id": plugin_name + ":" + username,
                 }
-                # and register the user if we have one, just in case
+                # For AD, use the real email if available
+                if (
+                    plugin_name == "ldap"
+                    and getattr(plugin, "mode", None) == "ad"
+                    and getattr(plugin, "last_user_mail", None)
+                ):
+                    auth.logger.debug(f"AuthAPI.login: Using AD email from LDAP plugin: {plugin.last_user_mail}")
+                    # save the real email from AD to database
+                    data["email"] = plugin.last_user_mail
+                else:
+                    auth.logger.debug(f"AuthAPI.login: Not using AD email, plugin_name={plugin_name}, mode={getattr(plugin, 'mode', None)}, last_user_mail={getattr(plugin, 'last_user_mail', None)}")
                 if auth.db:
-                    self.logger.debug(
+                    auth.logger.debug(
                         f"AuthAPI.login: Calling get_or_register_user with data={data}"
                     )
                     user = auth.get_or_register_user(data)
-                    self.logger.debug(
+                    auth.logger.debug(
                         f"AuthAPI.login: User after get_or_register_user: {user}"
                     )
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
-                self.logger.debug(
+                auth.logger.debug(
                     f"AuthAPI.login: plugin.check_credentials failed for {username}"
                 )
                 data = auth._error(
