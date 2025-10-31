@@ -6,8 +6,9 @@
 import logging
 import sys
 
-import ldap  # python-ldap
-import ldap.filter
+import ldap  # python-ldap # type: ignore  # pylance: ignore undefined
+import ldap.filter  # type: ignore  # pylance: ignore undefined
+from py4web import HTTP
 
 from . import UsernamePassword
 
@@ -90,7 +91,7 @@ class LDAPPlugin(UsernamePassword):
 
     Where:
     manage_user: bool
-        If True py4web will fetch and update user profile
+        If True or AD is used, py4web will fetch and update user profile
         fields (first name, last name, email) from LDAP/AD on each login and
         keep them in sync with its db.
         If False, only authentication is performed and user profile fields
@@ -126,7 +127,6 @@ class LDAPPlugin(UsernamePassword):
         group_member_attrib - the attribute containing the group members name
         group_filterstr - as the filterstr but for group select
 
-    **allowed_groups still to be implemented in py4web**
     You can restrict login access to specific groups if you specify:
 
         auth.register_plugin(LDAPPlugin(
@@ -169,6 +169,7 @@ class LDAPPlugin(UsernamePassword):
         username_attrib="uid",
         custom_scope="subtree",
         allowed_groups=None,
+        denied_login_popup=False,
         manage_user=False,
         user_firstname_attrib="cn:1",
         user_lastname_attrib="cn:2",
@@ -202,6 +203,7 @@ class LDAPPlugin(UsernamePassword):
         self.username_attrib = username_attrib
         self.custom_scope = custom_scope
         self.allowed_groups = allowed_groups
+        self.denied_login_popup = denied_login_popup
         self.manage_user = manage_user
         self.user_firstname_attrib = user_firstname_attrib
         self.user_lastname_attrib = user_lastname_attrib
@@ -219,6 +221,7 @@ class LDAPPlugin(UsernamePassword):
         # rfc4515 syntax
         self.filterstr = self.filterstr.lstrip("(").rstrip(")")
         self.groups = groups
+        self.last_user_mail = None
 
     def check_credentials(self, username, password):
         base_dn = self.base_dn
@@ -266,11 +269,14 @@ class LDAPPlugin(UsernamePassword):
             user_lastname_attrib = ldap.filter.escape_filter_chars(user_lastname_attrib)
             user_mail_attrib = ldap.filter.escape_filter_chars(user_mail_attrib)
         try:
-            # if allowed_groups:
-            #    if not self.is_user_in_allowed_groups(
-            #        username, password, allowed_groups
-            #    ):
-            #        return False
+            allowed_groups = self.allowed_groups
+            if allowed_groups and mode == "ad":
+                if not self.is_user_in_allowed_groups(
+                    username
+                ):
+                    logger.warning(f"[{username}] refused login because not in allowed groups!")
+                    
+                    return False
             con = self._init_ldap()
             if mode == "ad":
                 # Microsoft Active Directory
@@ -295,7 +301,7 @@ class LDAPPlugin(UsernamePassword):
                 # this will throw an index error if the account is not found
                 # in the base_dn
                 requested_attrs = ["sAMAccountName"]
-                if manage_user:
+                if manage_user or mode == "ad":
                     requested_attrs.extend(
                         [user_firstname_attrib, user_lastname_attrib, user_mail_attrib]
                     )
@@ -306,7 +312,14 @@ class LDAPPlugin(UsernamePassword):
                     f"(&(sAMAccountName={ldap.filter.escape_filter_chars(username_bare)})({filterstr}))",
                     requested_attrs,
                 )[0][1]
+
+                # set last_user_mail from ldap result for further use
+                if 'mail' in result and result['mail']:
+                    self.last_user_mail = str(result['mail'][0].decode() if isinstance(result['mail'][0], bytes) else result['mail'][0])
+                else:
+                    self.last_user_mail = None
                 logger.info(f"Login result: {result}")
+                logger.debug(f"LDAPPlugin: Set last_user_mail to {self.last_user_mail} for {username}")
                 if not isinstance(result, dict):
                     # result should be a dict in the form
                     # {'sAMAccountName': [username_bare]}
@@ -533,6 +546,8 @@ class LDAPPlugin(UsernamePassword):
 
     def is_user_in_allowed_groups(self, username, password=None):
         allowed_groups = self.allowed_groups
+        logger = self.logger
+        logger.debug(f"[{str(username)}] Check if user is in allowed groups")
 
         """
         Figure out if the username is a member of an allowed group
@@ -549,8 +564,12 @@ class LDAPPlugin(UsernamePassword):
         for group in allowed_groups:
             if group in self.groups:
                 # Match
+                logger.debug(f"[{str(username)}] allowed login because in allowed groups")
                 return True
         # No match
+        logger.warning(f"[{str(username)}] denied login because not in allowed groups")
+        if self.denied_login_popup:
+            raise HTTP(401, body=f"{str(username)} : you're not authorized to login!")
         return False
 
     def do_manage_groups(self, con, username, group_mapping={}):
@@ -729,6 +748,8 @@ class LDAPPlugin(UsernamePassword):
                     if "DC=" in x.upper():
                         domain.append(x.split("=")[-1])
                 username = f"{username}@{'.'.join(domain)}"
+            if not group_dn:
+                group_dn = base_dn
             username_bare = username.split("@")[0]
             con = self._init_ldap()
             con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
@@ -758,6 +779,11 @@ class LDAPPlugin(UsernamePassword):
         if username is None:
             return []
         # search for groups where user is in
+        filter_full = (
+            ldap.filter.escape_filter_chars(group_member_attrib),
+            ldap.filter.escape_filter_chars(username),
+            group_filterstr,
+        )
         filter = f"(&({ldap.filter.escape_filter_chars(group_member_attrib)}=\
             {ldap.filter.escape_filter_chars(username)})({group_filterstr}))"
 
