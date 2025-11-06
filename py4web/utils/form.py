@@ -927,7 +927,7 @@ class Form(object):
                 validated_vars[field_name] = (
                     self.record and self.record.get(field_name) or None
                 )
-        self.vars.update(validated_vars)
+        self.vars = validated_vars
         if self.record and self.dbio:
             self.vars["id"] = self.record.id
         if self.validation:
@@ -935,7 +935,7 @@ class Form(object):
         if not self.errors:
             self.accepted = True
             if self.dbio:
-                self.update_or_insert(validated_vars)
+                self.update_or_insert(self.vars)
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
