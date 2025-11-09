@@ -104,15 +104,16 @@ LDAP_SETTINGS = {
     "mode": "ad",  # Microsoft Active Directory
     "server": "mydc.domain.com",  # FQDN or IP of one Domain Controller
     "base_dn": "cn=Users,dc=domain,dc=com",  # base dn, i.e. where the users are located
-
     # the following are only needed if you want to use groups
     "group_member_attrib": "member",  # for AD, attribute that contains the user DN in the group
     "bind_dn": "CN=LdapBindUser,CN=users,DC=test,DC=local",  # bind user DN
     "bind_pw": "P@ssw0rd",  # bind user password
     "group_dn": "DC=test,DC=local",  # group DN, where the groups are located, default = base_dn
-    "allowed_groups": ["allowed_login_group"],  # list of groups that are allowed to log in, default = everyone
+    "allowed_groups": [
+        "allowed_login_group"
+    ],  # list of groups that are allowed to log in, default = everyone
     "denied_login_popup": True,  # show an error at login if not in allowed groups
-                                 # default = False
+    # default = False
 }
 
 # i18n settings

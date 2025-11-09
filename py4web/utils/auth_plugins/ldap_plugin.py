@@ -271,11 +271,11 @@ class LDAPPlugin(UsernamePassword):
         try:
             allowed_groups = self.allowed_groups
             if allowed_groups and mode == "ad":
-                if not self.is_user_in_allowed_groups(
-                    username
-                ):
-                    logger.warning(f"[{username}] refused login because not in allowed groups!")
-                    
+                if not self.is_user_in_allowed_groups(username):
+                    logger.warning(
+                        f"[{username}] refused login because not in allowed groups!"
+                    )
+
                     return False
             con = self._init_ldap()
             if mode == "ad":
@@ -314,12 +314,18 @@ class LDAPPlugin(UsernamePassword):
                 )[0][1]
 
                 # set last_user_mail from ldap result for further use
-                if 'mail' in result and result['mail']:
-                    self.last_user_mail = str(result['mail'][0].decode() if isinstance(result['mail'][0], bytes) else result['mail'][0])
+                if "mail" in result and result["mail"]:
+                    self.last_user_mail = str(
+                        result["mail"][0].decode()
+                        if isinstance(result["mail"][0], bytes)
+                        else result["mail"][0]
+                    )
                 else:
                     self.last_user_mail = None
                 logger.info(f"Login result: {result}")
-                logger.debug(f"LDAPPlugin: Set last_user_mail to {self.last_user_mail} for {username}")
+                logger.debug(
+                    f"LDAPPlugin: Set last_user_mail to {self.last_user_mail} for {username}"
+                )
                 if not isinstance(result, dict):
                     # result should be a dict in the form
                     # {'sAMAccountName': [username_bare]}
@@ -564,7 +570,9 @@ class LDAPPlugin(UsernamePassword):
         for group in allowed_groups:
             if group in self.groups:
                 # Match
-                logger.debug(f"[{str(username)}] allowed login because in allowed groups")
+                logger.debug(
+                    f"[{str(username)}] allowed login because in allowed groups"
+                )
                 return True
         # No match
         logger.warning(f"[{str(username)}] denied login because not in allowed groups")

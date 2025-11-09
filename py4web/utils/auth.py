@@ -708,7 +708,9 @@ class Auth(Fixture):
                         and getattr(plugin, "mode", None) == "ad"
                         and getattr(plugin, "last_user_mail", None)
                     ):
-                        self.logger.debug(f"Using AD email from LDAP plugin: {plugin.last_user_mail}")
+                        self.logger.debug(
+                            f"Using AD email from LDAP plugin: {plugin.last_user_mail}"
+                        )
                         user_info["email"] = plugin.last_user_mail
                     elif "@" in email:
                         self.logger.debug(f"Using email from login: {email}")
@@ -1331,11 +1333,15 @@ class AuthAPI:
                     and getattr(plugin, "mode", None) == "ad"
                     and getattr(plugin, "last_user_mail", None)
                 ):
-                    auth.logger.debug(f"AuthAPI.login: Using AD email from LDAP plugin: {plugin.last_user_mail}")
+                    auth.logger.debug(
+                        f"AuthAPI.login: Using AD email from LDAP plugin: {plugin.last_user_mail}"
+                    )
                     # save the real email from AD to database
                     data["email"] = plugin.last_user_mail
                 else:
-                    auth.logger.debug(f"AuthAPI.login: Not using AD email, plugin_name={plugin_name}, mode={getattr(plugin, 'mode', None)}, last_user_mail={getattr(plugin, 'last_user_mail', None)}")
+                    auth.logger.debug(
+                        f"AuthAPI.login: Not using AD email, plugin_name={plugin_name}, mode={getattr(plugin, 'mode', None)}, last_user_mail={getattr(plugin, 'last_user_mail', None)}"
+                    )
                 if auth.db:
                     auth.logger.debug(
                         f"AuthAPI.login: Calling get_or_register_user with data={data}"

@@ -444,7 +444,7 @@ class Grid:
         self,
         query,
         search_form=None,
-        search_queries=None,
+        search_queries="auto",
         columns=None,
         field_id=None,
         show_id=None,
@@ -478,7 +478,7 @@ class Grid:
         :param path: The part of the URL to be parsed by this grid
         :param query: the query used to filter the data
         :param search_form: py4web FORM to be included as the search form
-        :param search_queries: future use - pass a dict of name and a search query
+        :param search_queries: future use - pass a list of search quereis, or "auto" or None
         :param columns: list of columns to display on the list page, if blank, glean tablename from first query
         :              and use all fields of that table
         :param field_id: the id field of the primary table for the grid - if there are multiple tables (joined)
@@ -723,7 +723,7 @@ class Grid:
         query = self.query
 
         # use the default search for the table (we have to do this here because need self.table)
-        if self.param.search_queries is None:
+        if self.param.search_queries == "auto":
             self.param.search_queries = [make_default_search_query(self.table)]
 
         # apply the search query
@@ -1271,6 +1271,7 @@ class Grid:
                     kind="grid-new-button",
                 )
             )
+
         if self.param.header_elements and len(self.param.header_elements) > 0:
             for element in self.param.header_elements:
                 element = maybe_call(element)
