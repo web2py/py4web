@@ -7,23 +7,23 @@
 # installation script for py4web on Ubuntu server
 #    see https://github.com/web2py/py4web/blob/master/docs/updateDocs.sh
 #
-#   tested with Ubuntu Server 22.04 LTS
+#   tested with Ubuntu Server 22.04.03 LTS
 #
 # Usage:
-#       copy and run it in any directory with 'sudo ./machine-setup.sh'
-#       
+#       copy and run it in any directory with 'sudo ./machine-setup_24.04.03.sh'
+#
 # ========================================================================
 
 # Parameters:
 
-# python_bin is used to state your python version
-# by default python_bin=python3.10
-python_bin=python3.10
-
 # use_iptables is set to yes if
 # you want to setup linux firewall from scratch
-# allowing only ssh and http/https
+# allowing ssh, http/https ( mqtt to port 1883 and postgres 5432 can be enabled around lines 107-118 ) 
 use_iptables=yes
+
+# Virtual Environment Configuration (FIX for 'externally-managed-environment')
+venv_dir=/opt/py4web/venv
+python_bin=${venv_dir}/bin/python3 # This will be the python executable path after venv creation
 
 if [ "$EUID" -ne 0 ] 2>/dev/null
   then echo "Please run as root or with sudo"
@@ -49,62 +49,72 @@ then
     iptables -t nat -X
     iptables -t mangle -F
     iptables -t mangle -X
-     
+
     #unlimited loopback
     iptables -A INPUT -i lo -j ACCEPT
     iptables -A OUTPUT -o lo -j ACCEPT
-    
+
     #unlimited output
     iptables -P OUTPUT ACCEPT
-   
+
     # Block sync
     iptables -A INPUT -p tcp ! --syn -m state --state NEW  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Drop Sync"
     iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
-     
+
     # Block Fragments
     iptables -A INPUT -f  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fragments Packets"
     iptables -A INPUT -f -j DROP
-     
+
     # Block bad stuff
     iptables  -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
     iptables  -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-     
+
     iptables  -A INPUT -p tcp --tcp-flags ALL NONE -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "NULL Packets"
     iptables  -A INPUT -p tcp --tcp-flags ALL NONE -j DROP # NULL packets
-     
+
     iptables  -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-     
+
     iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "XMAS Packets"
     iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP #XMAS
-     
+
     iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fin Packets Scan"
     iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -j DROP # FIN packet scans
-     
+
     iptables  -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
-     
+
     # Allow established connections and outcoming stuff
     iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
     iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-     
-    # Allow ssh 
+
+    # Allow ssh
     iptables -A INPUT -p tcp --destination-port 22 -j ACCEPT
-     
+
     # allow incomming ICMP ping pong stuff
     iptables -A INPUT -p icmp --icmp-type 8 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
     iptables -A OUTPUT -p icmp --icmp-type 0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-     
+
     # Allow port 53 tcp/udp (DNS Server)
     iptables -A INPUT -p udp --dport 53 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
     iptables -A OUTPUT -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
-     
+
     iptables -A INPUT -p tcp --destination-port 53 -m state --state NEW,ESTABLISHED,RELATED  -j ACCEPT
     iptables -A OUTPUT -p tcp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
-     
+
     # Open port 80
     iptables -A INPUT -p tcp --destination-port 80 -j ACCEPT
     iptables -A INPUT -p tcp --destination-port 443 -j ACCEPT
-    ##### Add your rules below ######
-     
+    
+	##### Add your rules below ######
+	#	 Open port 1883 moskitto mqtt standard port
+    #iptables -A INPUT -p tcp --destination-port 1883 -j ACCEPT
+	# 	Open port 5432 postgresql
+    #iptables -A INPUT -p tcp --destination-port 5432 -j ACCEPT
+	
+	# for limiting source and destination:
+	#iptables -A INPUT -p tcp -s XXX.XXX.XXX.XXX -j ACCEPT
+	#iptables -A OUTPUT -p tcp -d  XXX.XXX.XXX.XXX -j ACCEPT
+	
+	
     ##### END your rules ############
 
     # log everything else and drop it
@@ -116,7 +126,7 @@ EOF
 
     chmod +x iptables-py4web.sh
     ./iptables-py4web.sh
-    
+
     # make ipchain persistent on Ubuntu
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
@@ -130,9 +140,10 @@ else
 fi
 
 echo "======================================="
-echo "Installing Packages"
+echo "Installing System Packages"
 echo "======================================="
 apt-get update
+# We install python3 and python3-venv here
 apt-get -y install emacs
 apt-get -y install zip unzip
 apt-get -y install tar
@@ -142,17 +153,36 @@ apt-get -y install sendmail
 apt-get -y install fail2ban
 apt-get -y install supervisor
 apt-get -y install nginx
-apt-get -y install ${python_bin}
+apt-get -y install python3
 apt-get -y install python3-pip
-apt-get -y install ${python_bin}-dev
+# Make sure venv is available
+apt-get -y install python3-venv
+apt-get -y install python3-dev
 apt-get -y install postgresql-client
 apt-get -y install postgresql-client-common
 apt-get -y install sendmail
 apt-get -y install redis-server
 
+# --- FIX: Create and Configure Virtual Environment ---
+echo "======================================="
+echo "Setting up Virtual Environment for py4web"
+echo "======================================="
+
+# Ensure the py4web app and venv directories exist
+mkdir -p /home/www-data/py4web
+mkdir -p $venv_dir
+
+# Create the virtual environment using the system's python3
+/usr/bin/python3 -m venv $venv_dir
+
+# Correct permissions for the app and venv folders so www-data can run py4web
+chown -R www-data:www-data /home/www-data/py4web
+chown -R www-data:www-data $venv_dir
+# --- END FIX ---
+
 
 echo "======================================="
-echo "Installing Python Packages for py4web"
+echo "Installing Python Packages for py4web (in venv)"
 echo "entf server: tornado, gevent, gunicorn"
 echo "======================================="
 cat > requirements-py4web.txt <<EOF
@@ -162,13 +192,15 @@ psycopg2
 py4web
 EOF
 
+# Use the python executable inside the virtual environment
 ${python_bin} -m pip install -r requirements-py4web.txt
 
 if [ -f requirements.txt ]
 then
     echo "======================================="
-    echo "Installing Packages for apps"
+    echo "Installing Packages for apps (in venv)"
     echo "======================================="
+    # Use the python executable inside the virtual environment
     ${python_bin} -m pip install -r requirements.txt
 fi
 
@@ -185,7 +217,8 @@ then
     echo "creating missing py4web folders and apps"
     echo "========================================="
     mkdir -p /home/www-data/py4web
-    py4web setup /home/www-data/py4web/apps
+    # py4web is now installed in venv, so we call it via the venv's python
+    ${python_bin} -m py4web setup /home/www-data/py4web/apps
     chown -R www-data:www-data /home/www-data/py4web/apps
 fi
 
@@ -259,17 +292,23 @@ then
     cd $oldpath
 fi
 
+# --- FIX: Use 'tee' to correctly write to a root-owned file ---
 if [ ! -f /etc/init.d/py4web ]
 then
-
-echo '
+    echo "======================================="
+    echo "Creating /etc/init.d/py4web startup file"
+    echo "======================================="
+    
+    # Use 'cat << EOF' and pipe it to 'sudo tee' to handle root-owned files
+    # The 'EOF' is quoted ('EOF') to prevent shell variable expansion inside the block
+    cat << 'EOF' | sudo tee /etc/init.d/py4web > /dev/null
 #! /bin/sh
 
 NAME=py4web
 DESC="py4web process"
 PIDFILE="/var/run/${NAME}.pid"
 LOGFILE="/var/log/${NAME}.log"
-DAEMON="/usr/local/bin/py4web"
+DAEMON="/opt/py4web/venv/bin/py4web"
 DAEMON_OPTS="run --password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
 START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
 STOP_OPTS="--stop --oknodo --pidfile ${PIDFILE}"
@@ -302,12 +341,13 @@ restart|force-reload)
   ;;
 esac
 exit 0
-' > /etc/init.d/py4web
+EOF
 
 fi
 
+# This block is outside the 'if' and will execute every time to ensure final configuration
 chmod +x /etc/init.d/py4web
 echo Enter the password for py4web Dashboard:
-py4web set_password --password_file=/home/www-data/py4web/password.txt
+${python_bin} -m py4web set_password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
 /etc/init.d/nginx restart
