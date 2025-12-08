@@ -12,8 +12,11 @@ import tempfile
 import traceback
 import uuid
 import zipfile
+import pathlib
 
+import pathspec
 import requests
+
 from pydal.restapi import Policy, RestAPI
 from pydal.validators import CRYPT
 
@@ -43,6 +46,7 @@ APP_NAMES = os.environ.get("PY4WEB_APP_NAMES")
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
+PY4WEB_IGNORE = ".py4web_ignore"
 
 session = Session()
 
@@ -322,31 +326,46 @@ if MODE in ("demo", "readonly", "full"):
     def walk(path):
         """Returns a nested folder structure as a tree"""
         top = os.path.join(FOLDER, path)
+        filter = None
+        filter_file = os.path.join(top, PY4WEB_IGNORE)
+        if os.path.exists(filter_file):
+            with open(filter_file, "r") as stream:
+                patterns = stream.readlines()
+            try:
+                filter = pathspec.PathSpec.from_lines("gitwildmatch", patterns)
+            except Exception:
+                print(traceback.format_exc())
+
+        def visible(root, name, filter=filter):
+            if filter:
+                return not filter.match_file(os.path.join(root, name))
+            return not (
+                name.startswith(".")
+                or name.startswith("#")
+                or name.endswith("~")
+                or name[-4:] in (".pyc", "pyo")
+                or name == "__pycache__"
+                or root == "uploads"
+            )
+
         if not os.path.exists(top) or not os.path.isdir(top):
             return {"status": "error", "message": "folder does not exist"}
         store = {}
         for root, dirs, files in os.walk(top, topdown=False, followlinks=True):
-            store[root] = {
-                "dirs": list(
-                    sorted(
-                        [
-                            {"name": dir, "content": store[os.path.join(root, dir)]}
-                            for dir in dirs
-                            if dir[0] != "." and dir[:2] != "__"
-                        ],
-                        key=lambda item: item["name"],
-                    )
-                ),
-                "files": list(
-                    sorted(
-                        [
-                            f
-                            for f in files
-                            if f[0] != "." and f[-1] != "~" and f[-4:] != ".pyc"
-                        ]
-                    )
-                ),
-            }
+            if visible(*os.path.split(root)):
+                store[root] = {
+                    "dirs": list(
+                        sorted(
+                            [
+                                {"name": d, "content": store[os.path.join(root, d)]}
+                                for d in dirs
+                                if visible(root, d)
+                            ],
+                            key=lambda item: item["name"],
+                        )
+                    ),
+                    "files": list(sorted([f for f in files if visible(root, f)])),
+                }
         return {"payload": store[top], "status": "success"}
 
     @action("load/<path:path>")

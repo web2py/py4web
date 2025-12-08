@@ -16,6 +16,7 @@ dependencies = [
     "click",
     "colorama",
     "cryptography",
+    "pathspec",
     "portalocker",
     "tornado",
     "renoir >= 1.4.0",
