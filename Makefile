@@ -36,7 +36,7 @@ format: uv
 	uv tool run ruff format
 
 test: uv
-	uv run --extra test pytest --cov=py4web --cov-report html:cov.html -v tests/
+	uv run --python 3.13 --extra test pytest --cov=py4web --cov-report html:cov.html -v tests/
 
 setup: uv
 	uv run py4web.py setup apps

@@ -993,7 +993,12 @@ class Auth(Fixture):
         d.update(**attrs)
         email = user["email"]
         subject = message["subject"].format(**d)
-        body = message["body"].format(**d)
+        if isinstance(message["body"], (list, tuple)):
+            # the body is (TEXT, HTML)
+            body = [element.format(**d) for element in message["body"]]
+        else:
+            # the body is TEXT
+            body = message["body"].format(**d)
         if not self.sender:
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True
