@@ -1068,7 +1068,10 @@ class Auth(Fixture):
             T = translators[0]
             for group in self.param.messages.values():
                 for key, value in group.items():
-                    group[key] = T(value)
+                    if isinstance(value, (list, tuple)):
+                        group[key] = map(T, value)
+                    else:
+                        group[key] = T(value)
 
         methods = ["GET", "POST", "OPTIONS"]
 
