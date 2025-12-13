@@ -343,9 +343,9 @@ if MODE in ("demo", "readonly", "full"):
                 name.startswith(".")
                 or name.startswith("#")
                 or name.endswith("~")
-                or name[-4:] in (".pyc", "pyo")
+                or name[-4:] in (".pyc", ".pyo")
                 or name == "__pycache__"
-                or root == "uploads"
+                or os.path.basename(root) == "uploads"
             )
 
         if not os.path.exists(top) or not os.path.isdir(top):
