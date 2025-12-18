@@ -1,0 +1,715 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-09.rst:3
+msgid "YATL Template Language"
+msgstr "YATL 模板语言"
+
+#: ../../chapter-09.rst:5
+msgid ""
+"py4web uses two distinct template languages for rendering dynamic HTML "
+"pages that contain Python code:"
+msgstr "py4web 使用两种不同的模板语言来呈现包含 Python 代码的动态 HTML 页面：
+"
+
+#: ../../chapter-09.rst:7
+msgid ""
+"`yatl (Yet Another Template Language) <https://pypi.org/project/yatl/>`__"
+" , which is considered the original reference implementation"
+msgstr "`yatl (Yet Another Template Language) <https://pypi.org/project/yatl/>`__ ，被认为是原始的参考实现"
+
+#: ../../chapter-09.rst:8
+msgid ""
+"`Renoir <https://pypi.org/project/renoir/>`__, which is a newer and "
+"faster implementation of yatl with additional functionality"
+msgstr "`Renoir <https://pypi.org/project/renoir/>`__ ，"
+"是 yatl 的更新、更快的实现，具有额外的功能"
+
+#: ../../chapter-09.rst:11
+msgid ""
+"Since ``Renoir`` does not include HTML helpers (see next chapter), py4web"
+" by default uses the ``Renoir`` module for rendering templates and the "
+"``yatl`` module for helpers, plus some minor trickery to make them work "
+"together seamlessly."
+msgstr "由于 ``Renoir`` 不包括 HTML 助手（见下一章），"
+"py4web 默认使用 ``Renoir`` 模块渲染模板，使用 ``yatl`` 模块渲染助手，"
+"再加上一些小技巧使它们无缝协作。"
+
+#: ../../chapter-09.rst:14
+msgid ""
+"py4web also uses double square brackets ``[[ ... ]]`` to escape Python "
+"code embedded in HTML, unless specified otherwise."
+msgstr "py4web 还使用双方括号 ``[[ ... ]]`` 转义嵌入在 HTML 中的 Python 代码，"
+"除非另有说明。"
+
+#: ../../chapter-09.rst:16
+msgid ""
+"The advantage of using square brackets instead of angle brackets is that "
+"it’s transparent to all common HTML editors. This allows the developer to"
+" use those editors to create py4web templates."
+msgstr "使用方括号而不是尖括号的优点是，它对所有常见的 HTML 编辑器都是透明的"
+"（即没有特殊含义）。这允许开发人员使用这些编辑器创建 py4web 模板。"
+
+#: ../../chapter-09.rst:21
+msgid ""
+"Be careful not to mix Python code square brackets with other square "
+"brackets! For example, you'll soon see syntax like this:"
+msgstr "请小心，不要将 Python 代码方括号与其他方括号混合使用！"
+"例如，你很快就会看到这样的语法："
+
+#: ../../chapter-09.rst:30
+msgid ""
+"It's mandatory to add a space after the first closed bracket for "
+"separating the list from the Python code square brackets."
+msgstr "必须在第一个方括号后添加一个空格，将列表与 Python 代码方括号隔开。"
+
+#: ../../chapter-09.rst:33
+msgid ""
+"Since the developer is embedding Python code into HTML, the document "
+"should be indented according to HTML rules, and not Python rules. "
+"Therefore, we allow un-indented Python inside the ``[[ ... ]]`` tags. But"
+" since Python normally uses indentation to delimit blocks of code, we "
+"need a different way to delimit them; this is why the py4web template "
+"language makes use of the Python keyword ``pass``."
+msgstr "因为开发人员将 Python 代码嵌入 HTML 中，所以文档应根据 HTML 规则"
+"而不是Python 规则缩进。因此，我们允许在 ``[[ ... ]]`` 标签内使用未缩进的 "
+"Python 代码。但由于 Python 通常使用缩进来分隔代码块，我们需要一种不同的方式"
+"来分隔它们；这就是 py4web 模板语言使用 Python 关键字 ``pass`` 的原因。"
+
+#: ../../chapter-09.rst:40
+msgid ""
+"A **code block** starts with a line ending with a colon and ends with a "
+"line beginning with ``pass``. The keyword ``pass`` is not necessary when "
+"the end of the block is obvious from the context."
+msgstr "**代码块(code block)** 以冒号结尾的行开始，以 ``pass`` 开头的行结束。"
+"当代码块的结尾从上下文中显而易见时，不再必须有关键字 ``pass`` 。"
+
+#: ../../chapter-09.rst:44
+msgid "Here is an example:"
+msgstr "以下是一个示例："
+
+#: ../../chapter-09.rst:56
+msgid ""
+"Note that ``pass`` is a Python keyword, not a py4web keyword. Some Python"
+" editors, such as Emacs, use the keyword ``pass`` to signify the division"
+" of blocks and use it to re-indent code automatically."
+msgstr "请注意， ``pass`` 是 Python 关键字，而不是 py4web 关键字。"
+"一些 Python 编辑器，如 Emacs，使用关键字 ``pass`` 表示块的划分，"
+"并使用它自动重新生成缩进的代码。"
+
+#: ../../chapter-09.rst:60
+msgid ""
+"The py4web template language does exactly the same. When it finds "
+"something like:"
+msgstr "py4web 模板语言的功能完全相同。当它发现类似以下内容时："
+
+#: ../../chapter-09.rst:69
+msgid "it translates it into a program:"
+msgstr "py4web 模板语言将其转换为程序："
+
+#: ../../chapter-09.rst:79
+msgid "``response.write`` writes to the response body."
+msgstr "``response.write`` 将内容写入响应正文中。"
+
+#: ../../chapter-09.rst:81
+msgid ""
+"When there is an error in a py4web template, the error report shows the "
+"generated template code, not the actual template as written by the "
+"developer. This helps the developer debug the code by highlighting the "
+"actual code that is executed (which is something that can be debugged "
+"with an HTML editor or the DOM inspector of the browser)."
+msgstr "当 py4web 模板中出现错误时，错误报告会显示生成的模板代码，而不是开发人员"
+"编写的实际模板。这有助于开发人员通过突出显示实际执行的代码来调试代码"
+"（可以使用 HTML 编辑器或浏览器的 DOM 检查器进行调试）。"
+
+#: ../../chapter-09.rst:87
+msgid "Also note that:"
+msgstr "另请注意："
+
+#: ../../chapter-09.rst:93
+msgid "generates"
+msgstr "生成"
+
+#: ../../chapter-09.rst:99
+msgid ""
+"Variables injected into the HTML in this way are escaped by default. The "
+"escaping is ignored if ``x`` is an ``XML`` object, even if escape is set "
+"to ``True`` (see :ref:`XML` later for details)."
+msgstr "默认情况下，以这种方式注入 HTML 的变量会被转义。"
+"如果 ``x`` 是 ``XML`` 对象，则忽略转义，即使转义设置为 ``True`` "
+"（有关详细信息，请稍后参阅 :ref:`XML`）。"
+
+#: ../../chapter-09.rst:103
+msgid "Here is an example that introduces the ``H1`` helper:"
+msgstr "下面是一个示范 ``H1`` helper 的示例：
+"
+
+#: ../../chapter-09.rst:109
+msgid "which is translated to:"
+msgstr "这被转换为："
+
+#: ../../chapter-09.rst:115
+msgid ""
+"upon evaluation, the ``H1`` object and its components are recursively "
+"serialized, escaped and written to the response body. The tags generated "
+"by ``H1`` and inner HTML are not escaped. This mechanism guarantees that "
+"all text — and only text — displayed on the web page is always escaped, "
+"thus preventing XSS vulnerabilities. At the same time, the code is simple"
+" and easy to debug."
+msgstr "在评估后，``H1`` 对象及其组件被递归序列化、转义并写入响应体。 "
+"``H1`` 和内部 HTML 生成的标签不会转义。此机制保证网页上显示的所有文本（仅文本）"
+"始终被转义，从而防止 XSS 漏洞。同时，代码简单，易于调试。"
+
+#: ../../chapter-09.rst:122
+msgid ""
+"The method ``response.write(obj, escape=True)`` takes two arguments, the "
+"object to be written and whether it has to be escaped (set to ``True`` by"
+" default). If ``obj`` has an ``.xml()`` method, it is called and the "
+"result written to the response body (the ``escape`` argument is ignored)."
+" Otherwise it uses the object’s ``__str__`` method to serialize it and, "
+"if the escape argument is ``True``, escapes it. All built-in helper "
+"objects (``H1`` in the example) are objects that know how to serialize "
+"themselves via the ``.xml()`` method."
+msgstr "方法 ``response.write(obj, escape=True)`` 有两个参数，"
+"要写入的对象和是否必须转义（默认设置为 ``True`` ）。"
+"如果 ``obj`` 有一个 ``.xml()`` 方法，则调用该方法并将结果写入响应体"
+"（忽略 ``escape`` 参数的设置）。否则，它使用对象的 ``__str__`` 方法对其"
+"进行序列化，如果 ``escape`` 参数为 ``True``，则再对其进行转义。"
+"所有内置的 helper 对象（如示例中的 ``H1`` ）都是知道如何通过 ``.xml()`` 方法"
+"进行序列化它们自身内容的对象。"
+
+#: ../../chapter-09.rst:131
+msgid "This is all done transparently."
+msgstr "这一切都是透明完成的（无需额外干预）。"
+
+#: ../../chapter-09.rst:135
+msgid ""
+"While the response object used inside the controllers is a full "
+"``bottle.response`` object, inside the yatl templates it is replaced by a"
+" dummy object (``yatl.template.DummyResponse``). This object is quite "
+"different, and much simpler: it only has a write method! Also, you never "
+"need to (and never should) call the ``response.write`` method explicitly."
+msgstr "虽然控制器内使用的响应对象是一个完整的 ``bottle.response`` 对象，"
+"但在 yatl 模板内，它被一个虚拟对象（ ``yatl.template.DummyResponse`` ）替换。"
+"这个对象非常不同，也简单得多：它只有一个写方法！此外，"
+"您永远不需要（也不应该）显式调用 ``response.write`` 方法。"
+
+#: ../../chapter-09.rst:144
+msgid "Basic syntax"
+msgstr "基本语法"
+
+#: ../../chapter-09.rst:146
+msgid ""
+"The py4web template language supports all Python control structures. Here"
+" we provide some examples of each of them. They can be nested according "
+"to usual programming practice. You can easily test them by copying the "
+"_scaffold app (see :ref:`copying-the-scaffold-app`) and then editing the "
+"file ``new_app/template/index.html``."
+msgstr "py4web 模板语言支持所有 Python 控制结构。在这里，我们为每一个提供了一些例子。它们可以根据实际的编程情况被嵌套。您可以通过复制 _scaffold 应用程序（请参阅 :ref:`copying-the-scaffold-app` ），然后编辑文件 ``new_app/template/index.html`` 来轻松地进行测试。"
+
+#: ../../chapter-09.rst:154
+msgid "``for...in``"
+msgstr ""
+
+#: ../../chapter-09.rst:156
+msgid "In templates you can loop over any iterable object:"
+msgstr "在模板中，你可以遍历任何可迭代对象："
+
+#: ../../chapter-09.rst:165 ../../chapter-09.rst:191 ../../chapter-09.rst:217
+msgid "which produces:"
+msgstr "被生成为："
+
+#: ../../chapter-09.rst:175
+msgid ""
+"Here ``items`` is any iterable object such as a Python list, Python "
+"tuple, or Rows object, or any object that is implemented as an iterator. "
+"The elements displayed are first serialized and escaped."
+msgstr "这里地 ``items`` 是任意的可迭代对象，"
+"例如 Python 中的 list、tuple、 Rows 或者任何其它被实现为 iterator 的对象。"
+"显示的元素首先被序列化，然后再被转义。"
+
+#: ../../chapter-09.rst:180
+msgid "``while``"
+msgstr ""
+
+#: ../../chapter-09.rst:182
+msgid "You can create a loop using the while keyword:"
+msgstr "您可以使用 while 关键字创建循环："
+
+#: ../../chapter-09.rst:202
+msgid "``if...elif...else``"
+msgstr ""
+
+#: ../../chapter-09.rst:204
+msgid "You can use conditional clauses:"
+msgstr "您可以使用条件子句："
+
+#: ../../chapter-09.rst:225
+msgid ""
+"Since it is obvious that ``else`` closes the first ``if`` block, there is"
+" no need for a ``pass`` statement, and using one would be incorrect. "
+"However, you must explicitly close the ``else`` block with a ``pass``."
+msgstr "因为 ``else`` 显而易见地结束了紧跟 ``if`` 的第一个语句块，"
+"所以这里不再需要  ``pass`` 语句，如果用了将会导致错误。"
+"无论如何，你必须使用一个 ``pass`` 明确地结束紧跟 ``else`` 的语句块。"
+
+#: ../../chapter-09.rst:229
+msgid ""
+"Recall that in Python “else if” is written ``elif`` as in the following "
+"example:"
+msgstr "回想一下，在 Python 中被写成 ``elif`` 的 “else if”，如下例所示："
+
+#: ../../chapter-09.rst:246
+msgid "It produces:"
+msgstr "由它会生成："
+
+#: ../../chapter-09.rst:255
+msgid "``try...except...else...finally``"
+msgstr ""
+
+#: ../../chapter-09.rst:257
+msgid ""
+"It is also possible to use ``try...except`` statements in templates with "
+"one caveat. Consider the following example:"
+msgstr "在模板中，也可以使用 ``try...except`` 语句，但有一个警告。"
+"考虑以下示例："
+
+#: ../../chapter-09.rst:272
+msgid "It will produce the following output:"
+msgstr "由它将生成如下输出："
+
+#: ../../chapter-09.rst:279
+msgid ""
+"This example illustrates that all output generated before an exception "
+"occurs is rendered (including output that preceded the exception) inside "
+"the try block. “Hello” is written because it precedes the exception."
+msgstr "此示例说明了在 try 块内异常发生之前生成的所有输出（包括异常之前的输出）"
+"都会被呈现出来。“Hello” 被输出了，是因为它位于异常之前。"
+
+#: ../../chapter-09.rst:284
+msgid "``def...return``"
+msgstr ""
+
+#: ../../chapter-09.rst:286
+msgid ""
+"The py4web template language allows the developer to define and implement"
+" functions that can return any Python object or a text/html string. Here "
+"we consider two examples:"
+msgstr "py4web 模板语言允许开发人员定义和实现可以返回任何 Python 对象或 text/html 格式字符串的函数。这里我们有两个例子："
+
+#: ../../chapter-09.rst:297
+msgid "produces the following output:"
+msgstr "会生成下面的输出："
+
+#: ../../chapter-09.rst:305
+msgid ""
+"The function ``itemize1`` returns a helper object that is inserted at the"
+" location where the function is called."
+msgstr "``itemize1`` 函数返回了一个 helper 对象，"
+"其位置放在了在函数被调用的地方。"
+
+#: ../../chapter-09.rst:308
+msgid "Consider now the following code:"
+msgstr "现在，看下面的代码："
+
+#: ../../chapter-09.rst:319
+msgid ""
+"It produces exactly the same output as above. In this case, the function "
+"``itemize2`` represents a piece of HTML that is going to replace the "
+"py4web tag where the function is called. Notice that there is no ‘=’ in "
+"front of the call to ``itemize2``, since the function does not return the"
+" text, but it writes it directly into the response."
+msgstr "它产生与上述完全相同的输出。在这种情况下，函数 ``itemize2`` 表示一段"
+" HTML ，它将替换调用该函数的 py4web 标签。请注意，在调用 ``itemize2`` 之前"
+"没有 “=” ，因为该函数不返回文本，而是将其直接写入响应中。"
+
+#: ../../chapter-09.rst:325
+msgid ""
+"There is one caveat: functions defined inside a template must terminate "
+"with a ``return`` statement, or the automatic indentation will fail."
+msgstr "有一个警告：即使没有要返回的内容，模板内定义的函数也必须以 ``return`` "
+"语句终止，否则自动缩进处理将失败。"
+
+#: ../../chapter-09.rst:329
+msgid "Information workflow"
+msgstr "信息工作流程"
+
+#: ../../chapter-09.rst:331
+msgid ""
+"For dynamically modifying the workflow of the information there are "
+"custom commands available: ``extend``, ``include``, ``block`` and "
+"``super``. Note that they are special template directives, not Python "
+"commands."
+msgstr "为了动态修改信息的工作流程，可以使用自定义命令： ``extend`` 、 "
+"``include`` 、 ``block`` 和 ``super`` 。请注意，它们是特殊的模板指令，"
+"而不是 Python 命令。"
+
+#: ../../chapter-09.rst:335
+msgid "In addition, you can use normal Python functions inside templates."
+msgstr "此外，您可以在模板中使用普通的 Python 函数。"
+
+#: ../../chapter-09.rst:339
+msgid "``extend`` and ``include``"
+msgstr "``extend`` 和 ``include``"
+
+#: ../../chapter-09.rst:341
+msgid "Templates can extend and include other templates in a tree-like structure."
+msgstr "模板可以扩展和包含其他模板，这形成一个树状结构。"
+
+#: ../../chapter-09.rst:343
+msgid ""
+"For example, we can think of a template “index.html” that extends "
+"“layout.html” and includes “body.html”. At the same time, “layout.html” "
+"may include “header.html” and “footer.html”."
+msgstr "例如，我们可以想到一个模板 “index.html” ，它扩展了 “layout.html” 并"
+"包含了 “body.html” 。同时，“layout.html” 可能包括 “header.html” 和"
+" “footer.html” 。"
+
+#: ../../chapter-09.rst:347
+msgid ""
+"The root of the tree is what we call a **layout template**. Just like any"
+" other HTML template file, you can edit it from the command line or using"
+" the py4web Dashboard. The file name “layout.html” is just a convention."
+msgstr "树状结构的根就是我们所说的 **layout template** 。与任何其他 HTML 模板"
+"文件一样，您可以从命令行或使用 py4web Dashboard 对其进行编辑。"
+"文件名 “layout.html” 只是一个约定。"
+
+#: ../../chapter-09.rst:351
+msgid ""
+"Here is a minimalist page that extends the “layout.html” template and "
+"includes the “page.html” template:"
+msgstr "这有一个很简单的页面，它扩展了 “layout.html” 模板，并包含了 “page.html” 模板："
+
+#: ../../chapter-09.rst:361
+msgid ""
+"The extended layout file must contain an ``[[include]]`` directive, "
+"something like:"
+msgstr "被扩展的布局文件必须包含 ``[[include]]`` 指令，类似于："
+
+#: ../../chapter-09.rst:376
+msgid ""
+"When the template is called, the extended (layout) template is loaded, "
+"and the calling template replaces the ``[[include]]`` directive inside "
+"the layout. If you don't write the ``[[include]]`` directive inside the "
+"layout, then it will be included at the beginning of the file. Also, if "
+"you use multiple ``[[extend]]`` directives only the last one will be "
+"processed. Processing continues recursively until all ``extend`` and "
+"``include`` directives have been processed. The resulting template is "
+"then translated into Python code."
+msgstr "调用模板时，将加载被扩展（布局）模板，调用模板的内容将替换布局中的"
+" ``[[include]]`` 指令。如果你没有在布局中写入 ``[[include]]`` 指令，"
+"那么它将默认地被包含在文件的开头。此外，如果您使用多个 ``[[extend]]`` 指令，"
+"则只会处理最后一个指令。处理过程会递归进行，直到所有 ``extend`` 和 ``include``"
+" 指令都已处理完毕。然后 py4web 将生成的模板翻译成 Python 代码。"
+
+#: ../../chapter-09.rst:385
+msgid ""
+"Note, when an application is bytecode compiled, it is this Python code "
+"that is compiled, not the original template files themselves. So, the "
+"bytecode compiled version of a given template is a single .pyc file that "
+"includes the Python code not just for the original template file, but for"
+" its entire tree of extended and included templates."
+msgstr "请注意，当对应用程序进行字节码编译时，编译的是翻译后的 Python 代码，"
+"而不是原始模板文件本身。因此，给定模板的字节码编译版本是一个.pyc文件，"
+"其中不仅包括原始模板文件的 Python 代码，"
+"还包括其整个被扩展的和被包含的模板的树状结构的 Python 代码。"
+
+#: ../../chapter-09.rst:391
+msgid ""
+"Any content or code that **precedes** the ``[[extend ...]]`` directive "
+"will be inserted (and therefore executed) before the beginning of the "
+"extended template's content/code. Although this is not typically used to "
+"insert actual HTML content before the extended template's content, it can"
+" be useful as a means to define variables or functions that you want to "
+"make available to the extended template. For example, consider a template"
+" “index.html”:"
+msgstr "``[[extend ...]]`` 指令 **之前** 的任何内容或代码都将在被扩展的模板的"
+"内容/代码开始之前插入（并因此执行）。虽然这通常不用于在扩展模板的内容之前插入实际"
+"的 HTML 内容，但它可以作为定义要提供给扩展模板的变量或函数的一种手段。"
+"例如，考虑一个模板 “index.html” ："
+
+#: ../../chapter-09.rst:406
+msgid "and an excerpt from “layout.html”:"
+msgstr "以及 “layout.html” 的部分代码片段："
+
+#: ../../chapter-09.rst:418
+msgid ""
+"Because the ``sidebar_enabled`` assignment in “index.html” comes before "
+"the ``extend``, that line gets inserted before the beginning of "
+"“layout.html”, making ``sidebar_enabled`` available anywhere within the "
+"“layout.html” code."
+msgstr "在 “index.html” 中，因为 ``sidebar_enabled`` 的声明在 ``extend`` 之前，所以那一行将在 “layout.html” 开始之前被插入执行，这使得 ``sidebar_enabled`` 在 “layout.html” 内的任何地方都可以被使用。"
+
+#: ../../chapter-09.rst:423
+msgid ""
+"It is also worth pointing out that the variables returned by the "
+"controller function are available not only in the function’s main "
+"template, but in all of its extended and included templates as well."
+msgstr "同样值得指出的是，控制器函数返回的变量不仅在函数的主模板中可用，而且在其所有扩展和包含的模板中也可用。"
+
+#: ../../chapter-09.rst:428
+msgid "Extending using variables"
+msgstr "使用变量进行扩展"
+
+#: ../../chapter-09.rst:430
+msgid ""
+"The argument of an ``extend`` or ``include`` (i.e., the extended or "
+"included template name) can be a Python variable (though not a Python "
+"expression). However, this imposes a limitation – templates that use "
+"variables in ``extend`` or ``include`` statements cannot be bytecode "
+"compiled. As noted above, bytecode-compiled templates include the entire "
+"tree of extended and included templates, so the specific extended and "
+"included templates must be known at compile time, which is not possible "
+"if the template names are variables (whose values are not determined "
+"until run time). Because bytecode compiling templates can provide a "
+"significant speed boost, using variables in ``extend`` and ``include`` "
+"should generally be avoided if possible."
+msgstr "``extend`` 或 ``include`` 的参数（即被扩展或被包含的模板名称）"
+"可以是 Python 变量（尽管不能是 Python 表达式）。然而，这带来了一个限制——在"
+" ``extend`` 或 ``include`` 语句中使用变量的模板不能进行字节码编译。如上所述，"
+"字节码编译的模板包括被扩展和被包含的模板的整个树，因此在编译时必须知道特定的"
+"被扩展和被包含的模板，如果模板名称是变量，则不可能知道（其值直到运行时才确定）。"
+"因为字节码编译模板可以显著提高速度，如果可能的话，通常应该避免在 ``extend`` "
+"和 ``include`` 中使用变量。"
+
+#: ../../chapter-09.rst:442
+msgid ""
+"In some cases, an alternative to using a variable in an ``include`` is "
+"simply to place regular ``[[include ...]]`` directives inside an "
+"``if...else`` block."
+msgstr "在某些情况下，在 ``include`` 中使用变量的另一种方法是将常规的 "
+"``[[include ...]]`` 指令放在 ``if...else`` 块中。"
+
+#: ../../chapter-09.rst:454
+msgid ""
+"The above code does not present any problem for bytecode compilation "
+"because no variables are involved. Note, however, that the bytecode "
+"compiled template will actually include the Python code for both "
+"“this_template.html” and “that_template.html”, though only the code for "
+"one of those templates will be executed, depending on the value of "
+"``some_condition``."
+msgstr "上述代码对字节码编译没有任何问题，因为它不涉及变量。但是请注意，"
+"字节码编译的模板实际上将包含 “this_template.html” 和 “that_template.html” 的"
+" Python 代码，尽管根据 ``some_condition`` 的值，只会执行其中一个模板的代码。"
+
+#: ../../chapter-09.rst:461
+msgid ""
+"Keep in mind, this only works for ``include`` – you cannot place "
+"``[[extend ...]]`` directives inside ``if...else`` blocks."
+msgstr "请记住，这只适用于 ``include`` —— "
+"你不能在 ``if...else`` 块内放置 ``[[extend ...]]`` 指令。"
+
+#: ../../chapter-09.rst:464
+msgid ""
+"Layouts are used to encapsulate page commonality (headers, footers, "
+"menus), and though they are not mandatory, they will make your "
+"application easier to write and maintain."
+msgstr "布局用于封装页面通用性（页眉、页脚、菜单），虽然它们不是强制性的，"
+"但它们将使您的应用程序更容易编写和维护。"
+
+#: ../../chapter-09.rst:469
+msgid "Template Functions"
+msgstr "模板中定义函数（Template Functions）"
+
+#: ../../chapter-09.rst:471
+msgid "Consider this “layout.html”:"
+msgstr "考虑一下这个 “layout.html” ："
+
+#: ../../chapter-09.rst:487
+msgid "and this extending template"
+msgstr "和下面这个扩展模板："
+
+#: ../../chapter-09.rst:497
+msgid ""
+"Notice the function is defined before the ``[[extend...]]`` statement – "
+"this results in the function being created before the “layout.html” code "
+"is executed, so the function can be called anywhere within “layout.html”,"
+" even before the ``[[include]]``. Also notice the function is included in"
+" the extended template without the ``=`` prefix."
+msgstr "请注意，函数是在 ``[[extend...]]`` 语句之前被定义的——这导致函数是在执行"
+" “layout.html” 代码之前创建的，因此函数可以在 “layout.html” 中的任何地方调用，"
+"甚至在  ``[[include]]`` 之前。"
+"还要注意，该函数包含在扩展模板中，但是没有前缀 ``=`` 。"
+
+#: ../../chapter-09.rst:503
+msgid "The code generates the following output:"
+msgstr "该代码生成以下输出："
+
+#: ../../chapter-09.rst:516
+msgid ""
+"Notice that the function is defined in HTML (although it could also "
+"contain Python code) so that ``response.write`` is used to write its "
+"content (the function does not return the content). This is why the "
+"layout calls the template function using ``[[mysidebar()]]`` rather than "
+"``[[=mysidebar()]]``. Functions defined in this way can take arguments."
+msgstr "请注意，该函数是在 HTML 中被定义的（尽管它也可以包含 Python 代码），"
+"因此使用 ``response.write`` 来输出其内容（该函数不返回内容）。"
+"这就是为什么布局使用  ``[[mysidebar()]]`` 而不是 ``[[=mysidebar()]]`` 。"
+"以这种方式定义的函数可以接受参数。"
+
+#: ../../chapter-09.rst:523
+msgid "``block`` and ``super``"
+msgstr "``block`` 和 ``super``"
+
+#: ../../chapter-09.rst:525
+msgid ""
+"The main way to make a template more modular is by using ``[[block "
+"...]]``\\ s and this mechanism is an alternative to the mechanism "
+"discussed in the previous section."
+msgstr "使模板更加模块化的主要方法是使用 ``[[block ...]]`` ，"
+"这种机制是上一节讨论的机制的替代方案。"
+
+#: ../../chapter-09.rst:529
+msgid ""
+"To understand how this works, consider apps based on the scaffolding app "
+"welcome, which has a template layout.html. This template is extended by "
+"the template ``default/index.html`` via ``[[extend 'layout.html']]``. The"
+" contents of layout.html predefine certain blocks with certain default "
+"content, and these are therefore included into default/index.html."
+msgstr "要了解这是如何工作的，请考虑基于脚手架应用程序 welcome 的应用程序，"
+"它有一个模板 layout.html 。此布局模板由模板 ``default/index.html`` 通过 "
+"``[[extend 'layout.html']]`` 被扩展。layout.html 的内容预先定义了具有"
+"某些默认内容的某些块，因此这些块被包含在 default/index.html 中。"
+
+#: ../../chapter-09.rst:535
+msgid ""
+"You can override these default content blocks by enclosing your new "
+"content inside the same block name. The location of the block in the "
+"layout.html is not changed, but the contents is."
+msgstr "您可以通过 **将新内容包含在相同的块名称中来覆盖这些默认内容块** 。"
+"layout.html 中块的位置没有改变，但内容发生了变化。"
+
+#: ../../chapter-09.rst:539
+msgid "Here is a simplified version. Imagine this is “layout.html”:"
+msgstr "这是一个简化版本。想象一下这是 “layout.html” ："
+
+#: ../../chapter-09.rst:554
+msgid "and this is a simple extending template ``default/index.html``:"
+msgstr "而这是一个简单的包含扩展的模板 ``default/index.html`` ："
+
+#: ../../chapter-09.rst:564
+msgid ""
+"It generates the following output, where the content is provided by the "
+"over-riding block in the extending template, yet the enclosing DIV and "
+"class comes from layout.html. This allows consistency across templates:"
+msgstr "这生成下面的输出，其内容由在包含扩展指令的模板中相同名称的覆盖看提供，"
+"而包含内容的 DIV 和 class 样式来自 layout.html。这允许模板之间的一致性："
+
+#: ../../chapter-09.rst:579
+msgid ""
+"The real layout.html defines a number of useful blocks, and you can "
+"easily add more to match the layout your desire."
+msgstr "实际的 layout.html 定义了许多有用的块，"
+"您可以轻松添加更多块来匹配您想要的布局。"
+
+#: ../../chapter-09.rst:582
+msgid ""
+"You can have many blocks, and if a block is present in the extended "
+"template but not in the extending template, the content of the extended "
+"template is used. Also, notice that unlike with functions, it is not "
+"necessary to define blocks before the ``[[extend ...]]`` – even if "
+"defined after the ``extend``, they can be used to make substitutions "
+"anywhere in the extended template."
+msgstr "您可以有许多块，如果被扩展的模板中存在块，但包含扩展指令的模板中没有块，"
+"则使用被扩展的模板中的内容。此外，请注意，与函数不同，不需要在 "
+"``[[extend ...]]`` 之前定义块——即使在 ``extend`` 之后定义，"
+"它们也可以用于在被扩展的模板中的任何位置进行替换。"
+
+#: ../../chapter-09.rst:589
+msgid ""
+"Inside a block, you can use the expression ``[[super]]`` to include the "
+"content of the parent. For example, if we replace the above extending "
+"template with:"
+msgstr "在块内，可以使用表达式  ``[[super]]`` 来包含被扩展的模板中同名块内原有的内容。例如，如果我们将以上包含扩展指令的模板内容替换为："
+
+#: ../../chapter-09.rst:602
+msgid "we get:"
+msgstr "将得到："
+
+#: ../../chapter-09.rst:620
+msgid "Page layout standard structure"
+msgstr "页面布局的标准结构"
+
+#: ../../chapter-09.rst:624
+msgid "Default page layout"
+msgstr "默认的页面布局"
+
+#: ../../chapter-09.rst:626
+msgid ""
+"The “templates/layout.html” that currently ships with the py4web "
+"**_scaffold** application is quite complex but it has the following "
+"structure:"
+msgstr "当前 py4web 提供的 **_scaffold** 应用程序附带的 “templates/layout.html” 非常复杂，但它具有以下结构："
+
+#: ../../chapter-09.rst:705
+msgid ""
+"There are a few features of this default layout that make it very easy to"
+" use and customize:"
+msgstr "此默认布局的一些特点，使其非常易于使用和自定义："
+
+#: ../../chapter-09.rst:708
+msgid "it is written in HTML5"
+msgstr "使用 HTML5 编写"
+
+#: ../../chapter-09.rst:709
+msgid ""
+"on line 7 it's used the ``no.css`` stylesheet, see `here "
+"<https://github.com/mdipierro/no.css/>`__"
+msgstr "在第 7 行，使用了 ``no.css`` 样式表，"
+"请参见 `这里 <https://github.com/mdipierro/no.css/>`__"
+
+#: ../../chapter-09.rst:711
+msgid ""
+"on line 58 ``[[include]]`` is replaced by the content of the extending "
+"template when the page is rendered"
+msgstr "当页面呈现时，第 58 行的 ``[[include]]`` 被包含扩展指令的模板的内容替换"
+
+#: ../../chapter-09.rst:713
+msgid "it contains the following blocks: page_head, page_left_menu, page_scripts"
+msgstr "包含以下块：page_head、page_left_menu、page_scripts"
+
+#: ../../chapter-09.rst:714
+msgid ""
+"on line 30 it checks if the user is logged on and changes the menu "
+"accordingly"
+msgstr "在第 30 行，它检查用户是否已登录，并相应地更改菜单"
+
+#: ../../chapter-09.rst:715
+msgid "on line 54 it checks for flash alert messages"
+msgstr "在第 54 行，它检查 flash alert 消息"
+
+#: ../../chapter-09.rst:718
+msgid ""
+"Of course you can also completely replace the “layout.html” and the "
+"stylesheet with your own."
+msgstr "当然，也可以用你自己编写的内容彻底替换 “layout.html” 和样式表。"
+
+#: ../../chapter-09.rst:723
+msgid "Mobile development"
+msgstr "移动开发"
+
+#: ../../chapter-09.rst:725
+msgid ""
+"Although the default layout.html is designed to be mobile-friendly, one "
+"may sometimes need to use different templates when a page is visited by a"
+" mobile device."
+msgstr "虽然默认 layout.html 的设计是移动友好的，但当移动设备访问页面时，有时可能需要使用不同的模板。"
+

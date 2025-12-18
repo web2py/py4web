@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>夹具（Fixture） &mdash; py4web 20251209 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=96e44453"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="数据库抽象层（DAL）" href="chapter-07.html" />
+    <link rel="prev" title="创建一个应用" href="chapter-05.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">安装和启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">夹具（Fixture）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-fixtures">使用 “夹具（Fixture）”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-template-fixture">模板夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-inject-fixture">注入夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-translator-fixture">翻译夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-flash-fixture">消息夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-session-fixture">Session 夹具</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#client-side-session-in-cookies">客户端 cookie 中的会话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-memcache">服务端内存缓存中的会话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-redis">服务端 Redis 中的会话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-database">服务端数据库中的会话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-anywhere">服务端自由存储会话</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sharing-sessions">共享会话</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-condition-fixture">Condition 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-urlsigner-fixture">URLsigner 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-dal-fixture">DAL 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-auth-fixture">Auth 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats-about-fixtures">关于 fixtures 的注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-fixtures">自定义夹具</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixtures-with-dependencies">具有依赖关系的 Fixtures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-local-storage">使用本地存储</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-fixtures">使用多个 fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caching-and-memoize">缓存和记忆</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convenience-decorators">便利的装饰器</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">身份验证与授权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">表格（Grid）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">夹具（Fixture）</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-06.rst" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fixtures">
+<h1>夹具（Fixture）<a class="headerlink" href="#fixtures" title="Link to this heading"></a></h1>
+<p>一个 <strong>夹具（Fixture）</strong> 被定义为 “固定在建筑物或车辆中的设备或用具”。在我们这里的情况下， <strong>夹具（Fixture）</strong> 是附加到处理 HTTP 请求以产生响应的 action 的东西。</p>
+<p>在处理任何 HTTP 请求的时候，有一些我们可能想要执行的可选操作。例如，解析 cookie 以查找 session 信息、提交数据库事务、从 HTTP 头部确定首选语言、获取合适的国际化操作，等等。这些操作都是可选的。有些 action 需要它们，有些 action 不需要。它们也可能相互依赖。例如，如果 session 存储在数据库中，我们的 action 又需要它，那么我们可能需要从 HTTP 头部解析 session cookie，从数据库连接池中获取一个连接，如果会话数据有变化 - 在 action 执行完毕后 - 再将 session 保存回数据库。</p>
+<p>PY4WEB 的夹具（Fixtures）提供了一种机制，用于指定 action 额外需要什么，以便 py4web 可以以最有效的方式完成所需任务（并跳过不需要的任务）。夹具（Fixtures）使代码更高效，并减少了样板代码的需求。把夹具（Fixtures）想象成针对每个 action 的中间件（而不是针对整个应用）。</p>
+<p>PY4WEB 的夹具（Fixtures）与 WSGI 中间件和 BottlePy 插件相似，除了它们应用于单个 action，而不是所有的 action，并且它们之间可以相互依赖。</p>
+<p>PY4WEB 自带一些预定义的夹具（Fixtures）：session、url signing 和 flash messages ，将在本章中完整地解释。Database connections、 internationalization、authentication 和 templates 在这里只是简单地介绍，因为有专门的章节进行介绍。</p>
+<p>开发者也可以自由地添加夹具，例如，处理第三方的模板语言或第三方的 session 逻辑；这将在 <a class="reference internal" href="#custom-fixtures"><span class="std std-ref">自定义夹具</span></a> 的相关段落中解释。</p>
+<section id="using-fixtures">
+<h2>使用 “夹具（Fixture）”<a class="headerlink" href="#using-fixtures" title="Link to this heading"></a></h2>
+<p>正如我们在上一章中看到的，夹具是装饰器 <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> 的参数。 你可以在一个装饰器中指定多个夹具，也可以使用多个装饰器。</p>
+<p>夹具也可以组合应用。例如：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>preferred = action.uses(session, auth, T, flash)
+</pre></div>
+</div>
+<p>然后，你可以一次性应用它们：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index&#39;)
+@preferred
+def index():
+    return dict()
+</pre></div>
+</div>
+<p>通常，你使用夹具的顺序并不重要，因为如果它们有明确的依赖关系， py4web 很清楚如何管理它们。例如，虽然 auth 明确地依赖于 db 和 session，但是你不需要全部列出它们。</p>
+<p>但是，有一个重要的例外：模板夹具（Template fixture） 必须是 <strong>第一个</strong> 。否则，它将无法访问它应该需要的那些来自其他夹具的内容，特别是 Inject() 和 Flash()，我们稍后会看到。</p>
+</section>
+<section id="the-template-fixture">
+<h2>模板夹具<a class="headerlink" href="#the-template-fixture" title="Link to this heading"></a></h2>
+<p>PY4WEB 默认使用 YATL 模板语言，并为它提供了一个夹具。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="s1">&#39;[[ ]]&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>注意：这个例子假设你已经基于 scaffolding 应用创建了应用程序，因此模板 index.html 已经为你创建好了。</p>
+<p>Template 对象是一个夹具（Fixture）。它使用 <code class="docutils literal notranslate"><span class="pre">index.html</span></code> 模板文件将 action 返回的 <code class="docutils literal notranslate"><span class="pre">dict()</span></code> 转换为字符串。在后面的章节中，我们将提供一个例子，说明如何定义一个自定义的夹具来使用不同的模板语言，例如 Jinja2。</p>
+<p>注意，由于模板的使用非常常见，并且很可能每个 action 都使用不同的模板，我们提供了一些便捷的语法，以下两行是等价的：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="s1">&#39;[[ ]]&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>还要注意，py4web 模板文件被缓存在内存（ RAM ） 中。py4web 缓存对象在后续的 <a class="reference internal" href="#caching-and-memoize"><span class="std std-ref">缓存和记忆</span></a> 中进行了描述。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>如果你使用多个夹具 fixture，请始终将模板放在 <strong>第一个</strong> 。</p>
+<p>例如：</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span> <span class="c1"># wrong</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="c1"># right</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>注意，如果你阅读过旧文档，那么你就清楚：在早期 py4web 地实验版本（直到2022年2月）中，这个需求是完全相反的！</p>
+</div>
+<p>正如我们在前面的段落中已经看到的，你可以在一个装饰器中组合很多夹具。你甚至可以根据需要传递不同的模板来扩展这个装饰器。例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">preferred</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="o">*</span><span class="n">optional</span><span class="p">):</span>
+   <span class="k">return</span> <span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="o">*</span><span class="n">optional</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>然后：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@preferred</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>这种语法没有性能影响：它只是为了避免在多个地方重复一个装饰器逻辑。这样，你会有更干净的代码，如果需要，你可以只在一个地方改变它。</p>
+</section>
+<section id="the-inject-fixture">
+<h2>注入夹具<a class="headerlink" href="#the-inject-fixture" title="Link to this heading"></a></h2>
+<p>注入夹具（ Inject fixture ）用于将变量（甚至 python 函数）传递给模板。这里有一个简单的例子：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">Inject</span>
+<span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
+
+<span class="o">...</span>
+
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">my_var</span><span class="o">=</span><span class="n">my_var</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>稍后，会在 YATL 章节中的 <a class="reference internal" href="chapter-10.html#using-inject"><span class="std std-ref">使用 注入</span></a> 部分解释。</p>
+</section>
+<section id="the-translator-fixture">
+<h2>翻译夹具<a class="headerlink" href="#the-translator-fixture" title="Link to this heading"></a></h2>
+<p>这里是用法示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Translator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">T_FOLDER</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>字符串 <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code> 将基于指定的 “translations” 文件夹中与 HTTP <code class="docutils literal notranslate"><span class="pre">accept-language</span></code> 头最匹配的国际化文件进行翻译。</p>
+<p>这里的 <code class="docutils literal notranslate"><span class="pre">Translator</span></code> 是一个 py4web 类，它扩展了 <code class="docutils literal notranslate"><span class="pre">pluralize.Translator</span></code> ， 并且也实现了 <code class="docutils literal notranslate"><span class="pre">Fixture</span></code> 的接口。</p>
+<p>我们可以很容易地组合多个夹具。这里，作为一个例子，我们制作了一个 action ，它计算 “访问次数”。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.dbstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBStore</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+<span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">T_FOLDER</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;You have been here </span><span class="si">{n}</span><span class="s2"> times&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">counter</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>如果 <code class="docutils literal notranslate"><span class="pre">T</span></code> 夹具在一个模板中要使用，你可能需要把它传递给那个模板：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>或者，可以注入（效果同上）：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">Inject</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>现在，创建翻译文件 <code class="docutils literal notranslate"><span class="pre">translations/en.json</span></code> :</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;You have been here {n} times&quot;</span><span class="p">:</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This your first time here&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here once before&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here twice before&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here {n} times&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;6&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here more than 5 times&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>当使用英语作为浏览器语言偏好设置访问此网站并多次重新加载时，您将收到以下消息：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This your first time here
+You have been here once before
+You have been here twice before
+You have been here 3 times
+You have been here 4 times
+You have been here 5 times
+You have been here more than 5 times
+</pre></div>
+</div>
+<p>现在尝试创建一个名为 <code class="docutils literal notranslate"><span class="pre">translations/it.json</span></code> 的文件，其中包含：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;You have been here {n} times&quot;</span><span class="p">:</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Non ti ho mai visto prima&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho gia&#39; visto&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho gia&#39; visto 2 volte&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho visto {n} volte&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;6&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho visto piu&#39; di 5 volte&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>将您的浏览器偏好设置为意大利语：现在消息将自动翻译为意大利语。</p>
+<p>注意，在 Dashboard 中有一个用于创建、更新和更新翻译文件的用户界面，它能通过 Dashboard 上的 <code class="docutils literal notranslate"><span class="pre">i18n+p11n</span></code> 按钮访问的。</p>
+<img alt="_images/dashboard_i18n_btn.png" src="_images/dashboard_i18n_btn.png" />
+<p>这就是你看到了如下页面：</p>
+<img alt="_images/dashboard_i18n_ui.png" src="_images/dashboard_i18n_ui.png" />
+<p>在 <a class="reference external" href="https://github.com/web2py/pluralize">https://github.com/web2py/pluralize</a> 里面，可以找到更多详细内容。</p>
+<p>如果您想强制 action 使用其他地方定义的语言，例如来自会话变量，您可以执行：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">T</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">,</span> <span class="s2">&quot;it&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>如果你想让所有的 action 都使用相同的预定义语言并且忽略浏览器偏好，你必须重新定义 T 实例的 select 方法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">on_request</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s2">&quot;it&quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s2">&quot;it&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>这是在任何 action 之外完成的，并且将适用于所有 action 。action 仍然需要声明 <code class="docutils literal notranslate"><span class="pre">action.uses(T)</span></code> ，否则预定义的行为仍被认为是未定义的。</p>
+</section>
+<section id="the-flash-fixture">
+<h2>消息夹具<a class="headerlink" href="#the-flash-fixture" title="Link to this heading"></a></h2>
+<p>通常，希望向用户显示 “警报” 。在这里，我们称它们为  <strong>flash 消息</strong> 。它不仅仅是向视图显示消息，因为 flash 消息还：</p>
+<ul class="simple">
+<li><p>可以在重定向后保留状态</p></li>
+<li><p>可以在服务器端和客户端生成</p></li>
+<li><p>可以有一个类型</p></li>
+<li><p>应该可以被关闭</p></li>
+</ul>
+<p>Flash helper 在服务器端处理这些。下面是一个例子：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flash</span>
+
+<span class="n">flash</span> <span class="o">=</span> <span class="n">Flash</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>并在模板中：</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">flash-alerts</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;padded&quot;</span> <span class="na">data-alert</span><span class="o">=</span><span class="s">&quot;[[=globals().get(&#39;flash&#39;,&#39;&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">flash-alerts</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>通过设置 flash helper 中的消息值，action 返回一个 flash 变量，这会触发模板中的 JS 把消息注入到 <code class="docutils literal notranslate"><span class="pre">py4web-flash</span></code> DIV 中，你可以根据自己的需要来定位它。 可选 class 也应用于被注入的 HTML。</p>
+<p>如果在 flash 被设置后进行页面重定向，flash 就会被记住。 这是通过要求浏览器暂时保存前面的 cookie 中的消息来实现的。 重定向后，浏览器将消息发送回服务器，服务器在返回内容之前自动设置它，除非它被另一个设置覆盖。</p>
+<p>如果在控制器 action 函数内先调用一次 <code class="docutils literal notranslate"><span class="pre">flash.set('something')</span></code> 或返回 <code class="docutils literal notranslate"><span class="pre">flash={'message':</span> <span class="pre">'hello</span> <span class="pre">world',</span> <span class="pre">'class':</span> <span class="pre">'info'}</span></code> 字典对象，那么在客户端也可以通过调用以下方法来设置/添加 flash 消息：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Q.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
+</pre></div>
+</div>
+<p>py4web 默认使用一个名为 <code class="docutils literal notranslate"><span class="pre">info</span></code> 的 alert 类，大多数 CSS 框架为警报定义了名为 <code class="docutils literal notranslate"><span class="pre">success</span></code> , <code class="docutils literal notranslate"><span class="pre">error</span></code> , <code class="docutils literal notranslate"><span class="pre">warning</span></code> , <code class="docutils literal notranslate"><span class="pre">default</span></code> 和 <code class="docutils literal notranslate"><span class="pre">info</span></code>  的类。 但是，py4web 中没有对这些名称进行硬编码。 你可以使用你的自己的类名。</p>
+<p>你可以在 <strong>examples</strong> 应用中看到 flash 消息的基本用法。</p>
+</section>
+<section id="the-session-fixture">
+<h2>Session 夹具<a class="headerlink" href="#the-session-fixture" title="Link to this heading"></a></h2>
+<p>简单地说，Session（会话）可以定义为一种保存信息的方式，这些信息希望在用户与网站或 Web 应用程序的整个交互过程中保持不变。换句话说，Session 使无状态的 HTTP 连接成为有状态的。</p>
+<p>在 py4web 中，Session 对象也是一个夹具。下面是一个简单的示例，它用于实现计数器。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Session, action
+session = Session(secret=&#39;my secret key&#39;)
+
+@action(&#39;index&#39;)
+@action.uses(session)
+def index():
+    counter = session.get(&#39;counter&#39;, -1)
+    counter += 1
+    session[&#39;counter&#39;] = counter
+    return &quot;counter = %i&quot; % counter
+</pre></div>
+</div>
+<p>计数器将从 0 开始；其值将被记住并每次重新加载页面时会增加 1。</p>
+<img alt="_images/simple_counter.png" src="_images/simple_counter.png" />
+<p>在新的浏览器选项卡中打开页面将为您提供更新后的计数器值。关闭并重新打开浏览器，或打开新的 <em>私有窗口</em> ，将从 0 重新启动计数器。</p>
+<p>通常保存在会话对象中的信息与用户相关 ——— 比如它的用户名、偏好、最后访问的页面、购物车等等。会话对象具有与 Python 字典相同的接口，但在 py4web 中会话总是使用 JSON 存储（ 确切地说是 JWT ，即 <a class="reference external" href="https://jwt.io/introduction">JSON Web Token</a> ），因此您应该只存储可支持 JSON 序列化的对象。如果对象不可序列化，它将使用 <code class="docutils literal notranslate"><span class="pre">__str__</span></code> 运算符进行序列化，并且可能会丢失一些信息。</p>
+<p>组成会话对象的信息可以被保存在：</p>
+<ul class="simple">
+<li><p>客户端，只需使用 cookies（默认）</p></li>
+<li><p>服务端，但您仍然需要极小的 cookies 来识别客户端</p></li>
+</ul>
+<p>即使可以设置会话的过期时间，在默认情况下，py4web 会话永远也不会过期（除非它们包含登录信息，但那是另一回事）。还可以指定其他参数：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>session = Session(secret=&#39;my secret key&#39;,
+                  expiration=3600,
+                  algorithm=&#39;HS256&#39;,
+                  storage=None,
+                  same_site=&#39;Lax&#39;,
+                  name=&quot;{app_name}_sesson&quot;)
+</pre></div>
+</div>
+<p>这里的：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code> 是用于对信息进行签名的密码</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expiration</span></code> 是会话的最大生存期，以秒为单位（默认为 None，即永不超时）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> 是用于 JWT 令牌签名的算法（默认为 ‘HS256’ ）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">storage</span></code> 是一个参数，允许指定一个替代的会话存储方法（例如 Redis 或数据库）。如果没有指定，将使用默认的 cookie 方法</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">same_site</span></code> 是一个选项，用于防止 CSRF 攻击（跨站请求伪造），默认启用，使用 ‘Lax’ 选项模式。你可以在 <a class="reference external" href="https://owasp.org/www-community/SameSite">这里</a> 阅读更多关于它的信息</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> 是用于会话 cookie 名称的格式。</p></li>
+</ul>
+<p>如果没有提供 storage 的参数值，会话将存储在客户端的 jwt cookie 中。 否则，我们会有服务器端会话：jwt 被存储在 storage 中，并且只有它的 UUID 键被存储在 cookie 中。 这就是为什么服务器端会话不需要 secret 的原因。</p>
+<section id="client-side-session-in-cookies">
+<h3>客户端 cookie 中的会话<a class="headerlink" href="#client-side-session-in-cookies" title="Link to this heading"></a></h3>
+<p>默认情况下，会话对象存储在一个名为 <code class="docutils literal notranslate"><span class="pre">appname_session</span></code> 的 cookie 中。它是一个 JWT ，因此以 URL 兼容的字符串格式进行编码，并使用提供的密钥进行签名以防止篡改。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>嵌入在 cookie 中的数据是签名的，而不是加密的！事实上，从HTTP通信或磁盘读取其内容相当简单，因此不要在其中放置任何敏感信息，并使用复杂的密钥。</p>
+</div>
+<p>更改密钥会使现有会话失效。用户从 HTTP 切换到 HTTPS 或反向切换，用户会话也会失效效。cookie 中的会话大小有限制（序列化和编码后为 4 kbytes），因此不要放入太多内容。</p>
+</section>
+<section id="server-side-session-in-memcache">
+<h3>服务端内存缓存中的会话<a class="headerlink" href="#server-side-session-in-memcache" title="Link to this heading"></a></h3>
+<p>需要安装并配置内存缓存</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">memcache</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">memcache</span><span class="o">.</span><span class="n">Client</span><span class="p">([</span><span class="s1">&#39;127.0.0.1:11211&#39;</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="server-side-session-in-redis">
+<h3>服务端 Redis 中的会话<a class="headerlink" href="#server-side-session-in-redis" title="Link to this heading"></a></h3>
+<p>需要提前安装和配置 <a class="reference external" href="https://redis.io/">Redis</a> 。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">redis</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">set</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">cs</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">,</span> <span class="n">ct</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span> <span class="p">(</span><span class="n">cs</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">e</span> <span class="ow">and</span> <span class="n">ct</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>注意：存储对象必须有 <code class="docutils literal notranslate"><span class="pre">get</span></code> 和 <code class="docutils literal notranslate"><span class="pre">set</span></code> 方法， <code class="docutils literal notranslate"><span class="pre">set</span></code> 方法必须允许指定过期时间。redis 连接对象有一个 <code class="docutils literal notranslate"><span class="pre">ttl</span></code> 方法来指定过期时间，因此我们对 <code class="docutils literal notranslate"><span class="pre">set</span></code> 方法进行了动态修补（monkey patch）以获得预期的签名和功能。</p>
+</section>
+<section id="server-side-session-in-database">
+<h3>服务端数据库中的会话<a class="headerlink" href="#server-side-session-in-database" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.dbstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBStore</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>示例中使用的 <code class="docutils literal notranslate"><span class="pre">'sqlite:memory'</span></code> 数据库 <strong>在多进程环境中不能使用</strong> ；这个怪异之处在于你的应用程序仍然可以工作，但它处于不确定和不安全的状态，因为每个进程/工作进程都会有其自己的独立的内存数据库。</p>
+</div>
+<p>这是一种情况：一个fixture（会话）需要另一个fixture（数据库）。这由 py4web 自动处理，以下几行是等效的：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="server-side-session-anywhere">
+<h3>服务端自由存储会话<a class="headerlink" href="#server-side-session-anywhere" title="Link to this heading"></a></h3>
+<p>你能够轻松地将会话存储在任何你想要的地方。你所要做的就是向 <code class="docutils literal notranslate"><span class="pre">Session</span></code> 对象提供一个 <code class="docutils literal notranslate"><span class="pre">storage</span></code> 对象，该对象具有 <code class="docutils literal notranslate"><span class="pre">get</span></code> 和 <code class="docutils literal notranslate"><span class="pre">set</span></code> 方法。例如，假设你想要将会话存储在你的本地文件系统上：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FSStorage</span><span class="p">:</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+       <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+           <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+       <span class="k">return</span> <span class="kc">None</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+       <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+           <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">FSStorage</span><span class="p">(</span><span class="s1">&#39;/tmp/sessions&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>我们将实现过期、使用子文件夹限制每个文件夹的文件数量和实现文件锁定留给你自己当作练习去实现。然而，我们不建议在文件系统上存储会话：它效率低下，而且不能很好地扩展。</p>
+</section>
+<section id="sharing-sessions">
+<h3>共享会话<a class="headerlink" href="#sharing-sessions" title="Link to this heading"></a></h3>
+<p>想象一下，您有一个使用会话的应用程序 “app1” 和一个想要与 app1 共享会话的应用程序 “app2”。假设他们在 cookie 中使用会话，“app2” 将使用：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">SESSION_SECRET_KEY</span><span class="p">,</span>
+                  <span class="n">name</span><span class="o">=</span><span class="s2">&quot;app1_session&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>&quot;name&quot; 参数告诉 app2 使用 app1 的 cookie “app1_session”。注意，secret 必须与 app1 的 secret 相同。如果使用 db 中的 session，那么 app2 必须使用与 app1 相同的 db。用户需要确保在两个应用之间共享的 session 数据是一致的，我们强烈建议只有 app1 写入 session，除非它们共享同一个数据库。</p>
+<p>请注意，一个应用程序可以处理多个会话。例如，一个会话可能是它自己的，而另一个会话可能专门用于从同一服务器上运行的另一个应用程序（app1）读取数据：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">session_app1</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">SESSION_SECRET_KEY</span><span class="p">,</span>
+                       <span class="n">name</span><span class="o">=</span><span class="s2">&quot;app1_session&quot;</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">session_app1</span><span class="p">)</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-condition-fixture">
+<h2>Condition 夹具<a class="headerlink" href="#the-condition-fixture" title="Link to this heading"></a></h2>
+<p>有时您想根据给定条件限制对操作的访问。例如，要强制执行一个工作流程：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step1&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step1</span><span class="p">():</span>
+    <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;step2&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step2&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;step_completed&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step2</span><span class="p">():</span>
+    <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;step3&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step3&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;step_completed&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">step3</span><span class="p">():</span>
+    <span class="n">session</span><span class="p">[</span><span class="s2">&quot;step_completed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>请注意，条件夹具将函数作为第一个参数，称为 <code class="docutils literal notranslate"><span class="pre">on_request</span></code> ，并且运行后必须为 True 或 False 。</p>
+<p>另请注意，在上面的示例中，条件依赖于会话。因此，在 <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> 中，Condition(...) 必须列在 <code class="docutils literal notranslate"><span class="pre">session</span></code> 之后。</p>
+<p>如果为 False，则默认情况下，Condition 夹具会引发 404。 可以指定不同的异常：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Condition</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">HTTP</span><span class="p">(</span><span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>还可以在引发异常之前调用其它函数，例如，重定向到另一个页面：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Condition</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">on_false</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;step1&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>您可以使用条件来检查权限。例如，如果您使用 <code class="docutils literal notranslate"><span class="pre">Tags</span></code> 向用户提供组成员资格（稍后将在 <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">使用 Tags 进行授权</span></a> 章节中解释），那么您可以要求用户操作具有特定的组成员资格：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;payroll&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
+             <span class="n">Condition</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;employees&#39;</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span> <span class="n">on_false</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">payroll</span><span class="p">():</span>
+    <span class="k">return</span>
+</pre></div>
+</div>
+</section>
+<section id="the-urlsigner-fixture">
+<h2>URLsigner 夹具<a class="headerlink" href="#the-urlsigner-fixture" title="Link to this heading"></a></h2>
+<p>签名的 URL 是通过在查询字符串中包含身份验证信息来提供有限权限和时间来发出 HTTP 请求的 URL。典型用法如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">URLSigner</span>
+
+<span class="c1"># We build a URL signer.</span>
+<span class="n">url_signer</span> <span class="o">=</span> <span class="n">URLSigner</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/somepath&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">somepath</span><span class="p">():</span>
+   <span class="c1"># This controller signs a URL.</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">signed_url</span> <span class="o">=</span> <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">,</span> <span class="n">signer</span><span class="o">=</span><span class="n">url_signer</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="o">.</span><span class="n">verify</span><span class="p">())</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">anotherpath</span><span class="p">():</span>
+   <span class="c1"># The signature has been verified.</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="the-dal-fixture">
+<h2>DAL 夹具<a class="headerlink" href="#the-dal-fixture" title="Link to this heading"></a></h2>
+<p>我们已经在会话的上下文中使用了 <code class="docutils literal notranslate"><span class="pre">DAL</span></code> 夹具，但您可能希望直接访问 DAL 对象以访问数据库，而不仅仅是会话。</p>
+<p>PY4WEB 默认使用 <strong>PyDAL</strong> (Python Database Abstraction Layer，Python 数据库抽象层) ，这将在下一章中叙述。这里有一个示例，如果在您的项目下不存在 <code class="docutils literal notranslate"><span class="pre">databases</span></code> 文件夹，请记得先创建它：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;visit_log&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;client_ip&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">))</span>
+<span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">client_ip</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">visit_log</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">client_ip</span><span class="o">=</span><span class="n">client_ip</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">&quot;Your visit was stored in database&quot;</span>
+</pre></div>
+</div>
+<p>请注意，当 py4web 启动时（以及每次重新加载此应用程序时），数据库夹具会自动定义（即创建/重新创建）表，并在每个 HTTP 请求时从连接池中选择一个连接。此外，对  <code class="docutils literal notranslate"><span class="pre">index()</span></code> action 的每次调用都会被包装到一个事务中，在 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 时它会被提交，在 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 时它会被回滚。</p>
+</section>
+<section id="the-auth-fixture">
+<h2>Auth 夹具<a class="headerlink" href="#the-auth-fixture" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">auth</span></code> 和 <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> 都是依赖于 <code class="docutils literal notranslate"><span class="pre">session</span></code> 和 <code class="docutils literal notranslate"><span class="pre">db</span></code> 的夹具。他们的作用是为 action 提供认证信息。</p>
+<p>Auth 的用方法如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">)</span>
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span> <span class="ow">or</span> <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;auth/login&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Auth</span></code> 对象的构造器定义了 <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表，它包含以下字段：username 、 email 、 password 、 first_name 、 last_name sso_id 和 action_token（最后两个主要在内部使用）。</p>
+<p>如果在调用 <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> 之前定义了 <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表，那么将使用已有的 <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表。</p>
+<p>还可以将额外的 <code class="docutils literal notranslate"><span class="pre">extra_fields</span></code> 添加到 <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表中，例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extra_fields</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;favorite_color&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">extra_fields</span><span class="o">=</span><span class="n">extra_fields</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>无论如何，我们建议不要用额外的字段污染 <cite>auth_user</cite> 表，而是使用一个自定义的表，它可以引用用户并存储所需信息。</p>
+<p><code class="docutils literal notranslate"><span class="pre">auth</span></code> 对象公开了 <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> 方法，该方法注册了包括 <code class="docutils literal notranslate"><span class="pre">{appname}/auth/login</span></code> 在内的多个操作（actions）。它需要 <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> 模板和 <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> 应用程序提供的赋予 <code class="docutils literal notranslate"><span class="pre">auth</span></code> 值的 Auth 组件的存在。它还公开了下面的方法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>该方法返回一个包含当前登录用户信息的 python 字典。如果用户未登录，则返回 <code class="docutils literal notranslate"><span class="pre">None</span></code> ，在这种情况下，示例代码将重定向到 <code class="docutils literal notranslate"><span class="pre">auth/login</span></code> 页面。</p>
+<p>由于这个检查非常常见，py4web 提供了一个额外的夹具（fixture） <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> ：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>如果用户未登录，此夹具会自动重定向到 <code class="docutils literal notranslate"><span class="pre">auth/login</span></code> 页面，因此此示例与上一个示例等效。</p>
+<p>身份验证夹具 <code class="docutils literal notranslate"><span class="pre">auth</span></code> 是基于插件的：它支持多种插件方法，包括 OAuth2（Google、Facebook、Twitter）、PAM 和 LDAP。身份验证和授权章节（ <a class="reference internal" href="chapter-13.html#authentication-and-authorization"><span class="std std-ref">身份验证与授权</span></a> ）将向您展示所有相关详细信息。</p>
+</section>
+<section id="caveats-about-fixtures">
+<h2>关于 fixtures 的注意事项<a class="headerlink" href="#caveats-about-fixtures" title="Link to this heading"></a></h2>
+<p>由于夹具（fixtures）由多个操作（Actions）共享，因此不允许更改它们的状态，因为它不是线程安全的。这条规则有一个例外，操作（Actions）可以更改数据库字段的一些属性：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">writable</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">writable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>注意，这里的代码只能显示一个表单，要在提交后处理表单，还需要添加额外的代码，我们稍后会看到。这个例子假设你已经从 “scaffolding 应用” 创建了应用程序，因此已经为你创建了一个模板文件 generic.html。</p>
+<p>在 <a class="reference internal" href="chapter-07.html#thread-safety-and-field-attributes"><span class="std std-ref">线程安全和字段属性</span></a> 章节，可以找到能够被安全更改的数据库字段属性的完整列表。</p>
+</section>
+<section id="custom-fixtures">
+<h2>自定义夹具<a class="headerlink" href="#custom-fixtures" title="Link to this heading"></a></h2>
+<p>夹具是具有以下最小结构的对象：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fixture</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="k">pass</span>
+</pre></div>
+</div>
+<p>例如，在使用 DAL fixture 的情况下， <code class="docutils literal notranslate"><span class="pre">on_request</span></code> 启动一个事务， <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 提交这个事务，而 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 回滚这个事务。</p>
+<p>在使用模板的情况下， <code class="docutils literal notranslate"><span class="pre">on_request</span></code> 和 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 不做任何事情，但 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 转换输出。</p>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> 夹具的情况下， <code class="docutils literal notranslate"><span class="pre">on_request</span></code> 确定用户是否已登录（从依赖的 session 夹具）并最终阻止请求访问内部层。</p>
+<p>现在，假设一个请求调用了一个具有三个 Fixture（A、B 和 C）的 Action。在正常情况下，上述方法按以下顺序执行：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>request  -&gt; A.on_request -&gt; B.on_request -&gt; C.on_request -&gt; action
+response &lt;- A.on_success &lt;- B.on_success &lt;- C.on_success &lt;-
+</pre></div>
+</div>
+<p>即，第一个 Fixture （A） 是第一个调用 <code class="docutils literal notranslate"><span class="pre">on_request</span></code> 的，也是最后一个调用 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 的。您可以将它们视为以 action （用户代码） 为中心的洋葱层。 在从外部进入层时调用 <code class="docutils literal notranslate"><span class="pre">on_request</span></code> ，在从内部退出层时调用 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> （如 WSGI 中间件）。</p>
+<p>如果在任何一处引发异常，则不再调用内层，外层将调用 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 而不是 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 。</p>
+<p>context 是一个共享对象，它包含：</p>
+<ul class="simple">
+<li><p>content['fixtures']: 该操作的 Fixture 列表。</p></li>
+<li><p>context['processed']: 在请求中先前调用 <code class="docutils literal notranslate"><span class="pre">on_request</span></code> 的 Fixture 列表。</p></li>
+<li><p>context['exception']: 由当前操作或任何之前的 Fixture 逻辑引发的异常（通常是 None）</p></li>
+<li><p>context['output']: 操作输出。</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">on_success</span></code> 和 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 能够访问当前的 <code class="docutils literal notranslate"><span class="pre">context['exception']</span></code> 并对其进行转换。它们也可以访问当前的 <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> 并对其进行转换。</p>
+<p>例如，这里有一个将输出文本转换为大写的 Fixture：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">UpperCase</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<span class="n">upper_case</span> <span class="o">=</span> <span class="n">UpperCase</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">upper_case</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
+</pre></div>
+</div>
+<p>注意，这个 Fixture 假设 <code class="docutils literal notranslate"><span class="pre">context['output']</span></code> 是一个字符串，因此它必须出现在模板之前。</p>
+<p>这是一个将异常跟踪记录到文件的 Fixture：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LogErrors</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">errlog</span> <span class="o">=</span> <span class="n">LogErrors</span><span class="p">(</span><span class="s2">&quot;myerrors.log&quot;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">errlog</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>夹具也有一个 <code class="docutils literal notranslate"><span class="pre">__prerequisite__</span></code> 属性。如果一个 fixture 将另一个 fixtures 作为参数，则其值必然会被附加到 <code class="docutils literal notranslate"><span class="pre">__prerequisites__</span></code> 列表中。这保证了即使以错误的顺序列出，它们也始终以正确的顺序执行。它还允许将已在 <code class="docutils literal notranslate"><span class="pre">__prerequisites__</span></code> 中的夹具作为 <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> 中的可选项目 。</p>
+<p>例如， <code class="docutils literal notranslate"><span class="pre">Auth</span></code> 依赖于 <code class="docutils literal notranslate"><span class="pre">db</span></code> 、 <code class="docutils literal notranslate"><span class="pre">session</span></code> 和 <code class="docutils literal notranslate"><span class="pre">flash</span></code> 。 <code class="docutils literal notranslate"><span class="pre">db</span></code> 和 <code class="docutils literal notranslate"><span class="pre">session</span></code> 是真正的参数。 <code class="docutils literal notranslate"><span class="pre">flash</span></code> 是一个在 <code class="docutils literal notranslate"><span class="pre">Auth</span></code> 内声明的特殊单例夹具。这意味着</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>等价于</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>为什么 fixtures 不是简单的包含 try/except 的函数？</p>
+<p>我们考虑过这种选择，但是有一些特殊的异常不应该被认为是错误而是成功（ <code class="docutils literal notranslate"><span class="pre">py4web.HTTP</span></code> ， <code class="docutils literal notranslate"><span class="pre">bottle.HTTResponse</span></code> ）而其他异常是错误。实际的逻辑可能很复杂，而各个 fixture 不需要知道这些细节。</p>
+<p>他们都需要知道上下文是什么，他们是否正在处理一个新的请求或响应，以及响应是否成功或错误。我们相信这种逻辑使 fixture 变得简单。</p>
+<p>一般来说，fixtures 不应该相互通信，但没有什么阻止一个 fixture 将数据放入上下文，另一个 fixture 从中检索数据。</p>
+<section id="fixtures-with-dependencies">
+<h3>具有依赖关系的 Fixtures<a class="headerlink" href="#fixtures-with-dependencies" title="Link to this heading"></a></h3>
+<p>如果一个 fixture 依赖于另一个 fixture ，那么需要在初始化器中传递那个 fixture，并且该 fixture 需要在 <code class="docutils literal notranslate"><span class="pre">__prerequisites__</span></code> 属性中列出。例如，假设我们想创建一个 fixture，只允许电子邮件地址包含在 ADMIN_EMAILS 列表中的用户访问控制器。我们可以编写以下 fixture：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AdminAccess</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">admin_list</span><span class="p">,</span> <span class="n">redirect_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span> <span class="o">=</span> <span class="n">admin_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">auth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prerequisites__</span> <span class="o">=</span> <span class="p">[</span><span class="n">auth</span><span class="p">]</span>
+        <span class="c1"># One thing to note here is that the URL function can only be called in a</span>
+        <span class="c1"># request context (while serving a request).  Thus, we cannot store in the fixture</span>
+        <span class="c1"># initialization the full URL to redirect, but only the path.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span> <span class="o">=</span> <span class="n">redirect_url</span> <span class="ow">or</span> <span class="s1">&#39;index&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin_list</span><span class="p">):</span>
+            <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redirect_url</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>我们可以像下面那样创建 fixture 对象并使用它：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">admin_access</span> <span class="o">=</span> <span class="n">AdminAccess</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a@example.com&#39;</span><span class="p">,],</span> <span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/admin-only&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;admin_only.html&#39;</span><span class="p">,</span> <span class="n">admin_access</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">admin_only</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-local-storage">
+<h3>使用本地存储<a class="headerlink" href="#using-local-storage" title="Link to this heading"></a></h3>
+<p>Fixtures 可以使用线程本地存储来存储它们需要的数据。这里有一个例子：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LocalStorageDemo</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+       <span class="n">Fixture</span><span class="o">.</span><span class="n">local_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+       <span class="c1"># We can check whether the local storage is valid.</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_valid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+       <span class="n">content</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Storing content: </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span> <span class="o">=</span> <span class="n">content</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+       <span class="c1"># The line below is used only to show that the thread-local object is in place.</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retrieved: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">my_content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>值得注意的是，初始化器应包含以下行：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Fixture</span><span class="o">.</span><span class="n">local_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>以便初始化线程本地存储。完成此操作后，可以使用 <code class="docutils literal notranslate"><span class="pre">self.local</span></code> 对象在线程本地存储中存储和检索数据。</p>
+</section>
+</section>
+<section id="multiple-fixtures">
+<h2>使用多个 fixture<a class="headerlink" href="#multiple-fixtures" title="Link to this heading"></a></h2>
+<p>如前所述，你指定 fixture 的顺序通常并不重要，但必须始终将模板作指定为 <strong>第一个</strong> 夹具。考虑一下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;Hello world&quot;</span>
+</pre></div>
+</div>
+<p>fixture 中的预处理（ <code class="docutils literal notranslate"><span class="pre">on_request</span></code> ）在 fixture 按列出 fixture 的顺序发生，然后按相反的顺序执行 <code class="docutils literal notranslate"><span class="pre">on_success</span></code> 或 <code class="docutils literal notranslate"><span class="pre">on_error</span></code> 方法（如洋葱）。</p>
+<p>因此，前面的代码可以显式地转换为：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">on_request</span><span class="p">()</span>
+<span class="n">B</span><span class="o">.</span><span class="n">on_request</span><span class="p">()</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="n">B</span><span class="o">.</span><span class="n">on_success</span><span class="p">()</span>
+<span class="n">A</span><span class="o">.</span><span class="n">on_success</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>因此，如果 A.on_success() 是一个模板，而 B 是一个允许你向模板中添加一些额外变量的注入夹具，那么 A 必须先出现。</p>
+<p>注意</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>几乎等同于</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>但并不完全一样。在一个 <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> 中声明的所有夹具共享同一个上下文，而不同 <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> 中的夹具使用不同的上下文，因此它们无法相互通信。这可能在将来会改变。目前我们建议使用对 <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> 的单个调用，同时传入多个夹具。</p>
+</section>
+<section id="caching-and-memoize">
+<h2>缓存和记忆<a class="headerlink" href="#caching-and-memoize" title="Link to this heading"></a></h2>
+<p>py4web 提供了一个在 RAM 中的缓存对象，实现了最近最少使用（LRU）算法。它可以通过装饰器来缓存任何函数：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">action</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;hello/&lt;name&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">expiration</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello </span><span class="si">%s</span><span class="s2"> your code is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>它将缓存（记忆）函数 <code class="docutils literal notranslate"><span class="pre">hello</span></code> 的返回值，它是将 <code class="docutils literal notranslate"><span class="pre">name</span></code> 作为输入参数的函数，最多缓存 60 秒。 例子中将缓存最近使用的 1000 个值。数据始终存储在 RAM 中。</p>
+<p><code class="docutils literal notranslate"><span class="pre">cache</span></code> 对象不是一个 fixture，它不应该也不能作为 <code class="docutils literal notranslate"><span class="pre">&#64;action.uses</span></code> 装饰器的参数使用。但在这里提到它是因为一些 fixture 内部使用了这个对象。例如，模板文件被缓存在 RAM 中，以避免每次需要渲染模板时都访问文件系统。</p>
+</section>
+<section id="convenience-decorators">
+<h2>便利的装饰器<a class="headerlink" href="#convenience-decorators" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> 应用程序，在 <code class="docutils literal notranslate"><span class="pre">common.py</span></code> 中定义了两个特殊的便利装饰器：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@unauthenticated</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>和</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>它们应用下面所有的装饰器（db, session, T, flash, auth），使用与函数同名的模板（.html），并还注册一个路由，路由名称由 action 名称，后跟数个用斜线（/）分隔而成的 action 参数组成。</p>
+<ul class="simple">
+<li><p>&#64;unauthenticated 不需要用户登录。</p></li>
+<li><p>&#64;authenticated 要求用户已登录。</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>此类 ActionFactory 装饰器无法与 &#64;action 或 &#64;action.uses 组合使用</p>
+</div>
+<p>装饰器可直接使用（如上所示），支持所有 HTTP 方法（GET、POST、PUT 等），也可为每种 HTTP 方法单独创建控制器。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="c1"># only handle GET requests</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="nd">@authenticated</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index_form</span><span class="p">():</span>
+    <span class="c1"># only handle POST requests</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>这两个装饰器及其 HTTP 方法调用均包含以下参数：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> 用给定的字符串覆盖从函数名构建的路径。不自动处理参数。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template</span></code> 指定模板名称，而不是使用函数名。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uses</span></code>  为这些特定控制器指定额外的夹具。</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span><span class="p">(</span>
+   <span class="n">path</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+   <span class="n">template</span><span class="o">=</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span>
+   <span class="n">uses</span><span class="o">=</span><span class="p">[</span><span class="n">Inject</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>由于无法通过使用 <code class="docutils literal notranslate"><span class="pre">uses</span></code> 为夹具手动排序，请确保夹具已定义其依赖项。请参阅： <a class="reference internal" href="#fixtures-with-dependencies"><span class="std std-ref">具有依赖关系的 Fixtures</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chapter-05.html" class="btn btn-neutral float-left" title="创建一个应用" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="chapter-07.html" class="btn btn-neutral float-right" title="数据库抽象层（DAL）" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2020, BSDv3 License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>语言</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>版本</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>下载</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

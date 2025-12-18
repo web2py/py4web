@@ -1,0 +1,947 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-13.rst:3
+msgid "Authentication and authorization"
+msgstr "身份验证与授权"
+
+#: ../../chapter-13.rst:5
+msgid ""
+"Strong authentication and authorization methods are vital for a modern, "
+"multiuser web application. While they are often used interchangeably, "
+"authentication and authorization are separate processes:"
+msgstr "强大的身份验证和授权方法对于现代多用户 web 应用程序至关重要。虽然它们经常可以互换使用，但身份验证和授权是独立的过程："
+
+#: ../../chapter-13.rst:10
+msgid "Authentication confirms that users are who they say they are"
+msgstr "身份验证，就是确认用户就是他们所说的那个人"
+
+#: ../../chapter-13.rst:11
+msgid "Authorization gives those users permission to access a resource"
+msgstr "授权，就是赋予这些用户访问资源的权限"
+
+#: ../../chapter-13.rst:15
+msgid "Authentication using Auth"
+msgstr "使用 Auth 进行身份验证"
+
+#: ../../chapter-13.rst:17
+msgid ""
+"py4web comes with a an object ``Auth`` and a system of plugins for user "
+"authentication. It has the same name as the corresponding web2py one and "
+"serves the same purpose but the API and internal design is very "
+"different."
+msgstr "py4web 附带了一个 ``Auth`` 对象和一个用于用户身份验证的插件系统。它与相应的 web2py 名称相同、用途相同，但 API 和内部设计非常不同。"
+
+#: ../../chapter-13.rst:22
+msgid ""
+"The _scaffold application provides a guideline for its standard usage. By"
+" default it uses a local SQLite database and allows creating new users, "
+"login and logout. Notice that if you don't configure it, you have to "
+"manually approve new users (by visiting the link logged on the console or"
+" by directly editing the database)."
+msgstr "_scaffold 应用程序为其标准用法提供了指导。默认情况下，它使用本地 SQLite 数据库，并允许创建新用户、登录和注销。请注意，如果不进行配置，则必须手动启用新用户（通过访问控制台上登录的链接或直接编辑数据库）。"
+
+#: ../../chapter-13.rst:29
+msgid ""
+"To use the Auth object, first of all you need to import it, instantiate "
+"it, configure it, and enable it."
+msgstr "要使用 Auth 对象，首先要做的是导入它，并进行实例化、配置和启用。"
+
+#: ../../chapter-13.rst:39
+msgid ""
+"The import step is obvious. The second step does not perform any "
+"operation other than telling the Auth object which session object to use "
+"and which database to use. Auth data is stored in ``session['user']`` "
+"and, if a user is logged in, the user id is stored in "
+"session[‘user’][‘id’]. The db object is used to store persistent info "
+"about the user in a table ``auth_user`` which is created if missing. The "
+"``auth_user`` table has the following fields:"
+msgstr "导入步骤是显而易见的。第二步除了告诉 Auth 对象使用哪个会话对象和使用哪个数据库外，不执行任何操作。Auth 数据存储在会话 ``session['user']`` 中，如果用户登录，则用户id 存储在会话 ``session[‘user’][‘id’]`` 中。 ``db`` 对象用于在 ``auth_user`` 表中存储有关用户的持久信息，如果缺少该表，则会创建该表。``auth_user`` 表包含以下字段："
+
+#: ../../chapter-13.rst:47
+msgid "username"
+msgstr ""
+
+#: ../../chapter-13.rst:48
+msgid "email"
+msgstr ""
+
+#: ../../chapter-13.rst:49
+msgid "password"
+msgstr ""
+
+#: ../../chapter-13.rst:50
+msgid "first_name"
+msgstr ""
+
+#: ../../chapter-13.rst:51
+msgid "last_name"
+msgstr ""
+
+#: ../../chapter-13.rst:52
+msgid "sso_id (used for single sign on, see later)"
+msgstr "sso_id （用于单点登录，见下文）"
+
+#: ../../chapter-13.rst:53
+msgid ""
+"action_token (used to verify email, block users, and other tasks, also "
+"see later)."
+msgstr "action_token （用于验证电子邮件、禁用用户和其他任务，另见下文）"
+
+#: ../../chapter-13.rst:56
+msgid "The ``auth.enable()`` step creates and exposes the following RESTful APIs:"
+msgstr "``auth.enable()`` 会创建和公开下面的 RESTful API ："
+
+#: ../../chapter-13.rst:59
+#, python-brace-format
+msgid "{appname}/auth/api/register (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:60
+#, python-brace-format
+msgid "{appname}/auth/api/login (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:61
+#, python-brace-format
+msgid "{appname}/auth/api/request_reset_password (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:62
+#, python-brace-format
+msgid "{appname}/auth/api/reset_password (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:63
+#, python-brace-format
+msgid "{appname}/auth/api/verify_email (GET, POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:64
+#, python-brace-format
+msgid "{appname}/auth/api/logout (GET, POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:65
+#, python-brace-format
+msgid "{appname}/auth/api/profile (GET, POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:66
+#, python-brace-format
+msgid "{appname}/auth/api/change_password (POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:67
+#, python-brace-format
+msgid "{appname}/auth/api/change_email (POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:69
+msgid "Those marked with a (+) require a logged in user."
+msgstr "标有（+）的需要登录用户。"
+
+#: ../../chapter-13.rst:72
+msgid "Auth UI"
+msgstr "Auth UI"
+
+#: ../../chapter-13.rst:74
+msgid ""
+"You can create your own web UI to login users using the above APIs but "
+"py4web provides one as an example, implemented in the following files:"
+msgstr "您可以使用上述 API 创建自己的 web UI 来登录用户，但 py4web 提供了一个示例，在以下文件中实现："
+
+#: ../../chapter-13.rst:77
+msgid "\\_scaffold/templates/auth.html"
+msgstr ""
+
+#: ../../chapter-13.rst:78
+msgid "\\_scaffold/templates/layout.html"
+msgstr ""
+
+#: ../../chapter-13.rst:81
+msgid ""
+"The key section is in ``layout.html`` where (using the no.css framework) "
+"the menu actions are defined:"
+msgstr "关键部分位于 ``layout.html`` 中，其中（使用 no.css 框架）定义了菜单操作："
+
+#: ../../chapter-13.rst:112
+msgid ""
+"The menu is dynamic: on line 2 there is a check if the user is already "
+"defined (i.e. if the user has already logged on). In this case the email "
+"is shown in the top menu, plus the menu options ``Edit Profile``, "
+"``Change Password`` (optional) and ``Logout``. Instead, if the user is "
+"not already logged on, from line 15 there are only the corresponding menu"
+" options allowed: ``Sign up`` and ``Log in``."
+msgstr "菜单是动态的：在第 2 行检查用户是否已经定义（即用户是否已经登录）。在用户登录后，电子邮件显示在顶部菜单中，以及菜单选项 ``Edit Profile`` 、 ``Change Password`` （可选）和 ``Logout`` 。相反，如果用户尚未登录，则从第 15 行开始，只允许使用相应的菜单选项： ``Sign up`` 和 ``Log in`` 。"
+
+#: ../../chapter-13.rst:119
+msgid ""
+"Every menu option then redirects the user to the corresponding standard "
+"URL, which in turn activates the Auth action."
+msgstr "然后，每个菜单选项都会将用户重定向到相应的标准 URL ，这反过来会激活对应的 Auth 操作。"
+
+#: ../../chapter-13.rst:124
+msgid "Using Auth inside actions"
+msgstr "在 actions 中使用 Auth"
+
+#: ../../chapter-13.rst:126
+msgid "There two ways to use the Auth object in an action."
+msgstr "在 action 中使用 Auth 对象有两种方法。"
+
+#: ../../chapter-13.rst:128
+msgid ""
+"The first one does not force a login.  With ``@action.uses(auth)`` we "
+"tell py4web that this action should have information about the user, "
+"trying to parse the session for a user session."
+msgstr "第一种，不强制登录。使用 ``@action.uses(auth)`` ，我们告诉 py4web ，此操作应该包含有关用户的信息，并尝试解析用户会话中的信息。"
+
+#: ../../chapter-13.rst:140
+msgid "The second one forces the login if needed:"
+msgstr "第二种，在需要时会强制登录："
+
+#: ../../chapter-13.rst:150
+msgid ""
+"Here ``@action.uses(auth.user)`` tells py4web that this action requires a"
+" logged in user and should redirect to login if no user is logged in."
+msgstr "这里 ``@action.uses(auth.user)`` 告诉 py4web ，此操作需要登录的用户，如果没有用户登录，则应重定向到登录页面。"
+
+#: ../../chapter-13.rst:154
+msgid "Two Factor Authentication"
+msgstr "双因素身份验证"
+
+#: ../../chapter-13.rst:156
+msgid ""
+"Two factor authentication (or Two-step verification) is a way of "
+"improving authentication security. When activated an extra step is added "
+"in the login process. In the first step, users are shown the standard "
+"username/password form. If they successfully pass this challenge by "
+"submitting the correct username and password, and two factor "
+"authentication is enabled for the user, the server will present a second "
+"form before logging them in."
+msgstr "双因素身份验证（或两步验证）是一种提高身份验证安全性的方法。激活后，登录过程中会添加一个额外的步骤。在第一步中，用户将看到标准的用户名/密码表单。如果他们通过提交正确的用户名和密码成功通过了此步验证，并且为用户启用了双因素身份验证，服务器将在他们登录之前显示第二个表单。"
+
+#: ../../chapter-13.rst:162
+msgid ""
+"There are a few Auth settings available to control how two factor "
+"authentication works."
+msgstr "有一些 Auth 设置可用于控制双因素身份验证的工作方式。"
+
+#: ../../chapter-13.rst:164
+msgid "The following can be specified on Auth instantiation:"
+msgstr "可以在 Auth 实例化时指定以下内容："
+
+#: ../../chapter-13.rst:166
+msgid "``two_factor_required``"
+msgstr ""
+
+#: ../../chapter-13.rst:167
+msgid "``two_factor_send``"
+msgstr ""
+
+#: ../../chapter-13.rst:168
+msgid "``two_factor_validate``"
+msgstr ""
+
+#: ../../chapter-13.rst:171
+msgid "two_factor_required"
+msgstr ""
+
+#: ../../chapter-13.rst:173
+msgid ""
+"When you pass a method name to the ``two_factor_required`` parameter you "
+"are telling py4web to call that method to determine whether or not this "
+"login should be use or bypass two factor authentication. If your method "
+"returns True, then this login requires two factor.  If it returns False, "
+"two factor authentication is bypassed for this login."
+msgstr "当您将方法名称传递给 ``two_factor_required`` 参数时，您是在告诉 py4web 调用该方法，以确定是否应该使用或绕过双因素身份验证。如果您的方法返回 True ，则此登录需要双因素身份验证。如果返回 False ，则此登录将绕过双因素身份验证。"
+
+#: ../../chapter-13.rst:178
+msgid "Sample ``two_factor_required`` method"
+msgstr "``two_factor_required`` 方法的示例"
+
+#: ../../chapter-13.rst:180
+msgid "This example shows how to allow users that are on a specific network."
+msgstr "此示例显示了如何允许特定网络上的用户。"
+
+#: ../../chapter-13.rst:200
+msgid "two_factor_send"
+msgstr ""
+
+#: ../../chapter-13.rst:202
+msgid ""
+"When two factor authentication is active, py4web can generate a 6 digit "
+"code (using random.randint) and makes it possible to send it to the user."
+" How this code is sent, is up to you. The ``two_factor_send`` argument to"
+" the Auth class allows you to specify the method that sends the two "
+"factor code to the user."
+msgstr "当双因素身份验证处于活动状态时，py4web 可以生成一个 6 位代码（使用 random.randint ），并可以将其发送给用户。如何发送此代码取决于您。Auth 类的``two_factor_send`` 参数允许您指定将双因素代码发送给用户的方法。"
+
+#: ../../chapter-13.rst:206
+msgid "This example shows how to send an email with the two factor code:"
+msgstr "此示例显示了如何使用双因素代码发送电子邮件："
+
+#: ../../chapter-13.rst:222
+msgid ""
+"Notice that this method takes two arguments: the current user, and the "
+"code to be sent. Also notice this method can override the code and return"
+" a new one."
+msgstr "请注意，此方法接受两个参数：当前用户和要发送的代码。还要注意，此方法可以覆盖代码并返回一个新的代码。"
+
+#: ../../chapter-13.rst:231
+msgid "two_factor_validate"
+msgstr ""
+
+#: ../../chapter-13.rst:233
+msgid ""
+"By default, py4web will validate the user input in the two factor form by"
+" comparing the code entered by the user with the code generated and sent "
+"using ``two_factor_send``. However, sometimes it may be useful to define "
+"a custom validation of this user-entered code. For instance, if one would"
+" like to use the TOTP (or the Time-Based One-Time-Passwords) as the two "
+"factor authentication method, the validation requires comparing the code "
+"entered by the user with the value generated at the same time at the "
+"server side. Hence, it is not sufficient to generate that value earlier "
+"when showing the form (using for instance ``two_factor_send`` method), "
+"because by the time the user submits the form, the current valid value "
+"may already be different. Instead, this value should be generated when "
+"validating the form submitted by the user."
+msgstr "默认情况下，py4web 将通过比较用户输入的代码与使用 ``two_factor_send`` 生成和发送的代码来验证双因素表单中的用户输入。然而，有时定义用户输入代码的自定义验证可能是有用的。例如，如果要使用 TOTP（或基于时间的一次性密码）作为双因素身份验证方法，验证需要将用户输入的代码与服务器端同时生成的值进行比较。因此，在显示表单时（例如使用 ``two_factor_send`` 方法）提前生成该值是不够的，因为到用户提交表单时，当前有效值可能已经不同。相反，应在验证用户提交的表单时生成此值。"
+
+#: ../../chapter-13.rst:243
+msgid ""
+"To accomplish such custom validation, the ``two_factor_validate`` method "
+"is available. It takes two arguments:"
+msgstr "为了完成这种自定义验证，可以使用 ``two_factor_validate`` 方法。这需要两个参数："
+
+#: ../../chapter-13.rst:245
+msgid "the current user"
+msgstr "user ：当前用户"
+
+#: ../../chapter-13.rst:246
+msgid ""
+"the code that was entered by the user into the two factor authentication "
+"form"
+msgstr "code ：用户在双因素身份验证表单中输入的代码"
+
+#: ../../chapter-13.rst:248
+msgid ""
+"The primary use-case for this method is validation of time-based "
+"passwords."
+msgstr "此方法的主要用例是验证基于时间的密码。"
+
+#: ../../chapter-13.rst:250
+msgid "This example shows how to validate a time-based two factor code:"
+msgstr "此示例显示了如何验证基于时间的双因素代码"
+
+#: ../../chapter-13.rst:268
+msgid "The ``validate_code`` method must return one of three values:"
+msgstr "``validate_code`` 方法必须返回以下三个值之一："
+
+#: ../../chapter-13.rst:270
+msgid "``True`` - if the validation succeeded,"
+msgstr "``True`` - 如果验证成功"
+
+#: ../../chapter-13.rst:271
+msgid "``False`` - if the validation failed,"
+msgstr "``False`` - 如果严重失败"
+
+#: ../../chapter-13.rst:272
+msgid "``None`` - if the validation was not possible for any reason"
+msgstr "``None`` - 如果因任何原因无法验证"
+
+#: ../../chapter-13.rst:274
+msgid ""
+"Notice that - if defined - this method is _always_ called to validate the"
+" two factor authentication form. It is up to you to decide what kind of "
+"validation it does. If the returned value is ``True``, the user input "
+"will be accepted as valid. If the returned value is ``False`` then the "
+"user input will be rejected as invalid, number of tries will be decreased"
+" by one, and user will be asked to try again. If the returned value is "
+"``None`` the user input will be checked against the code generated with "
+"the use of ``two_factor_send`` method and the final result will depend on"
+" that comparison. In this case authentication will fail if "
+"``two_factor_send`` method was not defined, and hence no code was sent to"
+" the user."
+msgstr "请注意，如果定义了此方法，则总会调用它来验证双因素身份验证表单。由您决定它执行何种验证。如果返回值为 ``True`` ，则用户输入将被视为有效。如果返回值为 ``False`` ，则用户输入将被视为无效而被拒绝，尝试次数将减少一次，并要求用户重试。如果返回值为 ``None`` ，则将根据使用 ``two_factor_send`` 方法生成的代码检查用户输入，最终结果将取决于该比较。在这种情况下，如果未定义 ``two_factor_send`` 方法，则身份验证将失败，因此不向用户发送代码。"
+
+#: ../../chapter-13.rst:287
+msgid "two_factor_tries"
+msgstr ""
+
+#: ../../chapter-13.rst:289
+msgid ""
+"By default, the user has 3 attempts to pass two factor authentication. "
+"You can override this after using:"
+msgstr "默认情况下，用户有 3 次机会尝试双因素身份验证。您可以使用下面的设置覆盖此内容："
+
+#: ../../chapter-13.rst:295
+msgid "Once this is all setup, the flow for two factor authentication is:"
+msgstr "完成所有设置后，双因素身份验证的流程为："
+
+#: ../../chapter-13.rst:297
+msgid "present the login page"
+msgstr "显示登录页面"
+
+#: ../../chapter-13.rst:298
+msgid "upon successful login and user passes two_factor_required"
+msgstr "成功登录后，用户通过 two_factor_required 验证流程"
+
+#: ../../chapter-13.rst:299
+msgid "redirect to py4web auth/two_factor endpoint"
+msgstr 重定向到 py4web 的 auth/two_factor 处""
+
+#: ../../chapter-13.rst:300
+msgid "if ``two_factor_send`` method has been defined:"
+msgstr "如果定义了 ``two_factor_send`` ："
+
+#: ../../chapter-13.rst:301
+msgid "generate 6 digit verification code"
+msgstr "生成 6 位的数字验证码"
+
+#: ../../chapter-13.rst:302
+msgid "call ``two_factor_send`` to send the verification code to the user"
+msgstr "调用 ``two_factor_send`` 将验证码发送给用户"
+
+#: ../../chapter-13.rst:303
+msgid "display verification page where user can enter their code"
+msgstr "显示验证页面，用户可以在其中输入他们的代码"
+
+#: ../../chapter-13.rst:304
+msgid ""
+"if ``two_factor_validate`` method has been defined - call it to validate "
+"the user-entered code"
+msgstr "如果定义了 ``two_factor_validate`` 方法，则调用它来验证用户输入的代码"
+
+#: ../../chapter-13.rst:305
+msgid ""
+"upon successful verification, take user to _next_url that was passed to "
+"the login page"
+msgstr "验证成功后，将用户带到传递给登录页面的 _next_url"
+
+#: ../../chapter-13.rst:307
+msgid ""
+"Important! If you filtered ``ALLOWED_ACTIONS`` in your app, make sure to "
+"whitelist the \"two_factor\" action so not to block the two factor API."
+msgstr "重要！如果您在应用程序中过滤了 ``ALLOWED_ACTIONS`` ，请确保将 \"two_factor\" 操作列入白名单，以免阻止双因素 API。"
+
+#: ../../chapter-13.rst:312
+msgid "Auth Plugins"
+msgstr "身份验证的插件"
+
+#: ../../chapter-13.rst:314
+msgid ""
+"Plugins are defined in “py4web/utils/auth_plugins” and they have a "
+"hierarchical structure. Some are exclusive and some are not. For example,"
+" default, LDAP, PAM, and SAML are exclusive (the developer has to pick "
+"one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the"
+" developer can pick them all and the user gets to choose using the UI)."
+msgstr "插件在 “py4web/utils/auth_plugins” 中定义，它们具有层次结构。有些是排他性的，有些不是。例如，默认情况下，LDAP、PAM 和 SAML 是排他的（开发人员必须选择一个）。默认情况下， Google、Facebook 和 Twitter OAuth 不是排他性的（开发人员可以全部选择，用户可以使用 UI 进行选择）。"
+
+#: ../../chapter-13.rst:321
+msgid ""
+"The ``<auth/>`` components will automatically adapt to display login "
+"forms as required by the installed plugins."
+msgstr "``<auth/>`` 组件将根据安装的插件的要求自动适应显示登录表单。"
+
+#: ../../chapter-13.rst:324
+msgid ""
+"In the _scaffold/settings.py and _scaffold/common.py files you can see "
+"the default settings for the supported plugins."
+msgstr "在 _scaffold/settings.py 和 _scaffold/common.py 文件中，您可以看到支持的插件的默认值设置。"
+
+#: ../../chapter-13.rst:328
+msgid "PAM"
+msgstr ""
+
+#: ../../chapter-13.rst:330
+msgid "Configuring PAM is the easiest:"
+msgstr "配置 PAM 最简单："
+
+#: ../../chapter-13.rst:337
+msgid ""
+"This one like all plugins must be imported and registered. The "
+"constructor of this plugins does not require any arguments (where other "
+"plugins do)."
+msgstr "与所有插件一样，此插件必须导入并注册。此插件的构造函数不需要任何参数（其他插件需要）。"
+
+#: ../../chapter-13.rst:341
+msgid ""
+"The ``auth.register_plugin(...)`` **must** come before the "
+"``auth.enable()`` since it makes no sense to expose APIs before desired "
+"plugins are mounted."
+msgstr "``auth.register_plugin(...)`` **必须** 位于 ``auth.enable()`` 之前，因为在挂载所需的插件之前公开 API 是没有意义的。"
+
+#: ../../chapter-13.rst:347
+msgid ""
+"by design PAM authentication using local users works fine only if py4web "
+"is run by root. Otherwise you can only authenticate the specific user "
+"that runs the py4web process."
+msgstr "根据设计，只有当 py4web 由 root 运行时，使用本地用户的 PAM 身份验证才能正常工作。否则，您只能对运行 py4web 进程的特定用户进行身份验证。"
+
+#: ../../chapter-13.rst:352
+msgid "LDAP"
+msgstr ""
+
+#: ../../chapter-13.rst:354
+msgid ""
+"This is a common authentication method, especially using Microsoft Active"
+" Directory in enterprises."
+msgstr "这是一种常见的身份验证方法，特别是在企业中使用 Microsoft Active Directory。"
+
+#: ../../chapter-13.rst:368
+msgid ""
+"it needs the python-ldap module. On Ubuntu, you should also install some "
+"developer's libraries in advance with ``sudo apt-get install libldap2-dev"
+" libsasl2-dev``."
+msgstr "它需要 python-lda 模块。在 Ubuntu 上，您还应该使用 ``sudo apt-get install libldap2-dev"
+" libsasl2-dev`` 提前安装一些开发人员库。"
+
+#: ../../chapter-13.rst:373
+msgid "OAuth2 with Google"
+msgstr "用于 Google 的 OAuth2"
+
+#: ../../chapter-13.rst:383
+msgid "The client id and client secret must be provided by Google."
+msgstr "客户 id 和客户密钥必须由 Google 提供。"
+
+#: ../../chapter-13.rst:385
+msgid ""
+"By default, Google OAuth stores the user's first name, last name, and "
+"email in the auth_user table—but not the profile picture. You can include"
+" the profile picture URL with just few lines of code added to common.py."
+msgstr "默认情况下，Google OAuth 将用户的名字、姓氏和电子邮件存储在 auth_user 表中，但不存储配置文件图片。您只需在 common.py 中添加几行代码即可包含个人资料图片 URL 。"
+
+#: ../../chapter-13.rst:399
+msgid ""
+"Once the profile picture URL is stored in auth_user, you can easily use "
+"it along with other user information."
+msgstr "一旦配置文件图片 URL 存储在 auth_user 中，您就可以轻松地将其与其他用户信息一起使用。"
+
+#: ../../chapter-13.rst:403
+msgid "OAuth2 with Facebook"
+msgstr "用于 Facebook 的 OAuth2"
+
+#: ../../chapter-13.rst:413
+msgid "The client id and client secret must be provided by Facebook."
+msgstr "客户 id 和客户密钥必须由 Facebook 提供。"
+
+#: ../../chapter-13.rst:416
+msgid "OAuth2 with Discord"
+msgstr "用于 Discord 的 OAuth2"
+
+#: ../../chapter-13.rst:426
+msgid ""
+"To obtain a Discord client ID and secret, create an application at "
+"https://discord.com/developers/applications. You will also have to "
+"register your OAuth2 redirect URI in your created application, in the "
+"form of ``http(s)://<your host>/<your app "
+"name>/auth/plugin/oauth2discord/callback``"
+msgstr "要获取 Discord 客户端 ID 和密钥，请在以下位置创建应用程序 https://discord.com/developers/applications 。您还必须在创建的应用程序中以h ``http(s)://<your host>/<your app name>/auth/plugin/oauth2discord/callback`` 的形式注册您的 OAuth2 重定向 URI 。"
+
+#: ../../chapter-13.rst:431
+msgid ""
+"As Discord users have no concept of first/last name, the user in the auth"
+" table will contain the Discord username as the first name and "
+"discriminator as the last name."
+msgstr "由于 Discord 用户没有名字/姓氏的概念，因此 auth 表中的用户将包含 Discord 的用户名作为名字，discriminator 作为姓氏。"
+
+#: ../../chapter-13.rst:435
+msgid "Auth API Plugins"
+msgstr "Auth API 插件"
+
+#: ../../chapter-13.rst:437
+msgid ""
+"There are two types of web APIs, those called by the browser for example "
+"by a single page web app, and those designed to be called by a different "
+"kind of program. Both of them may need tosupport authentication. The "
+"distintion is important because, in the case of the browser, there is no "
+"need to manage any authentication token as the browser already provides "
+"cookies and py4web uses cookies to handle seesions. If the user operating"
+" the browser is logged-in, when an API is called, the corresponding "
+"action already knows who the user is. No additional logic is necessary. "
+"In this case there there is no need for any kind of additional API token "
+"which would only diminuish the security provided by the cookie based "
+"session token."
+msgstr "有两种类型的 web API，一种是单页 web 应用程序，可由浏览器调用的，例如由调用的，另一种是设计为由不同类型的程序调用的。两者都可能需要支持身份验证。这种区分很重要，因为在浏览器调用的情况下，不需要管理任何身份验证令牌，因为浏览器已经提供了 Cookie ，而py4web 使用 Cookie 来处理 seesions 。如果操作浏览器的用户是已经登录，那么当调用 API 时，相应的 action 就知道用户是谁。不需要额外的逻辑。在这种情况下，不需要任何类型的附加 API 令牌，这只会削弱基于 cookie 的会话令牌所提供的安全性。"
+
+#: ../../chapter-13.rst:446
+msgid ""
+"When the API is to be accessed by a different program (for example a "
+"script) the story is different. There is no session and we do not want to"
+" ask the user for the password every time. The standard way to "
+"authenticate in this case is by issuing the user an API token, aka a "
+"string, which, when presented along with API request allows py4web to "
+"recognize the identity of the caller. This is also referred to as "
+"\"Authentication bearer\"."
+msgstr "当 API 被不同的程序（例如脚本）访问时，情况就不同了。没有会话，我们不想每次都向用户询问密码。在这种情况下，验证用户的标准方法是向用户颁发 API 令牌，也就是字符串，当与 API 请求一起呈现时，该令牌允许 py4web 识别调用者的身份。这也被称为 \"Authentication bearer\" 。"
+
+#: ../../chapter-13.rst:452
+msgid ""
+"Py4web provides a plugin system that gives you a lot of flexibility but "
+"it also provides two practical plugins that are sufficient in most cases."
+" The two plugins are called: SimpleTokenPlugin and JwtTokenPlugin. The "
+"first one of the two is recommended in most of the cases."
+msgstr "Py4web 提供了一个插件系统，为您提供了很大的灵活性，但它也提供了两个在大多数情况下都足够的实用插件。这两个插件名为：SimpleTokenPlugin 和 JwtTokenPlugin 。在大多数情况下，建议使用两者中的第一种。"
+
+#: ../../chapter-13.rst:456
+msgid "What all plugins have in common:"
+msgstr "所有插件的共同点："
+
+#: ../../chapter-13.rst:458
+msgid "They have a way for a user to create a token which is a string."
+msgstr "它们为用户提供了一种创建字符串令牌的方法。"
+
+#: ../../chapter-13.rst:459
+msgid ""
+"When an HTTP(S) request is made to an action that @actiion.uses(auth) or "
+"@action.uses(auth.user) py4web will identify the user if the token is "
+"present, as if the user was logged-in."
+msgstr "当对 @action.uses(auth) 或 @action.users(auth.user) 的操作发出 HTTP(S) 请求时，如果令牌存在，py4web 将识别用户，就像用户登录一样。"
+
+#: ../../chapter-13.rst:462
+msgid "What SimpleTokenPlugin and JwtTokenPlugin have in common:"
+msgstr "SimpleTokenPlugin 和 JwtTokenPlugin 的共同点："
+
+#: ../../chapter-13.rst:464
+msgid ""
+"When an HTTP(S) request is made, the token must be put in the "
+"\"Authentication\" header. You will need to create your own plugin if you"
+" want to pass it in some other manner."
+msgstr "当发出 HTTP(S) 请求时，令牌必须放在 “Authentication” 的标头中。如果你想以其他方式传递它，需要你创建自己的插件。"
+
+#: ../../chapter-13.rst:466
+msgid "Each user can create as many tokens as desired."
+msgstr "每个用户都可以根据需要创建任意数量的令牌。"
+
+#: ../../chapter-13.rst:467
+msgid ""
+"Users can create tokens for other users if the application logic "
+"requires/allows it."
+msgstr "如果应用程序逻辑需要/允许，用户可以为其他用户创建令牌。"
+
+#: ../../chapter-13.rst:469
+msgid "Unique features of SimpleTokenPlugin:"
+msgstr "SimpleTokenPlugin 的独特功能："
+
+#: ../../chapter-13.rst:471
+msgid "A token is a UUID."
+msgstr "令牌是一个 UUID"
+
+#: ../../chapter-13.rst:472
+msgid ""
+"Tokens can be managed serverside (created, deleted, expired, change "
+"expiration)."
+msgstr "令牌可以在服务器端进行管理（创建、删除、过期、更改过期）。"
+
+#: ../../chapter-13.rst:473
+msgid "Current tokens are stored in a adatabase table."
+msgstr "当前令牌存储在数据库表中。"
+
+#: ../../chapter-13.rst:474
+msgid ""
+"The default table associates token with the owner and a textual "
+"description. Users can nevertheless provide their own table and add any "
+"desired metadata to tokens which the app can retrieve to distinguish "
+"different tokens from the same user. This is done by adding fields to the"
+" table."
+msgstr "默认表将令牌与所有者和文本描述相关联。然而，用户可以提供自己的表，并将任何所需的元数据添加到令牌中，应用程序可以检索这些令牌，以区分同一用户的不同令牌。这是通过向表中添加字段来实现的。"
+
+#: ../../chapter-13.rst:478
+msgid "Under the hood veryfing a token requires a database query."
+msgstr "在幕后，令牌的查找需要数据库查询。"
+
+#: ../../chapter-13.rst:480
+msgid "Unique features of JwtTokenPlugin:"
+msgstr "JvtokenPlugin 的独特功能："
+
+#: ../../chapter-13.rst:482
+msgid ""
+"The token is an encrypted and digitally signed dict that stores the "
+"user_id and expiration."
+msgstr "令牌是一个加密和数字签名的字典，用于存储 user_id 和过期时间。"
+
+#: ../../chapter-13.rst:483
+msgid ""
+"The author of the token can add any metadata to into the token at "
+"creation."
+msgstr "令牌的作者可以在创建时将任何元数据添加到令牌中。"
+
+#: ../../chapter-13.rst:484
+msgid ""
+"The token is not stored anywhere serverside and there is no database "
+"table."
+msgstr "令牌不存储在服务器端的任何位置，也没有对应的数据库表。"
+
+#: ../../chapter-13.rst:485
+msgid ""
+"Tokens can be created (and there is a function to do so) but they cannot "
+"be managed. The server cannot expire tokens or change expiration. This "
+"would require the tokens to validated against a database and that is "
+"exactely when the JwtTokenPlugin tries to avoid."
+msgstr "可以创建令牌（有一个函数可以这样做），但不能对其进行管理。服务器无法使令牌过期或更改过期时间。这将需要根据数据库验证令牌，而这正是 JwtTokenPlugin 试图避免的。"
+
+#: ../../chapter-13.rst:488
+msgid ""
+"The only way to expire a token is by changing the serverside secret using"
+" for validation so when a token is expired, all tokens are expired."
+msgstr "使令牌过期的唯一方法是更改用于验证的服务器端密钥，这样当令牌过期时，所有令牌都会过期。"
+
+#: ../../chapter-13.rst:491
+msgid ""
+"SimpleTokenPlugin are the recommended kind of tokens for most "
+"applications. JwtTokenPlugin are valuable when the expiration is short "
+"and known in advance and when avoiding a database lookup is very "
+"important, such as for actions that are very fast and one is willing to "
+"sacrifice a bit of security (serverside token expiration capability) in "
+"order to avoid database access."
+msgstr "SimpleTokenPlugin 是大多数应用程序的推荐令牌类型。JwtTokenPlugin 在过期时间较短且提前知道的情况下以及在避免数据库查找非常重要的情况下是有价值的，例如对于非常快速的 action ，并且为了避免数据库访问而愿意牺牲一点安全性（服务器端令牌过期能力）。"
+
+#: ../../chapter-13.rst:498
+msgid "Example of SimpleTokenPlugin"
+msgstr "SimpleTokenPlugin 的示例"
+
+#: ../../chapter-13.rst:500 ../../chapter-13.rst:540
+msgid "In common.py:"
+msgstr "在 common.py 中添加:"
+
+#: ../../chapter-13.rst:508
+msgid ""
+"You can optionally a ``table=db.mytable`` to a custom table. Otherwise it"
+" will create and use one called \"auth_simple_token\"."
+msgstr "您可以选择使用参数 ``table=db.mytable`` 来自定义表。否则，它将创建并使用一个名为 “auth_simple_token” 的存储令牌的表。"
+
+#: ../../chapter-13.rst:511
+msgid "In controllers.py"
+msgstr "在 controllers.py 中添加"
+
+#: ../../chapter-13.rst:520
+msgid ""
+"Users can access this action if via a browser if they are logged in, "
+"without the token, of via API by providing a token."
+msgstr "用户可通过以下方式访问此 action ：若使用浏览器且已登录，无需令牌（token）即可访问；若通过 API 访问，则需提供令牌。"
+
+#: ../../chapter-13.rst:526
+msgid "In order to create and manage tokens you can use a grid. In controllers.py"
+msgstr "为了创建和管理令牌，您可以使用 grid 。在 controllers.py 中"
+
+#: ../../chapter-13.rst:538
+msgid "Example of JwtTokenPlugin"
+msgstr "JwtTokenPlugin 示例"
+
+#: ../../chapter-13.rst:549
+msgid "In controllers.py it works the same as SimpleTokenPlugin:"
+msgstr "在 controllers.py 中，它的工作原理与 SimpleTokenPlugin 相同："
+
+#: ../../chapter-13.rst:558
+msgid "The token is also passed using the same header as in the previous example:"
+msgstr "令牌也使用与上例中相同的标头传递："
+
+#: ../../chapter-13.rst:564
+msgid ""
+"While you cannot manage tokens you still need a way to create them. You "
+"can create an action for example that, when called, gives you a new "
+"token. In controllers.py"
+msgstr "虽然你不能管理令牌，但你仍然需要一种创建它们的方法。例如，您可以创建一个 action ，当调用它时，它会给您一个新的令牌。在 controllers.py 中添加"
+
+#: ../../chapter-13.rst:577
+msgid "Example of custom Token Plugin"
+msgstr "自定义令牌插件示例"
+
+#: ../../chapter-13.rst:579
+msgid ""
+"A token plugin is just a class that, given a request, returns an "
+"associated user. For example here is a dumb and UNSAFE plugin that "
+"authorizes everybody as user 1 as long as the \"Authentication\" header "
+"is provided."
+msgstr "令牌插件只是一个类，在收到请求后，它会返回一个关联的用户。例如，这里有一个愚蠢且不安全的插件，只要提供 “Authentication” 标头，它就会授权每个人作为用户 1。
+"
+
+#: ../../chapter-13.rst:583
+msgid "from py4web import request"
+msgstr "从 py4web 导入 request"
+
+#: ../../chapter-13.rst:598
+msgid "Authorization using Tags"
+msgstr "使用 Tags 进行授权"
+
+#: ../../chapter-13.rst:600
+msgid ""
+"As already mentioned, authorization is the process of verifying what "
+"specific applications, files, and data a user has access to. This is "
+"accomplished in py4web using ``Tags``, that we've already discovered on "
+":ref:`Tagging records` in the DAL chapter."
+msgstr "如前所述，授权是验证用户可以访问哪些特定应用程序、文件和数据的过程。这是在py4web 中使用 ``Tags`` 完成的，我们已经在 DAL 章节中的 :ref:`Tagging records` （标记记录）部分了解了。"
+
+#: ../../chapter-13.rst:607
+msgid "Tags and Permissions"
+msgstr "Tags 和权限"
+
+#: ../../chapter-13.rst:609
+msgid ""
+"Py4web provides a general purpose tagging mechanism that allows the "
+"developer to tag any record of any table, check for the existence of "
+"tags, as well as checking for records containing a tag. Group membership "
+"can be thought of a type of tag that we apply to users. Permissions can "
+"also be tags. Developers are free to create their own logic on top of the"
+" tagging system."
+msgstr "Py4web 提供了一种通用的标记机制，允许开发人员标记任何表的任何记录，检查标记的存在，以及检查包含标记的记录。组成员资格可以被认为是我们应用于用户的一种标签。权限也可以是标签。开发人员可以在标记系统之上自由创建自己的逻辑。"
+
+#: ../../chapter-13.rst:618
+msgid ""
+"Py4web does not have the concept of groups as web2py does. Experience "
+"showed that while that mechanism is powerful it suffers from two "
+"problems: it is overkill for most apps, and it is not flexible enough for"
+" very complex apps."
+msgstr "Py4web 没有 web2p y那样的组概念。经验表明，虽然这种机制很强大，但它存在两个问题：对于大多数应用程序来说，它过于强大，对于非常复杂的应用程序来说不够灵活。"
+
+#: ../../chapter-13.rst:623
+msgid ""
+"To use the tagging system you first need to import the Tags module from "
+"``pydal.tools``. Then create a Tags object to tag a table:"
+msgstr "要使用标记系统，您首先需要从 ``pydal.tools`` 导入 Tags 模块。然后创建一个Tags 对象来标记表："
+
+#: ../../chapter-13.rst:631
+msgid ""
+"The tail_name parameter is optional and if not specified the 'default' "
+"value will be used. If you look at the database level, a new table will "
+"be created with a name equals to ``tagged_db + '_tag_' + tail_name``, in "
+"this case ``auth_user_tag_groups``:"
+msgstr "tail_name 参数是可选的，如果未指定，将使用默认值 'default' 。如果您在数据库级别查看，里面创建了一个新表，其名称等于 ``tagged_db.table + '_tag_' + tail_name`` ，在本例中为 ``auth_user_tag_groups`` ："
+
+#: ../../chapter-13.rst:639
+msgid ""
+"Then you can add one or more tags to records of the table as well as "
+"remove existing tags:"
+msgstr "然后，您可以向表的记录添加一个或多个标记，也可以删除现有的标记："
+
+#: ../../chapter-13.rst:648
+msgid ""
+"On the ``auth_user_tagged_groups`` this will produce two records with "
+"different groups assigned to the same user.id (the \"Record ID\" field):"
+msgstr "在 ``auth_user_tag_groups`` 上，这将生成两条记录，其中不同的组分配给同一个 user.id（“Record ID” 字段）："
+
+#: ../../chapter-13.rst:653
+msgid ""
+"Slashes at the beginning or the end of a tag are optional. All other "
+"chars are allowed on equal footing."
+msgstr "标签开头或结尾的斜线是可选的。所有其他字符在同等条件下都是允许的。"
+
+#: ../../chapter-13.rst:657
+msgid ""
+"A common use case is **group based access control**. Here the developer "
+"first checks if a user is a member of the ``'manager'`` group, if the "
+"user is not a manager (or no one is logged in) py4web redirects to the "
+"``'not authorized url'``. Else the user is in the correct group and then "
+"py4web displays ‘hello manager’:"
+msgstr "一个常见的用例是 **基于组的访问控制** 。在这里，开发人员首先检查用户是否是 ``'manager'`` 组的成员，如果用户不是经理（或没有人登录），py4web 就会重定向到 ``'not authorized url'`` 。否则，如果用户属于正确的组， py4web 就显示 “hello manager” ："
+
+#: ../../chapter-13.rst:672
+msgid ""
+"Here the developer queries the db for all records having the desired "
+"tag(s):"
+msgstr "在这里，开发人员查询数据库中具有所需标签的所有记录："
+
+#: ../../chapter-13.rst:683
+msgid ""
+"We've already seen a simple ``requires_membership`` fixture on :ref:``The"
+" Condition fixture``. It enables the following syntax:"
+msgstr "我们已经在 :ref:``The Condition fixture`` 上看到了一个简单的 ``requires_membership`` 夹具。它支持以下语法："
+
+#: ../../chapter-13.rst:704
+msgid ""
+"We leave it to you as an exercise to create a fixture ``has_membership`` "
+"to enable the following syntax:"
+msgstr "作为留给你的练习，我们将创建夹具 ``has_membership`` 以启用以下语法："
+
+#: ../../chapter-13.rst:714
+msgid ""
+"**Important:** ``Tags`` are automatically hierarchical. For example, if a"
+" user has a group tag ‘teacher/high-school/physics’, then all the "
+"following searches will return the user:"
+msgstr "重要提示： ``Tags`` 会自动分层。例如，如果用户有一个组标签 ‘teacher/high-school/physics’ ，那么以下所有搜索都将返回该用户："
+
+#: ../../chapter-13.rst:718
+msgid "``groups.find('teacher/high-school/physics')``"
+msgstr ""
+
+#: ../../chapter-13.rst:719
+msgid "``groups.find('teacher/high-school')``"
+msgstr ""
+
+#: ../../chapter-13.rst:720
+msgid "``groups.find('teacher')``"
+msgstr ""
+
+#: ../../chapter-13.rst:722
+msgid "This means that slashes have a special meaning for tags."
+msgstr "这意味着斜线对标签具有特殊含义。"
+
+#: ../../chapter-13.rst:725
+msgid "Multiple Tags objects"
+msgstr "多个标签的对象"
+
+#: ../../chapter-13.rst:728
+msgid ""
+"One table can have multiple associated ``Tags`` objects. The name "
+"'groups' here is completely arbitrary but has a specific semantic "
+"meaning. Different ``Tags`` objects are independent to each other. The "
+"limit to their use is your creativity."
+msgstr "一个表可以有多个关联的 ``Tags`` 对象。这里的 “groups” 这个名字完全是任意的，但有特定的语义含义。不同的 ``Tags`` 对象彼此独立。它们的使用上限，取决于你的创造力。"
+
+#: ../../chapter-13.rst:733
+msgid "For example you could create a table ``auth_group``:"
+msgstr "例如，您可以创建一个表 ``auth_group`` ："
+
+#: ../../chapter-13.rst:739
+msgid "and two Tags attached to it:"
+msgstr "和两个与其关联的标签"
+
+#: ../../chapter-13.rst:746
+msgid ""
+"Then create a 'zapper' record in ``auth_group``, give it a permission, "
+"and make a user member of the group:"
+msgstr "然后在 ``auth_group`` 中创建一个 “zapper” 记录，给它一个权限，并将一个用户设置为该组的成员："
+
+#: ../../chapter-13.rst:755
+msgid "And you can check for a user permission via an explicit join:"
+msgstr "您可以通过显式加入来检查用户权限："
+
+#: ../../chapter-13.rst:772
+msgid ""
+"Notice here ``permissions.find(permission)`` generates a query for all "
+"groups with the permission and we further filter those groups for those "
+"the current user is member of. We count them and if we find any, then the"
+" user has the permission."
+msgstr "请注意， ``permissions.find(permission)`` 会生成一个查询，用于查找所有拥有该权限（permission）的用户组，随后我们会进一步筛选出当前用户所属的那些用户组。我们对筛选后的用户组进行计数，若能找到任何一个（即计数大于 0），则说明该用户拥有此权限。。
+"
+
+#: ../../chapter-13.rst:778
+msgid "User Impersonation"
+msgstr "用户模拟"
+
+#: ../../chapter-13.rst:780
+msgid ""
+"Auth provides API that allow you to impersonate another user. Here is an "
+"example of an action to start impersonating and stop impersonating "
+"another user."
+msgstr "Auth 提供 API，允许您模拟其他用户。下面是一个开始模拟和停止模拟另一个用户的 action 示例。"
+

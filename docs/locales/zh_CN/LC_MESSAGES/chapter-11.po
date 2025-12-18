@@ -1,0 +1,109 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-11.rst:3
+msgid "Internationalization"
+msgstr "国际化"
+
+#: ../../chapter-11.rst:6
+msgid "Pluralize"
+msgstr ""
+
+#: ../../chapter-11.rst:8
+msgid ""
+"Pluralize is a Python library for Internationalization (i18n) and "
+"Pluralization (p10n)."
+msgstr "Pluralize 是一个用于国际化（i18n）和多元化（p10n）的 Python 库。"
+
+#: ../../chapter-11.rst:11
+msgid ""
+"The library assumes a folder (for example “translations”) that contains "
+"files like:"
+msgstr "Pluralize 库假定一个文件夹（例如 “translations” ）包含以下文件："
+
+#: ../../chapter-11.rst:22
+msgid "Each file has the following structure, for example for Italian (it.json):"
+msgstr "每个文件都有以下结构，例如意大利语（it.json）："
+
+#: ../../chapter-11.rst:29
+msgid ""
+"The top level keys are the expressions to be translated and the "
+"associated value/dictionary maps a number to a translation. Different "
+"translations correspond to different plural forms of the expression,"
+msgstr "顶层键是要翻译的表达式，与之关联的值/字典则将一个数字映射到对应的译文。"
+"不同的翻译对应于表达的不同的多元化形式。"
+
+#: ../../chapter-11.rst:33
+msgid "Here is another example for the word “bed” in Czech"
+msgstr "这是捷克语中 “bed” 一词的另一个例子"
+
+#: ../../chapter-11.rst:39
+msgid ""
+"To translate and pluralize a string “dog” one simply warps the string in "
+"the T operator as follows:"
+msgstr "要翻译和多元化化字符串 “dog” ，只需在 T 运算符中传递并处理字符串，"
+"如下所示："
+
+#: ../../chapter-11.rst:61
+#, python-brace-format
+msgid ""
+"The string can contain multiple placeholders but the {n} placeholder is "
+"special because the variable called “n” is used to determine the "
+"pluralization by best match (max dict key <= n)."
+msgstr "字符串可以包含多个占位符，但 {n} 占位符是特殊的，因为名为 “n” 的变量"
+"被用于通过最佳匹配（最大的字典键 <= n ）来确定多元化的结果。"
+
+#: ../../chapter-11.rst:65
+msgid ""
+"T(…) objects can be added together with each other and with string, like "
+"regular strings."
+msgstr "T(…) 对象可以彼此相加，也可以与字符串相加，就像常规字符串一样。"
+
+#: ../../chapter-11.rst:68
+msgid ""
+"T.select(s) can parse a string s following the HTTP accept language "
+"format."
+msgstr "T.select(s) 可以按照 HTTP 接受的语言格式解析字符串 s 。"
+
+#: ../../chapter-11.rst:72
+msgid "Update the translation files"
+msgstr "更新翻译文件"
+
+#: ../../chapter-11.rst:74
+msgid "Find all strings wrapped in T(…) in .py, .html, and .js files:"
+msgstr "在 .py、.html 和 .js 文件中查找所有用 T(…) 包装的字符串："
+
+#: ../../chapter-11.rst:80
+msgid "Add newly discovered entries in all supported languages"
+msgstr "在所有支持的语言中添加新发现的条目"
+
+#: ../../chapter-11.rst:86
+msgid "Add a new supported language (for example German, “de”)"
+msgstr "添加新的支持语言（例如德语 “de” ）"
+
+#: ../../chapter-11.rst:92
+msgid "Make sure all languages contain the same origin expressions"
+msgstr "确保所有语言都包含相同的源表达式："
+
+#: ../../chapter-11.rst:102
+msgid "Finally save the changes:"
+msgstr "最后保存更改："
+

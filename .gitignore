@@ -49,7 +49,6 @@ pyproject.toml
 poetry.lock
 workspace.code-workspace
 venv
-docs/_build
 py4web.egg-info/
 build/
 tmp/

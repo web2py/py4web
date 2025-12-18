@@ -1,0 +1,870 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 21:04+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-16.rst:3
+msgid "Advanced topics and examples"
+msgstr "高级主题和示例"
+
+#: ../../chapter-16.rst:6
+msgid "The scheduler"
+msgstr "调度程序"
+
+#: ../../chapter-16.rst:8
+msgid ""
+"Py4web has a built-in scheduler. There is nothing for you to install or "
+"configure to make it work."
+msgstr "Py4web 有一个内置的调度程序。您无需安装或配置任何东西就能使其工作。"
+
+#: ../../chapter-16.rst:10
+msgid ""
+"Given a task (just a python function), you can schedule async runs of "
+"that function. The runs can be a one-off or periodic. They can have "
+"timeout. They can be scheduled to run at a given scheduled time."
+msgstr ""
+"给定一个任务（只是一个 python "
+"函数），您可以安排该函数的异步运行。运行可以是一次性的，也可以是周期性的。他们可以因超时而停止。它们可以被安排在给定的预定时间运行。"
+
+#: ../../chapter-16.rst:13
+msgid ""
+"The scheduler works by creating a table ``task_run`` and enqueueing runs "
+"of the predefined task as table records. Each ``task_run`` references a "
+"task and contains the input to be passed to that task. The scheduler will"
+" capture the task stdout+stderr in a ``db.task_run.log`` and the task "
+"output in ``db.task_run.output``."
+msgstr ""
+"调度器通过创建表 ``task_run`` 并将预定义任务的运行作为表记录排队来工作。每个 ``task_run`` "
+"都引用一个任务，并包含要传递给该任务的输入。调度程序将在 ``db.task_run.log`` 中保存捕获到的任务的 stdout + "
+"stderr，并在 ``db.task_run.output`` 中保存捕获到的任务输出。"
+
+#: ../../chapter-16.rst:17
+msgid ""
+"A py4web thread loops and finds the next task that needs to be executed. "
+"For each task it creates a worker process and assigns the task to the "
+"worker process. You can specify how many worker processes should run "
+"concurrently. The worker processes are daemons and they only live for the"
+" life of one task run. Each worker process is only responsible for "
+"executing that one task in isolation. The main loop is responsible for "
+"assigning tasks and timeouts."
+msgstr ""
+"py4web "
+"线程循环并找到下一个需要执行的任务。对于每个任务，它都会创建一个工作进程，并将任务分配给该工作进程。您可以指定应同时运行多少个工作进程。工作进程是守护进程，它们只在一个任务运行的生命周期内存在。每个工作进程只负责单独执行一个任务。主循环负责分配任务和超时。"
+
+#: ../../chapter-16.rst:22
+msgid ""
+"The system is very robust because the only source of truth is the "
+"database and its integrity is guaranteed by transactional safety. Even if"
+" py4web is killed, running tasks continue to run unless they complete, "
+"fail, or are explicitly killed."
+msgstr ""
+"该系统非常强大，因为唯一的真实来源是数据库，其完整性由事务安全保证。即使 py4web "
+"被终止，正在运行的任务也会继续运行，除非它们完成、失败或被明确终止。"
+
+#: ../../chapter-16.rst:26
+msgid ""
+"Aside for allowing multiple concurrent task runs in execution on one "
+"node, it is also possible to run multiple instances of the scheduler on "
+"different computing nodes, as long as they use the same client/server "
+"database for ``task_run`` and as long as they all define the same tasks."
+msgstr ""
+"除了允许在一个节点上执行多个并发任务外，还可以在不同的计算节点上运行调度器的多个实例，只要它们对 ``task_run`` "
+"使用相同的客户端/服务器数据库，并且它们都定义了相同的任务。"
+
+#: ../../chapter-16.rst:31
+msgid "Here is an example of how to use the scheduler:"
+msgstr "以下是一个如何使用调度器的示例："
+
+#: ../../chapter-16.rst:56
+msgid ""
+"Notice that in scaffolding app, the scheduler is created and started in "
+"common if ``USE_SCHEDULER=True`` in ``settings.py``."
+msgstr ""
+"请注意，在 scaffolding 应用程序中，如果 ``settings.py`` 中的 ``USE_SCHEDULER=True`` "
+"，则会创建并启动调度器。"
+
+#: ../../chapter-16.rst:59
+msgid ""
+"You can manage your task runs busing the dashboard or using a "
+"``Grid(db.task_run)``."
+msgstr "您可以通过后台管理应用程序或使用 ``Grid(db.task_run)`` 来管理任务运行。"
+
+#: ../../chapter-16.rst:61
+msgid "To prevent database locks (in particular with sqlite) we recommend:"
+msgstr "为了防止数据库锁（特别是 sqlite），我们建议："
+
+#: ../../chapter-16.rst:63
+msgid "Use a different database for the scheduler and everything else"
+msgstr "为调度程序和其他所有内容使用不同的数据库"
+
+#: ../../chapter-16.rst:64
+msgid "Always ``db.commit()`` as soon as possible after any insert/update/delete"
+msgstr "每次插入/更新/删除后，都要尽快执行 ``db.commit()`` "
+
+#: ../../chapter-16.rst:65
+msgid "wrap your database logic in tasks in a try...except as in"
+msgstr "尝试将任务中的数据库逻辑打包到 ``try...except`` 语句块中，如下："
+
+#: ../../chapter-16.rst:78
+msgid "Sending messages using a background task"
+msgstr "使用后台任务发送消息"
+
+#: ../../chapter-16.rst:80
+msgid ""
+"As en example of application of the above, consider the case of wanting "
+"to send emails asynchronously from a background task. In this example we "
+"send them using SendGrid from Twilio "
+"(https://www.twilio.com/docs/sendgrid/for-developers/sending-email"
+"/quickstart-python)."
+msgstr ""
+"作为上述应用的一个示例，考虑希望从后台任务异步发送电子邮件的情况。在这个例子中，我们使用 Twilio 的 SendGrid 发送它们 "
+"(https://www.twilio.com/docs/sendgrid/for-developers/sending-email"
+"/quickstart-python) 。"
+
+#: ../../chapter-16.rst:83
+msgid "Here is a possible scheduler task to send the email:"
+msgstr "以下是发送电子邮件的可能调度任务："
+
+#: ../../chapter-16.rst:107
+msgid "To schedule sending a new email do:"
+msgstr "要安排发送新电子邮件，请执行以下操作："
+
+#: ../../chapter-16.rst:119
+msgid ""
+"The key:value in the email representation must match the arguments of the"
+" task. The ``scheduled_for`` argument is optional and allows you to "
+"specify when the email should be sent. You can use the Dashboard to see "
+"the status of your ``task_run``\\s for the task called ``sendmail``."
+msgstr ""
+"电子邮件表示中的 key:value 必须与任务的参数匹配。 ``scheduled_for`` "
+"参数是可选的，允许您指定何时发送电子邮件。您可以使 Dashboard 查看名为 ``sendmail`` 的任务的 ``task_run``  "
+"状态。"
+
+#: ../../chapter-16.rst:123
+msgid "You can also tell auth to tap into above mechanism for sending emails:"
+msgstr "您还可以告诉 auth 利用上述机制发送电子邮件："
+
+#: ../../chapter-16.rst:141
+msgid ""
+"With the above, Auth will not send emails using smtplib. Instead it will "
+"send them with SendGrid using the scheduler. Notice the only requirement "
+"here is that ``auth.sender`` must be an object with a ``send`` method "
+"with the same signature as in the example."
+msgstr ""
+"您也可以告诉 auth 访问上述机制。通过上述操作，auth 将不会使用 smtplib 发送电子邮件。相反，它将使用调度程序通过 "
+"SendGrid 发送它们。请注意，这里唯一的要求是 ``auth.sender`` 必须是一个具有与示例中相同签名的 ``send`` "
+"法的对象。"
+
+#: ../../chapter-16.rst:144
+msgid ""
+"Notice, it it also possible to send SMS messages instead of emails but "
+"this requires 1) store the phone number in ``auth_user`` and 2) override "
+"the ``Auth.send`` method."
+msgstr ""
+"请注意，也可以发送短信而不是电子邮件，但这需要 1）将电话号码存储在 ``auth_user`` 中，2）覆盖发送电子邮件的 "
+"``Auth.send`` 方法："
+
+#: ../../chapter-16.rst:148
+msgid "Celery"
+msgstr ""
+
+#: ../../chapter-16.rst:150
+msgid ""
+"Yes. You can use Celery instead of the build-in scheduler but it adds "
+"complexity and it is less robust. Yet the build-in scheduler is designed "
+"for long running tasks and the database can become a bottleneck if you "
+"have hundreds of tasks running concurrently. Celery may work better if "
+"you have more than 100 concurrent tasks and/or they are short running "
+"tasks."
+msgstr ""
+"对。您可以使用 Celery "
+"来代替内置调度程序，但它增加了复杂性，而且不那么健壮。然而，内置调度器是为长时间运行的任务而设计的，如果您有数百个任务同时运行，数据库可能会成为瓶颈。如果您有"
+" 100 多个并发任务，而且它们是短时间运行的任务，Celery 可能会工作地更好。"
+
+#: ../../chapter-16.rst:157
+msgid "py4web and asyncio"
+msgstr "py4web 和 asyncio"
+
+#: ../../chapter-16.rst:159
+msgid ""
+"Asyncio is not strictly needed, at least for most of the normal use cases"
+" where it will add problems more than value because of its concurrency "
+"model. On the other hand, we think py4web needs a built-in websocket "
+"async based solution."
+msgstr ""
+"Asyncio 不是严格需要的，至少在大多数正常用例中，由于其并发模型，它会增加问题而不是价值。另一方面，我们认为 py4web "
+"需要一个内置的基于 websocket 异步的解决方案。"
+
+#: ../../chapter-16.rst:163
+msgid ""
+"If you plan to play with asyncio be careful that you should also deal "
+"with all the framework's components: in particular pydal is not asyncio "
+"compliant because not all the adapters work with async."
+msgstr ""
+"如果您打算使用 asyncio ，请注意您还应该处理框架的所有组件：特别是 pydal 不符合 asyncio ，因为并非所有适配器都支持 "
+"async。"
+
+#: ../../chapter-16.rst:168
+msgid "htmx"
+msgstr ""
+
+#: ../../chapter-16.rst:170
+msgid ""
+"There are many javascript front-end frameworks available today that allow"
+" you great flexibility over how you design your web client. Vue, React "
+"and Angular are just a few.  However, the complexity in building one of "
+"these systems prevents many developers from reaping those benefits. Add "
+"to that the rapid state of change in the ecosystem and you soon have an "
+"application that is difficult to maintain just a year or two down the "
+"road."
+msgstr ""
+"目前有许多 javascript 前端框架可供选择 ， 它们使您在设计 web 客户端方面具有极大的灵活性。Vue 、React 和 "
+"Angular "
+"只是其中的几个。然而，构建这些系统之一的复杂性阻碍了许多开发人员获得这些好处。再加上生态系统的快速变化，你很快就会拥有一个在一两年后难以维护的应用程序。"
+
+#: ../../chapter-16.rst:176
+msgid ""
+"As a consequence, there is a growing need to use simple html elements to "
+"add reactivity to your web pages. htmx is one of the tools emerging as a "
+"leader in page reactivity without the complexities of javascript. "
+"Technically, htmx allows you to access AJAX, CSS Transitions, Web Sockets"
+" and Server Sent Events directly in HTML, using attributes, so you can "
+"build modern user interfaces with the simplicity and power of hypertext. "
+"[CIT1601]_"
+msgstr ""
+"因此，越来越需要使用简单的 html 元素来增加网页的交互性。htmx 是在没有 javascript "
+"复杂性的情况下成为页面交互性领导者的工具之一。从技术上讲，htmx 允许您使用属性直接在 HTML 中访问 AJAX 、CSS 转换、Web "
+"套接字和服务器发送事件，因此您可以使用简单性且强大功能的超文本构建现代用户界面。 [CIT1601]_ "
+
+#: ../../chapter-16.rst:182
+msgid ""
+"Read all about htmx and its capabilities on the official site at "
+"https://htmx.org . If you prefer, there is also a video tutorial: "
+"`Simple, Fast Frontends With htmx "
+"<https://www.youtube.com/watch?v=cBfz4W_KvEI>`__ ."
+msgstr ""
+"在官方网站上阅读有关 htmx 及其功能的所有信息，网址为 https://htmx.org 。如果你愿意，还有一个视频教程： `Simple, "
+"Fast Frontends With htmx <https://www.youtube.com/watch?v=cBfz4W_KvEI>`__"
+" 。"
+
+#: ../../chapter-16.rst:186
+msgid "py4web enables htmx integration in a couple of ways."
+msgstr "py4web 通过多种方式支持 htmx 集成。"
+
+#: ../../chapter-16.rst:188
+msgid "Allow you to add htmx attributes to your forms and buttons"
+msgstr "允许您将 htmx 属性添加到表单和按钮中"
+
+#: ../../chapter-16.rst:189
+msgid "Includes an htmx attributes plugin for the py4web grid"
+msgstr "包含一个用于 py4web 网格的 htmx 属性插件"
+
+#: ../../chapter-16.rst:192
+msgid "htmx usage in Form"
+msgstr "表单中 htmx 的用法"
+
+#: ../../chapter-16.rst:194
+msgid ""
+"The py4web Form class allows you to pass \\**kwargs to it that will be "
+"passed along as attributes to the html form. For example, to add the hx-"
+"post and hx-target to the <form> element you would use:"
+msgstr ""
+"py4web Form 类允许您将 \\**kwargs 传递给它，这些 kwargs 将作为属性传递给 html 表单。例如，要将 hx-"
+"post 和 hx-target 添加到 <form> 元素中，您将使用："
+
+#: ../../chapter-16.rst:209
+msgid ""
+"Now when your form is submitted it will call the URL in the hx-post "
+"attribute and whatever is returned to the browser will replace the html "
+"inside of the element with id=\"detail-target\"."
+msgstr ""
+"现在，当您的表单被提交时，它将调用 hx-post 属性中的 URL，返回给浏览器的任何内容都将用来替换 id 是 “detail-target”"
+" 的元素内的 html。"
+
+#: ../../chapter-16.rst:212
+msgid "Let's continue with a full example (started from scaffold)."
+msgstr "让我们继续一个完整的例子（从 scaffold 开始）。"
+
+#: ../../chapter-16.rst:214
+msgid "**controllers.py**"
+msgstr ""
+
+#: ../../chapter-16.rst:252 ../../chapter-16.rst:353
+msgid "**templates/htmx_form_demo.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:265
+msgid "**templates/htmx_list.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:275
+msgid "**templates/htmx_form.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:282
+msgid ""
+"We now have a functional maintenance app to update our superheros.  In "
+"your browser navigate to the htmx_form_demo page in your new application."
+"  The hx-trigger=\"load\" attribute on the inner div of the "
+"htmx_form_demo.html page loads the htmx_list.html page inside the htmx-"
+"form-demo DIV once the htmx_form_demo page is loaded."
+msgstr ""
+"我们现在有一个功能强大的维护应用程序来更新我们的 superheros 。在浏览器中导航到新应用程序中的 htmx_form_demo 页面。在 "
+"htmx_form_demo.html 页面内的 div 中，hx-trigger=\"load\" 属性会在 htmx_form_demo "
+"页面加载完成后，将 htmx_list.html 页面加载到 htmx-form-demo 这个 DIV 元素中。"
+
+#: ../../chapter-16.rst:286
+msgid ""
+"Notice the timestamp added outside of the htmx-form-demo DIV does not "
+"change when transitions occur.  This is because the outer page is never "
+"reloaded, only the content inside the htmx-form-demo DIV."
+msgstr ""
+"请注意，在  htmx-form-demo 这个 DIV "
+"元素之外添加的时间戳在页面进行过渡（交互）时不会改变。这是因为外部页面永远不会重新加载，只会重新加载 htmx-form-demo 这个 DIV "
+"元素中的内容。"
+
+#: ../../chapter-16.rst:289
+msgid ""
+"The htmx attributes hx-get and hx-target are then used on the anchor tags"
+" to call the htmx_form page to load the form inside the htmx-form-demo "
+"DIV."
+msgstr ""
+"然后，在锚点标签上使用 htmx 的属性 hx-get 和 hx-target 来调用 htmx_form 页面，以将表单加载到 htmx-"
+"form-demo 这个 DIV 元素中。"
+
+#: ../../chapter-16.rst:292
+msgid ""
+"So far we've just seen standard htmx processing. Nothing fancy here, and "
+"nothing specific to py4web. However, in the htmx_form method we see how "
+"you can pass any attribute to a py4web form that will be rendered on the "
+"<form> element as we add the hx-post and hx-target. This tells the form "
+"to allow htmx to override the default form behavior and to render the "
+"resulting output in the target specified."
+msgstr ""
+"到目前为止，我们刚刚看到了标准的 htmx 处理。这里没有什么花哨的东西，也没有什么特定于 py4web 的东西。然而，在 htmx_form "
+"方法中，我们看到了如何将任何属性传递给 py4web 表单，当我们添加 hx-post 和 hx-target 时，该表单将在 <form> "
+"元素上呈现。这告诉表单允许 htmx 覆盖默认表单行为，并在指定的目标中呈现结果输出。"
+
+#: ../../chapter-16.rst:297
+msgid ""
+"The default py4web form does not include a Cancel button in case you want"
+" to cancel out of the edit form. But you can add 'sidecar' elements to "
+"your forms. You can see in htmx_form that we add a cancel option and add "
+"the required htmx attributes to make sure the htmx_list page is rendered "
+"inside the htmx-form-demo DIV."
+msgstr ""
+"默认的 py4web 表单不包含取消按钮，以防您想取消编辑表单。但您可以在表单中添加 “sidecar” 元素。您可以在 htmx_form "
+"中看到，我们添加了一个 cancel 选项并添加了所需的 htmx 属性，以确保 htmx_list 页面呈现在 htmx-form-demo "
+"DIV 中。"
+
+#: ../../chapter-16.rst:303
+msgid "htmx usage in Grid"
+msgstr "在 Grid 中使用 htmlx"
+
+#: ../../chapter-16.rst:305
+msgid ""
+"The py4web grid provides an attributes plugin system that allows you to "
+"build plugins to provide custom attributes for form elements, anchor "
+"elements or confirmation messages. py4web also provide an attributes "
+"plugin specifically for htmx."
+msgstr ""
+"py4web 的 grid 提供了一个属性插件系统，允许您构建插件，为表单元素、锚元素或确认消息提供自定义属性。py4web 还提供了一个专门针对"
+" htmx 的属性插件。"
+
+#: ../../chapter-16.rst:309
+msgid "Here is an example building off the previous htmx forms example."
+msgstr "这是一个基于前面的 htmx 表单示例构建的示例。"
+
+#: ../../chapter-16.rst:311
+msgid "**controller.py**"
+msgstr ""
+
+#: ../../chapter-16.rst:370
+msgid ""
+"Notice that we added the #htmx-grid-demo DIV which calls the htmx_grid "
+"route."
+msgstr "注意，我们添加了 id 是 htmx-grid-demo 的 DIV ，其内部调用了 htmx_grid 路由。"
+
+#: ../../chapter-16.rst:372
+msgid "**templates/htmx_grid.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:378
+msgid ""
+"In htmx_grid we take advantage of deferred processing on the grid. We "
+"setup a standard CRUD grid, defer processing and then tell the grid we're"
+" going to use an alternate attributes plugin to build our navigation. Now"
+" the forms, links and delete confirmations are all handled by htmx."
+msgstr ""
+"在 htmx_grid 中，我们利用了 grid 上的延迟处理。我们设置了一个标准的 CRUD grid，延迟处理，然后告诉 grid "
+"我们将使用一个替代属性插件来构建我们的导航。现在表单、链接和删除确认都由 htmx 处理。"
+
+#: ../../chapter-16.rst:383
+msgid "Autocomplete Widget using htmx"
+msgstr "使用 htmx 的自动完成小部件"
+
+#: ../../chapter-16.rst:385
+msgid ""
+"htmx can be used for much more than just form/grid processing. In this "
+"example we'll take advantage of htmx and the py4web form widgets to build"
+" an autocomplete widget that can be used in your forms. *NOTE: this is "
+"just an example, none of this code comes with py4web*"
+msgstr ""
+"htmx 不仅可以用于 form/grid 格处理。在这个例子中，我们将利用 htmx 和 py4web "
+"表单小部件来构建一个可以在表单中使用的自动补全小部件。 *注意：这只是一个示例，py4web 中没有此代码* "
+
+#: ../../chapter-16.rst:389
+msgid "Again we'll use the superheros database as defined in the examples app."
+msgstr "我们将再次使用示例应用程序中定义的 superheros 数据库。"
+
+#: ../../chapter-16.rst:391
+msgid ""
+"Add the following to your controllers.py.  This code will build your "
+"autocomplete dropdowns as well as handle the database calls to get your "
+"data."
+msgstr "将以下内容添加到你的 controllers.py 中。这段代码将构建你的自动完成下拉菜单，并处理数据库调用以获取数据。"
+
+#: ../../chapter-16.rst:558
+msgid ""
+"Usage - in your controller code, this example uses bulma as the base css "
+"formatter."
+msgstr "用法 - 在控制器代码中，此示例使用 bulma 作为基本的 css 格式化程序。"
+
+#: ../../chapter-16.rst:575
+msgid ""
+"First, get an instance of FormStyleFactory.  Then get the base css "
+"classes from whichever css framework you wish. Add the class inner "
+"exceptions from your css framework. Once this is set up you can override "
+"the default widget for a field based on its name.  In this case we're "
+"overriding the widget for the 'vendor' field. Instead of including all "
+"vendors in the select dropdown, we're limiting only to those with a "
+"vendor type equal to 'S'."
+msgstr ""
+"首先，获取 FormStyleFactory 的实例。然后从您想要的任何 css 框架中获取基本的 css 类。在 css "
+"框架中添加类内部异常。设置好后，您可以根据字段的名称覆盖字段的默认小部件。在这种情况下，我们将覆盖 “vendor” 字段的小部件。我们没有将所有"
+" vendors 都包含在选择下拉列表中，而是仅限于其类型等于 “S” 的供应商。"
+
+#: ../../chapter-16.rst:580
+msgid ""
+"When this is rendered in your page, the default widget for the vendor "
+"field is replaced with the widget generated by the "
+"HtmxAutocompleteWidget. When you pass a simple query to the "
+"HtmxAutocompleteWidget the widget will use the default route to fill the "
+"dropdown with data."
+msgstr ""
+"当这在您的页面中呈现时，vendor 字段的默认小部件将被 HtmxAutocompleteWidget 生成的小部件替换。当您向 "
+"HtmxAutocompleteWidget 传递一个简单的查询时，该小部件将通过默认路由使用数据填充下拉列表。"
+
+#: ../../chapter-16.rst:584
+msgid ""
+"If using the simple query and default build url, you are limited to a "
+"simple DAL query. You cannot use DAL subqueries within this simple query."
+"  If the data for the dropdown requires a more complex DAL query you can "
+"override the default data builder URL to provide your own controller "
+"function to retrieve the data."
+msgstr ""
+"如果使用简单查询和默认构建的 url ，则仅限于简单的 DAL 查询。您不能在此简单查询中使用 DAL 子查询。如果下拉列表的数据需要更复杂的 "
+"DAL 查询，您可以覆盖默认的数据构建器 URL ，以提供自己的控制器函数来检索数据。"
+
+#: ../../chapter-16.rst:589
+msgid "from the https://htmx.org website"
+msgstr "来自 https://htmx.org 网站"
+
+#: ../../chapter-16.rst:592
+msgid "utils.js"
+msgstr ""
+
+#: ../../chapter-16.rst:594
+msgid ""
+"Multiple times in this documentation we have mentioned utils.js which "
+"comes with the scaffolding application, yet we never clearly listed what "
+"is in there. So here it is."
+msgstr "在本文档中，我们多次提到 scaffolding 应用程序附带的 utils.js，但我们从未明确列出其中的内容。所以，在这里说明。"
+
+#: ../../chapter-16.rst:598
+msgid "string.format"
+msgstr ""
+
+#: ../../chapter-16.rst:600
+msgid "It extends the String object prototype to allow expressions like this:"
+msgstr "它扩展了 String 对象原型，允许这样的表达式："
+
+#: ../../chapter-16.rst:607
+msgid "The Q object"
+msgstr "Q 对象"
+
+#: ../../chapter-16.rst:609
+msgid "The Q object can be used like a selector supporting jQuery like syntax:"
+msgstr "Q 对象可以像支持 jQuery 语法的选择器一样使用："
+
+#: ../../chapter-16.rst:616
+msgid ""
+"It supports the same syntax as JS ``querySelectorAll`` and always returns"
+" an array of selected elements (can be empty)."
+msgstr "它支持与 JS ``querySelectorAll``  相同的语法，并且始终返回选定元素的数组（可以为空）。"
+
+#: ../../chapter-16.rst:619
+msgid ""
+"The Q objects is also a container for functions that can be useful when "
+"programming in Javascript. It is stateless."
+msgstr "Q 对象也是函数的容器，在 Javascript 编程时非常有用。它是无状态的"
+
+#: ../../chapter-16.rst:622 ../../chapter-16.rst:704
+msgid "For example:"
+msgstr "例如："
+
+#: ../../chapter-16.rst:624
+msgid "**Q.clone**"
+msgstr ""
+
+#: ../../chapter-16.rst:626
+msgid "A function to clone any object:"
+msgstr "克隆任何对象的函数："
+
+#: ../../chapter-16.rst:633
+msgid "**Q.eval**"
+msgstr ""
+
+#: ../../chapter-16.rst:635
+msgid "It evaluates JS expressions in a string. It is not a sandbox."
+msgstr "它计算字符串中的 JS 表达式。它不是沙盒。"
+
+#: ../../chapter-16.rst:641
+msgid "**Q.ajax**"
+msgstr ""
+
+#: ../../chapter-16.rst:643
+msgid "A wrapper for the JS fetch method which provides a nicer syntax:"
+msgstr "JS fetch 方法的包装器，提供了更好的语法："
+
+#: ../../chapter-16.rst:653
+msgid "**Q.get_cookie**"
+msgstr ""
+
+#: ../../chapter-16.rst:655
+msgid ""
+"Extracts a cookie by name from the header of cookies in the current page:"
+" returns null if the cookie does not exist. Can be used within the JS of "
+"a page to retrieve a session cookie in case it is needed to call an API."
+msgstr ""
+"从当前页面的 cookie 头部按名称提取 cookie：如果 cookie 不存在，则返回 null。可以在页面的 JS 中使用以检索会话 "
+"cookie ，以备调用 cookie 的 API。"
+
+#: ../../chapter-16.rst:663
+msgid "**Q.register_vue_component**"
+msgstr ""
+
+#: ../../chapter-16.rst:665
+msgid ""
+"This is specific for Vue 2 and may be deprecated in the future but it "
+"allows to define a vue component where the template is stored in a "
+"separate HTML file and the template will be loaded lazily only when/if "
+"the component is used."
+msgstr ""
+"这是 Vue 2 特有的，将来可能会被弃用，但它允许定义一个 Vue 组件，其中模板存储在单独的 HTML "
+"文件中，并且只有在使用该组件时才会延迟加载模板。"
+
+#: ../../chapter-16.rst:669
+msgid "For example instead of doing:"
+msgstr "例如，与其这样做："
+
+#: ../../chapter-16.rst:682
+msgid "You would put the template in a button-counter.html and do"
+msgstr "您可以将模板放入 button-counter.html 中，然后执行以下操作"
+
+#: ../../chapter-16.rst:696
+msgid "**Q.upload_helper**"
+msgstr ""
+
+#: ../../chapter-16.rst:698
+msgid ""
+"It allows to bind an input tag of type file to a callback so that when a "
+"file is selected the content of the selected file is loaded, base64 "
+"encoded, and passed to the callback."
+msgstr "它允许将 file 类型的输入标签绑定到回调，以便在选择文件时加载所选文件的内容，进行 base64 编码，并传递给回调。"
+
+#: ../../chapter-16.rst:701
+msgid ""
+"This is useful to create form which include an input field selector - but"
+" you want to place the content of the selected file into a variable, for "
+"example to do an ajax post of that content."
+msgstr "这对于创建包含输入字段选择器的表单很有用，但您希望将所选文件的内容放入变量中，例如对该内容进行 ajax post。"
+
+#: ../../chapter-16.rst:710
+msgid "and"
+msgstr ""
+
+#: ../../chapter-16.rst:723
+msgid "The T object"
+msgstr "T 对象"
+
+#: ../../chapter-16.rst:725
+msgid ""
+"This is a Javascript reimplementation of the Python pluralize library in "
+"Python which is used by the Python T object in py4web. So basically a "
+"client-side T."
+msgstr ""
+"这是 Python 中 pluralize 库的 Javascript 重新实现，该库由 py4web 中的 Python T "
+"对象使用。因此，它本质上是一个客户端（浏览器端）的 T 对象。"
+
+#: ../../chapter-16.rst:733
+msgid ""
+"The intended usage is to create a server endpoint that can provide "
+"translations for the client accepted-language, obtain T.translations via "
+"ajax get, and then use T to translate and pluralize all messages "
+"clientside rather than serverside."
+msgstr ""
+"预期用途是创建一个服务器端点，该端点可以为客户端接受的语言提供翻译，通过 ajax-get 获得 T 翻译，然后使用 T "
+"在客户端而不是服务器端翻译和多元化所有消息。"
+
+#: ../../chapter-16.rst:737 ../../chapter-16.rst:750
+msgid "**Q.debounce**"
+msgstr ""
+
+#: ../../chapter-16.rst:739
+msgid "Prevents a function from stepping on itself."
+msgstr "防止函数自身干扰（重复执行冲突）。"
+
+#: ../../chapter-16.rst:745
+msgid ""
+"and the function will be called every 500ms but will skip if the previous"
+" call did not terminate. Unlike other debounce implementations out there,"
+" it makes sure the last call is always executed by delaying it (in the "
+"example 200ms);"
+msgstr ""
+"并且该函数将每 500 ms "
+"调用一次，但如果前一次调用没有终止，则将跳过。与其他去盎司实现不同，它通过延迟来确保最后一个调用始终被执行（在示例中为 200 ms）"
+
+#: ../../chapter-16.rst:752
+msgid "Prevents a function from being called too often;"
+msgstr "防止函数被过于频繁地被调用；"
+
+#: ../../chapter-16.rst:758
+msgid ""
+"If the element is clicked more often than once every 1000ms, the other "
+"clicks will be ignored."
+msgstr "如果元素的点击频率超过每 1000ms 一次，则其他点击将被忽略。"
+
+#: ../../chapter-16.rst:760
+msgid "**Q.tags_inputs**"
+msgstr ""
+
+#: ../../chapter-16.rst:762
+msgid ""
+"It turns a regular text input containing a string of comma separated tags"
+" into a tag widgets. For example:"
+msgstr "它将包含以逗分为分隔标签的字符串的常规文本输入转换为标签小部件。例如："
+
+#: ../../chapter-16.rst:769
+msgid "and in JSL"
+msgstr "在 JSL 中"
+
+#: ../../chapter-16.rst:775
+msgid "You can restrict the set of options with:"
+msgstr "您可以通过以下方式限制选项集："
+
+#: ../../chapter-16.rst:784
+msgid ""
+"It works with the datalist element to provide autocomplete. Simply "
+"prepend `-list` to the datalist id:"
+msgstr "与 datalist 元素配合使用以提供自动补全功能。只需在数据列表 id 前添加 `-list` ：\""
+
+#: ../../chapter-16.rst:796
+msgid "and in JS:"
+msgstr "在 JS 中"
+
+#: ../../chapter-16.rst:802
+msgid ""
+"It provides more undocumented options. You need to style the tags. For "
+"example:"
+msgstr "它提供了更多未记录的选项。你需要设计标签的样式。例如："
+
+#: ../../chapter-16.rst:825
+msgid ""
+"Notice that if an input element has class `.type-list-string` or `.type-"
+"list-integer`, utils.js applies the `tag_input` function automatically."
+msgstr ""
+"注意，如果输入元素具有 `.type-list-string` 或 `.type-list-integer` ，utils.js 会自动应用 "
+"`tag_input` 函数。"
+
+#: ../../chapter-16.rst:828
+msgid "**Q.score_input**"
+msgstr ""
+
+#: ../../chapter-16.rst:834
+msgid ""
+"This will turn the password input into a widget that scores the password "
+"complexity. It is applied automatically to inputs with name \"password\" "
+"or \"new_password\"."
+msgstr ""
+"这将把密码输入变成一个对密码复杂性进行评分的小部件。它会自动应用于名为 “password” 或 “new_password” 的 input "
+"组件。"
+
+#: ../../chapter-16.rst:837
+msgid "**Components**"
+msgstr "组件"
+
+#: ../../chapter-16.rst:839
+msgid ""
+"This is a poor man version of HTMX. It allows to insert in the page ajax-"
+"component tags that are loaded via ajax and any form in those components "
+"will be trapped (i.e. the result of form submission will also be "
+"displayed inside the same component)"
+msgstr ""
+"这是一个简易版的 HTMX。它允许在页面中插入通过 AJAX 加载的 ajax-component "
+"标签，且这些组件中的任何表单都会被拦截（即表单提交的结果也会显示在同一个组件内）。"
+
+#: ../../chapter-16.rst:843
+msgid "For example imagine an index.html that contains"
+msgstr "例如，想象一个 index.html 包含"
+
+#: ../../chapter-16.rst:851
+msgid "And a different action serving the component:"
+msgstr "还有一个为组件服务的不同 action："
+
+#: ../../chapter-16.rst:864
+msgid ""
+"A component action is a regular action except that it should generate "
+"html without the `<html><body>...</body></html>` envelop and it can make "
+"use of templates and flash for example."
+msgstr ""
+"组件 action 是一个常规 action ，除了它应该生成没有 `<html><body>...</body></html>` 封装的 "
+"html，例如，它可以使用模板和 flash 等。"
+
+#: ../../chapter-16.rst:867
+msgid ""
+"Notice that if the main page supports flash messages, any flash message "
+"in the component will be displayed by the parent page."
+msgstr "请注意，如果主页支持 flash 消息，则组件中的任何 flash 消息都将由父页面显示。"
+
+#: ../../chapter-16.rst:870
+msgid ""
+"Moreover if the component returns a `redirect(\"other_page\")` not just "
+"the content of the component, but the entire page will be redirected."
+msgstr "此外，如果组件返回 `redirect(\"other_page\")` ，则不仅是组件的内容，整个页面都将被重定向。 "
+
+#: ../../chapter-16.rst:873
+msgid ""
+"The contents of the component html can contain `<script>...</script>` and"
+" they can modify global page variables as well as modify other "
+"components."
+msgstr "组件 html 的内容可以包含 `<script> ... </script>` ，它们可以修改全局页面变量以及修改其他组件。"
+
+#: ../../chapter-16.rst:879
+msgid "Adding a Captcha Solution with Altcha"
+msgstr "使用 Altcha 添加验证码的解决方案"
+
+#: ../../chapter-16.rst:881
+msgid ""
+"This section provides a simple captcha implementation for your py4web "
+"applications using the **Altcha** library. While not exhaustively tested,"
+" it serves as a practical example for integrating a robust, client-side "
+"captcha solution. More information in https://altcha.org"
+msgstr ""
+"本节使用 **Altcha** 库为 py4web "
+"应用程序提供了一个简单的验证码实现。虽然没有经过详尽的测试，但它可以作为集成强大的客户端验证码解决方案的一个实例。更多信息请访问 "
+"https://altcha.org "
+
+#: ../../chapter-16.rst:885
+msgid "Prerequisites"
+msgstr "先决条件"
+
+#: ../../chapter-16.rst:887
+msgid "First, you need to install the Altcha library. You can do this using pip:"
+msgstr "首先，您需要安装 Altcha 库。你可以使用 pip 来实现这一点："
+
+#: ../../chapter-16.rst:893
+msgid ""
+"You also need a secret key for HMAC verification. It's recommended to "
+"store this in your application's settings. For this example, we'll assume"
+" you have a file like ``.settings.py`` with the following variable:"
+msgstr ""
+"您还需要一个密钥来进行 HMAC 验证。建议将其存储在应用程序的设置中。对于这个例子，我们假设你有一个像 ``.settings.py`` "
+"这样的文件，其中包含以下变量："
+
+#: ../../chapter-16.rst:901
+msgid "Controller Logic"
+msgstr "控制器逻辑"
+
+#: ../../chapter-16.rst:903
+msgid ""
+"Next, you need to add the necessary actions to your controller file. The "
+"following code provides two actions: one to generate the captcha "
+"challenge (``altcha``) and another to handle a form with the captcha "
+"(``some_form``)."
+msgstr ""
+"接下来，您需要将必要的  actions 添加到控制器文件中。以下代码提供了两个 actions ：一个用于生成验证码挑战（ ``altcha``"
+" ），另一个用于处理包含该验证码的表单（ ``some_form`` ）。"
+
+#: ../../chapter-16.rst:965
+msgid "View Templates"
+msgstr "视图模板"
+
+#: ../../chapter-16.rst:967
+msgid ""
+"You need to include the Altcha JavaScript library and configure the "
+"widget in your HTML templates."
+msgstr "您需要包含 Altcha 的 JavaScript 库，并在 HTML 模板中配置小部件。"
+
+#: ../../chapter-16.rst:970
+msgid "``form_altcha.html``"
+msgstr ""
+
+#: ../../chapter-16.rst:972
+msgid ""
+"This template works with the ``some_form`` action. It loads the Altcha "
+"script and sets the ``challengeurl`` attribute to point to our ``altcha``"
+" action."
+msgstr ""
+"此模板与 ``some_form`` action 配合使用。它加载 Altcha 脚本并设置 ``challengeurl`` 属性以指向我们的"
+" ``altcha`` action 。"
+
+#: ../../chapter-16.rst:992
+msgid "Custom Auth Form"
+msgstr "自定义 Auth Form"
+
+#: ../../chapter-16.rst:994
+msgid ""
+"For a custom authentication form, you can follow a similar approach. Make"
+" sure to insert the ``<altcha-widget>`` tag into the form's structure and"
+" include the necessary JavaScript."
+msgstr ""
+"对于自定义身份验证表单，您可以采用类似的方法。确保将 ``<altcha-widget>`` 标签插入表单的结构中，并包含必要的 "
+"JavaScript。"
+
+#: ../../chapter-16.rst:1025
+msgid "To enable Altcha in the auth form, you can use the following fixture:"
+msgstr "要在 auth 表单中启用 Altcha ，您可以使用以下夹具："
+
+#: ../../chapter-16.rst:1054
+msgid ""
+"Make sure ``AltchaServerFixture`` is accessible in ``common.py`` where "
+"``auth`` is instantiated:"
+msgstr "确保 ``AltchaServerFixture`` 可以在实例化 ``auth`` 的 ``common.py`` 中访问："
+
+#: ../../chapter-16.rst:1061
+msgid ""
+"This will ensure Altcha verification is performed for POST requests in "
+"your authentication forms."
+msgstr "这将确保对身份验证表单中的 POST 请求执行 Altcha 验证"
+
+#: ../../chapter-16.rst:1063
+msgid "You can also use the ``AltchaServerFixture`` in a form:"
+msgstr "你也可以在表单中使用 ``AltchaServerFixture`` "
+

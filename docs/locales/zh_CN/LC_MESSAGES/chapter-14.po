@@ -1,0 +1,815 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 20:25+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-14.rst:3
+msgid "Grid"
+msgstr "表格（Grid）"
+
+#: ../../chapter-14.rst:5
+msgid ""
+"py4web comes with a Grid object providing grid and CRUD (create, update "
+"and delete) capabilities. This allows you to quickly and safely provide "
+"an interface to your data. Since it's also highly customizable, it's the "
+"corner stone of most py4web's applications."
+msgstr ""
+"py4web附带了一个 Grid 对象，提供表格和 "
+"CRUD（创建、更新和删除）功能。这使您能够快速安全地提供数据接口。由于它也是高度可定制的，因此它是大多数 py4web 应用程序的基石。"
+
+#: ../../chapter-14.rst:11
+msgid "Key features"
+msgstr "主要特点"
+
+#: ../../chapter-14.rst:13
+msgid "Full CRUD with Delete Confirmation"
+msgstr "带删除确认的完整的 CRUD 功能"
+
+#: ../../chapter-14.rst:14
+msgid "Click column heads for sorting - click again for DESC"
+msgstr "单击列标题进行排序 - 再次单击以进行降序排序"
+
+#: ../../chapter-14.rst:15
+msgid "Pagination control"
+msgstr "分页控制"
+
+#: ../../chapter-14.rst:16
+msgid "Built in Search (can use search_queries OR search_form)"
+msgstr "内置搜索（可以使用 Search_queries 或 Search_form ）"
+
+#: ../../chapter-14.rst:17
+msgid "Action Buttons - with or without text"
+msgstr "操作按钮- 带文本或不带文本"
+
+#: ../../chapter-14.rst:18
+msgid "Pre and Post Action (add your own buttons to each row)"
+msgstr "操作前与操作后（在每行添加自己的按钮）"
+
+#: ../../chapter-14.rst:19
+msgid "Grid dates in local format"
+msgstr "本地格式的表格日期"
+
+#: ../../chapter-14.rst:20
+msgid "Default formatting by type plus user overrides"
+msgstr "按类型的默认格式，以及用户自定义设置（覆盖默认值）"
+
+#: ../../chapter-14.rst:24
+msgid ""
+"There is an excellent grid tutorial made by Jim Steil on "
+"https://github.com/jpsteil/grid_tutorial. You're strongly advised to "
+"check it for any doubt and for finding many precious examples, hints & "
+"tips."
+msgstr ""
+"Jim Steil 在 https://github.com/jpsteil/grid_tutorial "
+"上制作了一份非常出色的表格（grid）教程。强烈建议您在有任何疑问时查阅该教程，同时您也能在其中找到许多实用的示例、提示与技巧。"
+
+#: ../../chapter-14.rst:30
+msgid "Basic grid example"
+msgstr "grid 的基本示例"
+
+#: ../../chapter-14.rst:32
+msgid "In this simple example we will make a grid over the superhero table."
+msgstr "在这个简单示例中，我们将使用前面的 superhero 表制作了一个表格（grid）对象。"
+
+#: ../../chapter-14.rst:34
+msgid ""
+"Create a new minimal app called ``grid``. Change it with the following "
+"content."
+msgstr "创建一个新的小型 app ，称其为 ``grid`` ，使用下面的内容进行修改："
+
+#: ../../chapter-14.rst:77
+msgid "Add a new file templates/grid.html with this basic content:"
+msgstr "添加一个新的文件 templates/grid.html ，其中包含以下基本内容："
+
+#: ../../chapter-14.rst:83
+msgid ""
+"Then restart py4web. If you browse to http://127.0.0.1:8000/grid/index "
+"you'll get this result:"
+msgstr "然后重启 py4web。如果您浏览 http://127.0.0.1:8000/grid/index ，您将得到以下结果："
+
+#: ../../chapter-14.rst:89
+msgid "Its layout is quite minimal, but it's perfectly usable."
+msgstr "它的布局很简朴，但非常有用。"
+
+#: ../../chapter-14.rst:91
+msgid ""
+"The main problem is that by default the **no.css** stylesheet is used, "
+"see `here <https://github.com/mdipierro/no.css/>`__. But we've not loaded"
+" it! Change the file templates/grid.html with this content:"
+msgstr ""
+"主要问题是，默认情况下使用 no.css 样式表，请参阅 `here "
+"<https://github.com/mdipierro/no.css/>`__ 。但我们还没启用它！使用以下内容更改文件 "
+"templates/grid.tml："
+
+#: ../../chapter-14.rst:109 ../../chapter-14.rst:146
+msgid "Then refresh the page."
+msgstr "然后刷新页面。"
+
+#: ../../chapter-14.rst:115
+msgid ""
+"This is better now, with proper icons for Details, Edit and Delete "
+"actions."
+msgstr "现在情况好多了，有了 “详细信息” 、“编辑 ”和 “删除” 操作的适当图标。"
+
+#: ../../chapter-14.rst:117
+msgid ""
+"We can also think about using the **bulma.css**, see `here "
+"<https://bulma.io/>`__. In this case you need to change the grid object "
+"on __init__.py to:"
+msgstr ""
+"我们还可以考虑使用 **bulma.css** ，请参阅 `here <https://bulma.io/>`__ 。在这种情况下，您需要将 "
+"__init__.py 里的 grid 对象更改为："
+
+#: ../../chapter-14.rst:127
+msgid ""
+"Notice that in this case you need to import the corresponding python "
+"modules in advance (we've already done it on line 4 and 5 above). If you "
+"use the default no.css style instead, you don't need to manually import "
+"its style modules (and you even don't need the formstyle and "
+"grid_class_style parameters)."
+msgstr ""
+"请注意，在这种情况下，您需要提前导入相应的 python 模块（我们已经在上面的第 4 行和第 5 行完成了）。如果使用默认的 no.css "
+"样式，则不需要手动导入其样式模块（甚至不需要 formstyle 和 grid_ass_style 参数）。"
+
+#: ../../chapter-14.rst:132
+msgid "You also have to change the file templates/grid.html with this content:"
+msgstr "您还必须使用以下内容更改文件 templates/grid.html ："
+
+#: ../../chapter-14.rst:151
+msgid "This is much better, isn't it?"
+msgstr "这好多了，不是吗？"
+
+#: ../../chapter-14.rst:153
+msgid ""
+"Bootstrap4 and Bootstrap5 also have styles available, and you can change "
+"the icon style between Fontawesome, Bootstrap Icons, and a basic "
+"IconStyle you can write your own CSS for. More info in the section: "
+":ref:`Customizing style`"
+msgstr ""
+"Bootstrap4 和 Bootstrap5 也有可用的样式，您可以在 Fontawesome、Bootstrap Icons 和自己编写的 "
+"CSS 的基本 IconStyle 之间更改图标样式。更多信息请参阅 :ref:`Customizing style` 一节"
+
+#: ../../chapter-14.rst:159
+msgid ""
+"These are just minimal examples for showing how ``grid`` works "
+"internally. Normally you should start from a copy of the standard "
+"``_scaffold`` app, with all the Session and Authentication stuff already "
+"defined. Also, you should follow the standard rules for code, like "
+"placing the db definition inside models.py and so on. Using standards "
+"will make your code simpler, safer and more maintainable."
+msgstr ""
+"这些只是展示 ``grid`` 内部工作原理的最小示例。通常，您应该从标准 ``_scaffold`` "
+"应用程序的副本开始，其中已经定义了所有会话和身份验证内容。此外，您应该遵循代码的标准规则，比如将 db 定义放在 models.py "
+"中等等。使用标准将使您的代码更简单、更安全、更易于维护。"
+
+#: ../../chapter-14.rst:166
+msgid ""
+"Also, do not use grid objects directly on the root action of an app, "
+"because it does not add the 'index' route. So, in this example if you "
+"browse to http://127.0.0.1:8000/grid the main page is displayed fine but "
+"any contained action will lead to a non existent page."
+msgstr ""
+"此外，不要直接在应用程序的根操作（ root action ）上使用 grid 对象，因为它不会添加 'index' "
+"路由。因此，在本例中，如果您浏览到 http://127.0.0.1:8000/grid ，主页将显示良好，但任何包含的操作都会导致页面不存在。"
+
+#: ../../chapter-14.rst:171
+msgid ""
+"In the :ref:`Advanced topics and examples` chapter you can find more "
+"examples, including a master/detail grid example written with **htmx**. "
+"And don't forget Jim Steil's detailed tutorial on "
+"https://github.com/jpsteil/grid_tutorial."
+msgstr ""
+"在 :ref:`Advanced topics and examples` 一章中，您可以找到更多示例，包括用 **htmx** 编写的主/细节 "
+"grid 示例。别忘了 https://github.com/jpsteil/grid_tutorial 上面 Jim Steil 的详细教程。"
+
+#: ../../chapter-14.rst:177
+msgid "The Grid object"
+msgstr "Grid 对象"
+
+#: ../../chapter-14.rst:211
+msgid "query: pydal query to be processed"
+msgstr "query：待处理的 pydal 查询语句。"
+
+#: ../../chapter-14.rst:212
+msgid ""
+"search_form: py4web FORM to be included as the search form. If "
+"search_form is passed in then the developer is responsible for applying "
+"the filter to the query passed in. This differs from search_queries."
+msgstr "search_form：要作为搜索表单嵌入的 py4web 表单。若传入了 search_form ，则由开发者负责将筛选条件应用到传入的查询语句中。这一点与 search_queries 不同。"
+
+#: ../../chapter-14.rst:213
+msgid ""
+"search_queries: list of query lists to use to build the search form. "
+"Ignored if search_form is used."
+msgstr "search_queries：用于构建搜索表单的查询列表的集合（列表的列表）。若使用了search_form，该参数将被忽略。"
+
+#: ../../chapter-14.rst:214
+msgid ""
+"columns: list of fields or columns to display on the list page, see the "
+":ref:`Custom columns` paragraph later. If blank, the table will use all "
+"readable fields of the searched table."
+msgstr "columns：要在列表页面显示的字段或列的列表，详见后文的 :ref:`Custom columns` 章节。若为空，grid 将使用被查询表的所有可读字段。"
+
+#: ../../chapter-14.rst:215
+msgid ""
+"show_id: show the record id field on list page. Default is None, which "
+"enables automatic detection if any field is of type \"id\"."
+msgstr "show_id：是否在列表页面显示记录的 ID 字段。默认值为 None，此时会自动检测是否存在类型为 “id” 的字段（若有则显示）。"
+
+#: ../../chapter-14.rst:216
+msgid ""
+"orderby: pydal orderby field or list of fields. Controls the default sort"
+" order of the grid."
+msgstr "orderby：pydal 的排序字段或字段列表。用于控制 grid 的默认排序顺序。"
+
+#: ../../chapter-14.rst:217
+msgid "left: if joining other tables, specify the pydal left expression here"
+msgstr "left：若需关联其他表，在此处指定 pydal 的左连接表达式。"
+
+#: ../../chapter-14.rst:218
+msgid "groupby: pydal groupby expression. Used to group results in the grid."
+msgstr "groupby：pydal 的分组表达式。用于对 grid 中的结果进行分组。"
+
+#: ../../chapter-14.rst:219
+msgid ""
+"headings: list of headings to be used for list page - if not provided use"
+" the field label"
+msgstr "headings：列表页面使用的标题列表 —— 若未提供，则使用字段的标签作为标题。"
+
+#: ../../chapter-14.rst:220
+msgid ""
+"create: Controls whether the grid allows record creation. Can be True "
+"(show button), False (hide button), a URL string, or a callable for "
+"custom logic."
+msgstr "create：控制 grid 是否允许创建记录。可取值为：True（显示按钮）、False（隐藏按钮）、URL 字符串，或自定义逻辑的可调用对象。"
+
+#: ../../chapter-14.rst:221
+msgid ""
+"details: Controls whether the grid allows viewing record details. Can be "
+"True, False, a URL string, or a callable for custom logic."
+msgstr "details：控制 grid 是否允许查看记录详情。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。"
+
+#: ../../chapter-14.rst:222
+msgid ""
+"editable: Controls whether the grid allows editing records. Can be True, "
+"False, a URL string, or a callable for custom logic."
+msgstr "editable: 控制 grid 格是否允许编辑记录。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。"
+
+#: ../../chapter-14.rst:223
+msgid ""
+"deletable: Controls whether the grid allows deleting records. Can be "
+"True, False, a URL string, or a callable for custom logic."
+msgstr "deletable：控制 grid 是否允许删除记录。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。"
+
+#: ../../chapter-14.rst:224
+msgid ""
+"required_fields: list of fields that must be included in the grid's "
+"queries and forms. Used to ensure certain fields are always loaded."
+msgstr "required_fields：必须包含在 grid' 的查询语句和表单中的字段列表。用于确保某些字段始终被加载。"
+
+#: ../../chapter-14.rst:225
+msgid "validation: optional validation function to pass to create and edit forms"
+msgstr "validation：可选的验证函数，被传入到创建和编辑表单中使用。"
+
+#: ../../chapter-14.rst:226
+msgid ""
+"pre_action_buttons: list of action_button instances to include before the"
+" standard action buttons"
+msgstr "pre_action_buttons：要在标准操作按钮之前显示的操作按钮实例列表"
+
+#: ../../chapter-14.rst:227
+msgid ""
+"post_action_buttons: list of action_button instances to include after the"
+" standard action buttons"
+msgstr "post_action_buttons: 要在标准操作按钮之后显示的操作按钮实例列表"
+
+#: ../../chapter-14.rst:228
+msgid ""
+"auto_process: Boolean - whether or not the grid should be processed "
+"immediately. If False, developer must call grid.process() once all params"
+" are setup."
+msgstr "auto_process：布尔值 —— grid 是否应立即执行处理逻辑。若为 False，开发者必须在所有参数配置完成后调用 grid.process() 方法。"
+
+#: ../../chapter-14.rst:229
+msgid "rows_per_page: number of rows to display per page. Default 15"
+msgstr "rows_per_page：每页显示的记录行数。默认值为 15。"
+
+#: ../../chapter-14.rst:230
+msgid ""
+"include_action_button_text: boolean telling the grid whether or not you "
+"want text on action buttons within your grid"
+msgstr "include_action_button_text：布尔值，用于告知 grid 是否要在其内部的操作按钮上显示文本。"
+
+#: ../../chapter-14.rst:231
+msgid ""
+"search_button_text: text to appear on the submit button on your search "
+"form"
+msgstr "search_button_text：搜索表单的提交按钮上显示的文本。"
+
+#: ../../chapter-14.rst:232
+msgid ""
+"formstyle: py4web Form formstyle used to style your form when "
+"automatically building CRUD forms"
+msgstr "formstyle：py4web 的表单样式（Form formstyle），用于在自动构建增删改查（CRUD）表单时为表单设置样式。"
+
+#: ../../chapter-14.rst:233
+msgid ""
+"grid_class_style: GridClassStyle class used to override defaults for "
+"styling your rendered grid. Allows you to specify classes or styles to "
+"apply at certain points in the grid"
+msgstr "grid_class_style: 表格样式类（GridClassStyle），用于覆盖 grid 渲染样式的默认设置。允许你为 grid 的特定位置指定要应用的类或样式。"
+
+#: ../../chapter-14.rst:234
+msgid ""
+"icon_style: default: IconStyleFontawsome. used to get icon css classes. "
+"Other options: IconStyle, IconStyleBootstrapIcons"
+msgstr "icon_style: 默认值是 IconStyleFontawsome。用来获取图标的 css 样式。其它可选值：IconStyle, IconStyleBootstrapIcons。"
+
+#: ../../chapter-14.rst:235
+msgid "T: optional pluralize object"
+msgstr "T: 可选的多元化对象，用来翻译某些字符串。"
+
+#: ../../chapter-14.rst:237
+msgid ""
+"(*) The parameters ``details``, ``editable`` and ``deletable`` can also "
+"take a **callable** that will be passed the current row of the grid. This"
+" is useful because you can then turn a button on or off depending on the "
+"values in the row. In other words, instead of providing a simple Boolean "
+"value you can use an expression like:"
+msgstr ""
+"(*) 参数 ``details`` 、 ``editable`` 和 ``deletable`` 也能接受一个可调用的函数，grid 中当前的 "
+"row 对象会被作为参数传递给那个函数。这很有用，因为你能依据 row 对象中的值来启用或禁用某个操作按钮。 "
+"换句话说，你能使用一个如下的表达式，而不是提供一个简单的 boolean 类型的值；"
+
+#: ../../chapter-14.rst:248
+msgid "See also :ref:`Using callable parameters` later on."
+msgstr "也请参考后面的  :ref:`Using callable parameters` "
+
+#: ../../chapter-14.rst:252
+msgid "Searching and filtering"
+msgstr "搜索和过滤"
+
+#: ../../chapter-14.rst:254
+msgid "There are two ways to build a search form:"
+msgstr "这有两种构建搜索表单的方法："
+
+#: ../../chapter-14.rst:256
+msgid "Provide a search_queries list"
+msgstr "为 search_queries 参数提供一个列表"
+
+#: ../../chapter-14.rst:257
+msgid "Build your own custom search form"
+msgstr "构建自己的自定义搜索表单"
+
+#: ../../chapter-14.rst:259
+msgid ""
+"build a search form. If more than one search query in the list, it will "
+"also generate a dropdown to select which search field to search against"
+msgstr "构建一个搜索表单。如果列表中有多个搜索查询，它还将生成一个下拉列表，以选择要搜索的搜索字段"
+
+#: ../../chapter-14.rst:263
+msgid ""
+"However, if this doesn’t give you enough flexibility you can provide by "
+"yourself."
+msgstr "但是，如果这没有给你足够的灵活性，你可以自己提供。"
+
+#: ../../chapter-14.rst:267
+msgid "CRUD settings"
+msgstr "CRUD 设置"
+
+#: ../../chapter-14.rst:269
+msgid ""
+"The grid provides CRUD (create, read, update and delete) capabilities "
+"utilizing py4web Form. You can turn off CRUD features by setting "
+"create/details/editable/deletable during grid instantiation."
+msgstr ""
+"grid 对象利用 py4web Form 提供 CRUD（创建、读取、更新和删除）功能。您可以在 grid 对象实例化期间通过设置 "
+"create/details/editable/deletable 来关闭 CRUD 功能"
+
+#: ../../chapter-14.rst:274
+msgid ""
+"Additionally, you can provide a separate URL to the "
+"create/details/editable/deletable parameters to bypass the auto-generated"
+" CRUD pages and handle the detail pages yourself."
+msgstr ""
+"此外，您可以为 create/details/editable/deletable 参数提供一个单独的 URL，以绕过自动生成的 CRUD "
+"页面，打开自己处理细节的页面。"
+
+#: ../../chapter-14.rst:279
+msgid "Custom columns"
+msgstr "自定义列"
+
+#: ../../chapter-14.rst:281
+msgid ""
+"If the grid does not involve a join but displays results from a single "
+"table"
+msgstr "如果 grid 对象不涉及多表联接（join），仅展示来自单个数据表的结果，那么可以这样添加自定义列："
+
+#: ../../chapter-14.rst:299
+msgid ""
+"Notice in this example the first columns are regular fields, The fifth "
+"column has a header \"Web Site\" and consists of URL strings generated "
+"from the rows. The last column has a header \"Go To\" and generates "
+"actual clickable links using the ``A`` helper. This is the result:"
+msgstr ""
+"请注意，在这个例子中，第一列是常规字段，第五列有一个标题 “Web Site” ，由当前 row 对象生成的 URL "
+"字符串当成此列的值。最后一列有一个标题 “Go To” ，并使用 ``A``  helper 生成实际的可点击链接当成此列的值。结果如下："
+
+#: ../../chapter-14.rst:306
+msgid ""
+"Notice that we've also used the ``deletable`` parameter in order to "
+"disable and hide it for Batman only, as explained before."
+msgstr "请注意，我们还使用了如前所述 ``deletable`` 参数，以便仅对 Batman 禁用和隐藏 “Delete” 按钮。"
+
+#: ../../chapter-14.rst:311
+msgid ""
+"Do not define columns outside of the controller methods that use them, "
+"otherwise the structure of the table will change every time the user "
+"press the refresh button of the browser!"
+msgstr "不要在使用它们的控制器方法之外定义列，否则每次用户按下浏览器的刷新按钮时，表的结构都会发生变化！"
+
+#: ../../chapter-14.rst:314
+msgid ""
+"The reason is that each time the grid displays, it modifies the 'columns'"
+" variable (in the grid) by adding the action buttons to it. So, if "
+"columns are defined outside of the controller method, it just keeps "
+"adding the actions column."
+msgstr ""
+"原因是每次 grid 对象显示时，它都会通过向其中添加操作按钮来修改 “columns” 变量（在 grid "
+"中）。因此，如果列是在控制器方法之外定义的，它只会不断添加操作列。"
+
+#: ../../chapter-14.rst:320
+msgid "Using templates"
+msgstr "使用模板"
+
+#: ../../chapter-14.rst:323
+msgid "Display the grid or a CRUD Form"
+msgstr "显示 grid 对象或 CRUD 表单"
+
+#: ../../chapter-14.rst:329
+msgid ""
+"You can customize the CRUD form layout like a normal form (see "
+":ref:`Custom forms`). So you can use the following structure:"
+msgstr "您可以像普通表单一样自定义 CRUD 表单布局（请参阅 :ref:`Custom forms` ）. 因此，您可以使用以下结构："
+
+#: ../../chapter-14.rst:341
+msgid ""
+"But notice that when handling custom form layouts you need to know if you"
+" are displaying the grid or a form. Use the following to decide:"
+msgstr "但请注意，在处理自定义表单布局时，您需要知道是要显示 grid 对象还是 form 表单。使用以下内容来决定："
+
+#: ../../chapter-14.rst:359
+msgid "Grid 'path' parameter: Old vs New Usage"
+msgstr "Grid 的 'path' 参数：新、旧用法"
+
+#: ../../chapter-14.rst:361
+msgid ""
+"In previous versions of py4web, the `Grid` object required a `path` "
+"parameter in its constructor. This was used to help the grid parse the "
+"URL and determine the current action (such as select, edit, details, "
+"delete, etc.)."
+msgstr ""
+"在 py4web 早于 v1.20240501 的先前版本中， `Grid` 对象的构造函数需要一个 `path` 参数。这被用来帮助 grid "
+"对象解析 URL 并决定启用的 action （例如， select、 edit、 details、 delete 等）。"
+
+#: ../../chapter-14.rst:363
+msgid "**Old usage example:**"
+msgstr "**旧用法示例：**"
+
+#: ../../chapter-14.rst:373
+msgid ""
+"However, starting with py4web 1.20240501 and later, the `path` parameter "
+"is no longer needed or supported. The grid now automatically determines "
+"the current action and routing from the py4web request context and URL "
+"parameters. You should simply omit the `path` argument and use the "
+"constructor as follows:"
+msgstr ""
+"但是，从 py4web 1.20240501 及更高版本开始，不再需要或支持 `path` 参数。 grid 现在根据 py4web 请求上下文和"
+" URL 参数自动确定当前操作和路由。您只需省略 `path` 参数，并按如下方式使用构造函数："
+
+#: ../../chapter-14.rst:375
+msgid "**New usage example:**"
+msgstr "**新用法示例：**"
+
+#: ../../chapter-14.rst:384
+msgid ""
+"This change makes the API simpler and less error-prone. All routing and "
+"action handling is now managed by py4web's @action decorator and the "
+"request context, so you do not need to manually pass the path."
+msgstr ""
+"此更改使 API 变得更简单，并且更少出错。现在，所有路由和操作处理都由 py4web 的@action "
+"装饰器和请求上下文管理，因此您不需要手动传递路径。"
+
+#: ../../chapter-14.rst:386
+msgid ""
+"If you are updating older code, simply remove the `path` argument from "
+"your Grid instantiations."
+msgstr "如果要更新旧代码，只需从 Grid 实例化中删除 path 参数即可。"
+
+#: ../../chapter-14.rst:389
+msgid "Grid mode parameter (path replacement)"
+msgstr "Grid 模式参数（路径替换）"
+
+#: ../../chapter-14.rst:391
+msgid ""
+"The `Grid` object uses a `mode` variable, which is passed via the "
+"`request.query` object in py4web. This variable determines what kind of "
+"page or form the grid will render. Possible values for `mode` are:"
+msgstr ""
+"`Grid` 对象使用一个 `mode` 变量，该变量通过 py4web 中的 `request.query` 对象传递。此变量决定 grid "
+"将呈现什么类型的页面或表单。 `mode` 的可能值有："
+
+#: ../../chapter-14.rst:393
+msgid ""
+"`select`: Shows the main grid listing all records (default if not "
+"specified)."
+msgstr "`select`: 显示列出所有记录的主表（如果未指定，则默认）。"
+
+#: ../../chapter-14.rst:394
+msgid "`new`: Shows a form to create a new record."
+msgstr "`new`: 显示一个表单以创建新记录。"
+
+#: ../../chapter-14.rst:395
+msgid "`details`: Shows a read-only form with details of a single record."
+msgstr "`details`: 显示一个只读表单，其中包含单个记录的详细信息。"
+
+#: ../../chapter-14.rst:396
+msgid "`edit`: Shows a form to edit an existing record."
+msgstr "`edit`: 显示一个表单以编辑现有记录。"
+
+#: ../../chapter-14.rst:397
+msgid "`delete`: Shows a confirmation form to delete a record."
+msgstr "`delete`: 显示删除记录的确认表单。"
+
+#: ../../chapter-14.rst:399
+msgid ""
+"The grid automatically parses the `mode` from the URL query parameters. "
+"For example, if you visit `/myapp/mygrid?mode=edit&id=5`, the grid will "
+"render the edit form for the record with ID 5. If no `mode` is specified,"
+" the grid defaults to `select` and shows the main table view."
+msgstr ""
+"grid 会自动从 URL 查询参数中解析 `mode` 。例如，如果您访问 `/myapp/mygrid?mode=edit&id=5` "
+"，grid 将呈现 id 为 5 的记录的编辑表单。如果未指定 `mode` ，则 grid 默认使用 `select` 模式并显示主表视图。"
+
+#: ../../chapter-14.rst:401
+msgid ""
+"If you want to customize navigation or actions, you can generate links or"
+" buttons that set the desired `mode` and `id` in the query string."
+msgstr "如果要自定义导航或操作，可以生成链接或按钮，在查询字符串中设置所需的模式和 id 。"
+
+#: ../../chapter-14.rst:404
+msgid "Customizing style"
+msgstr "自定义样式"
+
+#: ../../chapter-14.rst:406
+msgid "You can provide your own formstyle or grid classes and style to grid."
+msgstr "您可以为 grid 提供自己的表单样式或 grid 样式类以及样式。"
+
+#: ../../chapter-14.rst:408
+msgid "forms. used for certain portions of the grid."
+msgstr "formstyle 用于 grid 的某些部分。"
+
+#: ../../chapter-14.rst:411
+msgid ""
+"The default ``GridClassStyle`` - based on **no.css**, primarily uses "
+"styles to modify the layout of the grid. We've already seen that it's "
+"possible to use other class_style, in particular ``GridClassStyleBulma`` "
+"or ``GridClassStyleBootstrap5``."
+msgstr ""
+"默认的 ``GridClassStyle`` 基于 **no.css** ，主要使用样式来修改网格的布局。我们已经看到，可以使用其他 "
+"class_style ，特别是 ``GridClassStyleBulma`` 或 ``GridClassStyleBootstrap5``。"
+
+#: ../../chapter-14.rst:415
+msgid ""
+"You can even build your own class_style to be used with the css framework"
+" of your choice."
+msgstr "您甚至可以构建自己的 class_style ，以便与您选择的 css 框架一起使用。"
+
+#: ../../chapter-14.rst:418
+msgid ""
+"With icon_style, you can customize the icon font used. Currently, the "
+"following exist:"
+msgstr "使用 icon_style ，您可以自定义所使用的图标字体。目前，存在以下情况："
+
+#: ../../chapter-14.rst:420
+msgid ""
+"to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use "
+"this. css classes like ``icon-edit-button`` which you can write your own "
+"css for. `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__ to"
+" your html templates to use this."
+msgstr ""
+"使用此功能请添加 `fontawesome <https://fontawesome.com/>`__ 图标字体 CSS 。类似 ``icon-"
+"edit-button`` 的 css 类，您可以为其编写自己的 css 。可以将 `Bootstrap Icons "
+"<https://icons.getbootstrap.com/#install>`__  用于您的 html 模板。"
+
+#: ../../chapter-14.rst:426
+msgid "Custom Action Buttons"
+msgstr "自定义操作按钮"
+
+#: ../../chapter-14.rst:428
+msgid ""
+"As with web2py, you can add additional buttons to each row in your grid. "
+"You do this by providing ``pre_action_buttons`` or "
+"``post_action_buttons`` to the Grid **init** method."
+msgstr ""
+"与 web2py 一样，您可以在 grid 中的每一行添加额外的按钮。为此，您可以向 grid 对象的 **init** 方法提供 "
+"``pre_action_buttons`` 或 ``post_action_buttons`` 。"
+
+#: ../../chapter-14.rst:432
+msgid "before the standard action buttons after the standard action buttons"
+msgstr "在标准操作按钮之前，或在标准操作按钮之后"
+
+#: ../../chapter-14.rst:435
+msgid ""
+"You can build your own Action Button class to pass to pre/post action "
+"buttons based on the template below (this is not provided with py4web)."
+msgstr "您可以根据下面的模板构建自己的 Action Button 类，以传递给操作前/操作后的按钮（py4web 不提供此模板）。"
+
+#: ../../chapter-14.rst:438
+msgid "Here is an example:"
+msgstr "这是一个示例："
+
+#: ../../chapter-14.rst:452
+msgid "Notice that a button can be represented by a dict with the following keys:"
+msgstr "请注意，按钮可以用具有以下键的 dict 来表示："
+
+#: ../../chapter-14.rst:454
+msgid "url: the url the button points to (required)"
+msgstr "url：按钮指向的 url（必填）"
+
+#: ../../chapter-14.rst:455
+msgid "text: the text of the button (required)"
+msgstr "text：按钮的文本（必填）"
+
+#: ../../chapter-14.rst:456
+msgid "icon: the optional name of the icon in the button, for example ``fa-gear``"
+msgstr "icon：按钮中图标的可选名称，例如 ``fa-gear`` "
+
+#: ../../chapter-14.rst:457
+msgid "classes: optional classes to be added to the button tag"
+msgstr "lasses：要为按钮标记添加的可选类\""
+
+#: ../../chapter-14.rst:458
+msgid ""
+"kind: optional kind of button used to retrieve style infro from the "
+"GridStyle. Defaults to \"grid-button\""
+msgstr "kind：用于从 GridStyle 中检索样式信息的可选按钮。默认为 “grid-button” "
+
+#: ../../chapter-14.rst:459
+#, python-brace-format
+msgid ""
+"_{name}: optional attributes to be passed to the ``A(..., _{name}=...)`` "
+"helper building the button."
+msgstr "_{name}：传递给构建按钮的 ``A(..., _{name}=...)`` helper 的可选属性。"
+
+#: ../../chapter-14.rst:461
+msgid ""
+"A button can also be built explicitely using helpers for added "
+"flexibility and less magic:"
+msgstr "还可以使用 helpers 显式构建按钮，以增加灵活性和减少魔力："
+
+#: ../../chapter-14.rst:477
+msgid "Using callable parameters"
+msgstr "使用 “可调用参数”"
+
+#: ../../chapter-14.rst:479
+msgid ""
+"A recent improvement to py4web allows you to pass a **callable** instead "
+"of a GridActionButton. This allow you to more easily change the behaviour"
+" of standard and custom Actions."
+msgstr ""
+"对 py4web 最近的一项改进是，允许你传递一个 **可调用对象** 来代替 "
+"GridActionButton。这允许你更容易地改变标准或自定义的 Acion 的行为。"
+
+#: ../../chapter-14.rst:481
+msgid "Callable can be used with:"
+msgstr "可调用对象能被用于以下参数："
+
+#: ../../chapter-14.rst:483
+msgid "details"
+msgstr ""
+
+#: ../../chapter-14.rst:484
+msgid "editable"
+msgstr ""
+
+#: ../../chapter-14.rst:485
+msgid "deletable"
+msgstr ""
+
+#: ../../chapter-14.rst:486
+msgid "additional_classes"
+msgstr ""
+
+#: ../../chapter-14.rst:487
+msgid "additional_styles"
+msgstr ""
+
+#: ../../chapter-14.rst:488
+msgid "override_classes"
+msgstr ""
+
+#: ../../chapter-14.rst:489
+msgid "override_styles"
+msgstr ""
+
+#: ../../chapter-14.rst:491
+msgid "Example usage:"
+msgstr "用法示例："
+
+#: ../../chapter-14.rst:529
+msgid "Reference Fields"
+msgstr "引用字段"
+
+#: ../../chapter-14.rst:531
+msgid ""
+"When displaying fields in a PyDAL table, you sometimes want to display a "
+"more descriptive field than a foreign key value. There are a couple of "
+"ways to handle that with the py4web grid."
+msgstr "在 PyDAL 表中显示字段时，有时您希望显示比外键值更具描述性的字段值。使用 py4web grid 有几种方法可以处理这个问题。"
+
+#: ../../chapter-14.rst:535
+msgid ""
+"``filter_out`` on PyDAL field definition - here is an example of a "
+"foreign key field"
+msgstr "PyDAL 字段定义的 ``filter_out`` - 下面是一个外键字段的示例"
+
+#: ../../chapter-14.rst:546
+msgid "This will display the company name in the grid instead of the company ID"
+msgstr "这将在 grid 中显示公司名称，而不是公司 ID"
+
+#: ../../chapter-14.rst:548
+msgid ""
+"The downfall of using this method is that sorting and filtering are based"
+" on the company field in the employee table and not the name of the "
+"company"
+msgstr "使用这种方法的缺点是，排序和筛选是基于员工表中的公司 id 字段，而不是公司名称"
+
+#: ../../chapter-14.rst:552
+msgid ""
+"``left join`` and specify fields from joined table - specified on the "
+"left parameter of Grid instantiation"
+msgstr "``left join`` 并指定连接表中的字段-在 Grid 实例化的左参数上指定"
+
+#: ../../chapter-14.rst:559
+msgid ""
+"You can specify a standard PyDAL left join, including a list of joins to "
+"consider. Now the company name field can be included in your fields list "
+"can be clicked on and sorted."
+msgstr "您可以指定一个标准的 PyDAL 左连接，包括要使用的连接列表。现在公司名称字段可以包含在您的字段列表中，可以点击并排序。"
+
+#: ../../chapter-14.rst:564
+msgid "Also you can specify a query such as:"
+msgstr "您还可以指定一个查询，例如："
+
+#: ../../chapter-14.rst:570
+msgid ""
+"This method allows you to sort and filter, but doesn’t allow you to "
+"combine fields to be displayed together as the filter_out method would"
+msgstr "此方法允许您进行排序和筛选，但不允许您像 filter_out 方法那样将要显示的字段组合在一起"
+
+#: ../../chapter-14.rst:573
+msgid ""
+"You need to determine which method is best for your use case behave "
+"differently."
+msgstr "您需要确定哪种方法最适合您的用例。"
+
+#: ../../chapter-14.rst:578
+msgid "Grids with checkboxes"
+msgstr "带有复选框的 Grid"
+
+#: ../../chapter-14.rst:580
+msgid ""
+"While the grid, per se, does not support checkboxes, you can use custom "
+"columns to add one or more columns of checkboxes. You can also add the "
+"helpers logic (the grid uses helpers to generate HTML) to wrap it in a "
+"``<form>`` and add one or more submit buttons. You can then add logic to "
+"process the selected rows when the button is selected. For example:"
+msgstr ""
+"虽然 grid 本身不支持复选框，但您可以使用自定义列添加一列或多列复选框。您还可以添加 helper 逻辑（grid 使用 helpers "
+"生成HTML），将其包装在 ``<form>`` 中，并添加一个或多个提交按钮。然后，您可以在选择按钮时添加逻辑来处理所选行。例如："
+
+#: ../../chapter-14.rst:609
+msgid ""
+"Notice in the above example ``request.POST.get(\"selected_id\")`` can be "
+"a single ID (if one selected) or a list of IDs (if more than one is "
+"selected)."
+msgstr ""
+"请注意上述示例中的  ``request.POST.get(\"selected_id\")`` 可以是单个 id（如果选择了一个）或 id "
+"的列表（如果选择了多个）。"

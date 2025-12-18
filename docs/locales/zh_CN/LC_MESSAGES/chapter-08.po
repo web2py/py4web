@@ -1,0 +1,323 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-08.rst:3
+msgid "The RestAPI"
+msgstr "RestAPI"
+
+#: ../../chapter-08.rst:5
+msgid ""
+"Since version 19.5.10 pyDAL includes a restful API [CIT0801]_ called "
+"RestAPI. It is inspired by GraphQL [CIT0802]_ and while it’s not quite "
+"the same due to it being less powerful, it is in the spirit of py4web "
+"since it's more practical and easier to use."
+msgstr ""
+"从 19.5.10 版本起，pyDAL 包含一个名为 RestAPI 的 restful API [CIT0801]_ 。它的灵感来自 "
+"GraphQL [CIT0802]_ ，虽然由于功能较弱，它们并不完全相同，但 RestAPI 符合 py4web 的精神，因为它更实用、更易于使用。"
+
+#: ../../chapter-08.rst:9
+msgid ""
+"Like GraphQL RestAPI allows a client to query for information using the "
+"GET method and allows to specify some details about the format of the "
+"response (which references to follow, and how to denormalize the data). "
+"Unlike GraphQL it allows the server to specify a policy and restrict "
+"which queries are allowed and which ones are not. They can be evaluated "
+"dynamically per request based on the user and the state of the server."
+msgstr ""
+"与 GraphQL 一样，RestAPI 允许客户端使用 GET "
+"方法查询信息，并允许指定有关响应格式的一些详细信息（要遵循哪些引用，以及如何对数据进行非规范化）。与 GraphQL "
+"不同之处，它允许服务器指定策略并限制允许哪些查询和不允许哪些查询。可以根据用户和服务器的状态对每个请求进行动态评估。"
+
+#: ../../chapter-08.rst:16
+msgid ""
+"As the name implies RestAPI allows all standard methods: GET, POST, PUT, "
+"and DELETE. Each of them can be enabled or disabled based on the policy, "
+"for individual tables and individual fields."
+msgstr ""
+"顾名思义，RestAPI 允许所有标准方法：GET、POST、PUT 和 DELETE "
+"。对于单个表和单个字段，可以根据策略启用或禁用它们中的任意一个。"
+
+#: ../../chapter-08.rst:22
+msgid "Specifications might be subject to changes since this is a new feature."
+msgstr "由于这是一项新功能，技术规范可能会发生变化。"
+
+#: ../../chapter-08.rst:24
+msgid "In the examples below we assume a simple app called “superheroes”:"
+msgstr "在下面的示例中，我们假设有一个叫做 “superheroes” 的简单应用："
+
+#: ../../chapter-08.rst:107
+msgid "RestAPI policies and actions"
+msgstr "RestAPI 的 policy 和 action"
+
+#: ../../chapter-08.rst:109
+msgid ""
+"The policy is per table (or * for all tables) and per method. "
+"``authorize`` can be True (allow), False (deny) or a function with the "
+"signature (method, tablename, record_id, get_vars, post_vars) which "
+"returns True/False. For the GET policy one can specify a list of allowed "
+"query patterns (* for all). A query pattern will be matched against the "
+"keys in the query string."
+msgstr ""
+"该策略是针对每个表（或 * 代表的所有表）和每个方法的。 "
+"``authorize`` 可以是 True（允许）、False（拒绝），也可以是返回 True/False "
+"的带有签名的函数（ (method, tablename, record_id, get_vars, post_vars)）。"
+"对于 GET 策略，可以指定一个允许的查询模式列表（ * 代表所有模式）。"
+"查询模式将与查询字符串中的键进行匹配。"
+
+#: ../../chapter-08.rst:116
+msgid "The above action is exposed as:"
+msgstr "上述 action 公开了："
+
+#: ../../chapter-08.rst:124
+msgid ""
+"The result can be seen directly with a browser, rendered as JSON. Let's "
+"look for example at the ``person`` table:"
+msgstr "结果可以直接用浏览器看到，呈现为 JSON 格式。作为示例，让我们看一下 ``person`` 表："
+
+#: ../../chapter-08.rst:130
+msgid ""
+"The diagram of the superhero's database should help you interpreting the "
+"code:"
+msgstr "superhero 的数据库的示意图应该可以帮助你理解代码："
+
+#: ../../chapter-08.rst:138
+msgid ""
+"Keep in mind that **request.POST** only contains the form data that is "
+"posted using a **regular HTML-form** or **JavaScript FormData** object."
+msgstr ""
+"请记住， **request.POST** 只包含使用 **regular HTML-form** 或 **JavaScript "
+"FormData** 对象发送的表单数据。"
+
+#: ../../chapter-08.rst:143
+msgid "RestAPI GET"
+msgstr ""
+
+#: ../../chapter-08.rst:145
+#, python-brace-format
+msgid ""
+"The general query has the form ``{something}.eq=value`` where ``eq=`` "
+"stands for “equal”, ``gt=`` stands for “greater than”, etc. The "
+"expression can be prepended by ``not.``."
+msgstr ""
+"一般查询的格式为 ``{something}.eq=value`` ，其中 ``eq=`` 表示“相等”， ``gt=`` "
+"表示“大于”，以此类推。表达式前面可以加上 ``not.``"
+
+#: ../../chapter-08.rst:149
+#, python-brace-format
+msgid "``{something}`` can be:"
+msgstr "``{something}`` 可以是："
+
+#: ../../chapter-08.rst:151
+msgid "the name of a field in the table being queried as in:"
+msgstr "表中的字段名称的查询，示例如下："
+
+#: ../../chapter-08.rst:153
+msgid "**All superheroes called “Superman”**"
+msgstr "**所有被称为  “Superman” 的超级英雄**"
+
+#: ../../chapter-08.rst:160
+msgid "the name of a field of a table referred by the table being queried as in:"
+msgstr "被查询的表引用的表的字段的名称，示例如下："
+
+#: ../../chapter-08.rst:162
+msgid "**All superheroes with real identity “Clark Kent”**"
+msgstr "**所有真实身份是 “Clark Kent” 的超级英雄**"
+
+#: ../../chapter-08.rst:168
+msgid ""
+"the name of a field of a table that refers to the table being queried as "
+"in:"
+msgstr "引用被查询表的字段的名称，如下所示"
+
+#: ../../chapter-08.rst:170
+msgid "**All superheroes with any tag superpower with strength > 90**"
+msgstr "**所有拥有超级力量大于 90 的超级英雄**"
+
+#: ../../chapter-08.rst:176
+msgid ""
+"(here ``tag`` is the name of the link table, the preceding ``superhero`` "
+"is the name of the field that refers to the selected table and "
+"``strength`` is the name of the field used to filter)"
+msgstr ""
+"（这里的 ``tag`` 是链接表的名称，前面的 ``superhero`` 是引用所选表的字段的名称，``strength`` "
+"是用于过滤的字段名称）"
+
+#: ../../chapter-08.rst:180
+msgid "a field of the table referenced by a many-to-many linked table as in:"
+msgstr "由多对多链接表引用的表字段，如下所示："
+
+#: ../../chapter-08.rst:182
+msgid "**All superheroes with the flight power**"
+msgstr "**所有拥有飞行能力的超级英雄**"
+
+#: ../../chapter-08.rst:190
+msgid "The key to understand the syntax above is to read it as:"
+msgstr "理解上述语法的关键是将其解读为："
+
+#: ../../chapter-08.rst:192
+msgid ""
+"<< select records of table **superhero** referred by field **superhero** "
+"of table **tag**, when the **superpower** field of said table points to a"
+" record with **description** equal to “Flight” >>"
+msgstr ""
+"当所述表 **tag** 的 **superpower** 字段指向的表中 **description** 字段等于 “Flight” 时，"
+" “查询记录表 **tag** 中的 **superhero** 字段引用的 **superhero** 表中的记录。”"
+
+#: ../../chapter-08.rst:197
+msgid "The query allows additional modifiers for example:"
+msgstr "该查询允许使用其他修饰符，例如："
+
+#: ../../chapter-08.rst:207
+msgid ""
+"The first 3 are obvious. ``@model`` returns a JSON description of "
+"database model. ``@lookup`` denormalizes the linked field."
+msgstr "前三个是显而易见的。 ``@model`` 返回数据库模型的 JSON 描述。 "
+"``@lookup`` 对链接字段进行非规范化处理。"
+
+#: ../../chapter-08.rst:212
+msgid "RestAPI practical examples"
+msgstr "RestAPI 实例"
+
+#: ../../chapter-08.rst:214
+msgid "Here are some practical examples:"
+msgstr "以下是一些实际例子："
+
+#: ../../chapter-08.rst:216 ../../chapter-08.rst:251 ../../chapter-08.rst:328
+#: ../../chapter-08.rst:375 ../../chapter-08.rst:427 ../../chapter-08.rst:468
+#: ../../chapter-08.rst:569 ../../chapter-08.rst:967 ../../chapter-08.rst:992
+#: ../../chapter-08.rst:1017 ../../chapter-08.rst:1047
+msgid "URL:"
+msgstr ""
+
+#: ../../chapter-08.rst:222 ../../chapter-08.rst:257 ../../chapter-08.rst:334
+#: ../../chapter-08.rst:383 ../../chapter-08.rst:436 ../../chapter-08.rst:474
+#: ../../chapter-08.rst:575 ../../chapter-08.rst:707 ../../chapter-08.rst:809
+#: ../../chapter-08.rst:892 ../../chapter-08.rst:973 ../../chapter-08.rst:998
+#: ../../chapter-08.rst:1023 ../../chapter-08.rst:1053
+msgid "OUTPUT:"
+msgstr "输出："
+
+#: ../../chapter-08.rst:381
+msgid "(denormalize the real_identity and rename it identity)"
+msgstr "（将 real_identity 反规范化并重命名为 identity ）"
+
+#: ../../chapter-08.rst:433
+msgid ""
+"(denormalize the real_identity [but only fields name and job], collapse "
+"the with the identity prefix)"
+msgstr "（对 real_identity 进行非规范化 [但仅限于字段 name 和 job]，用 identity 前缀折叠）"
+
+#: ../../chapter-08.rst:700 ../../chapter-08.rst:802 ../../chapter-08.rst:884
+msgid "URL (it's a single line, split for readability):"
+msgstr "URL （这是一行，为了可读性而拆分）："
+
+#: ../../chapter-08.rst:1074
+msgid "The RestAPI response"
+msgstr "RestAPI 的响应"
+
+#: ../../chapter-08.rst:1076
+msgid "All RestAPI response have the fields:"
+msgstr "所有 RestAPI 响应都有以下字段："
+
+#: ../../chapter-08.rst
+msgid "api_version"
+msgstr ""
+
+#: ../../chapter-08.rst:1078
+msgid "RestAPI version."
+msgstr "RestAPI 的版本号"
+
+#: ../../chapter-08.rst
+msgid "timestamp"
+msgstr ""
+
+#: ../../chapter-08.rst:1079
+msgid "Datetime in ISO 8601 format."
+msgstr "ISO 8601 格式的日期时间（YYYY-MM-DDThh:mm:ss[.mmm]TZD）"
+
+#: ../../chapter-08.rst
+msgid "status"
+msgstr ""
+
+#: ../../chapter-08.rst:1080
+msgid "RestAPI status (i.e. \"success\" or \"error\")."
+msgstr "RestAPI 状态（即 \"success\" 或 \"error\" ）"
+
+#: ../../chapter-08.rst
+msgid "code"
+msgstr ""
+
+#: ../../chapter-08.rst:1081
+msgid "HTTP status."
+msgstr "HTTP 状态"
+
+#: ../../chapter-08.rst:1083
+msgid "Other optional fields are:"
+msgstr "其他可选字段包括："
+
+#: ../../chapter-08.rst
+msgid "count"
+msgstr ""
+
+#: ../../chapter-08.rst:1085
+msgid "Total matching (not total returned), for GET."
+msgstr "匹配的总数量（不是返回的总数量），用于 GET"
+
+#: ../../chapter-08.rst
+msgid "items"
+msgstr ""
+
+#: ../../chapter-08.rst:1086
+msgid "In response to a GET."
+msgstr "针对 GET 的响应数据项目"
+
+#: ../../chapter-08.rst
+msgid "errors"
+msgstr ""
+
+#: ../../chapter-08.rst:1087
+msgid "Usually a validation error."
+msgstr "通常是验证错误"
+
+#: ../../chapter-08.rst
+msgid "models"
+msgstr ""
+
+#: ../../chapter-08.rst:1088
+msgid "Usually if status != \"success\"."
+msgstr "通常 status != \"success\" 时，才有此项"
+
+#: ../../chapter-08.rst
+msgid "message"
+msgstr ""
+
+#: ../../chapter-08.rst:1089
+msgid "For error details."
+msgstr "有关错误的详细信息"
+
+#: ../../chapter-08.rst:1092
+msgid "https://en.wikipedia.org/wiki/Representational_state_transfer"
+msgstr ""
+
+#: ../../chapter-08.rst:1093
+msgid "https://graphql.org/"
+msgstr ""
+

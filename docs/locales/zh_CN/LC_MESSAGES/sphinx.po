@@ -1,0 +1,45 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../_templates/versions.html:19
+msgid "Languages"
+msgstr "语言"
+
+#: ../../_templates/versions.html:30
+msgid "Versions"
+msgstr "版本"
+
+#: ../../_templates/versions.html:40
+msgid "Downloads"
+msgstr "下载"
+
+#: ../../_templates/versions.html:48
+msgid "On Read the Docs"
+msgstr ""
+
+#: ../../_templates/versions.html:50
+msgid "Project Home"
+msgstr "项目主页"
+
+#: ../../_templates/versions.html:53
+msgid "Builds"
+msgstr "构建"
+

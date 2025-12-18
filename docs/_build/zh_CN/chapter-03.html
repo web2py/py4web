@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>安装和启动 &mdash; py4web 20251209 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=96e44453"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/tabs.js?v=3030b3cb"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="Dashboard" href="chapter-04.html" />
+    <link rel="prev" title="帮助、资源和提示" href="chapter-02.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">安装和启动</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-design">理解设计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-platforms-and-prerequisites">支持的平台和先决条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-procedures">安装步骤</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-using-a-virtual-environment">使用虚拟环境从 pip 安装</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-without-virtual-environment">不使用虚拟环境，从 pip 安装</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-source-globally">从源代码安装（全局）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-from-source-without-installing">从源代码直接运行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">从二进制文件安装</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading">升级</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-using-uv">使用 uv 运行</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#first-run">首次运行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-options">命令行选项</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#call-command-option"><code class="docutils literal notranslate"><span class="pre">call</span></code> 命令行选项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-app-command-option"><code class="docutils literal notranslate"><span class="pre">new_app</span></code> 命令行选项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-command-option"><code class="docutils literal notranslate"><span class="pre">run</span></code> 命令行选项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-password-command-option"><code class="docutils literal notranslate"><span class="pre">set_password</span></code> 命令行选项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-command-option"><code class="docutils literal notranslate"><span class="pre">setup</span></code> 命令行</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-command-option"><code class="docutils literal notranslate"><span class="pre">shell</span></code> 命令行选项</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-command-option"><code class="docutils literal notranslate"><span class="pre">version</span></code> 命令行选项</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#special-installations">特殊情况地安装</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#https">HTTPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wsgi">WSGI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-gcloud-aka-gae-google-app-engine">在 GCloud（又名 GAE - 谷歌应用引擎）上部署</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-pythonanywhere-com">在 PythonAnywhere.com 上部署</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-docker-podman">在 Docker/Podman 上部署</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-ubuntu">在 Ubuntu 上部署</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">夹具（Fixture）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">身份验证与授权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">表格（Grid）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">安装和启动</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-03.rst" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation-and-startup">
+<h1>安装和启动<a class="headerlink" href="#installation-and-startup" title="Link to this heading"></a></h1>
+<section id="understanding-the-design">
+<h2>理解设计<a class="headerlink" href="#understanding-the-design" title="Link to this heading"></a></h2>
+<p>首先，重要的是要明白，与其他 web 框架不同，它不仅仅是一个可以由应用程序导入的 python 模块。它也是一个负责启动一些应用程序的程序。出于这个原因，你需要两件事：</p>
+<ul class="simple">
+<li><p>py4web 模块（您可以从我们的网站、pypi 或 github 下载）</p></li>
+<li><p>一个或多个文件夹，其中包含你要运行的应用程序集合。</p></li>
+</ul>
+<p>py4web 有命令行选项，可以创建一个包含一些示例应用程序的文件夹，或初始化一个现有文件夹，并将 scaffolding 应用程序添加到那个文件夹中。安装后，您可以在同一文件夹下同时运行多个应用程序，并由同一地址和端口的同一 py4web 进程提供服务。 那个 apps 文件夹是一个 python 模块，里面的每个应用程序也是一个 python 模块。</p>
+</section>
+<section id="supported-platforms-and-prerequisites">
+<h2>支持的平台和先决条件<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Link to this heading"></a></h2>
+<p>py4web 在 Windows、MacOS 和 Linux 上运行良好。它的唯一先决条件是使用 Python 3.7+，必须提前安装（除非您使用 py4web 的二进制文件）。</p>
+</section>
+<section id="setup-procedures">
+<h2>安装步骤<a class="headerlink" href="#setup-procedures" title="Link to this heading"></a></h2>
+<p>有四种安装 py4web 的替代方法，我们将指导您完成每种方法，如果您遇到困难，请 <a class="reference external" href="https://py4web.com/_documentation/static/en/chapter-02.html">联系我们</a> 。</p>
+<section id="installing-from-pip-using-a-virtual-environment">
+<h3>使用虚拟环境从 pip 安装<a class="headerlink" href="#installing-from-pip-using-a-virtual-environment" title="Link to this heading"></a></h3>
+<p>任何像 py4web 这样复杂的 python 应用程序的完整安装肯定会修改您系统的 python 环境。为了防止任何不必要的更改，使用 python 虚拟环境（也称为 <strong>virtualenv</strong> ，请参阅 <a class="reference external" href="https://docs.python.org/3.7/tutorial/venv.html">here</a> 的介绍）是一个好习惯。这是一个标准的 python 特性；如果你还不知道 virtualenv，现在是开始发现它的好时机！</p>
+<p>以下是创建虚拟环境、激活它以及在其中安装 py4web 的说明：</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m venv venv
+. venv/bin/activate
+python -m pip install --upgrade py4web --no-cache-dir
+python py4web setup apps
+python py4web set_password
+python py4web run apps
+</pre></div>
+</div>
+<p>无论是否使用 python py4web 的虚拟环境，启动 py4web 运行应用程序都是一样的</p>
+</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>run cmd.exe
+In e.g. folder c:\py4web
+python3 -m venv venv
+&quot;C:\py4web\venv\Scripts\activate.bat&quot;
+python -m pip install --upgrade py4web --no-cache-dir
+cd venv\scripts
+py4web.exe setup apps
+py4web.exe set_password
+py4web.exe run apps
+</pre></div>
+</div>
+<p>您还可以在同一文件夹中找到 power shell 脚本。无论是否使用 python py4web 的虚拟环境，启动 py4web 运行应用程序都是一样的</p>
+</div></div>
+</section>
+<section id="installing-from-pip-without-virtual-environment">
+<h3>不使用虚拟环境，从 pip 安装<a class="headerlink" href="#installing-from-pip-without-virtual-environment" title="Link to this heading"></a></h3>
+<p><strong>pip</strong> 是 py4web 的基本安装程序，它将快速安装 py4web 的最新稳定版本。</p>
+<p>在命令行</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
+</pre></div>
+</div>
+<p>此外，如果 <code class="docutils literal notranslate"><span class="pre">python3</span></code> 不起作用，尝试指定一个完整的版本，例如 <code class="docutils literal notranslate"><span class="pre">python3.8</span></code> 。</p>
+<p>这将仅在系统路径上安装 py4web 及其所有依赖项。名为 assets 的文件夹（它包含 py4web 的系统应用程序 ）也将被创建。安装后，您将能够在任何给定的工作文件夹上启动 py4web ：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+py4web set_password
+py4web run apps
+</pre></div>
+</div>
+<p>如果 py4web 命令未被接受，则表示它不在系统路径中。在 Windows 上，<em>pip</em> 将在系统路径上创建一个特殊的 py4web.exe 文件（指向 py4web.py），但如果你错误地使用了 <em>–user</em> 选项，就不会创建这个文件。在这种情况下，你可以通过以下方式运行所需的命令：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+python3 py4web.py set_password
+python3 py4web.py run apps
+</pre></div>
+</div>
+</section>
+<section id="installing-from-source-globally">
+<h3>从源代码安装（全局）<a class="headerlink" href="#installing-from-source-globally" title="Link to this heading"></a></h3>
+<p>这是安装程序的传统方式，但它仅适用于 Linux 和 MacOS（ Windows 通常不支持 <cite>make</cite> 实用程序）。所有要求都将安装在系统的路径上，并链接到本地文件夹上的 py4web.py 程序。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
+make assets
+make test
+python -m pip install .
+py4web setup apps
+py4web set_password
+py4web run apps
+</pre></div>
+</div>
+<p>另请注意，以这种方式安装时， <code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> 文件夹的内容起初是缺失的，但稍后可以使用 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> 命令手动创建它。</p>
+<p>请注意，您可以（并且应该）在虚拟环境中从源代码安装py4web。</p>
+</section>
+<section id="running-from-source-without-installing">
+<h3>从源代码直接运行<a class="headerlink" href="#running-from-source-without-installing" title="Link to this heading"></a></h3>
+<p>通过这种方式，所有需求都将在系统的路径上安装或升级，但 py4web 本身只会复制到本地文件夹中。如果您已经有一个可用的 py4web 安装，但想测试另一个，这尤其有用。此外，从源代码（本地或全局）安装将安装 py4web 主分支上存在的所有最新更改 -- 因此您将获得最新（但可能未经测试）的代码。</p>
+<p>将命令行切换到给定的工作文件夹，然后运行</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
+python3 -m pip install --upgrade -e .
+</pre></div>
+</div>
+<p>安装后，您应该始终从那里开始：</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-1-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-1-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-1-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+./py4web.py set_password
+./py4web.py run apps
+</pre></div>
+</div>
+<p>如果您已在全局和本地安装了 py4web ，请注意 <strong>./</strong> ；它强制运行本地文件夹的 py4web 版本，而不是全局安装的版本。</p>
+</div><div aria-labelledby="tab-1-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+python3 py4web.py set_password
+python3 py4web.py run apps
+</pre></div>
+</div>
+<p>在 Windows 上，本地文件夹中的程序总是在系统路径设置中的程序之前被执行（因此在 Linux 上不需要 <strong>./</strong> ）。但是直接运行 .py 文件是不常见的，你需要一个显式的 python3/python 命令。</p>
+</div></div>
+</section>
+<section id="installing-from-binaries">
+<h3>从二进制文件安装<a class="headerlink" href="#installing-from-binaries" title="Link to this heading"></a></h3>
+<p>这不是一个真正的安装，因为你只需复制系统上的一堆文件，而无需对其进行任何修改。因此，这是最简单的解决方案，特别是对于初学者或学生来说，因为它不需要在您的系统上预先安装 Python ，也不需要管理权限。另一方面，它是实验性的，它可能包含一个旧的 py4web 版本，DAL 支持有限，很难添加其他功能。</p>
+<p>为了使用它，您只需要从 <a class="reference external" href="https://github.com/nicozanf/py4web-pyinstaller">这个外部存储库</a> 下载最新的适用于 Windows 或 MacOS 的 ZIP文件。将其解压缩到本地文件夹中，然后在那里打开命令行。最后运行：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web set_password
+./py4web run apps
+</pre></div>
+</div>
+<p>如果使用 Windows ，请省略 './'</p>
+<p>注意：尽管我们尽最大努力使二进制文件保持最新，但它仍可能与 py4web 的最新主版本或最新稳定分支不对应，</p>
+</section>
+</section>
+<section id="upgrading">
+<h2>升级<a class="headerlink" href="#upgrading" title="Link to this heading"></a></h2>
+<p>如果你从 pip 安装了 py4web，你可以简单地使用以下命令升级它：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>这不会自动地升级标准应用，如 <strong>Dashboard</strong> 和 <strong>Default</strong> 。你需要手动删除这些应用，然后运行：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup &lt;path to apps_folder&gt;
+</pre></div>
+</div>
+<p>来重新安装他们。这是一种安全措施，以防万一你对那些应用做了更改。</p>
+</div>
+<p>如果你是通过其它方式安装的 py4web ，那么你必须手动升级它。首先，你需要备份所有已完成的个人 py4web 工作内容，然后删除旧的安装文件夹，再重新安装 py4web 框架。</p>
+<section id="running-using-uv">
+<h3>使用 uv 运行<a class="headerlink" href="#running-using-uv" title="Link to this heading"></a></h3>
+<p>这是管理 python 包的最新方法。按 <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">https://docs.astral.sh/uv/getting-started/installation/</a> 所示安装 uv，然后运行：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>uv run py4web.py run apps
+</pre></div>
+</div>
+<p>提供的 Makefile 中有更多 uv 命令示例</p>
+</section>
+</section>
+<section id="first-run">
+<h2>首次运行<a class="headerlink" href="#first-run" title="Link to this heading"></a></h2>
+<p>使用前面任何一种方法运行 py4web ，都将生成像这样的输出：</p>
+<img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
+<p>通常， <code class="docutils literal notranslate"><span class="pre">apps</span></code> 是一个文件夹的名称，里面保存着你所有的 web 应用，可以使用 <code class="docutils literal notranslate"><span class="pre">run</span></code> 命令显示地指定它。（但是，你也可以把各个应用分组到不同名称的多个文件夹中）如果那个文件夹不存在，那么会创建一个新的。PY4WEB 期望在这个文件夹中找到至少两个应用： <strong>Dashboard</strong> ( <code class="docutils literal notranslate"><span class="pre">_dashboard</span></code> ) 和 <strong>Default</strong> ( <code class="docutils literal notranslate"><span class="pre">_default</span></code> ) 如果没有找到，那么会安装它们。</p>
+<p><strong>Dashboard</strong> 是一个基于 web 的 IDE。下一章会详细描述它。</p>
+<p><strong>Default</strong> 是一个仅有 “欢迎用户访问” 的 web 应用。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>有些应用 - 如 <strong>Dashboard</strong> 和 <strong>Default</strong> - 在 py4web 中有特殊的角色，因此它们的实际名字以  <code class="docutils literal notranslate"><span class="pre">_</span></code> 开头，以避免与你自己创建的应用冲突。</p>
+</div>
+<p>一旦 py4web 运行，通过在本地计算机中打开下面的网址你能访问某个特定应用：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000
+http://localhost:8000/_dashboard
+http://localhost:8000/{yourappname}/index
+</pre></div>
+</div>
+<p>要停止 py4web，需要在你运行它的窗口中按 <kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd> 。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>只有 <strong>Default</strong> 应用是特殊的，因为它的路径中不需要像其它所有应用中有的 “{appname}/” 前缀。一般来说，你可能希望将 <code class="docutils literal notranslate"><span class="pre">apps/_default</span></code> 符号链接到你的默认应用程序</p>
+</div>
+<p>对于所有应用来说，末尾的 <code class="docutils literal notranslate"><span class="pre">/index</span></code> 也是可选的。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>对于 Windows: 有可能 <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd> 不能停止 py4web。在这种情况下，尝试使用 <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">Break</kbd> 或 <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">Fn</kbd>-<kbd class="kbd docutils literal notranslate">Pause</kbd> 。</p>
+</div>
+</section>
+<section id="command-line-options">
+<h2>命令行选项<a class="headerlink" href="#command-line-options" title="Link to this heading"></a></h2>
+<p>py4web 提供了多个命令行选项，可以通过不带任何参数地运行 py4web 而列出它们：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web
+</pre></div>
+</div>
+<img alt="_images/command.png" class="with-shadow" src="_images/command.png" />
+<p>你可以通过带有 <strong>–help</strong> 或 <strong>-h</strong> 参数的方式运行 py4web 来获取特定命令行选项的额外帮助。</p>
+<section id="call-command-option">
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">call</span></code> 命令行选项<a class="headerlink" href="#call-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web call -h
+Usage: py4web.py call [OPTIONS] APPS_FOLDER FUNC
+
+  Call a function inside apps_folder
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  --args TEXT        Arguments passed to the program/function  [default: {}]
+  -help, -h, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>例如：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web call apps examples.test.myfunction --args &#39;{&quot;x&quot;: 100}&#39;
+</pre></div>
+</div>
+<p>myfunction 是你想调用的位于 apps/examples/test.py 中的函数。注意，你必须像上面那样使用单引号或双引号来传递参数。</p>
+</section>
+<section id="new-app-command-option">
+<span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">new_app</span></code> 命令行选项<a class="headerlink" href="#new-app-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web new_app -h
+Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
+
+  Create a new app copying the scaffolding one
+
+Options:
+  -Y, --yes                No prompt, assume yes to questions  [default:
+                           False]
+
+  -s, --scaffold_zip TEXT  Path to the zip with the scaffolding app
+  -help, -h, --help        Show this message and exit.
+</pre></div>
+</div>
+<p>目前，无论是通过二进制文件安装还是（在本地）从源代码安装，都会出现错误，因为它们缺少资产压缩文件（asset zip file）。</p>
+</section>
+<section id="run-command-option">
+<span id="id3"></span><h3><code class="docutils literal notranslate"><span class="pre">run</span></code> 命令行选项<a class="headerlink" href="#run-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run -h
+Usage: py4web.py run [OPTIONS] APPS_FOLDER
+
+  Run the applications on apps_folder
+
+Options:
+   -Y, --yes                       No prompt, assume yes to questions
+   -H, --host TEXT                 Host listening IP  [default: 127.0.0.1]
+   -P, --port INTEGER              Port number  [default: 8000]
+   -A, --app_names TEXT            List of apps to run, comma separated (all if
+                                    omitted or empty)
+   -p, --password_file TEXT        File for the encrypted password  [default:
+                                    password.txt]
+   -Q, --quiet                     Suppress server output
+   -R, --routes                    Write apps routes to file
+   -s, --server [default|wsgiref|tornado|wsgiref+threaded|rocket|waitress|gunicorn|gevent|gunicorn+gevent|gevent+websockets]
+                                    Web server to use (unavailable: waitress,
+                                    gunicorn, gevent, gunicorn+gevent,
+                                    gevent+websockets)
+   -w, --number_workers INTEGER    Number of workers  [default: 0]
+   -d, --dashboard_mode TEXT       Dashboard mode: demo, readonly, full, none
+                                    [default: full]
+   --watch [off|sync|lazy]         Watch python changes and reload apps
+                                    automatically, modes: off, sync, lazy
+                                    [default: lazy]
+   --ssl_cert PATH                 SSL certificate file for HTTPS
+   --ssl_key PATH                  SSL key file for HTTPS
+   --errorlog TEXT                 Where to send error logs
+                                    (:stdout|:stderr|tickets_only|{filename})
+                                    [default: :stderr]
+   -L, --logging_level INTEGER     The log level (0 - 50) [default: 30
+                                    (=WARNING)]
+   -D, --debug                     Debug switch
+   -U, --url_prefix TEXT           Prefix to add to all URLs in and out
+   -m, --mode TEXT                 default or development  [default: default]
+   -help, -h, --help               Show this message and exit.
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">app_names</span></code> 选项让你可以过滤你想要运行哪些特定的应用（用逗号分隔）。如果为空或不存在，那么 APPS_FOLDER 中的所有应用都会被运行。</p>
+<p>默认情况下（出于安全原因），py4web 框架只会监听 127.0.0.1，即 localhost。如果你需要从其他机器访问它，必须指定 host 选项，如 <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--host</span> <span class="pre">0.0.0.0</span> <span class="pre">apps</span></code> 。</p>
+<p><code class="docutils literal notranslate"><span class="pre">url_prefix</span></code> 选项对 py4web 级别上的路由很有用。只要 url_prefix 和端口匹配，它允许将多个版本的 py4web 映射到不同的端口。例如 <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--url_prefix=/abracadabra</span> <span class="pre">--port</span> <span class="pre">8000</span> <span class="pre">apps</span></code> 。</p>
+<p>默认情况下，当应用程序的 python 文件发生任何更改时，py4web 会自动地重新加载它。重新加载将在任何第一次传入请求应用程序变更的那个文件时发生（惰性模式）。如果你更喜欢立即重新加载（同步模式），使用 <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch</span> <span class="pre">sync</span></code> 。 对于生产服务器，最好使用 <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch</span> <span class="pre">off</span></code> 来避免不必要的检查（但你需要重启 py4web 才能激活任何更改）。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p><code class="docutils literal notranslate"><span class="pre">--watch</span></code> 指令只检查 <code class="docutils literal notranslate"><span class="pre">/apps</span></code> 文件夹下的 python 文件的变化。 标准的 py4web 程序的任何修改总是需要完全重启框架。</p>
+</div>
+<p>当前，默认使用的 web 服务器是 rocketServer，但你可以使用 <code class="docutils literal notranslate"><span class="pre">server</span></code> 选项来改变这个行为。 <a class="reference external" href="https://github.com/web2py/rocket3">Rocket3</a> 是 web2py 使用的多线程 web 服务器，去掉了所有 Python2 的逻辑和依赖。</p>
+<p>logging_level 的值在标准的 Python 模块 <strong>logging</strong> 中定义。默认值是 30（它相当于 WARNING ）。其他常见的值有 0（NOTSET）、10（DEBUG）、20（INFO）、40（ERROR）和 50（CRITICAL）。 使用它们，告诉 py4web 你想处理该级别及以上的所有事件。</p>
+<p>debug 参数自动将 logging_level 设置为 0，并记录对 fixture 函数的所有调用。它还记录会话何时创建、无效、保存。</p>
+</section>
+<section id="set-password-command-option">
+<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">set_password</span></code> 命令行选项<a class="headerlink" href="#set-password-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web set_password -h
+Usage: py4web.py set_password [OPTIONS]
+
+  Set administrator&#39;s password for the Dashboard
+
+Options:
+  --password TEXT           Password value (asked if missing)
+  -p, --password_file TEXT  File for the encrypted password  [default:
+                            password.txt]
+
+  -h, -help, --help         Show this message and exit.
+</pre></div>
+</div>
+<p>如果 <code class="docutils literal notranslate"><span class="pre">--dashboard_mode</span></code> 不是 <code class="docutils literal notranslate"><span class="pre">demo</span></code> 或者 <code class="docutils literal notranslate"><span class="pre">none</span></code> ，那么 py4web 每次启动时，它会要求你输入一个一次性密码来访问 dashboard 。这很烦人。您可以通过使用以下命令将使用 pdkdf2 哈希过的密码存储在一个文件（默认情况下称为 password.txt ）中来避免它。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password
+</pre></div>
+</div>
+<p>除非那个文件被删除，否则它将不再询问密码。您还可以使用自定义文件名：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password my_password_file.txt
+</pre></div>
+</div>
+<p>然后要求 py4web 在运行时重新使用该密码</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web run -p my_password_file.txt apps
+</pre></div>
+</div>
+<p>最后，你可以手动创建你自己的文件：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
+password: *****
+</pre></div>
+</div>
+</section>
+<section id="setup-command-option">
+<span id="id5"></span><h3><code class="docutils literal notranslate"><span class="pre">setup</span></code> 命令行<a class="headerlink" href="#setup-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web setup -h
+Usage: py4web.py setup [OPTIONS] APPS_FOLDER
+
+  Setup new apps folder or reinstall it
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  -help, -h, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>这个选项创建一个新的 apps 文件夹（或重新安装它）。如果需要，它会要求确认新文件夹的创建，然后从 assets 文件夹中复制每个标准的 py4web 应用程序。它目前对二进制安装没有作用，从源安装（本地）也没有作用——对于这两种情况，你可以手动将现有的 apps 文件夹复制到新的文件夹中。</p>
+</section>
+<section id="shell-command-option">
+<span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">shell</span></code> 命令行选项<a class="headerlink" href="#shell-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web shell -h
+Usage: py4web.py shell [OPTIONS] APPS_FOLDER
+
+  Open a python shell with apps_folder&#39;s parent added to the path
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  -h, -help, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>Py4web 的 shell 只是常规的 python shell ，只是在搜索路径中添加了应用程序路径。请注意，shell 适用于所有应用程序，而不是单个应用程序。然后，您可以从需要访问的应用程序中导入所需的模块。</p>
+<p>例如，在一个 shell 里，你可以：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">apps.myapp</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
+</pre></div>
+</div>
+</section>
+<section id="version-command-option">
+<span id="id7"></span><h3><code class="docutils literal notranslate"><span class="pre">version</span></code> 命令行选项<a class="headerlink" href="#version-command-option" title="Link to this heading"></a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web version -h
+Usage: py4web.py version [OPTIONS]
+
+  Show versions and exit
+
+Options:
+  -a, --all          List version of all modules
+  -h, -help, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">-all</span></code> 选项，你将获取所有可用的 python 模块的版本，</p>
+</section>
+</section>
+<section id="special-installations">
+<h2>特殊情况地安装<a class="headerlink" href="#special-installations" title="Link to this heading"></a></h2>
+<p>在某些特殊情况下，您不能或不想使用我们已经描述过的通用安装说明之一。py4web 存储库中有一个名为 <code class="docutils literal notranslate"><span class="pre">deployment_tools</span></code> 的特殊文件夹，用于收集一些特殊方法。这里简要介绍了它们，以及一些提示和技巧。</p>
+<section id="https">
+<h3>HTTPS<a class="headerlink" href="#https" title="Link to this heading"></a></h3>
+<p>要将 https 与内置 web 服务器（Rocket3）一起使用，请执行以下步骤：</p>
+<ul>
+<li><p>生成本地主机证书。例如，按照以下说明进行操作：</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/">https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/</a>.</p>
+</div></blockquote>
+</li>
+<li><p>重新启动浏览器并以安全的方式浏览您的网站。</p></li>
+</ul>
+<p>如果你使用 VS Code 运行 py4web ，您可能需要包含以下内容来更新 py4web 的 launch.json 文件内容：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;configurations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py4web&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;debugpy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;launch&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py4web&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="c1">// or &quot;program&quot;: &quot;${workspaceFolder}/py4web.py&quot;, if you didn&#39;t install py4web as a package</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;apps&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--ssl_cert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/path_to/localhost.crt&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--ssl_key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/path_to/localhost.key&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--server&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rocketServer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+</pre></div>
+</div>
+<p>注意，/path_to/ 应该是证书位置的绝对路径。</p>
+</section>
+<section id="wsgi">
+<h3>WSGI<a class="headerlink" href="#wsgi" title="Link to this heading"></a></h3>
+<p>py4web 是一个标准的 WSGI 应用程序。因此，如果无法安装完整的程序，您可以简单地将 py4web 作为 WSGI 应用程序运行。例如，使用 gunicon-cli ，创建一个 python 文件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web_wsgi.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">wsgi</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">wsgi</span><span class="p">(</span><span class="n">apps_folder</span><span class="o">=</span><span class="s2">&quot;apps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>然后，使用 cli 启用应用程序：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gunicorn -w 4 py4web_wsgi:application
+</pre></div>
+</div>
+<p>wsgi 函数接收与命令行参数同名的参数。</p>
+</section>
+<section id="deployment-on-gcloud-aka-gae-google-app-engine">
+<h3>在 GCloud（又名 GAE - 谷歌应用引擎）上部署<a class="headerlink" href="#deployment-on-gcloud-aka-gae-google-app-engine" title="Link to this heading"></a></h3>
+<p>登录 <a class="reference external" href="https://console.cloud.google.com/">Gcloud console</a> 控制台并创建新项目。您将获得一个看起来像 “{project_name}-{number}” 的项目 ID。</p>
+<p>在本地文件系统中，创建一个新的工作文件夹并将工作目录切换到那里：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir gae
+cd gae
+</pre></div>
+</div>
+<p>从 py4web 复制示例文件（假设您有来自 github 的源代码）</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cp /path/to/py4web/development_tools/gcloud/* ./
+</pre></div>
+</div>
+<p>将您的 <code class="docutils literal notranslate"><span class="pre">apps</span></code> 文件夹复制或创建符号链接到 gae 文件夹中，或者也可以新建一个 apps 文件夹，在其中放入一个空的 <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> 文件，然后为你想要部署的各个应用创建符号链接。你应该会看到以下文件/文件夹：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Makefile
+apps
+  __init__.py
+  ... your apps ...
+lib
+app.yaml
+main.py
+</pre></div>
+</div>
+<p>安装 Google SDK 、py4web 并设置工作文件夹：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make install-gcloud-linux
+make setup
+gcloud config set {your email}
+gcloud config set {project id}
+</pre></div>
+</div>
+<p>（将 {your email} 替换为您的谷歌电子邮件帐户，将 {project id} 替换为从谷歌获得的项目 id ）。</p>
+<p>现在，每次您想部署应用程序时，只需执行以下操作：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make deploy
+</pre></div>
+</div>
+<p>您可能希望自定义 Makefile 和 app.yaml 以满足您的需求。您不需要编辑 <code class="docutils literal notranslate"><span class="pre">main.py</span></code> 。</p>
+</section>
+<section id="deployment-on-pythonanywhere-com">
+<h3>在 PythonAnywhere.com 上部署<a class="headerlink" href="#deployment-on-pythonanywhere-com" title="Link to this heading"></a></h3>
+<p>观看 <a class="reference external" href="https://youtu.be/Wxjl_vkLAEY">YouTube video</a> 并按照 <a class="reference external" href="https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md">detailed tutorial</a>  进行操作。bottle_app.py 脚本位于 <code class="docutils literal notranslate"><span class="pre">py4web/deployment_tools/pythonanywhere.com/bottle_app.py</span></code> 中</p>
+</section>
+<section id="deployment-on-docker-podman">
+<h3>在 Docker/Podman 上部署<a class="headerlink" href="#deployment-on-docker-podman" title="Link to this heading"></a></h3>
+<p>在 <code class="docutils literal notranslate"><span class="pre">deployment_tools/docker</span></code> 上，有一个简单的 Dockerfile 用于快速运行 py4web 容器。还有一个 docker-compose.yml 文件，用于在 PostgreSQL 中设置更复杂的多容器。可以从该存储库克隆基于 Scaffold 应用程序的现成 docker 示例 &lt;<a class="reference external" href="https://github.com/macneiln/docker-py4web-scaffold">https://github.com/macneiln/docker-py4web-scaffold</a>&gt; 。</p>
+<p>请注意，您也可以将它们与 Podman 一起使用，其优点是不需要 sudo，也不运行任何后台守护进程。</p>
+</section>
+<section id="deployment-on-ubuntu">
+<h3>在 Ubuntu 上部署<a class="headerlink" href="#deployment-on-ubuntu" title="Link to this heading"></a></h3>
+<p>在 <code class="docutils literal notranslate"><span class="pre">deployment_tools/ubuntu</span></code> 上，有一个使用 buntu Server 20.04.03 LTS 测试过的 bash 脚本。它使用 nginx 和自签名证书。它也可以选择管理 iptables。</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chapter-02.html" class="btn btn-neutral float-left" title="帮助、资源和提示" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="chapter-04.html" class="btn btn-neutral float-right" title="Dashboard" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2020, BSDv3 License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>语言</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>版本</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>下载</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

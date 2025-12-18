@@ -1,0 +1,274 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20251209\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 20:03+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../chapter-08.rst:3
+msgid "The RestAPI"
+msgstr ""
+
+#: ../../chapter-08.rst:5
+msgid "Since version 19.5.10 pyDAL includes a restful API [CIT0801]_ called RestAPI. It is inspired by GraphQL [CIT0802]_ and while it’s not quite the same due to it being less powerful, it is in the spirit of py4web since it's more practical and easier to use."
+msgstr ""
+
+#: ../../chapter-08.rst:9
+msgid "Like GraphQL RestAPI allows a client to query for information using the GET method and allows to specify some details about the format of the response (which references to follow, and how to denormalize the data). Unlike GraphQL it allows the server to specify a policy and restrict which queries are allowed and which ones are not. They can be evaluated dynamically per request based on the user and the state of the server."
+msgstr ""
+
+#: ../../chapter-08.rst:16
+msgid "As the name implies RestAPI allows all standard methods: GET, POST, PUT, and DELETE. Each of them can be enabled or disabled based on the policy, for individual tables and individual fields."
+msgstr ""
+
+#: ../../chapter-08.rst:22
+msgid "Specifications might be subject to changes since this is a new feature."
+msgstr ""
+
+#: ../../chapter-08.rst:24
+msgid "In the examples below we assume a simple app called “superheroes”:"
+msgstr ""
+
+#: ../../chapter-08.rst:107
+msgid "RestAPI policies and actions"
+msgstr ""
+
+#: ../../chapter-08.rst:109
+msgid "The policy is per table (or * for all tables) and per method. ``authorize`` can be True (allow), False (deny) or a function with the signature (method, tablename, record_id, get_vars, post_vars) which returns True/False. For the GET policy one can specify a list of allowed query patterns (* for all). A query pattern will be matched against the keys in the query string."
+msgstr ""
+
+#: ../../chapter-08.rst:116
+msgid "The above action is exposed as:"
+msgstr ""
+
+#: ../../chapter-08.rst:124
+msgid "The result can be seen directly with a browser, rendered as JSON. Let's look for example at the ``person`` table:"
+msgstr ""
+
+#: ../../chapter-08.rst:130
+msgid "The diagram of the superhero's database should help you interpreting the code:"
+msgstr ""
+
+#: ../../chapter-08.rst:138
+msgid "Keep in mind that **request.POST** only contains the form data that is posted using a **regular HTML-form** or **JavaScript FormData** object."
+msgstr ""
+
+#: ../../chapter-08.rst:143
+msgid "RestAPI GET"
+msgstr ""
+
+#: ../../chapter-08.rst:145
+msgid "The general query has the form ``{something}.eq=value`` where ``eq=`` stands for “equal”, ``gt=`` stands for “greater than”, etc. The expression can be prepended by ``not.``."
+msgstr ""
+
+#: ../../chapter-08.rst:149
+msgid "``{something}`` can be:"
+msgstr ""
+
+#: ../../chapter-08.rst:151
+msgid "the name of a field in the table being queried as in:"
+msgstr ""
+
+#: ../../chapter-08.rst:153
+msgid "**All superheroes called “Superman”**"
+msgstr ""
+
+#: ../../chapter-08.rst:160
+msgid "the name of a field of a table referred by the table being queried as in:"
+msgstr ""
+
+#: ../../chapter-08.rst:162
+msgid "**All superheroes with real identity “Clark Kent”**"
+msgstr ""
+
+#: ../../chapter-08.rst:168
+msgid "the name of a field of a table that refers to the table being queried as in:"
+msgstr ""
+
+#: ../../chapter-08.rst:170
+msgid "**All superheroes with any tag superpower with strength > 90**"
+msgstr ""
+
+#: ../../chapter-08.rst:176
+msgid "(here ``tag`` is the name of the link table, the preceding ``superhero`` is the name of the field that refers to the selected table and ``strength`` is the name of the field used to filter)"
+msgstr ""
+
+#: ../../chapter-08.rst:180
+msgid "a field of the table referenced by a many-to-many linked table as in:"
+msgstr ""
+
+#: ../../chapter-08.rst:182
+msgid "**All superheroes with the flight power**"
+msgstr ""
+
+#: ../../chapter-08.rst:190
+msgid "The key to understand the syntax above is to read it as:"
+msgstr ""
+
+#: ../../chapter-08.rst:192
+msgid "<< select records of table **superhero** referred by field **superhero** of table **tag**, when the **superpower** field of said table points to a record with **description** equal to “Flight” >>"
+msgstr ""
+
+#: ../../chapter-08.rst:197
+msgid "The query allows additional modifiers for example:"
+msgstr ""
+
+#: ../../chapter-08.rst:207
+msgid "The first 3 are obvious. ``@model`` returns a JSON description of database model. ``@lookup`` denormalizes the linked field."
+msgstr ""
+
+#: ../../chapter-08.rst:212
+msgid "RestAPI practical examples"
+msgstr ""
+
+#: ../../chapter-08.rst:214
+msgid "Here are some practical examples:"
+msgstr ""
+
+#: ../../chapter-08.rst:216
+#: ../../chapter-08.rst:251
+#: ../../chapter-08.rst:328
+#: ../../chapter-08.rst:375
+#: ../../chapter-08.rst:427
+#: ../../chapter-08.rst:468
+#: ../../chapter-08.rst:569
+#: ../../chapter-08.rst:967
+#: ../../chapter-08.rst:992
+#: ../../chapter-08.rst:1017
+#: ../../chapter-08.rst:1047
+msgid "URL:"
+msgstr ""
+
+#: ../../chapter-08.rst:222
+#: ../../chapter-08.rst:257
+#: ../../chapter-08.rst:334
+#: ../../chapter-08.rst:383
+#: ../../chapter-08.rst:436
+#: ../../chapter-08.rst:474
+#: ../../chapter-08.rst:575
+#: ../../chapter-08.rst:707
+#: ../../chapter-08.rst:809
+#: ../../chapter-08.rst:892
+#: ../../chapter-08.rst:973
+#: ../../chapter-08.rst:998
+#: ../../chapter-08.rst:1023
+#: ../../chapter-08.rst:1053
+msgid "OUTPUT:"
+msgstr ""
+
+#: ../../chapter-08.rst:381
+msgid "(denormalize the real_identity and rename it identity)"
+msgstr ""
+
+#: ../../chapter-08.rst:433
+msgid "(denormalize the real_identity [but only fields name and job], collapse the with the identity prefix)"
+msgstr ""
+
+#: ../../chapter-08.rst:700
+#: ../../chapter-08.rst:802
+#: ../../chapter-08.rst:884
+msgid "URL (it's a single line, split for readability):"
+msgstr ""
+
+#: ../../chapter-08.rst:1074
+msgid "The RestAPI response"
+msgstr ""
+
+#: ../../chapter-08.rst:1076
+msgid "All RestAPI response have the fields:"
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "api_version"
+msgstr ""
+
+#: ../../chapter-08.rst:1078
+msgid "RestAPI version."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "timestamp"
+msgstr ""
+
+#: ../../chapter-08.rst:1079
+msgid "Datetime in ISO 8601 format."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "status"
+msgstr ""
+
+#: ../../chapter-08.rst:1080
+msgid "RestAPI status (i.e. \"success\" or \"error\")."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "code"
+msgstr ""
+
+#: ../../chapter-08.rst:1081
+msgid "HTTP status."
+msgstr ""
+
+#: ../../chapter-08.rst:1083
+msgid "Other optional fields are:"
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "count"
+msgstr ""
+
+#: ../../chapter-08.rst:1085
+msgid "Total matching (not total returned), for GET."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "items"
+msgstr ""
+
+#: ../../chapter-08.rst:1086
+msgid "In response to a GET."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "errors"
+msgstr ""
+
+#: ../../chapter-08.rst:1087
+msgid "Usually a validation error."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "models"
+msgstr ""
+
+#: ../../chapter-08.rst:1088
+msgid "Usually if status != \"success\"."
+msgstr ""
+
+#: ../../chapter-08.rst:0
+msgid "message"
+msgstr ""
+
+#: ../../chapter-08.rst:1089
+msgid "For error details."
+msgstr ""
+
+#: ../../chapter-08.rst:1092
+msgid "https://en.wikipedia.org/wiki/Representational_state_transfer"
+msgstr ""
+
+#: ../../chapter-08.rst:1093
+msgid "https://graphql.org/"
+msgstr ""

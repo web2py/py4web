@@ -1,0 +1,140 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-04.rst:3
+msgid "The Dashboard"
+msgstr "Dashboard"
+
+#: ../../chapter-04.rst:5
+msgid ""
+"The Dashboard is the standard web based IDE; you will surely use it "
+"extensively to manage the applications and check your databases. Looking "
+"at its interface is a good way to start exploring py4web and its "
+"components."
+msgstr "Dashboard 是基于 web 的标准的 IDE (或称其为 “后台管理应用程序” )；您肯定会广泛使用它来管理应用程序和检查数据库。查看其界面是开始探索 py4web 及其组件的好方法。"
+
+#: ../../chapter-04.rst:12
+msgid "The main Web page"
+msgstr "web 主页面"
+
+#: ../../chapter-04.rst:14
+msgid ""
+"When you run the standard py4web program, it starts a web server with a "
+"main web page listening on http://127.0.0.1:8000 (which means that it is "
+"listening on the TCP port 8000 on your local PC, using the HTTP "
+"protocol)."
+msgstr "当您运行标准的 py4web 程序时，它将启动一个带有主网页的 web 服务器监听 http://127.0.0.1:8000 （这意味着它正在使用 HTTP 协议在您的本地 PC 上监听 TCP 的 8000 端口）。"
+
+#: ../../chapter-04.rst:18
+msgid ""
+"You can connect to this main page only from your local PC, using a web "
+"browser like Firefox or Google Chrome:"
+msgstr "使用 Firefox 或 Google Chrome 等网络浏览器时，你只能从本地 PC 连接到这个主页面："
+
+#: ../../chapter-04.rst:25
+msgid "The buttons are:"
+msgstr "这些按钮是："
+
+#: ../../chapter-04.rst:27
+msgid ""
+"Dashboard (http://127.0.0.1:8000/_dashboard), which we'll describe in "
+"this chapter."
+msgstr "Dashboard (http://127.0.0.1:8000/_dashboard), 我们将在本章中描述。"
+
+#: ../../chapter-04.rst:29
+msgid ""
+"Documentation "
+"(http://127.0.0.1:8000/_documentation?version=1.20201112.1), for browsing"
+" the local copy of this Manual."
+msgstr "Documentation (http://127.0.0.1:8000/_documentation?version=1.20201112.1), 用于浏览此手册的本地副本。"
+
+#: ../../chapter-04.rst:31
+msgid ""
+"Source (https://github.com/web2py/py4web), pointing to the GitHub "
+"repository."
+msgstr "Source (https://github.com/web2py/py4web), 指向 GitHub 仓库。"
+
+#: ../../chapter-04.rst:33
+msgid ""
+"Discuss (https://groups.google.com/forum/#!forum/py4web), pointing to the"
+" Google mail group."
+msgstr "Discuss (https://groups.google.com/forum/#!forum/py4web), 指向 Google 邮件组（大陆无法访问）。"
+
+#: ../../chapter-04.rst:38
+msgid "Login into the Dashboard"
+msgstr "登录 Dashboard"
+
+#: ../../chapter-04.rst:40
+msgid ""
+"Pressing the Dashboard button will forward you to the Dashboard login. "
+"Here you must insert the password that you've already setup (see "
+":ref:`set_password command option`). If you don't remember the password, "
+"you have to stop the program with CTRL-C, setup a new one and run the "
+"py4web again."
+msgstr "点击 Dashboard 按钮将转到 Dashboard 的登录页面。在这里，您必须输入您已经设置的密码（参见 :ref:`set_password command option` ）。如果您忘记了密码，您必须使用 CTRL-C 停止程序，设置一个新的密码并再次运行 py4web。"
+
+#: ../../chapter-04.rst:48
+msgid ""
+"After inserting the right Dashboard's password, it will be displayed with"
+" all the tabs compressed."
+msgstr "输入正确的 Dashboard 密码后，所有已经折叠的标签页将被显示出来。"
+
+#: ../../chapter-04.rst:55
+msgid ""
+"Click on a tab title to expand. Tabs are context dependent. For example, "
+"open tab “Installed Applications” and click on an installed application "
+"to select it."
+msgstr "点击标签页标题以展开其内容。标签页及其内容是依赖于上下文的。例如，打开 “Installed Applications” 选项卡，然后点击一个已安装的应用程序以选择它。"
+
+#: ../../chapter-04.rst:59
+msgid ""
+"This will create new tabs “Routes”, “Files”, and “Model” for the selected"
+" app."
+msgstr "针对所选的应用程序，将创建新的选项卡 “Routes”、“Files” 和 “Model” 。"
+
+#: ../../chapter-04.rst:64
+msgid ""
+"The “Files” tab allows you to browse the folder that contains the "
+"selected app and edit any file that comprises the app. If you edit a file"
+" by default it will be automatically reloaded at its first usage (unless "
+"you've changed the *watch* option with the :ref:`run command option`; in "
+"this case you must click on “Reload Apps” under the “Installed "
+"Applications” tab for the change to take effect). If an app fails to "
+"load, its corresponding button is displayed in red. Click on it to see "
+"the corresponding error."
+msgstr "“Files” 选项卡允许您浏览包含所选应用程序的文件夹，并编辑组成应用程序的任何文件。如果您编辑文件，它默认将在第一次使用时自动重新加载（除非您使用 :ref:`run command option` 更改了 *watch* 选项；在这种情况下，您必须在 “Installed Applications” 选项卡下单击 “Reload Apps” 以使更改生效。）如果应用程序加载失败，其相应的按钮将以红色显示。单击它以查看相应的错误。"
+
+#: ../../chapter-04.rst:75
+msgid ""
+"The Dashboard exposes the db of all the apps using pydal RESTAPI. It also"
+" provides a web interface to perform search and CRUD operations."
+msgstr "Dashboard 使用 pydal RESTAPI 公开了所有应用程序的数据库。它还提供了一个 Web 界面，用于执行搜索和 CRUD 操作。"
+
+#: ../../chapter-04.rst:80
+msgid "If a user visits an app and triggers a bug, the user is issued a ticket."
+msgstr "如果用户访问应用程序并触发错误，将为用户生成一个 **问题工单（ticket）** 。"
+
+#: ../../chapter-04.rst:85
+msgid ""
+"The ticket is logged in py4web database. The Dashboard displays the most "
+"common recent issues and allows searching tickets."
+msgstr "**问题工单（ticket）** 被记录在 py4web 的数据库中。Dashboard 显示最常见的最近问题，并允许搜索问题工单。"
+

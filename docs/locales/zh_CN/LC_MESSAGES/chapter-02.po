@@ -1,0 +1,332 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 21:04+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-02.rst:3
+msgid "Help, resources and hints"
+msgstr "帮助、资源和提示"
+
+#: ../../chapter-02.rst:5
+msgid ""
+"We've made our best to make PY4WEB simple and clean. But you know, modern"
+" web programming is a daunting task. It requires an open mind, able to "
+"jump frequently (without being lost!) from python to HTML to javascript "
+"to css and even database management. But don't be scared, in this manual "
+"we'll assist you side by side in this journey. And there are many other "
+"valuable resources that we're going to show you."
+msgstr ""
+"我们尽最大努力使 PY4WEB 简单干净。但你知道，现代网络编程是一项艰巨的任务。它需要一个开放的心态，能够频繁地（而不会丢失！）从 python"
+" 跳到 HTML、javascript 和 "
+"css，甚至数据库管理。但不要害怕，在阅读这本手册时，我们将与您并肩作战。我们还将向您展示许多其他有价值的资源。"
+
+#: ../../chapter-02.rst:12
+msgid "Resources"
+msgstr "资源"
+
+#: ../../chapter-02.rst:15
+msgid "This manual"
+msgstr "本手册"
+
+#: ../../chapter-02.rst:17
+msgid ""
+"This manual is the Reference Manual for py4web. It's available online at "
+"https://py4web.com/_documentation/static/index.html, where you'll also "
+"find the PDF and EBOOK version, in multiple languages. It written in "
+"RestructuredText and generated using Sphinx."
+msgstr ""
+"本手册是 py4web 的参考手册，可通过 https://py4web.com/_documentation/static/index.html"
+" 访问其在线版本，哪里你可以找到 PDF 和 EBOOK 的多语言版本。本手册用 RestructuredText 语法编写，用 Sphinx "
+"生成。"
+
+#: ../../chapter-02.rst:22
+msgid "The Google group"
+msgstr "Google group（中国大陆无法访问）"
+
+#: ../../chapter-02.rst:24
+msgid ""
+"There is a dedicated mailing list hosted on Google Groups, see "
+"https://groups.google.com/g/py4web. This is the main source of "
+"discussions for developers and simple users. For any problem you should "
+"face, this is the right place to search for a hint or a solution."
+msgstr ""
+"有一个专属的邮件列表托管在 Google Groups "
+"上，访问链接：https://groups.google.com/g/py4web。这是开发者和普通用户讨论的主要渠道。遇到任何问题，这是寻找提示或解决方案的合适去处。"
+
+#: ../../chapter-02.rst:29
+msgid "The Discord server"
+msgstr "Discord server（中国大陆无法访问）"
+
+#: ../../chapter-02.rst:31
+msgid ""
+"For quick questions and chats you can also use the free `Discord server "
+"dedicated to py4web <https://discord.gg/xCzQ9KTk3W>`__. You could usually"
+" find many py4web developers hanging out in the channel."
+msgstr ""
+"如需快速问答或交流，您还可以使用专为 py4web 设立的免费的 `Discord server dedicated to py4web "
+"<https://discord.gg/xCzQ9KTk3W>`__ 。通常可以在该频道看到许多 py4web 开发者在线互动。"
+
+#: ../../chapter-02.rst:36
+msgid "Tutorials and video"
+msgstr "教程和视频"
+
+#: ../../chapter-02.rst:38
+msgid "There are many tutorials and videos available. Here are some of them:"
+msgstr "有许多教程和视频可供选择。以下是其中一些："
+
+#: ../../chapter-02.rst:40
+msgid ""
+"the `Learn Py4Web site <https://learn-py4web.github.io>`__ by Luca de "
+"Alfaro (with lots of excellent training videos)"
+msgstr ""
+"由 Luca de Alfaro 建立的网站 `Learn py4web <https://learn-py4web.github.io>`__ "
+"（里面有很多优秀的培训视频）"
+
+#: ../../chapter-02.rst:41
+msgid ""
+"the free video `course 2020 by Luca de Alfaro "
+"<https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-"
+"and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz"
+msgstr ""
+"UC Santa Cruz 上的免费视频资源 `course 2020 by Luca de Alfaro "
+"<https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-"
+"and-the-web/cse-183-spring-2020>`__ （中国大陆无法访问）"
+
+#: ../../chapter-02.rst:43
+msgid ""
+"the `py4web blog app <https://github.com/agavgavi/py4web-blog-app.git>`__"
+" by Andrew Gavgavian,  which uses py4web to replicate the famous Corey "
+"Schafer's tutorial series on creating a blog app in Django"
+msgstr ""
+"Andrew Gavgavian 制作的 `py4web blog app <https://github.com/agavgavi"
+"/py4web-blog-app.git>`__ 它使用 py4web 复制了著名的 Corey Schafer 的关于在 Django "
+"中创建博客应用程序的系列教程（中国大陆无法访问）"
+
+#: ../../chapter-02.rst:45
+msgid ""
+"the `South Breeze Enterprises demo app "
+"<https://github.com/jpsteil/southbreeze>`__ by `Jim Steil "
+"<https://github.com/jpsteil>`__.  It is built around the structure of the"
+" Microsoft Northwind database, but converted to SQLite. You can view the "
+"final result online `here <https://southbreeze.pythonbench.com>`__"
+msgstr ""
+"由 `Jim Steil <https://github.com/jpsteil>`_ 建立的演示应用程序 `South Breeze "
+"Enterprises <https://github.com/jpsteil/southbreeze>`__  。它是围绕 Microsoft "
+"Northwind 数据库的结构构建的，但已转换为 SQLite。您可以在 `这里 "
+"<https://southbreeze.pythonbench.com>`__ 在线查看最终结果"
+
+#: ../../chapter-02.rst:48
+msgid ""
+"the `py4web blog in spanish <https://py4web-tutoriales.blogspot.com>`__ "
+"by Alan Etkin, wich covers the basics to start with the framework plus "
+"examples. It is thought as a resource for sudents and aims to provide a "
+"full web development course"
+msgstr ""
+"Alan Etkin 的西班牙语 `py4web blog <https://py4web-tutoriales.blogspot.com>`__"
+"  ，其中涵盖了从框架开始的基础知识和示例。它被认为是一种面向用户的资源，旨在提供完整的 web 开发课程"
+
+#: ../../chapter-02.rst:51
+msgid "The sources on GitHub"
+msgstr "GitHub 上的资源"
+
+#: ../../chapter-02.rst:53
+msgid ""
+"Last but not least, py4web is Open Source, with a BSD v3 license, hosted "
+"on GitHub at https://github.com/web2py/py4web. This means that you can "
+"read, study and experiment with all of its internal details by yourself."
+msgstr ""
+"最后但同样重要的是，py4web 是开源的，具有 BSD v3 许可证，托管在 GitHub 上 "
+"https://github.com/web2py/py4web。这意味着你可以自己阅读、研究和实验它的所有内部细节。"
+
+#: ../../chapter-02.rst:58
+msgid "Hints and tips"
+msgstr "提示和技巧"
+
+#: ../../chapter-02.rst:60
+msgid ""
+"This paragraph is dedicated to preliminary hints, suggestions and tips "
+"that could be helpful to know before starting to learn py4web."
+msgstr "在开始学习 py4web 之前，本节专门用来介绍一些有有用的提示、建议和技巧。"
+
+#: ../../chapter-02.rst:64
+msgid "Prerequisite"
+msgstr "先决条件"
+
+#: ../../chapter-02.rst:66
+msgid ""
+"In order to understand py4web you need at least a basic python knowledge."
+" There are many books, courses and tutorials available on the web - "
+"choose what's best for you. The python's decorators, in particular, are a"
+" milestone of any python web framework and you have to fully understand "
+"it."
+msgstr ""
+"为了理解 py4web ，你至少需要一些基本的 python 知识。网络上有许多书籍、课程和教程可供选择——选择最适合你的。特别是 python "
+"的装饰器（decorator），是理解任何 python web 框架的里程碑（重要概念），你必须完全理解它。"
+
+#: ../../chapter-02.rst:70
+msgid "A modern python workplace"
+msgstr "一个现代化的 Python 工作环境"
+
+#: ../../chapter-02.rst:72
+msgid ""
+"In the following chapters you will start coding on your computer. We "
+"suggest you to setup a modern python workplace if you plan to do it "
+"efficiently and safely. Even for running simple examples and "
+"experimenting a little, we strongly suggest to use an **Integrated "
+"Development Environment** (IDE). This will make your programming "
+"experience much better, allowing syntax checking, linting and visual "
+"debugging. Nowadays there are two free and multi-platform main choices: "
+"Microsoft Visual Studio Code aka `VScode "
+"<https://code.visualstudio.com/>`__ and JetBrains `PyCharm "
+"<https://www.jetbrains.com/pycharm/>`__."
+msgstr ""
+"在接下来的章节中，您将开始在计算机上编码。如果你打算高效安全地使用 python，我们建议你安装一个现代化的 python "
+"工作环境。即使是运行简单的示例和进行小实验，我们也强烈建议使用集成开发环境（IDE）。这将使您的编程体验更好，允许语法检查、链接 "
+"和可视化调试。如今，主要有两种免费和多平台的选择：微软开发的 Visual Studio Code（又名 `VS Code "
+"<https://code.visualstudio.com/>`__ ）和 JetBrains 开发的 `PyCharm "
+"<https://www.jetbrains.com/pycharm/>`__ 。"
+
+#: ../../chapter-02.rst:78
+msgid ""
+"When you'll start to deal with more complex programs and need "
+"reliability, we also suggest to:"
+msgstr "当您要开始处理更复杂的程序并需要可靠性时，我们还建议："
+
+#: ../../chapter-02.rst:81
+msgid ""
+"use virtual environments (also called **virtualenv**\\, see `here "
+"<https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction)."
+" In a complex workplace this will avoid to be messed up with other python"
+" programs and modules"
+msgstr ""
+"使用虚拟环境（也称为 **virtualenv** ，请参阅 `这里 "
+"<https://docs.python.org/3.7/tutorial/venv.html>`__ "
+"了解介绍）。在复杂的工作环境中，这将避免与其他 python 程序和模块混淆。"
+
+#: ../../chapter-02.rst:85
+msgid ""
+"use **git** to keep track of your program's changes and save your changes"
+" in a safe place online (GitHub, GitLat, or Bitbucket)."
+msgstr ""
+"使用 **git** 来跟踪程序的更改，并将更改保存在安全的在线位置（国外的 GitHub、GitLat 、 Bitbucket 或是 中国大陆的"
+" Gitee）"
+
+#: ../../chapter-02.rst:87
+msgid ""
+"use an editor with Syntax Highlighting. We highly recommend Visual Studio"
+" Code (VScode) or PyCharm."
+msgstr "使用带语法高亮的编辑器，我们强烈推荐 Visual Studio Code (VS Code) 或 PyCharm。"
+
+#: ../../chapter-02.rst:92
+msgid "Debugging py4web with VScode"
+msgstr "用 VS Code 调试 py4web 开发的应用"
+
+#: ../../chapter-02.rst:94
+msgid "It's quite simple to run and debug py4web within VScode."
+msgstr "在 VS Code 中运行和调试 py4web 开发的应用非常简单。"
+
+#: ../../chapter-02.rst:96
+msgid ""
+"If you have **installed py4web from source**, you just need to open the "
+"main py4web folder (not the apps folder!) with VScode and add:"
+msgstr ""
+"如果你已经从源代码安装了 py4web，你只需要用 VS Code 打开 py4web 的主文件夹（不是 apps 文件夹！）并以下配置添加到 "
+"VS Code 的 launch.json 配置文件中 ："
+
+#: ../../chapter-02.rst:103
+msgid ""
+"to the vscode ``launch.json`` configuration file. Note that if you're "
+"using Windows the \"your_full_path_to_py4web.py\" parameter must be "
+"written using forward slash only, like "
+"\"C:/Users/your_name/py4web/py4web.py\"."
+msgstr ""
+"请注意，如果您使用的是 Windows，则 “your_full_path_to_py4web.py” 参数必须仅使用正斜杠编写，如 "
+"“C:/Users/your_name/py4web/py4web.py” "
+
+#: ../../chapter-02.rst:107
+msgid ""
+"If you have instead **installed py4web from pip,** you need to set the "
+"launch.json file to run py4web as a module"
+msgstr "如果你已经从 pip 安装了 py4web ，你需要在将 launch.json 文件里设置为将 py4web 作为模块运行"
+
+#: ../../chapter-02.rst:119
+msgid ""
+"Adjust the `args` to match your apps folder. For example, replace `apps` "
+"with `.` if you opened the apps folder itself in VSCode."
+msgstr ""
+"调整 `args` 以匹配您的应用文件夹。例如，如果你在 VS Code 中打开 apps 文件夹本身，就将 ``apps`` 替换为 ``.``"
+" 。"
+
+#: ../../chapter-02.rst:123
+msgid ""
+"In both cases, if you should get gevent errors you have to also add "
+"``\"gevent\": true`` on the ``launch.json`` configuration file."
+msgstr ""
+"在这两种情况下，如果你得到 gevent 错误，你还必须在 ``launch.json`` 配置文件中添加 ``\"gevent\": "
+"true``  。"
+
+#: ../../chapter-02.rst:127
+msgid "Debugging py4web with PyCharm"
+msgstr "使用 PyCharm 调试 py4web"
+
+#: ../../chapter-02.rst:129
+msgid ""
+"In PyCharm, if you should get gevent errors you need to enable Settings |"
+" Build, Execution, Deployment | Python Debugger | Gevent compatible."
+msgstr ""
+"在 PyCharm 中，若遇到 gevent 相关错误，需启用 “Settings | Build, Execution, Deployment "
+"| Python Debugger | Gevent compatible”（即 “设置 | 构建、执行、部署 | Python 调试器 | 兼容"
+" Gevent” ）选项。"
+
+#: ../../chapter-02.rst:133
+msgid "How to contribute"
+msgstr "如何贡献"
+
+#: ../../chapter-02.rst:135
+msgid ""
+"We need help from everyone: support our efforts! You can just participate"
+" in the Google group trying to answer other's questions, submit bugs "
+"using or create pull requests on the GitHub repository."
+msgstr "我们需要大家的帮助：支持我们的努力！你可以加入谷歌小组，尝试回答其他人的问题，使用 GitHub 仓库提交 bug 或创建 pull 请求。"
+
+#: ../../chapter-02.rst:138
+msgid ""
+"If you wish to correct and expand this manual, or even translate it in a "
+"new foreign language, you can read all the needed information directly on"
+" the `specific README "
+"<https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on "
+"GitHub."
+msgstr ""
+"如果您想更正和扩展本手册，甚至将其翻译成新的外语，您可以直接在 GitHub 上的 `specific README "
+"<https://github.com/web2py/py4web/blob/master/docs/README.md>`__ "
+"上阅读所有需要的信息。"
+
+#: ../../chapter-02.rst:141
+msgid ""
+"It's really simple! Just change the .RST files in the /doc folder and "
+"create a Pull Request on the GitHub repository at "
+"https://github.com/web2py/py4web - you can even do it within your "
+"browser. Once the PR is accepted, your changes will be written on the "
+"master branch, and will be reflected on the web pages / pdf / epub at the"
+" next output generation on the branch."
+msgstr ""
+"这真的很简单！只要换一下在 /doc 文件夹中的 .RST 文件，并在 GitHub 存储库上 "
+"https://github.com/web2py/py4web 创建 Pull 请求 -- 你甚至可以在浏览器中完成。一旦 PR "
+"被接受，您的更改将写入主分支，并在分支的下一代输出中反映在网页 /pdf/epub 上。"
+
