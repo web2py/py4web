@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; py4web 20250902 documentation</title>
+  <title>Advanced topics and examples &mdash; py4web 20251212 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=2a8d5aee"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=f6b33611"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -79,7 +79,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-t-object">The T object</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-a-captcha-solution-with-altcha">Adding a Captcha Solution with Altcha</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-captcha-solution-with-altcha">Adding a Captcha Solution with Altcha</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#controller-logic">Controller Logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-templates">View Templates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#form-altcha-html"><code class="docutils literal notranslate"><span class="pre">form_altcha.html</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-auth-form">Custom Auth Form</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -804,11 +813,10 @@ You need to style the tags. For example:</p>
 </div>
 <p>Notice that if an input element has class <cite>.type-list-string</cite> or <cite>.type-list-integer</cite>, utils.js applies the
 <cite>tag_input</cite> function automatically.</p>
-<p><em>Q.score_input*</em></p>
-<p>..code:: javascript</p>
-<blockquote>
-<div><p>Q.score_input(Q(‘input[type=password]’)[0]);</p>
-</div></blockquote>
+<p><strong>Q.score_input</strong></p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">score_input</span><span class="p">(</span><span class="nx">Q</span><span class="p">(</span><span class="s1">&#39;input[type=password]&#39;</span><span class="p">)[</span><span class="mf">0</span><span class="p">]);</span>
+</pre></div>
+</div>
 <p>This will turn the password input into a widget that scores the password complexity.
 It is applied automatically to inputs with name “password” or “new_password”.</p>
 <p><strong>Components</strong></p>
@@ -846,6 +854,8 @@ as well as modify other components.</p>
 <span id="altcha-captcha"></span><h2>Adding a Captcha Solution with Altcha<a class="headerlink" href="#adding-a-captcha-solution-with-altcha" title="Link to this heading"></a></h2>
 <p>This section provides a simple captcha implementation for your py4web applications using the <strong>Altcha</strong> library. While not exhaustively tested, it serves as a practical example for integrating a robust, client-side captcha solution.
 More information in <a class="reference external" href="https://altcha.org">https://altcha.org</a></p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
 <p>First, you need to install the Altcha library. You can do this using pip:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>altcha
 </pre></div>
@@ -855,6 +865,9 @@ More information in <a class="reference external" href="https://altcha.org">http
 <span class="n">ALTCHA_HMAC_KEY</span> <span class="o">=</span> <span class="s2">&quot;your-very-secret-key-here&quot;</span>
 </pre></div>
 </div>
+</section>
+<section id="controller-logic">
+<h3>Controller Logic<a class="headerlink" href="#controller-logic" title="Link to this heading"></a></h3>
 <p>Next, you need to add the necessary actions to your controller file. The following code provides two actions: one to generate the captcha challenge (<code class="docutils literal notranslate"><span class="pre">altcha</span></code>) and another to handle a form with the captcha (<code class="docutils literal notranslate"><span class="pre">some_form</span></code>).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># controllers/default.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">altcha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -914,7 +927,12 @@ More information in <a class="reference external" href="https://altcha.org">http
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="view-templates">
+<h3>View Templates<a class="headerlink" href="#view-templates" title="Link to this heading"></a></h3>
 <p>You need to include the Altcha JavaScript library and configure the widget in your HTML templates.</p>
+<section id="form-altcha-html">
+<h4><code class="docutils literal notranslate"><span class="pre">form_altcha.html</span></code><a class="headerlink" href="#form-altcha-html" title="Link to this heading"></a></h4>
 <p>This template works with the <code class="docutils literal notranslate"><span class="pre">some_form</span></code> action. It loads the Altcha script and sets the <code class="docutils literal notranslate"><span class="pre">challengeurl</span></code> attribute to point to our <code class="docutils literal notranslate"><span class="pre">altcha</span></code> action.</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
 
@@ -932,6 +950,10 @@ More information in <a class="reference external" href="https://altcha.org">http
 <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="custom-auth-form">
+<h3>Custom Auth Form<a class="headerlink" href="#custom-auth-form" title="Link to this heading"></a></h3>
 <p>For a custom authentication form, you can follow a similar approach. Make sure to insert the <code class="docutils literal notranslate"><span class="pre">&lt;altcha-widget&gt;</span></code> tag into the form’s structure and include the necessary JavaScript.</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &quot;layout.html&quot;]]
 <span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">defer</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
@@ -1016,6 +1038,7 @@ More information in <a class="reference external" href="https://altcha.org">http
 </div>
 </section>
 </section>
+</section>
 
 
            </div>
@@ -1052,7 +1075,7 @@ More information in <a class="reference external" href="https://altcha.org">http
      <label for="switch"></label>
      </span>
       
-      v: 20250902
+      v: 20251212
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -1067,6 +1090,10 @@ More information in <a class="reference external" href="https://altcha.org">http
           
           
           <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
         
       </dl>
       

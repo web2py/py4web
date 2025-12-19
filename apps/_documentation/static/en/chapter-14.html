@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grid &mdash; py4web 20250902 documentation</title>
+  <title>Grid &mdash; py4web 20251212 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=2a8d5aee"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=f6b33611"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#grid-mode-parameter-path-replacement">Grid mode parameter (path replacement)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#customizing-style">Customizing style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-action-buttons">Custom Action Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-callable-parameters">Using callable parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-fields">Reference Fields</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#grids-with-checkboxes">Grids with checkboxes</a></li>
 </ul>
@@ -248,63 +249,64 @@ And don’t forget Jim Steil’s detailed tutorial on <a class="reference extern
 </section>
 <section id="the-grid-object">
 <h2>The Grid object<a class="headerlink" href="#the-grid-object" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>  <span class="k">class</span><span class="w"> </span><span class="nc">Grid</span><span class="p">:</span>
-     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">,</span>
-        <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">groupby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">headings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">validation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">pre_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">post_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">auto_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">rows_per_page</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-        <span class="n">include_action_button_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
-        <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
-        <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
-        <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="p">,</span>
-        <span class="n">T</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
-     <span class="p">):</span>
-
-<span class="o">-</span>  <span class="n">query</span><span class="p">:</span> <span class="n">pydal</span> <span class="n">query</span> <span class="n">to</span> <span class="n">be</span> <span class="n">processed</span>
-<span class="o">-</span>  <span class="n">search_form</span><span class="p">:</span> <span class="n">py4web</span> <span class="n">FORM</span> <span class="n">to</span> <span class="n">be</span> <span class="n">included</span> <span class="k">as</span> <span class="n">the</span> <span class="n">search</span> <span class="n">form</span><span class="o">.</span> <span class="n">If</span> <span class="n">search_form</span> <span class="ow">is</span> <span class="n">passed</span> <span class="ow">in</span> <span class="n">then</span> <span class="n">the</span> <span class="n">developer</span> <span class="ow">is</span> <span class="n">responsible</span> <span class="k">for</span> <span class="n">applying</span> <span class="n">the</span> <span class="nb">filter</span> <span class="n">to</span> <span class="n">the</span> <span class="n">query</span> <span class="n">passed</span> <span class="ow">in</span><span class="o">.</span> <span class="n">This</span> <span class="n">differs</span> <span class="kn">from</span><span class="w"> </span><span class="nn">search_queries.</span>
-<span class="o">-</span>  <span class="n">search_queries</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">query</span> <span class="n">lists</span> <span class="n">to</span> <span class="n">use</span> <span class="n">to</span> <span class="n">build</span> <span class="n">the</span> <span class="n">search</span> <span class="n">form</span><span class="o">.</span> <span class="n">Ignored</span> <span class="k">if</span> <span class="n">search_form</span> <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">fields</span> <span class="ow">or</span> <span class="n">columns</span> <span class="n">to</span> <span class="n">display</span> <span class="n">on</span> <span class="n">the</span> <span class="nb">list</span> <span class="n">page</span><span class="p">,</span> <span class="n">see</span> <span class="n">the</span> <span class="p">:</span><span class="n">ref</span><span class="p">:</span><span class="err">`</span><span class="n">Custom</span> <span class="n">columns</span><span class="err">`</span> <span class="n">paragraph</span> <span class="n">later</span><span class="o">.</span> <span class="n">If</span> <span class="n">blank</span><span class="p">,</span> <span class="n">the</span> <span class="n">table</span> <span class="n">will</span> <span class="n">use</span> <span class="nb">all</span> <span class="n">readable</span> <span class="n">fields</span> <span class="n">of</span> <span class="n">the</span> <span class="n">searched</span> <span class="n">table</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">show_id</span><span class="p">:</span> <span class="n">show</span> <span class="n">the</span> <span class="n">record</span> <span class="nb">id</span> <span class="n">field</span> <span class="n">on</span> <span class="nb">list</span> <span class="n">page</span><span class="o">.</span> <span class="n">Default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="n">which</span> <span class="n">enables</span> <span class="n">automatic</span> <span class="n">detection</span> <span class="k">if</span> <span class="nb">any</span> <span class="n">field</span> <span class="ow">is</span> <span class="n">of</span> <span class="nb">type</span> <span class="s2">&quot;id&quot;</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">orderby</span><span class="p">:</span> <span class="n">pydal</span> <span class="n">orderby</span> <span class="n">field</span> <span class="ow">or</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">fields</span><span class="o">.</span> <span class="n">Controls</span> <span class="n">the</span> <span class="n">default</span> <span class="n">sort</span> <span class="n">order</span> <span class="n">of</span> <span class="n">the</span> <span class="n">grid</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">left</span><span class="p">:</span> <span class="k">if</span> <span class="n">joining</span> <span class="n">other</span> <span class="n">tables</span><span class="p">,</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">pydal</span> <span class="n">left</span> <span class="n">expression</span> <span class="n">here</span>
-<span class="o">-</span>  <span class="n">groupby</span><span class="p">:</span> <span class="n">pydal</span> <span class="n">groupby</span> <span class="n">expression</span><span class="o">.</span> <span class="n">Used</span> <span class="n">to</span> <span class="n">group</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">grid</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">headings</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">headings</span> <span class="n">to</span> <span class="n">be</span> <span class="n">used</span> <span class="k">for</span> <span class="nb">list</span> <span class="n">page</span> <span class="o">-</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">provided</span> <span class="n">use</span> <span class="n">the</span> <span class="n">field</span> <span class="n">label</span>
-<span class="o">-</span>  <span class="n">create</span><span class="p">:</span> <span class="n">Controls</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">allows</span> <span class="n">record</span> <span class="n">creation</span><span class="o">.</span> <span class="n">Can</span> <span class="n">be</span> <span class="kc">True</span> <span class="p">(</span><span class="n">show</span> <span class="n">button</span><span class="p">),</span> <span class="kc">False</span> <span class="p">(</span><span class="n">hide</span> <span class="n">button</span><span class="p">),</span> <span class="n">a</span> <span class="n">URL</span> <span class="n">string</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="nb">callable</span> <span class="k">for</span> <span class="n">custom</span> <span class="n">logic</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">details</span><span class="p">:</span> <span class="n">Controls</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">allows</span> <span class="n">viewing</span> <span class="n">record</span> <span class="n">details</span><span class="o">.</span> <span class="n">Can</span> <span class="n">be</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">a</span> <span class="n">URL</span> <span class="n">string</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="nb">callable</span> <span class="k">for</span> <span class="n">custom</span> <span class="n">logic</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">editable</span><span class="p">:</span> <span class="n">Controls</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">allows</span> <span class="n">editing</span> <span class="n">records</span><span class="o">.</span> <span class="n">Can</span> <span class="n">be</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">a</span> <span class="n">URL</span> <span class="n">string</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="nb">callable</span> <span class="k">for</span> <span class="n">custom</span> <span class="n">logic</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">deletable</span><span class="p">:</span> <span class="n">Controls</span> <span class="n">whether</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">allows</span> <span class="n">deleting</span> <span class="n">records</span><span class="o">.</span> <span class="n">Can</span> <span class="n">be</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">a</span> <span class="n">URL</span> <span class="n">string</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="nb">callable</span> <span class="k">for</span> <span class="n">custom</span> <span class="n">logic</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">required_fields</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">fields</span> <span class="n">that</span> <span class="n">must</span> <span class="n">be</span> <span class="n">included</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">grid</span><span class="s1">&#39;s queries and forms. Used to ensure certain fields are always loaded.</span>
-<span class="o">-</span>  <span class="n">validation</span><span class="p">:</span> <span class="n">optional</span> <span class="n">validation</span> <span class="n">function</span> <span class="n">to</span> <span class="k">pass</span> <span class="n">to</span> <span class="n">create</span> <span class="ow">and</span> <span class="n">edit</span> <span class="n">forms</span>
-<span class="o">-</span>  <span class="n">pre_action_buttons</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">action_button</span> <span class="n">instances</span> <span class="n">to</span> <span class="n">include</span> <span class="n">before</span> <span class="n">the</span> <span class="n">standard</span> <span class="n">action</span> <span class="n">buttons</span>
-<span class="o">-</span>  <span class="n">post_action_buttons</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">action_button</span> <span class="n">instances</span> <span class="n">to</span> <span class="n">include</span> <span class="n">after</span> <span class="n">the</span> <span class="n">standard</span> <span class="n">action</span> <span class="n">buttons</span>
-<span class="o">-</span>  <span class="n">auto_process</span><span class="p">:</span> <span class="n">Boolean</span> <span class="o">-</span> <span class="n">whether</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">should</span> <span class="n">be</span> <span class="n">processed</span> <span class="n">immediately</span><span class="o">.</span> <span class="n">If</span> <span class="kc">False</span><span class="p">,</span> <span class="n">developer</span> <span class="n">must</span> <span class="n">call</span> <span class="n">grid</span><span class="o">.</span><span class="n">process</span><span class="p">()</span> <span class="n">once</span> <span class="nb">all</span> <span class="n">params</span> <span class="n">are</span> <span class="n">setup</span><span class="o">.</span>
-<span class="o">-</span>  <span class="n">rows_per_page</span><span class="p">:</span> <span class="n">number</span> <span class="n">of</span> <span class="n">rows</span> <span class="n">to</span> <span class="n">display</span> <span class="n">per</span> <span class="n">page</span><span class="o">.</span> <span class="n">Default</span> <span class="mi">15</span>
-<span class="o">-</span>  <span class="n">include_action_button_text</span><span class="p">:</span> <span class="n">boolean</span> <span class="n">telling</span> <span class="n">the</span> <span class="n">grid</span> <span class="n">whether</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">you</span> <span class="n">want</span> <span class="n">text</span> <span class="n">on</span> <span class="n">action</span> <span class="n">buttons</span> <span class="n">within</span> <span class="n">your</span> <span class="n">grid</span>
-<span class="o">-</span>  <span class="n">search_button_text</span><span class="p">:</span> <span class="n">text</span> <span class="n">to</span> <span class="n">appear</span> <span class="n">on</span> <span class="n">the</span> <span class="n">submit</span> <span class="n">button</span> <span class="n">on</span> <span class="n">your</span> <span class="n">search</span> <span class="n">form</span>
-<span class="o">-</span>  <span class="n">formstyle</span><span class="p">:</span> <span class="n">py4web</span> <span class="n">Form</span> <span class="n">formstyle</span> <span class="n">used</span> <span class="n">to</span> <span class="n">style</span> <span class="n">your</span> <span class="n">form</span> <span class="n">when</span> <span class="n">automatically</span> <span class="n">building</span> <span class="n">CRUD</span> <span class="n">forms</span>
-<span class="o">-</span>  <span class="n">grid_class_style</span><span class="p">:</span> <span class="n">GridClassStyle</span> <span class="k">class</span><span class="w"> </span><span class="nc">used</span> <span class="n">to</span> <span class="n">override</span> <span class="n">defaults</span> <span class="k">for</span> <span class="n">styling</span> <span class="n">your</span> <span class="n">rendered</span> <span class="n">grid</span><span class="o">.</span> <span class="n">Allows</span> <span class="n">you</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">classes</span> <span class="ow">or</span> <span class="n">styles</span> <span class="n">to</span> <span class="n">apply</span> <span class="n">at</span> <span class="n">certain</span> <span class="n">points</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">grid</span>
-<span class="o">-</span>  <span class="n">icon_style</span><span class="p">:</span> <span class="n">default</span><span class="p">:</span> <span class="n">IconStyleFontawsome</span><span class="o">.</span> <span class="n">used</span> <span class="n">to</span> <span class="n">get</span> <span class="n">icon</span> <span class="n">css</span> <span class="n">classes</span><span class="o">.</span> <span class="n">Other</span> <span class="n">options</span><span class="p">:</span> <span class="n">IconStyle</span><span class="p">,</span> <span class="n">IconStyleBootstrapIcons</span>
-<span class="o">-</span>  <span class="n">T</span><span class="p">:</span> <span class="n">optional</span> <span class="n">pluralize</span> <span class="nb">object</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Grid</span><span class="p">:</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+      <span class="bp">self</span><span class="p">,</span>
+      <span class="n">query</span><span class="p">,</span>
+      <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+      <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">groupby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">headings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">validation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">pre_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">post_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">auto_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">rows_per_page</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+      <span class="n">include_action_button_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
+      <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
+      <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
+      <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="p">,</span>
+      <span class="n">T</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+   <span class="p">):</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>query: pydal query to be processed</p></li>
+<li><p>search_form: py4web FORM to be included as the search form. If search_form is passed in then the developer is responsible for applying the filter to the query passed in. This differs from search_queries.</p></li>
+<li><p>search_queries: list of query lists to use to build the search form. Ignored if search_form is used.</p></li>
+<li><p>columns: list of fields or columns to display on the list page, see the <a class="reference internal" href="#custom-columns"><span class="std std-ref">Custom columns</span></a> paragraph later. If blank, the table will use all readable fields of the searched table.</p></li>
+<li><p>show_id: show the record id field on list page. Default is None, which enables automatic detection if any field is of type “id”.</p></li>
+<li><p>orderby: pydal orderby field or list of fields. Controls the default sort order of the grid.</p></li>
+<li><p>left: if joining other tables, specify the pydal left expression here</p></li>
+<li><p>groupby: pydal groupby expression. Used to group results in the grid.</p></li>
+<li><p>headings: list of headings to be used for list page - if not provided use the field label</p></li>
+<li><p>create: Controls whether the grid allows record creation. Can be True (show button), False (hide button), a URL string, or a callable for custom logic.</p></li>
+<li><p>details: Controls whether the grid allows viewing record details. Can be True, False, a URL string, or a callable for custom logic.</p></li>
+<li><p>editable: Controls whether the grid allows editing records. Can be True, False, a URL string, or a callable for custom logic.</p></li>
+<li><p>deletable: Controls whether the grid allows deleting records. Can be True, False, a URL string, or a callable for custom logic.</p></li>
+<li><p>required_fields: list of fields that must be included in the grid’s queries and forms. Used to ensure certain fields are always loaded.</p></li>
+<li><p>validation: optional validation function to pass to create and edit forms</p></li>
+<li><p>pre_action_buttons: list of action_button instances to include before the standard action buttons</p></li>
+<li><p>post_action_buttons: list of action_button instances to include after the standard action buttons</p></li>
+<li><p>auto_process: Boolean - whether or not the grid should be processed immediately. If False, developer must call grid.process() once all params are setup.</p></li>
+<li><p>rows_per_page: number of rows to display per page. Default 15</p></li>
+<li><p>include_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid</p></li>
+<li><p>search_button_text: text to appear on the submit button on your search form</p></li>
+<li><p>formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms</p></li>
+<li><p>grid_class_style: GridClassStyle class used to override defaults for styling your rendered grid. Allows you to specify classes or styles to apply at certain points in the grid</p></li>
+<li><p>icon_style: default: IconStyleFontawsome. used to get icon css classes. Other options: IconStyle, IconStyleBootstrapIcons</p></li>
+<li><p>T: optional pluralize object</p></li>
+</ul>
 <p>(*) The parameters <code class="docutils literal notranslate"><span class="pre">details</span></code>, <code class="docutils literal notranslate"><span class="pre">editable</span></code> and <code class="docutils literal notranslate"><span class="pre">deletable</span></code> can also take a <strong>callable</strong> that will
 be passed the current row of the grid. This is useful because you can then turn a button on or off
 depending on the values in the row. In other words,
@@ -312,7 +314,7 @@ instead of providing a simple Boolean value you can use an expression like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deletable</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">job</span><span class="o">==</span><span class="s2">&quot;CEO&quot;</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
 </pre></div>
 </div>
-<p>See also <span class="xref std std-ref">Using callable parameters</span> later on.</p>
+<p>See also <a class="reference internal" href="#using-callable-parameters"><span class="std std-ref">Using callable parameters</span></a> later on.</p>
 <section id="searching-and-filtering">
 <h3>Searching and filtering<a class="headerlink" href="#searching-and-filtering" title="Link to this heading"></a></h3>
 <p>There are two ways to build a search form:</p>
@@ -501,6 +503,54 @@ buttons based on the template below (this is not provided with py4web).</p>
 </pre></div>
 </div>
 </section>
+<section id="using-callable-parameters">
+<h2>Using callable parameters<a class="headerlink" href="#using-callable-parameters" title="Link to this heading"></a></h2>
+<p>A recent improvement to py4web allows you to pass a <strong>callable</strong> instead of a GridActionButton. This allow you to more easily change the behaviour of standard and custom Actions.</p>
+<p>Callable can be used with:</p>
+<ul class="simple">
+<li><p>details</p></li>
+<li><p>editable</p></li>
+<li><p>deletable</p></li>
+<li><p>additional_classes</p></li>
+<li><p>additional_styles</p></li>
+<li><p>override_classes</p></li>
+<li><p>override_styles</p></li>
+</ul>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+   <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="o">.</span><span class="n">add_button</span><span class="p">,</span> <span class="c1"># same as &quot;fa-plus&quot;</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+      <span class="p">)</span>
+   <span class="p">]</span>
+
+   <span class="n">post_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me!!!&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-plus&quot;</span><span class="p">,</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+      <span class="p">)</span>
+   <span class="p">]</span>
+
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+      <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+      <span class="n">query</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span>
+      <span class="n">pre_action_buttons</span><span class="o">=</span><span class="n">pre_action_buttons</span><span class="p">,</span>
+      <span class="n">post_action_buttons</span><span class="o">=</span><span class="n">post_action_buttons</span><span class="p">,</span>
+   <span class="p">)</span>
+
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
 <section id="reference-fields">
 <h2>Reference Fields<a class="headerlink" href="#reference-fields" title="Link to this heading"></a></h2>
 <p>When displaying fields in a PyDAL table, you sometimes want to display a
@@ -607,7 +657,7 @@ is selected).</p>
      <label for="switch"></label>
      </span>
       
-      v: 20250902
+      v: 20251212
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -622,6 +672,10 @@ is selected).</p>
           
           
           <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
         
       </dl>
       

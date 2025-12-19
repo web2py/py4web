@@ -18,9 +18,9 @@ Thumbs.db
 ./build
 ./dist
 ./ssl
-./docs
 ./logs
 ./*.zip
+docs/_build
 requirements.txt
 apps/_documentation/static/*/*.pdf
 apps/_documentation/static/*/*.epub
