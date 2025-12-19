@@ -1,0 +1,791 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-10.rst:3
+msgid "YATL helpers"
+msgstr "YATL 中的助手（helpers）"
+
+#: ../../chapter-10.rst:6
+msgid "Helpers overview"
+msgstr "助手（helpers）概览"
+
+#: ../../chapter-10.rst:8
+msgid "Consider the following code in a template:"
+msgstr "假设在一个模板中有如下代码："
+
+#: ../../chapter-10.rst:14
+msgid "it is rendered as:"
+msgstr "它被呈现为："
+
+#: ../../chapter-10.rst:20
+msgid ""
+"You can easily test the rendering of these commands by copying the "
+"_scaffold app (see :ref:`copying-the-scaffold-app`) and then editing the "
+"file ``new_app/template/index.html``."
+msgstr ""
+"通过复制 _scaffold 应用程序（请参阅 :ref:`copying-the-scaffold-app` ），然后编辑文件 "
+"``new_app/template/index.html`` ，您可以轻松测试这些命令的渲染。"
+
+#: ../../chapter-10.rst:24
+msgid ""
+"``DIV`` is a **helper class**, i.e., something that can be used to build "
+"HTML programmatically. It corresponds to the HTML ``<div>`` tag."
+msgstr ""
+"``DIV`` 是一个  **helper class** ，即可用于以编程方式构建 HTML 的东西。它对应于 HTML 的 ``<div>``"
+" 标签。"
+
+#: ../../chapter-10.rst:27
+msgid "Helpers can have:"
+msgstr "助手（Helper）可以有："
+
+#: ../../chapter-10.rst:29
+msgid ""
+"**positional arguments** interpreted as objects contained between the "
+"open and close tags, like ``thisisatest`` in the previous example"
+msgstr "**位置参数**，被解释为 *开始* 和 *结束* 标记之间包含的对象，如前一个示例中的 ``thisisatest`` "
+
+#: ../../chapter-10.rst:31
+msgid ""
+"**named arguments** (start with an underscore) interpreted as HTML tag "
+"attributes (without the underscore), like ``_class`` and ``_id`` in the "
+"previous example"
+msgstr "**下划线开头的命名参数**，被解释为 HTML 标签属性（不带下划线），如上例中的 ``_class`` 和 ``_id`` "
+
+#: ../../chapter-10.rst:34
+msgid ""
+"**named arguments** (start without an underscore), in this case these "
+"arguments are tag-specific"
+msgstr "**命名参数** （不以下划线开头），这些参数是特定于标记的。"
+
+#: ../../chapter-10.rst:38
+msgid ""
+"Instead of a set of unnamed arguments, a helper can also take a single "
+"list or tuple as its set of components using the ``*`` notation and it "
+"can take a single dictionary as its set of attributes using the ``**``, "
+"for example:"
+msgstr ""
+"helper 也可以使用 ``*`` 符号将单个列表或元组作为其组件集来代替使用一组未命名的参数，并且可以使用 ``**`` "
+"符号将单个字典作为其属性集，例如："
+
+#: ../../chapter-10.rst:51
+msgid "(produces the same output as before)."
+msgstr "产生与前面相同的输出）。"
+
+#: ../../chapter-10.rst:53
+msgid ""
+"The following are the current set of helpers available within the YATL "
+"module:"
+msgstr "以下是 YATL 模块中当前可用的助手集（helpers）："
+
+#: ../../chapter-10.rst:56
+msgid ""
+"``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, "
+"``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, "
+"``HTML``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``METATAG``, ``OL``, "
+"``OPTION``, ``P``, ``PRE``, ``SELECT``, ``SPAN``, ``STRONG``, ``TABLE``, "
+"``TAG``, ``TAGGER``, ``THEAD``, ``TBODY``, ``TD``, ``TEXTAREA``, ``TH``, "
+"``TT``, ``TR``, ``UL``, ``XML``, ``xmlescape``, ``I``, ``META``, "
+"``LINK``, ``TITLE``, ``STYLE``, ``SCRIPT``"
+msgstr ""
+
+#: ../../chapter-10.rst:64
+msgid ""
+"Helpers can be used to build complex expressions, that can then be "
+"serialized to XML. For example:"
+msgstr "可用 helper 构建复杂的表达式，然后可以将其序列化为 XML。例如："
+
+#: ../../chapter-10.rst:71
+msgid "is rendered:"
+msgstr "被呈现为："
+
+#: ../../chapter-10.rst:77
+msgid ""
+"Helpers can also be serialized into strings, equivalently, with the "
+"``__str__`` and the ``xml`` methods. This can be manually tested directly"
+" with a Python shell or by using the :ref:`shell command option` of "
+"py4web and then:"
+msgstr ""
+"也可以使用 ``__str__`` 和 ``xml`` 方法将 helper 等效地序列化为字符串。这可以直接使用 Python shell "
+"或使用 py4web 的 :ref:`shell command option` 进行手动测试，例如："
+
+#: ../../chapter-10.rst:92
+msgid ""
+"The helpers mechanism in py4web is more than a system to generate HTML "
+"without concatenating strings. It provides a server-side representation "
+"of the document object model (DOM)."
+msgstr "py4web 中的 helper 机制不仅仅是一个在不连接成字符串的情况下生成 HTML 的系统。它提供了文档对象模型（DOM）的服务器端表示。"
+
+#: ../../chapter-10.rst:96
+msgid ""
+"Components of helpers can be referenced via their position, and helpers "
+"act as lists with respect to their components:"
+msgstr "helper 内包含的组件可以通过其位置进行引用，外层 helper 充当其内部组件的列表："
+
+#: ../../chapter-10.rst:110
+msgid ""
+"Attributes of helpers can be referenced by name, and helpers act as "
+"dictionaries with respect to their attributes:"
+msgstr "helpers 的属性可以通过名称引用，helper 充当其属性作为键的字典："
+
+#: ../../chapter-10.rst:121
+msgid ""
+"Note, the complete set of components can be accessed via a list called "
+"``a.children``, and the complete set of attributes can be accessed via a "
+"dictionary called ``a.attributes``. So, ``a[i]`` is equivalent to "
+"``a.children[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent to"
+" ``a.attributes[s]`` when ``s`` is a string."
+msgstr ""
+"请注意，可以通过一个名为 ``a.children`` 的列表访问完整的组件集；可以通过名为  ``a.attributes`` "
+"的字典访问完整的属性集。因此，当 ``i`` 是整数时， ``a[i]`` 等价于 ``a.children[i]`` ；当 ``s`` "
+"是字符串时， ``a[s]`` 等价于 ``a.attributes[s]`` 。"
+
+#: ../../chapter-10.rst:127
+msgid ""
+"Notice that helper attributes are passed as keyword arguments to the "
+"helper. In some cases, however, attribute names include special "
+"characters that are not allowed in Python identifiers (e.g., hyphens) and"
+" therefore cannot be used as keyword argument names. For example:"
+msgstr ""
+"请注意， helper 的属性作为关键字参数传递给 helper 。然而，在某些情况下，属性名称包含 Python "
+"标识符中不允许的特殊字符（例如连字符），因此不能用作关键字参数名称。例如："
+
+#: ../../chapter-10.rst:136
+msgid ""
+"will not work because “_data-role” includes a hyphen, which will produce "
+"a Python syntax error."
+msgstr "将不起作用，因为 “_data-role” 包含连字符，这将产生 Python 语法错误。"
+
+#: ../../chapter-10.rst:139
+msgid ""
+"In such cases you can pass the attributes as a dictionary and make use of"
+" Python’s ``**`` function arguments notation, which maps a dictionary of "
+"(key:value) pairs into a set of keyword arguments:"
+msgstr ""
+"在这种情况下，您可以将属性作为字典传递，并使用 Python 函数的  ``**`` "
+"参数表示法，该表示法将字典中的每项（key:value）映射到一组关键字参数中："
+
+#: ../../chapter-10.rst:148
+msgid "You can also dynamically create special TAGs:"
+msgstr "您还可以动态创建特殊 TAG："
+
+#: ../../chapter-10.rst:157
+msgid "Built-in helpers"
+msgstr "内置的 helpers"
+
+#: ../../chapter-10.rst:162
+msgid "``XML``"
+msgstr ""
+
+#: ../../chapter-10.rst:164
+msgid ""
+"``XML`` is an helper object used to encapsulate text that should **not** "
+"be escaped. The text may or may not contain valid XML; for example it "
+"could contain JavaScript."
+msgstr ""
+"``XML`` 是一个 helper 对象，用于封装 **不应被转义** 的文本。文本可能包含也可能不包含有效的 XML；例如，它可以包含 "
+"JavaScript 。"
+
+#: ../../chapter-10.rst:168
+msgid "The text in this example is escaped:"
+msgstr "在下面示例中的文本被转义了："
+
+#: ../../chapter-10.rst:175
+msgid "by using ``XML`` you can prevent escaping:"
+msgstr "使用 ``XML`` 能防止被转义："
+
+#: ../../chapter-10.rst:182
+msgid ""
+"Sometimes you want to render HTML stored in a variable, but the HTML may "
+"contain unsafe tags such as scripts:"
+msgstr "有时，你需要渲染存储在一个变量中的 HTML，但是其中可能包含像 script 这类不安全的标签："
+
+#: ../../chapter-10.rst:190
+msgid ""
+"Un-escaped executable input such as this (for example, entered in the "
+"body of a comment in a blog) is unsafe, because it can be used to "
+"generate cross site scripting (XSS) attacks against other visitors to the"
+" page. In this case the py4web ``XML`` helper can sanitize our text to "
+"prevent injections and escape all tags except those that you explicitly "
+"allow. Here is an example:"
+msgstr ""
+"像这样未转义的可执行输入（例如，在博客的评论正文中输入）是不安全的，因为它可用于对页面的其他访问者生成跨站脚本（XSS）攻击。在这种情况下，py4web"
+" 的  ``XML`` helper 可以净化我们的文本，以防止注入和转义所有标签，但明确允许的标签除外。以下是一个示例："
+
+#: ../../chapter-10.rst:203
+msgid ""
+"The ``XML`` constructors, by default, consider the content of some tags "
+"and some of their attributes safe. You can override the defaults using "
+"the optional ``permitted_tags`` and ``allowed_attributes`` arguments. "
+"Here are the default values of the optional arguments of the ``XML`` "
+"helper."
+msgstr ""
+"默认情况下， ``XML`` 构造函数认为某些标记的内容及其某些属性是安全的。您可以使用可选的 ``permitted_tags`` 和 "
+"``allowed_attributes`` 参数覆盖默认值。以下是 ``XML`` helper 的可选参数的默认值。"
+
+#: ../../chapter-10.rst:221
+msgid "``A``"
+msgstr ""
+
+#: ../../chapter-10.rst:223
+msgid "This helper is used to build links."
+msgstr "此 helper 用于构建链接。"
+
+#: ../../chapter-10.rst:232
+msgid "``BODY``"
+msgstr ""
+
+#: ../../chapter-10.rst:234
+msgid "This helper makes the body of a page."
+msgstr "此 helper 构成页面的主体。"
+
+#: ../../chapter-10.rst:242
+msgid "``CAT``"
+msgstr ""
+
+#: ../../chapter-10.rst:244
+msgid "This helper concatenates other helpers."
+msgstr "此 helper 连接其它 helpers 。"
+
+#: ../../chapter-10.rst:252
+msgid "``DIV``"
+msgstr ""
+
+#: ../../chapter-10.rst:254
+msgid "This is the content division element."
+msgstr "这是内容划分元素。"
+
+#: ../../chapter-10.rst:262
+msgid "``EM``"
+msgstr ""
+
+#: ../../chapter-10.rst:264
+msgid "Emphasizes its content."
+msgstr "强调其内容。"
+
+#: ../../chapter-10.rst:272
+msgid "``FORM``"
+msgstr ""
+
+#: ../../chapter-10.rst:274
+msgid ""
+"Use this helper to make a FORM for user input. Forms will be later "
+"discussed in detail in the dedicated :ref:`Forms` chapter."
+msgstr "使用此 helper 为用户输入制作表单。稍后将在专门的 :ref:`Forms` 章节中详细讨论。"
+
+#: ../../chapter-10.rst:283
+msgid "``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``"
+msgstr ""
+
+#: ../../chapter-10.rst:285
+msgid "These helpers are for paragraph headings and subheadings."
+msgstr "这些 helpers 用于段落标题和副标题。"
+
+#: ../../chapter-10.rst:293
+msgid "``HEAD``"
+msgstr ""
+
+#: ../../chapter-10.rst:295
+msgid "For tagging the HEAD of an HTML page."
+msgstr "用于标记 HTML 页面的头部。"
+
+#: ../../chapter-10.rst:303
+msgid "``HTML``"
+msgstr ""
+
+#: ../../chapter-10.rst:305
+msgid "For tagging an HTML page."
+msgstr "用于标记一个 HTML 页面。"
+
+#: ../../chapter-10.rst:313
+msgid "``I``"
+msgstr ""
+
+#: ../../chapter-10.rst:315
+msgid "This helper makes its contents italic."
+msgstr "此 helper  将其内容设置为斜体。"
+
+#: ../../chapter-10.rst:323
+msgid "``IMG``"
+msgstr ""
+
+#: ../../chapter-10.rst:325
+msgid "It can be used to embed images into HTML."
+msgstr "它可以用来将图像嵌入 HTML。"
+
+#: ../../chapter-10.rst:332
+msgid ""
+"Here is a combination of A, IMG, and URL helpers for including a static "
+"image with a link:"
+msgstr "以下是 A、 IMG 和 URL 等 helpers 的组合，用于包含带有链接的静态图像："
+
+#: ../../chapter-10.rst:342
+msgid "``INPUT``"
+msgstr ""
+
+#: ../../chapter-10.rst:344
+msgid ""
+"Creates an ``<input.../>`` tag. An input tag may not contain other tags, "
+"and is closed by ``/>`` instead of ``>``. The input tag has an optional "
+"attribute ``_type`` that can be set to “text” (the default), “submit”, "
+"“checkbox”, or “radio”."
+msgstr ""
+"创建一个 ``<input.../>`` 标签。输入标签可能不包含其他标记，并且由 ``/>`` 而不是 ``>`` 结束。输入标签有一个可选的属性 "
+"``_type`` 可以设置为 “text”（默认值）、“submit”、“checkbox” 或 “radio”。"
+
+#: ../../chapter-10.rst:354
+msgid "For radio buttons use the ``_checked`` attribute:"
+msgstr "对于单选按钮，使用 ``_checked`` 属性以默认选中对应项目："
+
+#: ../../chapter-10.rst:365
+msgid "and similarly for checkboxes:"
+msgstr "对于复选框也是如此："
+
+#: ../../chapter-10.rst:375
+msgid "``LABEL``"
+msgstr ""
+
+#: ../../chapter-10.rst:377
+msgid "It is used to create a LABEL tag for an INPUT field."
+msgstr "它被用于为 INPUT 字段创建 LABEL 标签。"
+
+#: ../../chapter-10.rst:385
+msgid "``LI``"
+msgstr ""
+
+#: ../../chapter-10.rst:387
+msgid "It makes a list item and should be contained in a ``UL`` or ``OL`` tag."
+msgstr "它构成一个列表项，应包含在 ``UL`` 或 ``OL`` 标签中。"
+
+#: ../../chapter-10.rst:395
+msgid "``OL``"
+msgstr ""
+
+#: ../../chapter-10.rst:397
+msgid "It stands for ordered list. The list should contain LI tags."
+msgstr "它代表有序列表。列表应包含 LI 标签。"
+
+#: ../../chapter-10.rst:405
+msgid "``OPTION``"
+msgstr ""
+
+#: ../../chapter-10.rst:407
+msgid "This should only be used as argument of a ``SELECT``."
+msgstr "这仅用于 ``SELECT`` 的参数。"
+
+#: ../../chapter-10.rst:414
+msgid "For selected options use the ``_selected`` attribute:"
+msgstr "对于选定的选项，使用 ``_selected`` 属性："
+
+#: ../../chapter-10.rst:422
+msgid "``P``"
+msgstr ""
+
+#: ../../chapter-10.rst:424
+msgid "This is for tagging a paragraph."
+msgstr "这是用来标记段落的。"
+
+#: ../../chapter-10.rst:432
+msgid "``PRE``"
+msgstr ""
+
+#: ../../chapter-10.rst:434
+msgid ""
+"Generates a ``<pre>...</pre>`` tag for displaying pre-formatted text. The"
+" ``CODE`` helper is generally preferable for code listings."
+msgstr "生成一个 ``<pre>...</pre>`` 标签，以用于显示预格式化的文本。 ``CODE`` helper 通常更适合用于展示代码。"
+
+#: ../../chapter-10.rst:443
+msgid "``SCRIPT``"
+msgstr ""
+
+#: ../../chapter-10.rst:445
+msgid "This is for include or link a script, such as JavaScript."
+msgstr "这用于包含或链接脚本，如 JavaScript。"
+
+#: ../../chapter-10.rst:453
+msgid "``SELECT``"
+msgstr ""
+
+#: ../../chapter-10.rst:455
+msgid ""
+"Makes a ``<select>...</select>`` tag. This is used with the ``OPTION`` "
+"helper."
+msgstr "生成一个 ``<select>...</select>`` 标签。这和 ``OPTION`` helper 一起使用。"
+
+#: ../../chapter-10.rst:465
+msgid "``SPAN``"
+msgstr ""
+
+#: ../../chapter-10.rst:467
+msgid "Similar to ``DIV`` but used to tag inline (rather than block) content."
+msgstr "类似于 ``DIV`` ，但用于标记内联（行内的，而不是 *块* ）内容。"
+
+#: ../../chapter-10.rst:475
+msgid "``STYLE``"
+msgstr ""
+
+#: ../../chapter-10.rst:477
+msgid ""
+"Similar to script, but used to either include or link CSS code. Here the "
+"CSS is included:"
+msgstr "类似于 ``SCRIPT`` ，但用于包含或链接 CSS 代码。这里包括 CSS："
+
+#: ../../chapter-10.rst:485
+msgid "and here it is linked:"
+msgstr "这里是链接:"
+
+#: ../../chapter-10.rst:493
+msgid "``TABLE``, ``TR``, ``TD``"
+msgstr ""
+
+#: ../../chapter-10.rst:495
+msgid ""
+"These tags (along with the optional ``THEAD`` and ``TBODY`` helpers) are "
+"used to build HTML tables."
+msgstr "这些标签（以及可选的 ``THEAD`` 和 ``TBODY`` helpers）用于构建 HTML 表格。"
+
+#: ../../chapter-10.rst:503
+msgid "``TR`` expects ``TD`` content."
+msgstr "``TR`` 需要有 ``TD`` 内容。"
+
+#: ../../chapter-10.rst:505
+msgid ""
+"It is easy to convert a Python array into an HTML table using Python’s "
+"``*`` function arguments notation, which maps list elements to positional"
+" function arguments."
+msgstr "使用 Python 函数的 ``*`` 参数符号很容易将 Python 数组转换为 HTML 表格，该符号将列表元素映射到函数的位置参数。"
+
+#: ../../chapter-10.rst:509
+msgid "Here, we will do it line by line:"
+msgstr "在这里，我们将手动逐行实现："
+
+#: ../../chapter-10.rst:517
+msgid "Here we do all lines at once:"
+msgstr "在这里，我们使用迭代方式处理所有行："
+
+#: ../../chapter-10.rst:526
+msgid "``TBODY``"
+msgstr ""
+
+#: ../../chapter-10.rst:528
+msgid ""
+"This is used to tag rows contained in the table body, as opposed to "
+"header or footer rows. It is optional."
+msgstr "这用于标记表格主体中包含的行，而不是页眉或页脚中的行。这是可选的。"
+
+#: ../../chapter-10.rst:537
+msgid "``TEXTAREA``"
+msgstr ""
+
+#: ../../chapter-10.rst:539
+msgid "This helper makes a ``<textarea>...</textarea>`` tag."
+msgstr "此 helper 创建了一个 ``<textarea>...</textarea>`` 标签。"
+
+#: ../../chapter-10.rst:548
+msgid "``TH``"
+msgstr ""
+
+#: ../../chapter-10.rst:550
+msgid "This is used instead of ``TD`` in table headers."
+msgstr "这用于在表头中代替 ``TD`` 。"
+
+#: ../../chapter-10.rst:558
+msgid "``THEAD``"
+msgstr ""
+
+#: ../../chapter-10.rst:560
+msgid "This is used to tag table header rows."
+msgstr "这用于标记表头的行。"
+
+#: ../../chapter-10.rst:568
+msgid "``TITLE``"
+msgstr ""
+
+#: ../../chapter-10.rst:570
+msgid "This is used to tag the title of a page in an HTML header."
+msgstr "这用于在 HTML 头部中标记页面的标题。"
+
+#: ../../chapter-10.rst:578
+msgid "``TT``"
+msgstr ""
+
+#: ../../chapter-10.rst:580
+msgid "Tags text as typewriter (monospaced) text."
+msgstr "将文本标记为打字机（等宽）文本。"
+
+#: ../../chapter-10.rst:588
+msgid "``UL``"
+msgstr ""
+
+#: ../../chapter-10.rst:590
+msgid "It stands for unordered list. The list should contain LI tags."
+msgstr "它代表无序列表。列表应包含 LI 标签。"
+
+#: ../../chapter-10.rst:598
+msgid "``URL``"
+msgstr ""
+
+#: ../../chapter-10.rst:602
+msgid ""
+"The URL helper is not part of yatl package, instead it is provided by "
+"py4web."
+msgstr "URL helper 不是 yatl 包的一部分，而是由 py4web 提供的。"
+
+#: ../../chapter-10.rst:605
+msgid "Custom helpers"
+msgstr "自定义 helper"
+
+#: ../../chapter-10.rst:610
+msgid "``TAG``"
+msgstr ""
+
+#: ../../chapter-10.rst:612
+msgid ""
+"Sometimes you need to generate **custom XML tags***. For this purpose "
+"py4web provides ``TAG``, a universal tag generator."
+msgstr "有时需要生成自定义 XML 的标记。为此，py4web 提供了 ``TAG`` ，这是一个通用的标签生成器。"
+
+#: ../../chapter-10.rst:619 ../../chapter-10.rst:641
+msgid "generates the following XML:"
+msgstr "生成以下 XML："
+
+#: ../../chapter-10.rst:625
+msgid ""
+"Arguments “a”, “b”, and “d” are automatically escaped; use the ``XML`` "
+"helper to suppress this behavior. Using ``TAG`` you can generate HTML/XML"
+" tags not already provided by the API. TAGs can be nested, and are "
+"serialized with ``str().`` An equivalent syntax is:"
+msgstr ""
+"参数 “a”、“b” 和 “d” 会自动被转义；使用 ``XML`` helper 可以控制此行为。使用 ``TAG`` 可以生成 API "
+"尚未提供的 HTML/XML 标记。TAG 可以嵌套，并使用 ``str()`` 进行序列化。等效语法为："
+
+#: ../../chapter-10.rst:634
+msgid ""
+"Self-closing tags can be generated with the TAG helper. The tag name must"
+" end with a “/”."
+msgstr "可以使用 TAG helper 生成自闭标签。标记名称必须以 “/” 结尾。"
+
+#: ../../chapter-10.rst:647
+msgid ""
+"Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is "
+"a function that returns an helper instance."
+msgstr "请注意， ``TAG`` 是一个对象， ``TAG.name`` 或 ``TAG['name']`` 是一个返回 helper 实例的函数。"
+
+#: ../../chapter-10.rst:651
+msgid "``BEAUTIFY``"
+msgstr ""
+
+#: ../../chapter-10.rst:653
+msgid ""
+"``BEAUTIFY`` is used to build HTML representations of compound objects, "
+"including lists, tuples and dictionaries:"
+msgstr "``BEAUTIFY`` 用于构建复合对象的 HTML 表示，包括列表、元组和字典："
+
+#: ../../chapter-10.rst:660
+msgid ""
+"``BEAUTIFY`` returns an XML-like object serializable to XML, with a nice "
+"looking representation of its constructor argument. In this case, the XML"
+" representation of:"
+msgstr ""
+"``BEAUTIFY`` 返回一个可序列化为 XML 的类 XML 对象，能使其构造函数参数具有美观的"
+"表示形式。在这种情况下，如下的 XML 内容："
+
+#: ../../chapter-10.rst:668
+msgid "will render as:"
+msgstr "将呈现为："
+
+#: ../../chapter-10.rst:678
+msgid "Server-side *DOM*"
+msgstr "服务器端的 *DOM*"
+
+#: ../../chapter-10.rst:680
+msgid ""
+"As we've already seen the helpers mechanism in py4web also provides a "
+"server-side representation of the document object model (DOM)."
+msgstr "正如我们已经看到的，py4web 中的 helper 机制还提供了文档对象模型（DOM）的服务器端表示。"
+
+#: ../../chapter-10.rst:683
+msgid "``children``"
+msgstr ""
+
+#: ../../chapter-10.rst:685
+msgid ""
+"Each helper object keep the list of its components into the ``children`` "
+"attribute."
+msgstr "每个 helper 对象都将其组件列表保存在 ``children`` 属性中。"
+
+#: ../../chapter-10.rst:694
+msgid "``find``"
+msgstr ""
+
+#: ../../chapter-10.rst:696
+msgid ""
+"To help searching into the DOM, all helpers have a ``find`` method with "
+"the following signature:"
+msgstr "为了帮助搜索 DOM ，所有 helpers 都有一个带有以下签名的 ``find`` 方法："
+
+#: ../../chapter-10.rst:703
+msgid "that returns all the components matching supplied arguments."
+msgstr "它返回与提供的参数匹配的所有组件。"
+
+#: ../../chapter-10.rst:705
+msgid "A very simple ``query`` can be a tag name:"
+msgstr "一个非常简单的 ``query`` 参数值可以是标签名称："
+
+#: ../../chapter-10.rst:717
+msgid ""
+"It also supports a syntax compatible with `jQuery "
+"<https://api.jquery.com/>`__, accepting the following expressions:"
+msgstr "它还支持与 `jQuery <https://api.jquery.com/>`__ 兼容的语法，接受以下表达式："
+
+#: ../../chapter-10.rst:720
+msgid ""
+"`jQuery Multiple Selector <https://api.jquery.com/multiple-selector/>`__,"
+" e.g. “selector1, selector2, selectorN”,"
+msgstr ""
+"`jQuery 的多项选择器 <https://api.jquery.com/multiple-selector/>`__ ，例如 "
+"“Selector 1，Selector 2，Selector N”"
+
+#: ../../chapter-10.rst:722
+msgid ""
+"`jQuery Descendant Selector <https://api.jquery.com/descendant-"
+"selector/>`__, e.g. “ancestor descendant”,"
+msgstr ""
+"`jQuery 的后代选择器 <https://api.jquery.com/descendant-selector/>`__ ，例如 "
+"“ancestor descendant” "
+
+#: ../../chapter-10.rst:724
+msgid "`jQuery ID Selector <https://api.jquery.com/id-selector/>`__, e.g. “#id”,"
+msgstr "`jQuery 的 ID 选择 <https://api.jquery.com/id-selector/>`__ ， 例如 “#id”"
+
+#: ../../chapter-10.rst:725
+msgid ""
+"`jQuery Class Selector <https://api.jquery.com/class-selector/>`__, e.g. "
+"“.class”, and"
+msgstr ""
+"`jQuery 的样式的 Class 选择器 <https://api.jquery.com/class-selector/>`__ ， 例如 "
+"“.class” "
+
+#: ../../chapter-10.rst:727
+msgid ""
+"`jQuery Attribute Equals Selector <https://api.jquery.com/attribute-"
+"equals-selector/>`__, e.g. “[name=value]”, notice that here the value "
+"must be unquoted."
+msgstr ""
+"`jQuery 的属性等于选择器 <https://api.jquery.com/attribute-equals-"
+"selector/>`__，例如 “[name=value]” ，请注意，这里的值必须取消引号"
+
+#: ../../chapter-10.rst:730
+msgid "Here are some examples:"
+msgstr "这是一些示例："
+
+#: ../../chapter-10.rst:750
+msgid ""
+"Elements that are matched can also be replaced or removed by specifying a"
+" ``replace`` argument (note, a list of the original matching elements is "
+"still returned as usual)."
+msgstr "通过指定 ``replace`` 参数，也可以替换或删除匹配的元素（注意，原始匹配元素的列表仍然像往常一样返回）。"
+
+#: ../../chapter-10.rst:761
+msgid ""
+"``replace`` can be a callable, which will be passed the original element "
+"and should return a new element to replace it."
+msgstr "``replace`` 可以是一个可调用函数，它将接收传递的原始元素，并应返回一个新元素来替换它。"
+
+#: ../../chapter-10.rst:771
+msgid "If ``replace=None``, matching elements will be removed completely."
+msgstr "如果是 ``replace=None`` ，则匹配的元素将被完全删除。"
+
+#: ../../chapter-10.rst:780
+msgid ""
+"If a ``text`` argument is specified, elements will be searched for text "
+"components that match text, and any matching text components will be "
+"replaced (``text`` is ignored if ``replace`` is not also specified, use a"
+" ``find`` argument when you only need searching for textual elements)."
+msgstr ""
+"如果指定了 ``text`` 参数，则将在元素中搜索与 ``text`` 匹配的文本组件，并替换任何匹配的文本元素（如果未指定 "
+"``replace`` ，则忽略 ``text`` ，当您只需要搜索文本元素时，请使用 ``find`` 参数）。"
+
+#: ../../chapter-10.rst:785
+msgid "Like the ``find`` argument, ``text`` can be a string or a compiled regex."
+msgstr "与 ``find`` 参数一样， ``text`` 可以是字符串或编译后的正则表达式。"
+
+#: ../../chapter-10.rst:794
+msgid ""
+"If other attributes are specified along with ``text``, then only "
+"components that match the specified attributes will be searched for text."
+msgstr "如果其他属性与 ``text`` 一起指定，则只会搜索与指定属性匹配的组件以查找文本。"
+
+#: ../../chapter-10.rst:805
+msgid "Using Inject"
+msgstr "使用 *注入*"
+
+#: ../../chapter-10.rst:807
+msgid ""
+"Normally all the code should be called from the controller program, and "
+"only the necessary data is passed to the template in order to be "
+"displayed. But sometimes it's useful to pass variables or even use a "
+"python function as a helper called from a template."
+msgstr ""
+"通常，所有代码都应从控制器程序调用，只有必要的数据才会传递给模板用来显示。但有时传递变量甚至使用 python 函数作为从模板中调用的 "
+"helper 是有用的。"
+
+#: ../../chapter-10.rst:811
+msgid ""
+"In this case you can use the fixture ``Inject`` from "
+"py4web.utils.factories."
+msgstr "在这种情况下，您可以使用 py4web.utils.factories 中的夹具 ``Inject`` 。"
+
+#: ../../chapter-10.rst:813
+msgid "This is a simple example for injecting a variable:"
+msgstr "这是一个注入变量的简单示例："
+
+#: ../../chapter-10.rst:830
+msgid "Then in ``index.html`` you can use the injected variable:"
+msgstr "然后在 ``index.html`` 中，你可以使用注入的变量："
+
+#: ../../chapter-10.rst:837
+msgid ""
+"You can also use ``Inject`` to add variables to the auth.enable line; in "
+"this way auth forms would have access to that variable."
+msgstr "您还可以使用 ``Inject`` 向 auth.enable 行添加变量；这样，auth 表单就可以访问该变量。"
+
+#: ../../chapter-10.rst:844
+msgid ""
+"A more complex usage of Inject is for passing python functions to "
+"templates. For example if your helper function is called *sidebar_menu* "
+"and it's inside the libs/helpers.py module of your app, you could use "
+"this in **controllers.py**:"
+msgstr ""
+"**注入（Inject）** 的一个更复杂的用法是将 python 函数传递给模板。例如，如果你的 helper 函数被命名为 "
+"**sidebar_menu** ，它位于你的应用程序的 libs/helpers.py 模块中，你可以在 **controllers.py** "
+"中使用它："
+
+#: ../../chapter-10.rst:857
+msgid "OR"
+msgstr "或者"
+
+#: ../../chapter-10.rst:869
+msgid ""
+"Then you can import the needed code in the index.html template in a clean"
+" way:"
+msgstr "然后，您可以以一种干净的方式在 index.html 模板中添加所需的代码："
+

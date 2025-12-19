@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>py4web: 参考手册 &mdash; py4web 20251209 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=96e44453"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="py4web 是什么？" href="chapter-01.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">安装和启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">夹具（Fixture）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">身份验证与授权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">表格（Grid）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">py4web: 参考手册</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/index.rst" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="py4web-the-reference-manual">
+<h1>py4web: 参考手册<a class="headerlink" href="#py4web-the-reference-manual" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-01.html#acknowledgments">致谢</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#resources">资源</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#hints-and-tips">提示和技巧</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#how-to-contribute">如何贡献</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">安装和启动</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#understanding-the-design">理解设计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#supported-platforms-and-prerequisites">支持的平台和先决条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#setup-procedures">安装步骤</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#upgrading">升级</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#first-run">首次运行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#command-line-options">命令行选项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#special-installations">特殊情况地安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-04.html#the-main-web-page">web 主页面</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-04.html#login-into-the-dashboard">登录 Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#from-scratch">从头开始</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#static-web-pages">静态网页</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#dynamic-web-pages">动态网页</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#the-scaffold-app">_scaffold 应用程序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#copying-the-scaffold-app">复制 _scaffold 应用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#watch-for-files-change">监视文件的变化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#domain-mapped-apps">域映射应用程序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#custom-error-pages">自定义错误页面</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">夹具（Fixture）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#using-fixtures">使用 “夹具（Fixture）”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-template-fixture">模板夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-inject-fixture">注入夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-translator-fixture">翻译夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-flash-fixture">消息夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-session-fixture">Session 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-condition-fixture">Condition 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-urlsigner-fixture">URLsigner 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-dal-fixture">DAL 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-auth-fixture">Auth 夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#caveats-about-fixtures">关于 fixtures 的注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#custom-fixtures">自定义夹具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#multiple-fixtures">使用多个 fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#caching-and-memoize">缓存和记忆</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#convenience-decorators">便利的装饰器</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-introduction">DAL 简介</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#using-the-dashboard-app-with-databases">使用带有数据的 dashboard 应用程序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-constructor">DAL 的构造函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-constructor">“Table” 的构造函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#field-constructor">“Field” 的构造函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#migrations">迁移</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-methods">“Table” 的方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#raw-sql">原始的 SQL 语句</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#select-command"><code class="docutils literal notranslate"><span class="pre">select</span></code> 命令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#computed-and-virtual-fields">计算字段和虚拟字段</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#joins-and-relations">连接和关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#other-operators">其他运算符</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#exporting-and-importing-data">导出和导入数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#advanced-features">高级功能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#gotchas">陷阱</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-policies-and-actions">RestAPI 的 policy 和 action</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-get">RestAPI GET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-practical-examples">RestAPI 实例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#the-restapi-response">RestAPI 的响应</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#basic-syntax">基本语法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#information-workflow">信息工作流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#page-layout-standard-structure">页面布局的标准结构</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#helpers-overview">助手（helpers）概览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#built-in-helpers">内置的 helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#custom-helpers">自定义 helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#server-side-dom">服务器端的 <em>DOM</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#using-inject">使用 <em>注入</em></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-11.html#pluralize">Pluralize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-11.html#update-the-translation-files">更新翻译文件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#the-form-constructor">Form 的构造函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#a-minimal-form-example-without-a-database">一个没有数据库的最小表单示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#basic-form-example">基本的表单示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#widgets">小部件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#advanced-form-design">高级的表单设计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-validation">表单验证</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">身份验证与授权</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authentication-using-auth">使用 Auth 进行身份验证</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authorization-using-tags">使用 Tags 进行授权</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">表格（Grid）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#key-features">主要特点</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#basic-grid-example">grid 的基本示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#the-grid-object">Grid 对象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-columns">自定义列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#using-templates">使用模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#grid-path-parameter-old-vs-new-usage">Grid 的 'path' 参数：新、旧用法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#grid-mode-parameter-path-replacement">Grid 模式参数（路径替换）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#customizing-style">自定义样式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-action-buttons">自定义操作按钮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#using-callable-parameters">使用 “可调用参数”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#reference-fields">引用字段</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#grids-with-checkboxes">带有复选框的 Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-15.html#simple-conversion-examples">简单的转换示例</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#the-scheduler">调度程序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#sending-messages-using-a-background-task">使用后台任务发送消息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#celery">Celery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#py4web-and-asyncio">py4web 和 asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#htmx">htmx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#utils-js">utils.js</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#adding-a-captcha-solution-with-altcha">使用 Altcha 添加验证码的解决方案</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>索引和表格<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">模块索引</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">搜索页面</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chapter-01.html" class="btn btn-neutral float-right" title="py4web 是什么？" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2020, BSDv3 License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>语言</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>版本</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>下载</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

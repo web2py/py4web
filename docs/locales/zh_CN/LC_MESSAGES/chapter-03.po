@@ -1,0 +1,703 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-03.rst:3
+msgid "Installation and Startup"
+msgstr "安装和启动"
+
+#: ../../chapter-03.rst:6
+msgid "Understanding the design"
+msgstr "理解设计"
+
+#: ../../chapter-03.rst:8
+msgid ""
+"Before everything else it is important to understand that unlike other "
+"web frameworks, is not only a python module that can be imported by apps."
+" It is also a program that is in charge of starting some apps. For this "
+"reason you need two things:"
+msgstr "首先，重要的是要明白，与其他 web 框架不同，它不仅仅是一个可以由应用程序导入的 python 模块。它也是一个负责启动一些应用程序的程序。出于这个原因，你需要两件事："
+
+#: ../../chapter-03.rst:12
+msgid ""
+"The py4web module (which you download from our web site, from pypi or "
+"from github)"
+msgstr "py4web 模块（您可以从我们的网站、pypi 或 github 下载）"
+
+#: ../../chapter-03.rst:13
+msgid "One or more folders containing collections of apps you want to run."
+msgstr "一个或多个文件夹，其中包含你要运行的应用程序集合。"
+
+#: ../../chapter-03.rst:15
+msgid ""
+"py4web has command line options to create a folder with some example "
+"apps, to initialize an existing folder, and to add scaffolding apps to "
+"that folder. Once installed you can have multiple apps under the same "
+"folder running concurrently and served by the same py4web process at the "
+"same address and port. An apps folder is a python module, and each app is"
+" also a python module."
+msgstr "py4web 有命令行选项，可以创建一个包含一些示例应用程序的文件夹，或初始化一个现有文件夹，并将 scaffolding 应用程序添加到那个文件夹中。安装后，您可以在同一文件夹下同时运行多个应用程序，并由同一地址和端口的同一 py4web 进程提供服务。 那个 apps 文件夹是一个 python 模块，里面的每个应用程序也是一个 python 模块。"
+
+#: ../../chapter-03.rst:22
+msgid "Supported platforms and prerequisites"
+msgstr "支持的平台和先决条件"
+
+#: ../../chapter-03.rst:24
+msgid ""
+"py4web runs fine on Windows, MacOS and Linux. Its only prerequisite is "
+"Python 3.7+, which must be installed in advance (except if you use "
+"binaries)."
+msgstr "py4web 在 Windows、MacOS 和 Linux 上运行良好。它的唯一先决条件是使用 Python 3.7+，必须提前安装（除非您使用 py4web 的二进制文件）。"
+
+#: ../../chapter-03.rst:29
+msgid "Setup procedures"
+msgstr "安装步骤"
+
+#: ../../chapter-03.rst:31
+msgid ""
+"There are four alternative ways of installing py4web, we will guide you "
+"through each of them and if you get stuck, reach `out to us. "
+"<https://py4web.com/_documentation/static/en/chapter-02.html>`__"
+msgstr "有四种安装 py4web 的替代方法，我们将指导您完成每种方法，如果您遇到困难，请 `联系我们 <https://py4web.com/_documentation/static/en/chapter-02.html>`__ 。"
+
+#: ../../chapter-03.rst:37
+msgid "Installing from pip, using a virtual environment"
+msgstr "使用虚拟环境从 pip 安装"
+
+#: ../../chapter-03.rst:39
+msgid ""
+"A full installation of any complex python application like py4web will "
+"surely modify the python environment of your system. In order to prevent "
+"any unwanted change, it’s a good habit to use a python virtual "
+"environment (also called **virtualenv**, see `here "
+"<https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction)."
+" This is a standard python feature; if you still don’t know virtualenv "
+"it’s a good time to start its discovery!"
+msgstr "任何像 py4web 这样复杂的 python 应用程序的完整安装肯定会修改您系统的 python 环境。为了防止任何不必要的更改，使用 python 虚拟环境（也称为 **virtualenv** ，请参阅 `here <https://docs.python.org/3.7/tutorial/venv.html>`__ 的介绍）是一个好习惯。这是一个标准的 python 特性；如果你还不知道 virtualenv，现在是开始发现它的好时机！"
+
+#: ../../chapter-03.rst:47
+msgid ""
+"Here are the instructions for creating the virtual environment, "
+"activating it, and installing py4web in it:"
+msgstr "以下是创建虚拟环境、激活它以及在其中安装 py4web 的说明："
+
+#: ../../chapter-03.rst:52 ../../chapter-03.rst:171
+msgid "Linux and MacOS"
+msgstr "Linux 和 MacOS"
+
+#: ../../chapter-03.rst:63
+msgid ""
+"Starting py4web is same with or without a virtual environment python "
+"py4web run apps"
+msgstr "无论是否使用 python py4web 的虚拟环境，启动 py4web 运行应用程序都是一样的"
+
+#: ../../chapter-03.rst:66 ../../chapter-03.rst:183
+msgid "Windows"
+msgstr ""
+
+#: ../../chapter-03.rst:80
+msgid ""
+"You can also find power shell scripts in the same folder. Starting py4web"
+" is same with or without a virtual environment python py4web run apps"
+msgstr "您还可以在同一文件夹中找到 power shell 脚本。无论是否使用 python py4web 的虚拟环境，启动 py4web 运行应用程序都是一样的"
+
+#: ../../chapter-03.rst:84
+msgid "Installing from pip, without virtual environment"
+msgstr "不使用虚拟环境，从 pip 安装"
+
+#: ../../chapter-03.rst:86
+msgid ""
+"*pip* is the basic installation procedure for py4web, it will quickly "
+"install the latest stable release of py4web."
+msgstr "**pip** 是 py4web 的基本安装程序，它将快速安装 py4web 的最新稳定版本。"
+
+#: ../../chapter-03.rst:89
+msgid "From the command line"
+msgstr "在命令行"
+
+#: ../../chapter-03.rst:95
+msgid ""
+"Also, if ``python3`` does not work, try specify a full version as in "
+"``python3.8``."
+msgstr "此外，如果 ``python3`` 不起作用，尝试指定一个完整的版本，例如 ``python3.8`` 。"
+
+#: ../../chapter-03.rst:97
+msgid ""
+"This will install py4web and all its dependencies on the system’s path "
+"only. The assets folder (that contains the py4web’s system apps) will "
+"also be created. After the installation you’ll be able to start py4web on"
+" any given working folder with"
+msgstr "这将仅在系统路径上安装 py4web 及其所有依赖项。名为 assets 的文件夹（它包含 py4web 的系统应用程序 ）也将被创建。安装后，您将能够在任何给定的工作文件夹上启动 py4web ："
+
+#: ../../chapter-03.rst:108
+msgid ""
+"If the command py4web is not accepted, it means it’s not in the system’s "
+"path. On Windows, a special py4web.exe file (pointing to py4web.py) will "
+"be created by *pip* on the system’s path, but not if you type the *–user*"
+" option by mistake, then you can run the needed commands like this"
+msgstr "如果 py4web 命令未被接受，则表示它不在系统路径中。在 Windows 上，*pip* 将在系统路径上创建一个特殊的 py4web.exe 文件（指向 py4web.py），但如果你错误地使用了 *–user* 选项，就不会创建这个文件。在这种情况下，你可以通过以下方式运行所需的命令："
+
+#: ../../chapter-03.rst:122
+msgid "Installing from source (globally)"
+msgstr "从源代码安装（全局）"
+
+#: ../../chapter-03.rst:124
+msgid ""
+"This is the traditional way for installing a program, but it works only "
+"on Linux and MacOS (Windows does not normally support the `make` "
+"utility). All the requirements will be installed on the system’s path "
+"along with links to the py4web.py program on the local folder"
+msgstr "这是安装程序的传统方式，但它仅适用于 Linux 和 MacOS（ Windows 通常不支持 `make` 实用程序）。所有要求都将安装在系统的路径上，并链接到本地文件夹上的 py4web.py 程序。"
+
+#: ../../chapter-03.rst:141
+msgid ""
+"Also notice that when installing in this way the content of "
+"``py4web/assets`` folder is missing at first but it is manually created "
+"later with the ``make assets`` command."
+msgstr "另请注意，以这种方式安装时， ``py4web/assets`` 文件夹的内容起初是缺失的，但稍后可以使用 ``make assets`` 命令手动创建它。"
+
+#: ../../chapter-03.rst:145
+msgid ""
+"Notice that you also (and should) install py4web from source inside a "
+"virtual environment."
+msgstr "请注意，您可以（并且应该）在虚拟环境中从源代码安装py4web。"
+
+#: ../../chapter-03.rst:148
+msgid "Running from source without installing"
+msgstr "从源代码直接运行"
+
+#: ../../chapter-03.rst:150
+msgid ""
+"In this way all the requirements will be installed or upgraded on the "
+"system’s path, but py4web itself will only be copied on a local folder. "
+"This is especially useful if you already have a working py4web "
+"installation but you want to test a different one. Also, installing from "
+"sources (locally or globally) will install all the latest changes present"
+" on the master branch of py4web - hence you will gain the latest (but "
+"potentially untested) code."
+msgstr "通过这种方式，所有需求都将在系统的路径上安装或升级，但 py4web 本身只会复制到本地文件夹中。如果您已经有一个可用的 py4web 安装，但想测试另一个，这尤其有用。此外，从源代码（本地或全局）安装将安装 py4web 主分支上存在的所有最新更改 -- 因此您将获得最新（但可能未经测试）的代码。"
+
+#: ../../chapter-03.rst:159
+msgid "From the command line, go to a given working folder and then run"
+msgstr "将命令行切换到给定的工作文件夹，然后运行"
+
+#: ../../chapter-03.rst:167
+msgid "Once installed, you should always start it from there with:"
+msgstr "安装后，您应该始终从那里开始："
+
+#: ../../chapter-03.rst:179
+msgid ""
+"If you have installed py4web both globally and locally, notice the **./**"
+" ; it forces the run of the local folder's py4web and not the globally "
+"installed one."
+msgstr "如果您已在全局和本地安装了 py4web ，请注意 **./** ；它强制运行本地文件夹的 py4web 版本，而不是全局安装的版本。"
+
+#: ../../chapter-03.rst:191
+msgid ""
+"On Windows, the programs on the local folder are always executed before "
+"the ones in the path (hence you don’t need the **./** as on Linux). But "
+"running .py files directly it’s not usual and you’ll need an explicit "
+"python3/python command."
+msgstr "在 Windows 上，本地文件夹中的程序总是在系统路径设置中的程序之前被执行（因此在 Linux 上不需要 **./** ）。但是直接运行 .py 文件是不常见的，你需要一个显式的 python3/python 命令。"
+
+#: ../../chapter-03.rst:197
+msgid "Installing from binaries"
+msgstr "从二进制文件安装"
+
+#: ../../chapter-03.rst:199
+msgid ""
+"This is not a real installation, because you just copy a bunch of files "
+"on your system without modifying it anyhow. Hence this is the simplest "
+"solution, especially for beginners or students, because it does not "
+"require Python pre-installed on your system nor administrative rights. On"
+" the other hand, it’s experimental, it could contain an old py4web "
+"release, DAL support is limited and it is quite difficult to add other "
+"functionalities to it."
+msgstr "这不是一个真正的安装，因为你只需复制系统上的一堆文件，而无需对其进行任何修改。因此，这是最简单的解决方案，特别是对于初学者或学生来说，因为它不需要在您的系统上预先安装 Python ，也不需要管理权限。另一方面，它是实验性的，它可能包含一个旧的 py4web 版本，DAL 支持有限，很难添加其他功能。"
+
+#: ../../chapter-03.rst:206
+msgid ""
+"In order to use it you just need to download the latest Windows or MacOS "
+"ZIP file from `this external repository <https://github.com/nicozanf"
+"/py4web-pyinstaller>`__. Unzip it on a local folder and open a command "
+"line there. Finally run"
+msgstr "为了使用它，您只需要从 `这个外部存储库 <https://github.com/nicozanf"
+"/py4web-pyinstaller>`__ 下载最新的适用于 Windows 或 MacOS 的 ZIP文件。将其解压缩到本地文件夹中，然后在那里打开命令行。最后运行："
+
+#: ../../chapter-03.rst:216
+msgid "(omit './' if you're using Windows)."
+msgstr "如果使用 Windows ，请省略 './' "
+
+#: ../../chapter-03.rst:218
+msgid ""
+"Notice: the binaries many not correspond to the latest master or the "
+"latest stable branch of py4web although we do our best to keep them up to"
+" date."
+msgstr "注意：尽管我们尽最大努力使二进制文件保持最新，但它仍可能与 py4web 的最新主版本或最新稳定分支不对应，"
+
+#: ../../chapter-03.rst:223
+msgid "Upgrading"
+msgstr "升级"
+
+#: ../../chapter-03.rst:225
+msgid "If you installed py4web from pip you can simple upgrade it with"
+msgstr "如果你从 pip 安装了 py4web，你可以简单地使用以下命令升级它："
+
+#: ../../chapter-03.rst:233
+msgid ""
+"This will not automatically upgrade the standard apps like **Dashboard** "
+"and **Default**. You have to manually remove these apps and then run"
+msgstr "这不会自动地升级标准应用，如 **Dashboard** 和 **Default** 。你需要手动删除这些应用，然后运行："
+
+#: ../../chapter-03.rst:241
+msgid ""
+"in order to re-install them. This is a safety precaution, in case you "
+"made changes to those apps."
+msgstr "来重新安装他们。这是一种安全措施，以防万一你对那些应用做了更改。"
+
+#: ../../chapter-03.rst:244
+msgid ""
+"If you installed py4web in any other way, you must upgrade it manually. "
+"First you have to make a backup of any personal py4web work you've done, "
+"then delete the old installation folder and re-install the framework "
+"again."
+msgstr "如果你是通过其它方式安装的 py4web ，那么你必须手动升级它。首先，你需要备份所有已完成的个人 py4web 工作内容，然后删除旧的安装文件夹，再重新安装 py4web 框架。"
+
+#: ../../chapter-03.rst:250
+msgid "Running Using uv"
+msgstr "使用 uv 运行"
+
+#: ../../chapter-03.rst:252
+msgid ""
+"This is the newest way to manage python packages. Install uv as shown "
+"here: https://docs.astral.sh/uv/getting-started/installation/ Then run:"
+msgstr "这是管理 python 包的最新方法。按 https://docs.astral.sh/uv/getting-started/installation/ 所示安装 uv，然后运行："
+
+#: ../../chapter-03.rst:260
+msgid "More uv command examples are in the provided Makefile"
+msgstr "提供的 Makefile 中有更多 uv 命令示例"
+
+#: ../../chapter-03.rst:264
+msgid "First run"
+msgstr "首次运行"
+
+#: ../../chapter-03.rst:266
+msgid ""
+"Running py4web using any of the previous procedure should produce an "
+"output like this:"
+msgstr "使用前面任何一种方法运行 py4web ，都将生成像这样的输出："
+
+#: ../../chapter-03.rst:273
+msgid ""
+"Generally ``apps`` is the name of the folder where you keep all your "
+"apps, and can be explicitly set wit the ``run`` command. (Yet nothing "
+"prevents you from grouping apps in multiple folders with different "
+"names.) If that folder does not exist, it is created. PY4WEB expects to "
+"find at least two apps in this folder: **Dashboard** (``_dashboard``) and"
+" **Default** (``_default``). If it does not find them, it installs them."
+msgstr "通常， ``apps`` 是一个文件夹的名称，里面保存着你所有的 web 应用，可以使用 ``run`` 命令显示地指定它。（但是，你也可以把各个应用分组到不同名称的多个文件夹中）如果那个文件夹不存在，那么会创建一个新的。PY4WEB 期望在这个文件夹中找到至少两个应用： **Dashboard** ( ``_dashboard`` ) 和 **Default** ( ``_default`` ) 如果没有找到，那么会安装它们。"
+
+#: ../../chapter-03.rst:281
+msgid ""
+"**Dashboard** is a web based IDE. It will be described in the next "
+"chapter."
+msgstr "**Dashboard** 是一个基于 web 的 IDE。下一章会详细描述它。"
+
+#: ../../chapter-03.rst:283
+msgid "**Default** is an app that does nothing other than welcome the user."
+msgstr "**Default** 是一个仅有 “欢迎用户访问” 的 web 应用。"
+
+#: ../../chapter-03.rst:287
+msgid ""
+"Some apps - like **Dashboard** and **Default** - have a special role in "
+"py4web and therefore their actual name starts with ``_`` to avoid "
+"conflicts with apps created by you."
+msgstr "有些应用 - 如 **Dashboard** 和 **Default** - 在 py4web 中有特殊的角色，因此它们的实际名字以  ``_`` 开头，以避免与你自己创建的应用冲突。"
+
+#: ../../chapter-03.rst:290
+msgid ""
+"Once py4web is running you can access a specific app at the following "
+"urls from the local machine:"
+msgstr "一旦 py4web 运行，通过在本地计算机中打开下面的网址你能访问某个特定应用："
+
+#: ../../chapter-03.rst:299
+msgid ""
+"In order to stop py4web, you need to hit :kbd:`Control-C` on the window "
+"where you run it."
+msgstr "要停止 py4web，需要在你运行它的窗口中按 :kbd:`Control-C` 。"
+
+#: ../../chapter-03.rst:303
+#, python-brace-format
+msgid ""
+"ONLY the **Default** app is special because if does not require the "
+"“{appname}/” prefix in the path, like all the other apps do. In general "
+"you may want to symlink ``apps/_default`` to your default app."
+msgstr "只有 **Default** 应用是特殊的，因为它的路径中不需要像其它所有应用中有的 “{appname}/” 前缀。一般来说，你可能希望将 ``apps/_default`` 符号链接到你的默认应用程序"
+
+#: ../../chapter-03.rst:306
+msgid "For all apps the trailing ``/index`` is also optional."
+msgstr "对于所有应用来说，末尾的 ``/index`` 也是可选的。"
+
+#: ../../chapter-03.rst:310
+msgid ""
+"For Windows: it could be that ``Ctrl-C`` does not work in order to stop "
+"py4web. In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``\\."
+msgstr "对于 Windows: 有可能 :kbd:`Ctrl-C` 不能停止 py4web。在这种情况下，尝试使用 :kbd:`Ctrl-Break` 或 :kbd:`Ctrl-Fn-Pause` 。"
+
+#: ../../chapter-03.rst:315
+msgid "Command line options"
+msgstr "命令行选项"
+
+#: ../../chapter-03.rst:317
+msgid ""
+"py4web provides multiple command line options which can be listed by "
+"running it without any argument"
+msgstr "py4web 提供了多个命令行选项，可以通过不带任何参数地运行 py4web 而列出它们："
+
+#: ../../chapter-03.rst:328
+msgid ""
+"You can have additional help for a specific command line option by "
+"running it with the **–help** or **-h** argument."
+msgstr "你可以通过带有 **–help** 或 **-h** 参数的方式运行 py4web 来获取特定命令行选项的额外帮助。"
+
+#: ../../chapter-03.rst:334
+msgid "``call`` command option"
+msgstr "``call`` 命令行选项"
+
+#: ../../chapter-03.rst:349
+msgid "For example:"
+msgstr "例如："
+
+#: ../../chapter-03.rst:355
+msgid ""
+"where myfunction is the function you want to call in "
+"apps/examples/test.py. Note that you have to use the single and double "
+"quotes just as shown for parameters to work."
+msgstr "myfunction 是你想调用的位于 apps/examples/test.py 中的函数。注意，你必须像上面那样使用单引号或双引号来传递参数。"
+
+#: ../../chapter-03.rst:362
+msgid "``new_app`` command option"
+msgstr "``new_app`` 命令行选项"
+
+#: ../../chapter-03.rst:378
+msgid ""
+"This currently gives an error on binaries installations and from source "
+"installation (locally), because they miss the asset zip file."
+msgstr "目前，无论是通过二进制文件安装还是（在本地）从源代码安装，都会出现错误，因为它们缺少资产压缩文件（asset zip file）。"
+
+#: ../../chapter-03.rst:384
+msgid "``run`` command option"
+msgstr "``run`` 命令行选项"
+
+#: ../../chapter-03.rst:425
+msgid ""
+"The ``app_names`` option lets you filter which specific apps you want to "
+"serve (comma separated). If absent or empty all the apps in the "
+"APPS_FOLDER will be run."
+msgstr "``app_names`` 选项让你可以过滤你想要运行哪些特定的应用（用逗号分隔）。如果为空或不存在，那么 APPS_FOLDER 中的所有应用都会被运行。"
+
+#: ../../chapter-03.rst:428
+msgid ""
+"By default (for security reasons) the py4web framework will listen only "
+"on 127.0.0.1, i.e. localhost. If you need to reach it from other machines"
+" you must specify the host option, like ``py4web run --host 0.0.0.0 "
+"apps``."
+msgstr "默认情况下（出于安全原因），py4web 框架只会监听 127.0.0.1，即 localhost。如果你需要从其他机器访问它，必须指定 host 选项，如 ``py4web run --host 0.0.0.0 apps`` 。"
+
+#: ../../chapter-03.rst:432
+msgid ""
+"The ``url_prefix`` option is useful for routing at the py4web level. It "
+"allows mapping to multiple versions of py4web running on different ports "
+"as long as the url_prefix and port match the location. For example "
+"``py4web run --url_prefix=/abracadabra --port 8000 apps``."
+msgstr "``url_prefix`` 选项对 py4web 级别上的路由很有用。只要 url_prefix 和端口匹配，它允许将多个版本的 py4web 映射到不同的端口。例如 ``py4web run --url_prefix=/abracadabra --port 8000 apps`` 。"
+
+#: ../../chapter-03.rst:436
+msgid ""
+"By default py4web will automatically reload an application upon any "
+"changes to the python files of that application. The reloading will occur"
+" on any first incoming request to the application that has been changed "
+"(lazy-mode). If you prefer an immediate reloading (sync-mode), use "
+"``py4web run --watch sync``. For production servers, it's better to use "
+"``py4web run --watch off`` in order to avoid unneded checks (but you will"
+" need to restart py4web for activating any change)."
+msgstr "默认情况下，当应用程序的 python 文件发生任何更改时，py4web 会自动地重新加载它。重新加载将在任何第一次传入请求应用程序变更的那个文件时发生（惰性模式）。如果你更喜欢立即重新加载（同步模式），使用 ``py4web run --watch sync`` 。 对于生产服务器，最好使用 ``py4web run --watch off`` 来避免不必要的检查（但你需要重启 py4web 才能激活任何更改）。"
+
+#: ../../chapter-03.rst:444
+msgid ""
+"The ``--watch`` directive looks for any changes occurring to the python "
+"files under the ``/apps`` folder only. Any modifications to the standard "
+"py4web programs will always require a full restart of the framework."
+msgstr "``--watch`` 指令只检查 ``/apps`` 文件夹下的 python 文件的变化。 标准的 py4web 程序的任何修改总是需要完全重启框架。"
+
+#: ../../chapter-03.rst:448
+msgid ""
+"The default web server used is currently rocketServer, but you can change"
+" this behaviour with the ``server`` option. `Rocket3 "
+"<https://github.com/web2py/rocket3>`__  is the multi-threaded web server "
+"used by web2py stripped of all the Python2 logic and dependencies."
+msgstr "当前，默认使用的 web 服务器是 rocketServer，但你可以使用 ``server`` 选项来改变这个行为。 `Rocket3 <https://github.com/web2py/rocket3>`__ 是 web2py 使用的多线程 web 服务器，去掉了所有 Python2 的逻辑和依赖。"
+
+#: ../../chapter-03.rst:452
+msgid ""
+"The logging_level values are defined in the **logging** standard python "
+"module. The default value is 30 (it corresponds to WARNING). Other common"
+" values are 0 (NOTSET), 10 (DEBUG), 20 (INFO), 40 (ERROR) and 50 "
+"(CRITICAL). Using them, you’re telling the library you want to handle all"
+" events from that level on up."
+msgstr "logging_level 的值在标准的 Python 模块 **logging** 中定义。默认值是 30（它相当于 WARNING ）。其他常见的值有 0（NOTSET）、10（DEBUG）、20（INFO）、40（ERROR）和 50（CRITICAL）。 使用它们，告诉 py4web 你想处理该级别及以上的所有事件。"
+
+#: ../../chapter-03.rst:456
+msgid ""
+"The debug parameter automatically sets logging_level to 0 and logs all "
+"calls to fixture functions. It also logs when a session is found, "
+"invalid, saved."
+msgstr "debug 参数自动将 logging_level 设置为 0，并记录对 fixture 函数的所有调用。它还记录会话何时创建、无效、保存。"
+
+#: ../../chapter-03.rst:465
+msgid "``set_password`` command option"
+msgstr "``set_password`` 命令行选项"
+
+#: ../../chapter-03.rst:481
+msgid ""
+"If the ``--dashboard_mode`` is not ``demo`` or ``none``, every time "
+"py4web starts, it asks for a one-time password for you to access the "
+"dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed "
+"password in a file (by default called password.txt) with the command"
+msgstr "如果 ``--dashboard_mode`` 不是 ``demo`` 或者 ``none`` ，那么 py4web 每次启动时，它会要求你输入一个一次性密码来访问 dashboard 。这很烦人。您可以通过使用以下命令将使用 pdkdf2 哈希过的密码存储在一个文件（默认情况下称为 password.txt ）中来避免它。"
+
+#: ../../chapter-03.rst:490
+msgid ""
+"It will not ask again unless the file is deleted. You can also use a "
+"custom file name with"
+msgstr "除非那个文件被删除，否则它将不再询问密码。您还可以使用自定义文件名："
+
+#: ../../chapter-03.rst:497
+msgid "and then ask py4web to re-use that password at runtime with"
+msgstr "然后要求 py4web 在运行时重新使用该密码"
+
+#: ../../chapter-03.rst:503
+msgid "Finally you can manually create the file yourself with:"
+msgstr "最后，你可以手动创建你自己的文件："
+
+#: ../../chapter-03.rst:513
+msgid "``setup`` command option"
+msgstr "``setup`` 命令行"
+
+#: ../../chapter-03.rst:526
+msgid ""
+"This option create a new apps folder (or reinstall it). If needed, it "
+"will ask for the confirmation of the new folder’s creation and then for "
+"copying every standard py4web apps from the assets folder. It currently "
+"does nothing on binaries installations and from source installation "
+"(locally) - for them you can manually copy the existing apps folder to "
+"the new one."
+msgstr "这个选项创建一个新的 apps 文件夹（或重新安装它）。如果需要，它会要求确认新文件夹的创建，然后从 assets 文件夹中复制每个标准的 py4web 应用程序。它目前对二进制安装没有作用，从源安装（本地）也没有作用——对于这两种情况，你可以手动将现有的 apps 文件夹复制到新的文件夹中。"
+
+#: ../../chapter-03.rst:536
+msgid "``shell`` command option"
+msgstr "``shell`` 命令行选项"
+
+#: ../../chapter-03.rst:549
+msgid ""
+"Py4web’s shell is just the regular python shell with apps added to the "
+"search path. Notice that the shell is for all the apps, not a single one."
+" You can then import the needed modules from the apps you need to access."
+msgstr "Py4web 的 shell 只是常规的 python shell ，只是在搜索路径中添加了应用程序路径。请注意，shell 适用于所有应用程序，而不是单个应用程序。然后，您可以从需要访问的应用程序中导入所需的模块。"
+
+#: ../../chapter-03.rst:554
+msgid "For example, inside a shell you can"
+msgstr "例如，在一个 shell 里，你可以："
+
+#: ../../chapter-03.rst:565
+msgid "``version`` command option"
+msgstr "``version`` 命令行选项"
+
+#: ../../chapter-03.rst:578
+msgid ""
+"With the ``-all`` option you’ll get the version of all the available "
+"python modules, too."
+msgstr "使用 ``-all`` 选项，你将获取所有可用的 python 模块的版本，"
+
+#: ../../chapter-03.rst:583
+msgid "Special installations"
+msgstr "特殊情况地安装"
+
+#: ../../chapter-03.rst:585
+msgid ""
+"There are special cases in which you cannot or don't want to use one of "
+"the generic installation instructions we've already described. There is a"
+" special folder called ``deployment_tools`` in the py4web repository that"
+" collects some special recipes. They are briefly described here, along "
+"with some tips and tricks."
+msgstr "在某些特殊情况下，您不能或不想使用我们已经描述过的通用安装说明之一。py4web 存储库中有一个名为 ``deployment_tools`` 的特殊文件夹，用于收集一些特殊方法。这里简要介绍了它们，以及一些提示和技巧。"
+
+#: ../../chapter-03.rst:591
+msgid "HTTPS"
+msgstr ""
+
+#: ../../chapter-03.rst:593
+msgid "To use https with the build-in web server (Rocket3) these are the steps:"
+msgstr "要将 https 与内置 web 服务器（Rocket3）一起使用，请执行以下步骤："
+
+#: ../../chapter-03.rst:595
+msgid ""
+"Generate the localhost certificates. For example followed the "
+"instructions here:"
+msgstr "生成本地主机证书。例如，按照以下说明进行操作："
+
+#: ../../chapter-03.rst:597
+msgid ""
+"https://www.section.io/engineering-education/how-to-get-ssl-https-for-"
+"localhost/."
+msgstr ""
+
+#: ../../chapter-03.rst:599
+msgid "Restart your browser and browse securely to your web site."
+msgstr "重新启动浏览器并以安全的方式浏览您的网站。"
+
+#: ../../chapter-03.rst:601
+msgid ""
+"If you use VSCode to run py4web you may want to update the py4web "
+"launch.json file to contain:"
+msgstr "如果你使用 VS Code 运行 py4web ，您可能需要包含以下内容来更新 py4web 的 launch.json 文件内容："
+
+#: ../../chapter-03.rst:622
+msgid ""
+"Notice that /path_to/ should be the absolute path to the location of your"
+" certificate."
+msgstr "注意，/path_to/ 应该是证书位置的绝对路径。"
+
+#: ../../chapter-03.rst:626
+msgid "WSGI"
+msgstr ""
+
+#: ../../chapter-03.rst:628
+msgid ""
+"py4web is a standard WSGI application. So, if a full program installation"
+" it's not feasible you can simply run py4web as a WSGI app. For example, "
+"using gunicorn-cli, create a python file:"
+msgstr "py4web 是一个标准的 WSGI 应用程序。因此，如果无法安装完整的程序，您可以简单地将 py4web 作为 WSGI 应用程序运行。例如，使用 gunicon-cli ，创建一个 python 文件："
+
+#: ../../chapter-03.rst:639
+msgid "and then start the application using cli:"
+msgstr "然后，使用 cli 启用应用程序："
+
+#: ../../chapter-03.rst:646
+msgid ""
+"The wsgi function takes arguments with the same name as the command line "
+"arguments."
+msgstr "wsgi 函数接收与命令行参数同名的参数。"
+
+#: ../../chapter-03.rst:650
+msgid "Deployment on GCloud (aka GAE - Google App Engine)"
+msgstr "在 GCloud（又名 GAE - 谷歌应用引擎）上部署"
+
+#: ../../chapter-03.rst:652
+#, python-brace-format
+msgid ""
+"Login into the `Gcloud console <https://console.cloud.google.com/>`__ and"
+" create a new project. You will obtain a project id that looks like "
+"“{project_name}-{number}”."
+msgstr "登录 `Gcloud console <https://console.cloud.google.com/>`__ 控制台并创建新项目。您将获得一个看起来像 “{project_name}-{number}” 的项目 ID。"
+
+#: ../../chapter-03.rst:656
+msgid "In your local file system make a new working folder and cd into it:"
+msgstr "在本地文件系统中，创建一个新的工作文件夹并将工作目录切换到那里："
+
+#: ../../chapter-03.rst:663
+msgid ""
+"Copy the example files from py4web (assuming you have the source from "
+"github)"
+msgstr "从 py4web 复制示例文件（假设您有来自 github 的源代码）"
+
+#: ../../chapter-03.rst:670
+msgid ""
+"Copy or symlink your ``apps`` folder into the gae folder, or maybe make a"
+" new apps folder containing an empty ``__init__.py`` and symlink the "
+"individual apps you want to deploy. You should see the following "
+"files/folders:"
+msgstr "将您的 ``apps`` 文件夹复制或创建符号链接到 gae 文件夹中，或者也可以新建一个 apps 文件夹，在其中放入一个空的 ``__init__.py`` 文件，然后为你想要部署的各个应用创建符号链接。你应该会看到以下文件/文件夹："
+
+#: ../../chapter-03.rst:685
+msgid "Install the Google SDK, py4web and setup the working folder:"
+msgstr "安装 Google SDK 、py4web 并设置工作文件夹："
+
+#: ../../chapter-03.rst:694
+#, python-brace-format
+msgid ""
+"(replace {your email} with your google email account and {project id} "
+"with the project id obtained from Google)."
+msgstr "（将 {your email} 替换为您的谷歌电子邮件帐户，将 {project id} 替换为从谷歌获得的项目 id ）。"
+
+#: ../../chapter-03.rst:697
+msgid "Now every time you want to deploy your apps, simply do:"
+msgstr "现在，每次您想部署应用程序时，只需执行以下操作："
+
+#: ../../chapter-03.rst:703
+msgid ""
+"You may want to customize the Makefile and app.yaml to suit your needs. "
+"You should not need to edit ``main.py``."
+msgstr "您可能希望自定义 Makefile 和 app.yaml 以满足您的需求。您不需要编辑 ``main.py`` 。"
+
+#: ../../chapter-03.rst:707
+msgid "Deployment on PythonAnywhere.com"
+msgstr "在 PythonAnywhere.com 上部署"
+
+#: ../../chapter-03.rst:709
+msgid ""
+"Watch the `YouTube video <https://youtu.be/Wxjl_vkLAEY>`__ and follow the"
+" `detailed tutorial "
+"<https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-"
+"source-pythonanywhere.md>`__ . The bottle_app.py script is in "
+"``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``"
+msgstr "观看 `YouTube video <https://youtu.be/Wxjl_vkLAEY>`__ 并按照 `detailed tutorial <https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-"
+"source-pythonanywhere.md>`__  进行操作。bottle_app.py 脚本位于 ``py4web/deployment_tools/pythonanywhere.com/bottle_app.py`` 中"
+
+#: ../../chapter-03.rst:716
+msgid "Deployment on Docker/Podman"
+msgstr "在 Docker/Podman 上部署"
+
+#: ../../chapter-03.rst:718
+msgid ""
+"On ``deployment_tools/docker`` there is a simple Dockerfile for quickly "
+"running a py4web container. There is also a docker-compose.yml file for "
+"setting up a more complex multi-container with PostgreSQL. A ready docker"
+" example based on the Scaffold application can be cloned from this "
+"repository <https://github.com/macneiln/docker-py4web-scaffold>"
+msgstr "在 ``deployment_tools/docker`` 上，有一个简单的 Dockerfile 用于快速运行 py4web 容器。还有一个 docker-compose.yml 文件，用于在 PostgreSQL 中设置更复杂的多容器。可以从该存储库克隆基于 Scaffold 应用程序的现成 docker 示例 <https://github.com/macneiln/docker-py4web-scaffold> 。"
+
+#: ../../chapter-03.rst:722
+msgid ""
+"Note that you can use them also with Podman, which has the advantage of "
+"does not requiring sudo and does not running any background daemon."
+msgstr "请注意，您也可以将它们与 Podman 一起使用，其优点是不需要 sudo，也不运行任何后台守护进程。"
+
+#: ../../chapter-03.rst:727
+msgid "Deployment on Ubuntu"
+msgstr "在 Ubuntu 上部署"
+
+#: ../../chapter-03.rst:729
+msgid ""
+"On ``deployment_tools/ubuntu`` there is a bash script tested with Ubuntu "
+"Server 20.04.03 LTS. It uses nginx and self-signed certificates. It "
+"optionally manage iptables, too."
+msgstr "在 ``deployment_tools/ubuntu`` 上，有一个使用 buntu Server 20.04.03 LTS 测试过的 bash 脚本。它使用 nginx 和自签名证书。它也可以选择管理 iptables。"
+

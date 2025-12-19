@@ -112,7 +112,7 @@ else:
     # the user is probably doing `make html`
     # set this build's current language to english
     current_language = "en"
-
+language = "zh_CN"
 # tell the theme which language to we're currently building
 html_context["current_language"] = current_language
 

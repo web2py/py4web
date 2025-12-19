@@ -1,0 +1,654 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-05.rst:3
+msgid "Creating an app"
+msgstr "创建一个应用"
+
+#: ../../chapter-05.rst:6
+msgid "From scratch"
+msgstr "从头开始"
+
+#: ../../chapter-05.rst:8
+msgid ""
+"Apps can be created using the dashboard or directly from the filesystem. "
+"Here, we are going to do it manually, as the Dashboard is already "
+"described in its own chapter."
+msgstr "可以使用 Dashboard 或者直接从文件系统创建应用。在这里，我们将手动创建，因为 Dashboard 的使用已经在其自己的章节中描述过了。"
+
+#: ../../chapter-05.rst:12
+msgid ""
+"Keep in mind that an app is a Python module; therefore it needs only a "
+"folder and a ``__init__.py`` file in that folder."
+msgstr "记住，一个应用（app）是一个 Python 模块；因此，它只需要一个文件夹和一个该文件夹中的 ``__init__.py`` 文件。"
+
+#: ../../chapter-05.rst:16
+msgid ""
+"An empty *__init__.py* file is not strictly needed since Python 3.3, but "
+"it will be useful later on."
+msgstr "从 Python 3.3 开始，空的 __init__.py 文件不是必须要有的，但它在以后会很有用。"
+
+#: ../../chapter-05.rst:19
+msgid ""
+"Open a command prompt and go to your main py4web folder. Enter the "
+"following simple commands in order to create a new empty **myapp** app:"
+msgstr "打开命令提示符并切换到到你的 py4web Apps 的主文件夹。输入以下简单的命令来创建一个新的空 **myapp** 应用："
+
+#: ../../chapter-05.rst:28
+msgid "for Windows, you must use backslashes (i.e. ``\\``) instead of slashes."
+msgstr "对于Windows，你必须使用反斜杠（即 ``\\`` )，而不是斜杠。"
+
+#: ../../chapter-05.rst:33
+msgid ""
+"If you now restart py4web or press the “Reload Apps” in the Dashboard, "
+"py4web will find this module, import it, and recognize it as an app, "
+"simply because of its location. By default py4web runs in *lazy watch* "
+"mode (see the :ref:`run command option`) for automatic reloading of the "
+"apps whenever it changes, which is very useful in a development "
+"environment. In production or debugging environment, it's better to run "
+"py4web with a command like this:"
+msgstr "如果你现在重新启动 py4web 或者在 Dashboard 中按下 “Reload Apps”，py4web 将会找到这个模块并导入它，并且将它识别为一个应用，这仅仅是因为它的位置。默认情况下，py4web 以 *lazy watch* 模式运行（参见 :ref:`run command option`），当应用改变时，会自动重新加载应用，这在开发环境中非常有用。在生成环境或调试环境中，最好使用以下命令来运行 py4web："
+
+#: ../../chapter-05.rst:47
+msgid ""
+"A py4web app is not required to do anything. It could just be a container"
+" for static files or arbitrary code that other apps may want to import "
+"and access. Yet typically most apps are designed to expose static or "
+"dynamic web pages."
+msgstr "py4web 应用不需要做任何事情。它可能只是一个静态文件或任意代码的容器，其他应用可能想导入和访问。然而，通常大多数应用都是设计为公开静态或动态网页。"
+
+#: ../../chapter-05.rst:53
+msgid "Static web pages"
+msgstr "静态网页"
+
+#: ../../chapter-05.rst:55
+msgid ""
+"To expose static web pages you simply need to create a ``static`` "
+"subfolder, and any file in there will be automatically published:"
+msgstr "要公开静态网页，你只需要简单地创建一个 ``static``  子文件夹，那里面的任何文件都会自动发布:"
+
+#: ../../chapter-05.rst:63
+msgid "The newly created file will be accessible at"
+msgstr "新创建的文件将可以在以下地址访问(如果不能访问，请重新加载应用)："
+
+#: ../../chapter-05.rst:69
+msgid ""
+"Notice that ``static`` is a special path for py4web and only files under "
+"the ``static`` folder are served."
+msgstr "注意， ``static`` 是 py4web 的一个特殊路径，只有 ``static`` 文件夹下的文件才会被提供静态服务（访问）。"
+
+#: ../../chapter-05.rst:74
+msgid ""
+"Internally py4web uses the `ombott (One More BOTTle) web server "
+"<https://github.com/valq7711/ombott>`__, which is a minimal and fast "
+"`bottlepy <https://bottlepy.org/>`__ spin-off. It supports streaming, "
+"partial content, range requests, and if-modified-since. This is all "
+"handled automatically based on the HTTP request headers."
+msgstr "py4web 在内部使用了 `ombott (One More BOTTle) web server "
+"<https://github.com/valq7711/ombott>`__ -- 这是 `bottlepy <https://bottlepy.org/>`__ 的一个最小且快速的衍生产品。它支持流媒体、部分内容、范围请求，以及 “if-modified-since”（若自指定时间后有修改）功能。这一切都是基于HTTP请求头自动处理的。"
+
+#: ../../chapter-05.rst:82
+msgid "Dynamic Web Pages"
+msgstr "动态网页"
+
+#: ../../chapter-05.rst:84
+msgid ""
+"To create a dynamic page, you must create a function that returns the "
+"page content. For example edit the ``myapp/__init__.py`` as follows:"
+msgstr "要创建一个动态页面，你必须创建一个返回页面内容的函数。例如，像下面那样编辑 ``myapp/__init__.py`` 地内容"
+
+#: ../../chapter-05.rst:96
+msgid "Reload the app, and this page will be accessible at"
+msgstr "重新加载应用，然后在以下地址访问这个页面："
+
+#: ../../chapter-05.rst:102
+msgid "or"
+msgstr "或者"
+
+#: ../../chapter-05.rst:108
+msgid "(notice that index is optional)"
+msgstr "（注意，index 是可选的）"
+
+#: ../../chapter-05.rst:110
+msgid ""
+"Unlike other frameworks, we do not import or start the webserver within "
+"the ``myapp`` code. This is because py4web is already running, and it may"
+" be serving multiple apps. py4web imports our code and exposes functions "
+"decorated with ``@action()``. Also notice that py4web prepends ``/myapp``"
+" (i.e. the name of the app) to the url path declared in the action. This "
+"is because there are multiple apps, and they may define conflicting "
+"routes. Prepending the name of the app removes the ambiguity. But there "
+"is one exception: if you call your app ``_default``, or if you create a "
+"symlink from ``_default`` to ``myapp``, then py4web will not prepend any "
+"prefix to the routes defined inside the app."
+msgstr "不像其他框架，我们不需要导入 ``myapp`` 应用的代码，或重新启动包含它的服务器。那是因为 py4web 已经在运行中，并且它可以为多个应用同时提供服务。 py4web 导入我们的代码，然后公开用 ``@action()`` 声明的函数。 还要注意，py4web 会在 @action 中声明的 url 路径前自动添加 ``/myapp`` （即应用程序的名称）。 这是因为这里会有多个应用，它们可能定义了冲突的路由。在前面加上应用的名称可以消除歧义。但是有一个例外：如果你把应用命名为 ``_default`` ，或者你创建了一个从  ``_default`` 到 ``myapp`` 的符号链接，那么 py4web 不会在前面加上任何前缀。"
+
+#: ../../chapter-05.rst:123
+msgid "On return values"
+msgstr "返回值"
+
+#: ../../chapter-05.rst:125
+msgid ""
+"py4web actions should return a string or a dictionary. If they return a "
+"dictionary you must tell py4web what to do with it. By default py4web "
+"will serialize it into json. For example edit ``__init__.py`` again and "
+"add at the end"
+msgstr "py4web 的 actions 应该返回一个字符串或一个字典。如果你返回一个字典，你必须告诉 py4web 如何处理它。默认情况下，py4web 会将它序列化成 json。例如，像下面那样编辑 ``__init__.py`` 并在最后添加："
+
+#: ../../chapter-05.rst:136 ../../chapter-05.rst:164
+msgid "This page will be visible at"
+msgstr "用下面的 URL 访问这个页面："
+
+#: ../../chapter-05.rst:142
+#, python-brace-format
+msgid ""
+"and returns a JSON object ``{\"colors\": [\"red\", \"blue\", "
+"\"green\"]}``. Notice we chose to name the function the same as the "
+"route. This is not required, but it is a convention that we will often "
+"follow."
+msgstr "然后返回一个 JSON 对象 ``{\"colors\": [\"red\", \"blue\", "
+"\"green\"]}`` 。请注意，我们选择将函数命名为与路由相同的名称。这不是必需的，但这是一个我们经常会遵循的约定。"
+
+#: ../../chapter-05.rst:146
+msgid ""
+"You can use any template language to turn your data into a string. PY4WEB"
+" comes with yatl, a full chapter will be dedicated later and we will "
+"provide an example shortly."
+msgstr "你可以使用任何模板语言将你的数据转换为字符串。PY4WEB 自带 yatl，稍后将专门用一整章详细介绍。一会儿，下面将提供一个简短的示例。"
+
+#: ../../chapter-05.rst:151
+msgid "Routes"
+msgstr "路由"
+
+#: ../../chapter-05.rst:153
+msgid ""
+"It is possible to map patterns in the URL into arguments of the function."
+" For example:"
+msgstr "可以将 URL 中的模式映射到函数的参数中。例如："
+
+#: ../../chapter-05.rst:170
+msgid ""
+"The syntax of the patterns is the same as the `Bottle routes "
+"<https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__. A route"
+" wildcard can be defined as"
+msgstr "路由模式的语法与  `Bottle routes <https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__ 相同。可以像这样定义一个路由通配符："
+
+#: ../../chapter-05.rst:174
+msgid "``<name>`` or"
+msgstr "``<name>`` 或者"
+
+#: ../../chapter-05.rst:175
+msgid "``<name:filter>`` or"
+msgstr "``<name:filter>`` 或者"
+
+#: ../../chapter-05.rst:176
+msgid "``<name:filter:config>``"
+msgstr ""
+
+#: ../../chapter-05.rst:178
+msgid "And these are possible filters (only ``:re`` has a config):"
+msgstr "下面是可用的过滤器（只有 ``:re`` 有配置项）"
+
+#: ../../chapter-05.rst:180
+msgid "``:int`` matches (signed) digits and converts the value to integer."
+msgstr "``:int`` 匹配（有符号）数字并将其转换为整数。"
+
+#: ../../chapter-05.rst:181
+msgid "``:float`` similar to :int but for decimal numbers."
+msgstr "``:float`` 与 :int 类似，但用于十进制小数。"
+
+#: ../../chapter-05.rst:182
+msgid ""
+"``:path`` matches all characters including the slash character in a non-"
+"greedy way, and may be used to match more than one path segment."
+msgstr "``:path`` 以非贪婪方式匹配所有字符，包括斜杠字符，可以用来匹配多个路径段。"
+
+#: ../../chapter-05.rst:184
+msgid ""
+"``:re[:exp]`` allows you to specify a custom regular expression in the "
+"config field. The matched value is not modified."
+msgstr "``:re[:exp]`` 允许你在配置字段中指定一个自定义的正则表达式。匹配的值不会被修改。"
+
+#: ../../chapter-05.rst:187
+msgid ""
+"The pattern matching the wildcard is passed to the function under the "
+"specified variable ``name``."
+msgstr "与通配符匹配的模式会通过指定的变量名 ``name`` 传递给函数。"
+
+#: ../../chapter-05.rst:190
+msgid ""
+"Note that the routing is implemented in ombott as radix-tree hybrid "
+"router. It is declaration-order-independent and it prioritizes static "
+"route-fragment over dynamic one, since this is most expected behavior."
+msgstr "需要注意的是，ombott 中的路由功能是通过基数树混合路由器实现的。它不受声明顺序影响，并且优先处理静态路由片段而非动态路由片段，因为这是最符合预期的行为"
+
+#: ../../chapter-05.rst:194
+msgid ""
+"This results in some constraints, such as one cannot have more than one "
+"route that has dynamic fragment of different types (int, path) in the "
+"same place.. Hence **something like this is incorrect** and will result "
+"in errors:"
+msgstr "这会带来一些限制，例如，不能存在多个在同一位置包含不同类的型动态片段（如 int、path 类型）的路由。因此，像下面这样的写法是错误的，会导致报错："
+
+#: ../../chapter-05.rst:209
+msgid ""
+"Instead, to accomplish a simmilar result, one needs to handle all the "
+"logic in one action:"
+msgstr "相反，要实现类似的结果，需要在一个动作中处理所有逻辑："
+
+#: ../../chapter-05.rst:222
+msgid ""
+"Also, the action decorator takes an optional ``method`` argument that can"
+" be an HTTP method or a list of methods:"
+msgstr "此外，动作装饰器接受一个可选的 ``method`` 参数，该参数可以是 HTTP 方法或方法列表："
+
+#: ../../chapter-05.rst:229
+msgid ""
+"You can use multiple decorators to expose the same function under "
+"multiple routes."
+msgstr "您可以使用多个装饰器在多个路由下公开相同的函数。"
+
+#: ../../chapter-05.rst:233
+msgid "The ``request`` object"
+msgstr "``request`` 对象"
+
+#: ../../chapter-05.rst:235
+msgid "From py4web you can import ``request``"
+msgstr "你可以从 py4web 中导入 ``request``"
+
+#: ../../chapter-05.rst:248
+msgid "This action can be accessed at:"
+msgstr "这个操作（ action ） 可以在下面的 URL 中访问："
+
+#: ../../chapter-05.rst:256
+msgid ""
+"Notice that the request object is equivalent to a `Bottle request object "
+"<https://bottlepy.org/docs/dev/api.html#the-request-object>`__. with one "
+"additional attribute:"
+msgstr "注意，请求对象等同于一个 `Bottle request object "
+"<https://bottlepy.org/docs/dev/api.html#the-request-object>`__ 。 还有一个附加属性："
+
+#: ../../chapter-05.rst:263
+msgid ""
+"Which you can use the code to identify the name and the folder used for "
+"the app."
+msgstr "你可以使用那个代码来识别应用程序使用的名称和文件夹。"
+
+#: ../../chapter-05.rst:267
+msgid "Templates"
+msgstr "模板"
+
+#: ../../chapter-05.rst:269
+msgid ""
+"In order to use a yatl template you must declare it. For example create a"
+" file ``apps/myapp/templates/paint.html`` that contains:"
+msgstr "为了使用 yatl 模板，你必须声明它。例如，创建一个文件 ``apps/myapp/templates/paint.html`` ，其内容包含："
+
+#: ../../chapter-05.rst:284
+msgid "then modify the paint action to use the template and default to green."
+msgstr "然后修改 paint 的 action 以使用模板并默认使用绿色。"
+
+#: ../../chapter-05.rst:293
+msgid ""
+"The page will now display the color name on a background of the "
+"corresponding color."
+msgstr "页面现在将显示颜色名称，它是页面背景的相应颜色。"
+
+#: ../../chapter-05.rst:296
+msgid ""
+"The key ingredient here is the decorator ``@action.uses(...)``. The "
+"arguments of ``action.uses`` are called **fixtures**. You can specify "
+"multiple fixtures in one decorator or you can have multiple decorators. "
+"Fixtures are objects that modify the behavior of the action, that may "
+"need to be initialized per request, that may filter input and output of "
+"the action, and that may depend on each-other (they are similar in scope "
+"to Bottle plugins but they are declared per-action, and they have a "
+"dependency tree which will be explained later)."
+msgstr "这里的关键要素是装饰器 ``@action.uses(...)`` 。 ``action.uses``  的参数被称为夹具（ **fixtures** ）。您可以在一个装饰器中指定多个夹具，也可以改用多个装饰器。夹具（ **fixtures** ）是修改动作（action）行为的对象，可能需要根据请求进行初始化，可以过滤动作的输入和输出，并且可能相互依赖（它们的作用范围与 Bottle 插件相似，但它们是按动作声明的，并且它们有一个依赖树，稍后将对此进行解释）"
+
+#: ../../chapter-05.rst:305
+msgid ""
+"The simplest type of fixture is a template. You specify it by simply "
+"giving the name of the file to be used as template. That file must follow"
+" the yatl syntax and must be located in the ``templates`` folder of the "
+"app. The object returned by the action will be processed by the template "
+"and turned into a string."
+msgstr "类型最简单的夹具是模板。您简单地指定要用作模板的文件的名称即可。该文件必须遵循 yatl 语法，必须位于应用程序的 `templates` 文件夹中。action 返回的对象将由模板处理并转换为字符串。"
+
+#: ../../chapter-05.rst:311
+msgid ""
+"You can easily define fixtures for other template languages. This is "
+"described later."
+msgstr "您可以轻松地为其他模板语言定义夹具。这将在后面描述。"
+
+#: ../../chapter-05.rst:314
+msgid "Some built-in fixtures are:"
+msgstr "一些内置地夹具是："
+
+#: ../../chapter-05.rst:316
+msgid ""
+"the DAL object (which tells py4web to obtain a database connection from "
+"the pool at every request, and commit on success or rollback on failure)"
+msgstr "DAL 对象（告诉 py4web 在每次请求时从池中获取数据库连接，并在成功时提交或在失败时回滚）"
+
+#: ../../chapter-05.rst:319
+msgid ""
+"the Session object (which tells py4web to parse the cookie and retrieve a"
+" session at every request, and to save it if changed)"
+msgstr "Session 对象（告诉 py4web 在每次请求时解析 cookie 并检索会话，并在更改时保存它）"
+
+#: ../../chapter-05.rst:321
+msgid ""
+"the Translator object (which tells py4web to process the accept-language "
+"header and determine optimal internationalization/pluralization rules)"
+msgstr "Translator 对象（告诉 py4web 处理 accept-language 标头并确定最佳国际化/多元化规则）"
+
+#: ../../chapter-05.rst:324
+msgid ""
+"the Auth object (which tells py4web that the app needs access to the user"
+" info)"
+msgstr "Auth 对象（告诉 py4web 应用程序需要访问用户信息）"
+
+#: ../../chapter-05.rst:327
+msgid ""
+"They may depend on each other. For example, the Session may need the DAL "
+"(database connection), and Auth may need both. Dependencies are handled "
+"automatically."
+msgstr "它们可能相互依赖。例如，Session 可能需要 DAL（数据库连接），而 Auth 可能需要两者。依赖关系将自动处理。"
+
+#: ../../chapter-05.rst:332
+msgid "The \\_scaffold app"
+msgstr "\\_scaffold 应用程序"
+
+#: ../../chapter-05.rst:334
+msgid ""
+"Most of the times, you do not want to start writing code from scratch. "
+"You also want to follow some sane conventions outlined here, like not "
+"putting all your code into ``__init__.py``. PY4WEB provides a Scaffolding"
+" (_scaffold) app, where files are organized properly and many useful "
+"objects are pre-defined. Also, it shows you how to manage users and their"
+" registration. Just like a real scaffolding in a building construction "
+"site, scaffolding could give you some kind of a fast and simplified "
+"structure for your project, on which you can rely to build your real "
+"project."
+msgstr "大多数时候，你不想从头开始写代码。您还需要遵循这里介绍的一些理智的约定，比如不要将所有代码都放在  ``__init__.py`` 中。PY4WEB 提供了一个脚手架（_scaffold）应用程序，其中文件被正确组织，许多有用的对象被预定义。此外，它还向您展示了如何管理用户及其注册。就像建筑工地上的真正脚手架一样，脚手架应用程序可以为您的项目提供某种快速简洁的结构，您可以依靠它来构建真正的项目。"
+
+#: ../../chapter-05.rst:346
+msgid ""
+"You will normally find the scaffold app under apps, but you can easily "
+"create a new clone of it manually or using the Dashboard."
+msgstr "通常，您会在 apps 下找到脚手架应用程序，但您可以使用 Dashboard 或手动轻松地创建它的一个新副本。"
+
+#: ../../chapter-05.rst:349
+msgid "Here is the tree structure of the ``_scaffold`` app:"
+msgstr "这里是 ``_scaffold`` 应用程序的树形结构："
+
+#: ../../chapter-05.rst:353
+msgid "The scaffold app contains an example of a more complex action:"
+msgstr "脚手架应用程序包含一个更复杂的动作(action)的示例："
+
+#: ../../chapter-05.rst:369
+msgid "Notice the following:"
+msgstr "注意以下内容："
+
+#: ../../chapter-05.rst:371
+msgid "``request``, ``response``, ``abort`` are defined by ``ombott``."
+msgstr "``request``、 ``response``、 ``abort`` ， 由 ``ombott`` 定义， 它是 bottlepy 框架的一个小且快速的衍生产品。"
+
+#: ../../chapter-05.rst:372
+msgid "``redirect`` and ``URL`` are similar to their web2py counterparts."
+msgstr "``redirect`` 和 ``URL`` ，与 web2py 中的功能类似。"
+
+#: ../../chapter-05.rst:373
+msgid ""
+"helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from "
+"``yatl.helpers`` . They work pretty much as in web2py."
+msgstr "帮助程序（ ``A`` 、 ``DIV`` 、 ``SPAN`` 、 ``IMG`` 以及其他）必须从 ``yatl.helpers`` 导入。 它们的工作方式与在 web2py 中的方式非常相似。"
+
+#: ../../chapter-05.rst:375
+msgid ""
+"``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must "
+"be defined in ``common.py``."
+msgstr "``db`` 、 ``session`` 、 ``T`` 、 ``cache`` 、 ``auth`` 是夹具。它们必须在 ``common.py`` 中定义。"
+
+#: ../../chapter-05.rst:377
+msgid ""
+"``@action.uses(auth.user)`` indicates that this action expects a valid "
+"logged-in user retrievable by ``auth.get_user()``. If that is not the "
+"case, this action redirects to the login page (defined also in "
+"``common.py`` and using the Vue.js auth.html component)."
+msgstr "``@action.uses(auth.user)`` 表示此 action 期望通过 ``auth.get_user()`` 检索到有效的登录用户。如果不是那种情况，此 action 将重定向到登录页面（也在 ``common.py`` 中定义，并使用 Vue.js 的 auth.html 组件）。"
+
+#: ../../chapter-05.rst:382
+msgid ""
+"When you start from scaffold, you may want to edit ``settings.py``, "
+"``templates``, ``models.py`` and ``controllers.py`` but probably you "
+"don’t need to change anything in ``common.py``."
+msgstr "当您从脚手架开始时，您可能希望编辑 ``settings.py`` 、 ``templates`` 、 ``models.py`` 和 ``controllers.py`` ，但最好不要在 ``common.py`` 中进行任何更改。"
+
+#: ../../chapter-05.rst:386
+msgid ""
+"In your html, you can use any JS library that you want because py4web is "
+"agnostic to your choice of JS and CSS, but with some exceptions. The "
+"``auth.html`` which handles registration/login/etc. uses a vue.js "
+"component. Hence if you want to use that, you should not remove it."
+msgstr "在您的 html 中，您可以使用任何您想要的 JS 库，因为 py4web 对您选择的 JS 和 CSS 是无感知的，但有一些例外。 ``auth.html`` 使用 vue.js 组件处理用户的注册、登录以及其它事情。因此，如果您想使用相关功能，您不应该删除 vue.js 。"
+
+#: ../../chapter-05.rst:395
+msgid "Copying the \\_scaffold app"
+msgstr "复制 \\_scaffold 应用"
+
+#: ../../chapter-05.rst:397
+msgid ""
+"The scaffold app is really useful, and you will surely use it a lot as a "
+"starting point for testing and even developing full features new apps."
+msgstr "脚手架应用程序非常有用，您很可能会大量使用它作为测试和甚至开发功能齐全的新应用的起点。"
+
+#: ../../chapter-05.rst:400
+msgid ""
+"It's better not to work directly on it: always create new apps copying "
+"it. You can do it in two ways:"
+msgstr "最好不要直接在上面工作：始终复制它来创建新应用。您可以通过两种方式来实现："
+
+#: ../../chapter-05.rst:403
+msgid ""
+"using the command line: copy the whole apps/_scaffold folder to another "
+"one (apps/my_app for example). Then reload py4web and it will be "
+"automatically loaded."
+msgstr "使用命令行：将整个 apps/_scaffold 文件夹复制到另一个文件夹中（例如 apps/my_app ）。然后重新加载 py4web ，它将自动被加载。"
+
+#: ../../chapter-05.rst:405
+msgid ""
+"using the Dashboard: select the button ``Create/Upload App`` under the "
+"\"Installed Applications\" upper section. Just give the new app a name "
+"and check that \"Scaffold\" is selected as the source. Finally press the "
+"``Create`` button and the dashboard will be automatically reloaded, along"
+" with the new app."
+msgstr "使用 Dashboard：在 “Installed Applications” 的上方部分，选择按钮 ``Create/Upload App`` 。只需给新应用一个名称，并将 “Scaffold” 作为源进行选择。最后按 ``Create`` 按钮， Dashboard 和新应用，都会被重新加。"
+
+#: ../../chapter-05.rst:416
+msgid "Watch for files change"
+msgstr "监视文件的变化"
+
+#: ../../chapter-05.rst:418
+msgid ""
+"As described in the :ref:`run command option`, Py4web facilitates a "
+"development server’s setup by automatically reloads an app when its "
+"Python source files change (by default). But in fact any other files "
+"inside an app can be watched by setting a handler function using the "
+"``@app_watch_handler`` decorator."
+msgstr "正如在 :ref:`run command option` 中所描述的， 当其 Python 源文件发生变化时（默认情况下） Py4web 会通过自动重新加载应用程序来简化开发服务器的设置。但实际上，应用程序内部的任何其他文件都可以通过设置 ``@app_watch_handler`` 装饰器来被监视。"
+
+#: ../../chapter-05.rst:424
+msgid ""
+"Two examples of this usage are reported now. Do not worry if you don’t "
+"fully understand them: the key point here is that even non-python code "
+"could be reloaded automatically if you explicit it with the "
+"``@app_watch_handler`` decorator."
+msgstr "现在展示两个使用示例。如果您不明白它们，不要担心：这里的关键要点是，即使是非 Python 代码也可以在使用 ``@app_watch_handler`` 装饰器时被自动重新加载。"
+
+#: ../../chapter-05.rst:429
+msgid "Watch SASS files and compile them when edited:"
+msgstr "监视 SASS 文件并在编辑时进行编译："
+
+#: ../../chapter-05.rst:448
+msgid "Validate javascript syntax when edited:"
+msgstr "编辑时验证 javascript 语法："
+
+#: ../../chapter-05.rst:464
+msgid ""
+"Filepaths passed to ``@app_watch_handler`` decorator must be relative to "
+"an app. Python files (i.e. \"\\*.py\") in a list passed to the decorator "
+"are ignored since they are watched by default. Handler function’s "
+"parameter is a list of filepaths that were changed. All exceptions inside"
+" handlers are printed in terminal."
+msgstr "传递给 ``@app_watch_handler``  装饰器的文件路径必须是相对于应用程序的。传递给装饰器的列表中的 Python 文件（即  \"\\*.py\" ）被忽略，因为它们是默认被监视的。处理程序函数的参数是已更改的文件路径的一个列表。处理程序内部的所有异常都将在终端中打印显示。"
+
+#: ../../chapter-05.rst:471
+msgid "Domain-mapped apps"
+msgstr "域映射应用程序"
+
+#: ../../chapter-05.rst:473
+msgid ""
+"In production environments it is often required to have several apps "
+"being served by a single py4web server, where different apps are mapped "
+"to different domains."
+msgstr "在生产环境中，通常需要一个 py4web 服务器为多个应用程序提供服务，其中不同的应用程序需要被映射到不同的域。"
+
+#: ../../chapter-05.rst:477
+msgid ""
+"py4web can easily handle running multiple apps, but there is no build-in "
+"mechanism for mapping domains to specific applications. Such mapping "
+"needs to be done externally to py4web -- for instance using a web "
+"reverse-proxy, such as nginx."
+msgstr "py4web 可以轻松处理运行多个应用程序，但没有内置机制将域映射到特定应用程序。这种映射需要在 py4web 外部完成，例如使用 nginx 等 web 反向代理。"
+
+#: ../../chapter-05.rst:482
+msgid ""
+"While nginx or other reverse-proxies are also useful in production "
+"environments for handling SSL termination, caching and other uses, we "
+"cover only the mapping of domains to py4web applications here."
+msgstr "虽然 nginx 或其他反向代理在生产环境中也可用于处理 SSL termination、缓存和其他用途，但我们在这里只介绍域到 py4web 应用程序的映射。"
+
+#: ../../chapter-05.rst:486
+msgid ""
+"An example nginx configuration for an application ``myapp`` mapped to a "
+"domain ``myapp.example.com`` might look like that:"
+msgstr "映射到域 ``myapp.example.com`` 的应用程序 ``myapp`` 的 nginx 配置示例可能如下："
+
+#: ../../chapter-05.rst:502
+msgid ""
+"This is an example ``server`` block of nginx configuration. One would "
+"have to create a separate such block for **each app/each domain** being "
+"served by py4web server. Note some important aspects:"
+msgstr "这个示例是 nginx 配置中的 ``server`` 块的内容。必须为 py4web 服务器提供服务的 **每个应用程序/每个域** 创建一个单独的此类块。注意一些重要方面："
+
+#: ../../chapter-05.rst:505
+msgid "``server_name`` defines the domain mapped to the app ``myapp``,"
+msgstr "``server_name`` 定义了映射到应用 ``myapp`` 的域，"
+
+#: ../../chapter-05.rst:506
+msgid ""
+"``proxy_http_version 1.1;`` directive is optional, but highly recommended"
+" (otherwise nginx uses HTTP 1.0 to talk"
+msgstr "``proxy_http_version 1.1;`` 指令是可选的，但强烈建议使用（否则 nginx 使用 HTTP 1.0 方式和"
+
+#: ../../chapter-05.rst:507
+msgid ""
+"to the backend-server -- here py4web -- and it creates all kinds of "
+"issues with buffering and otherwise),"
+msgstr "后端服务器 —— 这里是 py4web  —— 进行通信，它会在缓冲和其他方面产生各种问题），"
+
+#: ../../chapter-05.rst:508
+msgid ""
+"``proxy_set_header Host $host;`` directive ensures that the correct "
+"``Host`` is passed to py4web -- here ``myapp.example.com``"
+msgstr "``proxy_set_header Host $host;`` 指令确保将正确的 ``Host`` 传递给py4web —— 这里是 ``myapp.example.com`` "
+
+#: ../../chapter-05.rst:509
+msgid ""
+"``proxy_set_header X-PY4WEB-APPNAME /myapp;`` directive ensures that "
+"py4web (and ombott) knows which app to serve"
+msgstr "``proxy_set_header X-PY4WEB-APPNAME /myapp;`` 指令确保 py4web（和ombott）知道要服务哪个应用程序"
+
+#: ../../chapter-05.rst:510
+msgid ""
+"and **also** that this application is domain-mapped -- pay specific "
+"attention to the slash (``/``) in front of the ``myapp`` name -- it is "
+"**required** to ensure correct parsing of URLs on ombott level,"
+msgstr "此外，该应用程序是域映射的——特别注意 ``myapp`` 名称前的斜线（ ``/`` ）—— **需要** 确保在 ombott 级别正确解析 URL，"
+
+#: ../../chapter-05.rst:512
+msgid ""
+"finally ``proxy_pass http://127.0.0.1:8000/myapp$request_uri;`` ensures "
+"that the request is passed in its integrity (``$request_uri``)"
+msgstr "最后， ``proxy_pass http://127.0.0.1:8000/myapp$request_uri;`` 确保请求完整传递（ ``$request_uri`` ）"
+
+#: ../../chapter-05.rst:513
+msgid ""
+"to py4web server (here: ``127.0.0.1:8000``) and the correct app "
+"(``/myapp``)."
+msgstr "到 py4web 服务器（此处： ``127.0.0.1:8000`` ）和正确的应用程序（ ``/myapp`` ）。"
+
+#: ../../chapter-05.rst:515
+msgid ""
+"Such configuration ensures that all URL manipulation inside ombott and "
+"py4web - especially in modules such as ``Auth``, ``Form``, and ``Grid`` "
+"are done correctly using the domain to which the app is mapped to."
+msgstr "这种配置确保了 ombott 和 py4web 中的所有 URL 操作，特别是在 ``Auth`` 、 ``Form`` 和 ``Grid`` 等模块中，都是使用应用程序映射到的域正确完成的。"
+
+#: ../../chapter-05.rst:519
+msgid "Custom error pages"
+msgstr "自定义错误页面"
+
+#: ../../chapter-05.rst:521
+msgid ""
+"py4web provides default error pages. For instance, if none of the routes "
+"in an app matches the request, a default 404 error page will be shown. By"
+" default all HTTP error codes are handled automatically by py4web."
+msgstr "py4web 提供默认错误页面。例如，如果应用程序中的所有路由都与请求不匹配，则将显示默认的 404 错误页面。默认情况下，所有 HTTP 错误代码都由 py4web 自动处理。"
+
+#: ../../chapter-05.rst:525
+msgid ""
+"It is however possible to override this behaviour. It can be done either "
+"per HTTP error code, or even for all errors."
+msgstr "然而，可以覆盖此行为。它可以针对某个 HTTP 错误代码，甚至可以针对所有错误完成。"
+
+#: ../../chapter-05.rst:528
+msgid "Here is an example for overriding HTTP code 404 (not found):"
+msgstr "以下是重写 HTTP 代码 404 （未找到）的示例："
+
+#: ../../chapter-05.rst:535
+msgid ""
+"If one wants to replace _all_ default error pages, a special qualifier "
+"``\"*\"`` should be used. Also, the returned value may contain HTML code "
+"as well:"
+msgstr "如果要替换 _all_ 对应的默认错误页面，应使用特殊的限定符 ``\"*\"`` 。此外，返回的值也可能包含 HTML 代码："
+
+#: ../../chapter-05.rst:547
+msgid ""
+"Note that this setup is **global**. This means that it is defined once "
+"for all apps on a given py4web instance. This is because, when an error "
+"is encountered, it could be because the request has not matched any of "
+"the apps. Hence, this configuration should only be done in **one of the "
+"apps**."
+msgstr "请注意，此设置是 **全局** 的。这意味着对于特定 py4web 实例上的所有应用，它只需定义一次。原因是，当出现错误时，可能是由于请求未匹配到任何应用。因此，这种配置 **只应在其中一个应用中进行** 。"
+

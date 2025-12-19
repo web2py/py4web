@@ -1,0 +1,1229 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 20:25+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-06.rst:3
+msgid "Fixtures"
+msgstr "夹具（Fixture）"
+
+#: ../../chapter-06.rst:5
+msgid ""
+"A fixture is defined as “a piece of equipment or furniture which is fixed"
+" in position in a building or vehicle”. In our case a fixture is "
+"something attached to the action that processes an HTTP request in order "
+"to produce a response."
+msgstr ""
+"一个 **夹具（Fixture）** 被定义为 “固定在建筑物或车辆中的设备或用具”。在我们这里的情况下， **夹具（Fixture）** "
+"是附加到处理 HTTP 请求以产生响应的 action 的东西。"
+
+#: ../../chapter-06.rst:10
+msgid ""
+"When processing any HTTP requests there are some optional operations we "
+"may want to perform. For example parse the cookie to look for session "
+"information, commit a database transaction, determine the preferred "
+"language from the HTTP header and lookup proper internationalization, "
+"etc. These operations are optional. Some actions need them and some "
+"actions do not. They may also depend on each other. For example, if "
+"sessions are stored in the database and our action needs it, we may need "
+"to parse the session cookie from the HTTP header, pick up a connection "
+"from the database connection pool, and - after the action has been "
+"executed - save the session back in the database if data has changed."
+msgstr ""
+"在处理任何 HTTP 请求的时候，有一些我们可能想要执行的可选操作。例如，解析 cookie 以查找 session 信息、提交数据库事务、从 "
+"HTTP 头部确定首选语言、获取合适的国际化操作，等等。这些操作都是可选的。有些 action 需要它们，有些 action "
+"不需要。它们也可能相互依赖。例如，如果 session 存储在数据库中，我们的 action 又需要它，那么我们可能需要从 HTTP 头部解析 "
+"session cookie，从数据库连接池中获取一个连接，如果会话数据有变化 - 在 action 执行完毕后 - 再将 session "
+"保存回数据库。"
+
+#: ../../chapter-06.rst:21
+msgid ""
+"PY4WEB fixtures provide a mechanism to specify what an action needs so "
+"that py4web can accomplish the required tasks (and skip non required "
+"ones) in the most efficient manner. Fixtures make the code efficient and "
+"reduce the need for boilerplate code. Think of fixtures as per action (as"
+" opposed to per app) middleware."
+msgstr ""
+"PY4WEB 的夹具（Fixtures）提供了一种机制，用于指定 action 额外需要什么，以便 py4web "
+"可以以最有效的方式完成所需任务（并跳过不需要的任务）。夹具（Fixtures）使代码更高效，并减少了样板代码的需求。把夹具（Fixtures）想象成针对每个"
+" action 的中间件（而不是针对整个应用）。"
+
+#: ../../chapter-06.rst:27
+msgid ""
+"PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except"
+" that they apply to individual actions, not to all of them, and can "
+"depend on each other."
+msgstr ""
+"PY4WEB 的夹具（Fixtures）与 WSGI 中间件和 BottlePy 插件相似，除了它们应用于单个 action，而不是所有的 "
+"action，并且它们之间可以相互依赖。"
+
+#: ../../chapter-06.rst:31
+msgid ""
+"PY4WEB comes with some pre-defined fixtures: sessions, url signing and "
+"flash messages will be fully explained in this chapter. Database "
+"connections, internationalization, authentication, and templates will "
+"instead be just outlined here since they have dedicated chapters."
+msgstr ""
+"PY4WEB 自带一些预定义的夹具（Fixtures）：session、url signing 和 flash messages "
+"，将在本章中完整地解释。Database connections、 internationalization、authentication 和 "
+"templates 在这里只是简单地介绍，因为有专门的章节进行介绍。"
+
+#: ../../chapter-06.rst:37
+msgid ""
+"The developer is also free to add fixtures, for example, to handle a "
+"third party template language or third party session logic; this is "
+"explained later in the :ref:`Custom fixtures` paragraph."
+msgstr ""
+"开发者也可以自由地添加夹具，例如，处理第三方的模板语言或第三方的 session 逻辑；这将在 :ref:`Custom fixtures` "
+"的相关段落中解释。"
+
+#: ../../chapter-06.rst:42
+msgid "Using Fixtures"
+msgstr "使用 “夹具（Fixture）”"
+
+#: ../../chapter-06.rst:44
+msgid ""
+"As we've seen in the previous chapter, fixtures are the arguments of the "
+"decorator ``@action.uses(...)``. You can specify multiple fixtures in one"
+" decorator or you can have multiple decorators."
+msgstr ""
+"正如我们在上一章中看到的，夹具是装饰器 ``@action.uses(...)`` 的参数。 "
+"你可以在一个装饰器中指定多个夹具，也可以使用多个装饰器。"
+
+#: ../../chapter-06.rst:48
+msgid "Also, fixtures can be applied in groups. For example:"
+msgstr "夹具也可以组合应用。例如："
+
+#: ../../chapter-06.rst:54
+msgid "Then you can apply all of them at once with:"
+msgstr "然后，你可以一次性应用它们："
+
+#: ../../chapter-06.rst:63
+msgid ""
+"Usually, it's not important the order you use to specify the fixtures, "
+"because py4web knows well how to manage them if they have explicit "
+"dependencies. For example auth depends explicitly on db and session and "
+"flash, so you do not even needs to list them."
+msgstr ""
+"通常，你使用夹具的顺序并不重要，因为如果它们有明确的依赖关系， py4web 很清楚如何管理它们。例如，虽然 auth 明确地依赖于 db 和 "
+"session，但是你不需要全部列出它们。"
+
+#: ../../chapter-06.rst:67
+msgid ""
+"But there is an important exception: the Template fixture must always be "
+"the **first one**. Otherwise, it will not have access to various things "
+"it should need from the other fixtures, especially Inject() and Flash() "
+"that we'll see later."
+msgstr ""
+"但是，有一个重要的例外：模板夹具（Template fixture） 必须是 **第一个** "
+"。否则，它将无法访问它应该需要的那些来自其他夹具的内容，特别是 Inject() 和 Flash()，我们稍后会看到。"
+
+#: ../../chapter-06.rst:73
+msgid "The Template fixture"
+msgstr "模板夹具"
+
+#: ../../chapter-06.rst:75
+msgid ""
+"PY4WEB by default uses the YATL template language and provides a fixture "
+"for it."
+msgstr "PY4WEB 默认使用 YATL 模板语言，并为它提供了一个夹具。"
+
+#: ../../chapter-06.rst:88
+msgid ""
+"Note: this example assumes that you created the application from the "
+"scaffolding app, so that the template index.html is already created for "
+"you."
+msgstr "注意：这个例子假设你已经基于 scaffolding 应用创建了应用程序，因此模板 index.html 已经为你创建好了。"
+
+#: ../../chapter-06.rst:92
+msgid ""
+"The Template object is a Fixture. It transforms the ``dict()`` returned "
+"by the action into a string by using the ``index.html`` template file. In"
+" a later chapter we will provide an example of how to define a custom "
+"fixture to use a different template language, for example Jinja2."
+msgstr ""
+"Template 对象是一个夹具（Fixture）。它使用 ``index.html`` 模板文件将 action 返回的 ``dict()`` "
+"转换为字符串。在后面的章节中，我们将提供一个例子，说明如何定义一个自定义的夹具来使用不同的模板语言，例如 Jinja2。"
+
+#: ../../chapter-06.rst:97
+msgid ""
+"Notice that since the use of templates is very common and since, most "
+"likely, every action uses a different template, we provide some syntactic"
+" sugar, and the two following lines are equivalent:"
+msgstr "注意，由于模板的使用非常常见，并且很可能每个 action 都使用不同的模板，我们提供了一些便捷的语法，以下两行是等价的："
+
+#: ../../chapter-06.rst:107
+msgid ""
+"Also notice that py4web template files are cached in RAM. The py4web "
+"caching object is described later on :ref:`Caching and Memoize`."
+msgstr ""
+"还要注意，py4web 模板文件被缓存在内存（ RAM ） 中。py4web 缓存对象在后续的 :ref:`Caching and "
+"Memoize` 中进行了描述。"
+
+#: ../../chapter-06.rst:111
+msgid ""
+"If you use multiple fixtures, always place the template as the **first "
+"one**."
+msgstr "如果你使用多个夹具 fixture，请始终将模板放在 **第一个** 。"
+
+#: ../../chapter-06.rst:114
+msgid "For example:"
+msgstr "例如："
+
+#: ../../chapter-06.rst:122
+msgid ""
+"Be careful if you read old documentations that this need was **exactly "
+"the opposite** in early py4web experimental versions (until February "
+"2022)!"
+msgstr "注意，如果你阅读过旧文档，那么你就清楚：在早期 py4web 地实验版本（直到2022年2月）中，这个需求是完全相反的！"
+
+#: ../../chapter-06.rst:126
+msgid ""
+"As we've already seen in the last paragraph, you can combine many "
+"fixtures in one decorator. But you can even extend this decorator by "
+"passing different templates as needed. For example:"
+msgstr "正如我们在前面的段落中已经看到的，你可以在一个装饰器中组合很多夹具。你甚至可以根据需要传递不同的模板来扩展这个装饰器。例如："
+
+#: ../../chapter-06.rst:136
+msgid "And then:"
+msgstr "然后："
+
+#: ../../chapter-06.rst:146
+msgid ""
+"This syntax has no performance implications: it's just for avoiding to "
+"replicate a decorator logic in multiple places. In this way you'll have "
+"cleaner code and if needed you'll be able to change it later in one place"
+" only."
+msgstr "这种语法没有性能影响：它只是为了避免在多个地方重复一个装饰器逻辑。这样，你会有更干净的代码，如果需要，你可以只在一个地方改变它。"
+
+#: ../../chapter-06.rst:151
+msgid "The Inject fixture"
+msgstr "注入夹具"
+
+#: ../../chapter-06.rst:153
+msgid ""
+"The Inject fixture is used for passing variables (and even python "
+"functions) to templates. Here is a simple example:"
+msgstr "注入夹具（ Inject fixture ）用于将变量（甚至 python 函数）传递给模板。这里有一个简单的例子："
+
+#: ../../chapter-06.rst:169
+msgid "It will be explained later on :ref:`Using Inject` in the YATL chapter."
+msgstr "稍后，会在 YATL 章节中的 :ref:`Using Inject` 部分解释。"
+
+#: ../../chapter-06.rst:173
+msgid "The Translator fixture"
+msgstr "翻译夹具"
+
+#: ../../chapter-06.rst:175
+msgid "Here is an example of usage:"
+msgstr "这里是用法示例："
+
+#: ../../chapter-06.rst:189
+msgid ""
+"The string ``hello world`` will be translated based on the "
+"internationalization file in the specified “translations” folder that "
+"best matches the HTTP ``accept-language`` header."
+msgstr ""
+"字符串 ``hello world`` 将基于指定的 “translations” 文件夹中与 HTTP ``accept-language`` "
+"头最匹配的国际化文件进行翻译。"
+
+#: ../../chapter-06.rst:193
+msgid ""
+"Here ``Translator`` is a py4web class that extends "
+"``pluralize.Translator`` and also implements the ``Fixture`` interface."
+msgstr ""
+"这里的 ``Translator`` 是一个 py4web 类，它扩展了 ``pluralize.Translator`` ， 并且也实现了 "
+"``Fixture`` 的接口。"
+
+#: ../../chapter-06.rst:196
+msgid ""
+"We can easily combine multiple fixtures. Here, as example, we make action"
+" with a counter that counts “visits”."
+msgstr "我们可以很容易地组合多个夹具。这里，作为一个例子，我们制作了一个 action ，它计算 “访问次数”。"
+
+#: ../../chapter-06.rst:218
+msgid ""
+"If the ``T`` fixture is to be used from inside a template you may want to"
+" pass it to the template:"
+msgstr "如果 ``T`` 夹具在一个模板中要使用，你可能需要把它传递给那个模板："
+
+#: ../../chapter-06.rst:227
+msgid "Or perhaps inject (same effect as above)"
+msgstr "或者，可以注入（效果同上）："
+
+#: ../../chapter-06.rst:239
+msgid "Now create the following translation file ``translations/en.json``:"
+msgstr "现在，创建翻译文件 ``translations/en.json`` :"
+
+#: ../../chapter-06.rst:253
+msgid ""
+"When visiting this site with the browser language preference set to "
+"English and reloading multiple times you will get the following messages:"
+msgstr "当使用英语作为浏览器语言偏好设置访问此网站并多次重新加载时，您将收到以下消息："
+
+#: ../../chapter-06.rst:267
+msgid "Now try create a file called ``translations/it.json`` which contains:"
+msgstr "现在尝试创建一个名为 ``translations/it.json`` 的文件，其中包含："
+
+#: ../../chapter-06.rst:281
+msgid ""
+"Set your browser preference to Italian: now the messages will be "
+"automatically translated to Italian."
+msgstr "将您的浏览器偏好设置为意大利语：现在消息将自动翻译为意大利语。"
+
+#: ../../chapter-06.rst:284
+msgid ""
+"Notice there is an UI in the Dashboard for creating, updating, and "
+"updating translation files. It can be easily reached via the button "
+"``i18n+p11n``:"
+msgstr ""
+"注意，在 Dashboard 中有一个用于创建、更新和更新翻译文件的用户界面，它能通过 Dashboard 上的 ``i18n+p11n`` "
+"按钮访问的。"
+
+#: ../../chapter-06.rst:289
+msgid "that leads to the following interface:"
+msgstr "这就是你看到了如下页面："
+
+#: ../../chapter-06.rst:293
+msgid "More details can be found here: https://github.com/web2py/pluralize"
+msgstr "在 https://github.com/web2py/pluralize 里面，可以找到更多详细内容。"
+
+#: ../../chapter-06.rst:296
+msgid ""
+"If you want to force an action to use language defined somewhere else, "
+"for example from a session variable, you can do:"
+msgstr "如果您想强制 action 使用其他地方定义的语言，例如来自会话变量，您可以执行："
+
+#: ../../chapter-06.rst:306
+msgid ""
+"If you want all of your action to use the same pre-defined language and "
+"ignore browser preferences, you have to redefine the select method for "
+"the T instance:"
+msgstr "如果你想让所有的 action 都使用相同的预定义语言并且忽略浏览器偏好，你必须重新定义 T 实例的 select 方法："
+
+#: ../../chapter-06.rst:313
+msgid ""
+"This is to be done outside any action and will apply to all actions. "
+"Action will still need to declare ``action.uses(T)`` else the behavior is"
+" undefined."
+msgstr ""
+"这是在任何 action 之外完成的，并且将适用于所有 action 。action 仍然需要声明 ``action.uses(T)`` "
+"，否则预定义的行为仍被认为是未定义的。"
+
+#: ../../chapter-06.rst:319
+msgid "The Flash fixture"
+msgstr "消息夹具"
+
+#: ../../chapter-06.rst:321
+msgid ""
+"It is common to want to display “alerts” to the users. Here we refer to "
+"them as **flash messages**. There is a little more to it than just "
+"displaying a message to the view, because flash messages:"
+msgstr "通常，希望向用户显示 “警报” 。在这里，我们称它们为  **flash 消息** 。它不仅仅是向视图显示消息，因为 flash 消息还："
+
+#: ../../chapter-06.rst:325
+msgid "can have state that must be preserved after redirection"
+msgstr "可以在重定向后保留状态"
+
+#: ../../chapter-06.rst:326
+msgid "can be generated both server side and client side"
+msgstr "可以在服务器端和客户端生成"
+
+#: ../../chapter-06.rst:327
+msgid "may have a type"
+msgstr "可以有一个类型"
+
+#: ../../chapter-06.rst:328
+msgid "should be dismissible"
+msgstr "应该可以被关闭"
+
+#: ../../chapter-06.rst:330
+msgid "The Flash helper handles the server side of them. Here is an example:"
+msgstr "Flash helper 在服务器端处理这些。下面是一个例子："
+
+#: ../../chapter-06.rst:344
+msgid "and in the template:"
+msgstr "并在模板中："
+
+#: ../../chapter-06.rst:350
+msgid ""
+"By setting the value of the message in the flash helper, a flash variable"
+" is returned by the action and this triggers the JS in the template to "
+"inject the message in the ``py4web-flash`` DIV which you can position at "
+"your convenience. Also the optional class is applied to the injected "
+"HTML."
+msgstr ""
+"通过设置 flash helper 中的消息值，action 返回一个 flash 变量，这会触发模板中的 JS 把消息注入到 ``py4web-"
+"flash`` DIV 中，你可以根据自己的需要来定位它。 可选 class 也应用于被注入的 HTML。"
+
+#: ../../chapter-06.rst:356
+msgid ""
+"If a page is redirected after a flash is set, the flash is remembered. "
+"This is achieved by asking the browser to keep the message temporarily in"
+" a one-time cookie. After redirection the message is sent back by the "
+"browser to the server and the server sets it again automatically before "
+"returning the content, unless it is overwritten by another set."
+msgstr ""
+"如果在 flash 被设置后进行页面重定向，flash 就会被记住。 这是通过要求浏览器暂时保存前面的 cookie 中的消息来实现的。 "
+"重定向后，浏览器将消息发送回服务器，服务器在返回内容之前自动设置它，除非它被另一个设置覆盖。"
+
+#: ../../chapter-06.rst:362
+msgid "The client can also set/add flash messages by calling:"
+msgstr ""
+"如果在控制器 action 函数内先调用一次 ``flash.set('something')`` 或返回 ``flash={'message':"
+" 'hello world', 'class': 'info'}`` 字典对象，那么在客户端也可以通过调用以下方法来设置/添加 flash 消息："
+
+#: ../../chapter-06.rst:368
+msgid ""
+"py4web defaults to an alert class called ``info`` and most CSS frameworks"
+" define classes for alerts called ``success``, ``error``, ``warning``, "
+"``default``, and ``info``. Yet, there is nothing in py4web that hardcodes"
+" those names. You can use your own class names."
+msgstr ""
+"py4web 默认使用一个名为 ``info`` 的 alert 类，大多数 CSS 框架为警报定义了名为 ``success`` , "
+"``error`` , ``warning`` , ``default`` 和 ``info``  的类。 但是，py4web "
+"中没有对这些名称进行硬编码。 你可以使用你的自己的类名。"
+
+#: ../../chapter-06.rst:373
+msgid "You can see the basic usage of flash messages in the **examples** app."
+msgstr "你可以在 **examples** 应用中看到 flash 消息的基本用法。"
+
+#: ../../chapter-06.rst:376
+msgid "The Session fixture"
+msgstr "Session 夹具"
+
+#: ../../chapter-06.rst:378
+msgid ""
+"Simply speaking, a session can be defined as a way to preserve "
+"information that is desired to persist throughout the user's interaction "
+"with the web site or web application. In other words, sessions render the"
+" stateless HTTP connection a stateful one."
+msgstr ""
+"简单地说，Session（会话）可以定义为一种保存信息的方式，这些信息希望在用户与网站或 Web "
+"应用程序的整个交互过程中保持不变。换句话说，Session 使无状态的 HTTP 连接成为有状态的。"
+
+#: ../../chapter-06.rst:382
+msgid ""
+"In py4web, the session object is also a fixture. Here is a simple example"
+" of its usage to implement a counter."
+msgstr "在 py4web 中，Session 对象也是一个夹具。下面是一个简单的示例，它用于实现计数器。"
+
+#: ../../chapter-06.rst:398
+msgid ""
+"The counter will start from 0; its value will be remembered and increased"
+" every time you reload the page."
+msgstr "计数器将从 0 开始；其值将被记住并每次重新加载页面时会增加 1。"
+
+#: ../../chapter-06.rst:403
+msgid ""
+"Opening the page in a new browser tab will give you the updated counter "
+"value. Closing and reopening the browser, or opening a new *private "
+"window*, will instead restart the counter from 0."
+msgstr "在新的浏览器选项卡中打开页面将为您提供更新后的计数器值。关闭并重新打开浏览器，或打开新的 *私有窗口* ，将从 0 重新启动计数器。"
+
+#: ../../chapter-06.rst:407
+msgid ""
+"Usually the information is saved in the session object are related to the"
+" user - like its username, preferences, last pages visited, shopping cart"
+" and so on. The session object has the same interface as a Python "
+"dictionary but in py4web sessions are always stored using JSON (**JWT** "
+"specifically, i.e. `JSON Web Token <https://jwt.io/introduction>`__), "
+"therefore you should only store objects that are JSON serializable. If "
+"the object is not JSON serializable, it will be serialized using the "
+"``__str__`` operator and some information may be lost."
+msgstr ""
+"通常保存在会话对象中的信息与用户相关 ——— 比如它的用户名、偏好、最后访问的页面、购物车等等。会话对象具有与 Python 字典相同的接口，但在"
+" py4web 中会话总是使用 JSON 存储（ 确切地说是 JWT ，即 `JSON Web Token "
+"<https://jwt.io/introduction>`__ ），因此您应该只存储可支持 JSON 序列化的对象。如果对象不可序列化，它将使用"
+" ``__str__`` 运算符进行序列化，并且可能会丢失一些信息。"
+
+#: ../../chapter-06.rst:417
+msgid "The information composing the session object can be saved:"
+msgstr "组成会话对象的信息可以被保存在："
+
+#: ../../chapter-06.rst:419
+msgid "client-side, by only using cookies (default)"
+msgstr "客户端，只需使用 cookies（默认）"
+
+#: ../../chapter-06.rst:420
+msgid ""
+"server-side, but you'll still need minimal cookies for identifying the "
+"clients"
+msgstr "服务端，但您仍然需要极小的 cookies 来识别客户端"
+
+#: ../../chapter-06.rst:423
+msgid ""
+"By default py4web sessions never expire (unless they contain login "
+"information, but that is another story) even if an expiration can be set."
+" Other parameters can be specified as well:"
+msgstr "即使可以设置会话的过期时间，在默认情况下，py4web 会话永远也不会过期（除非它们包含登录信息，但那是另一回事）。还可以指定其他参数："
+
+#: ../../chapter-06.rst:436
+msgid "Here:"
+msgstr "这里的："
+
+#: ../../chapter-06.rst:438
+msgid "``secret`` is the passphrase used to sign the information"
+msgstr "``secret`` 是用于对信息进行签名的密码"
+
+#: ../../chapter-06.rst:439
+msgid ""
+"``expiration`` is the maximum lifetime of the session, in seconds "
+"(default = None, i.e. no timeout)"
+msgstr "``expiration`` 是会话的最大生存期，以秒为单位（默认为 None，即永不超时）"
+
+#: ../../chapter-06.rst:441
+msgid ""
+"``algorithm`` is the algorithm to be used for the JWT token signature "
+"('HS256' by default)"
+msgstr "``algorithm`` 是用于 JWT 令牌签名的算法（默认为 ‘HS256’ ）"
+
+#: ../../chapter-06.rst:443
+msgid ""
+"``storage`` is a parameter that allows to specify an alternate session "
+"storage method (for example Redis, or database). If not specified, the "
+"default cookie method will be used"
+msgstr "``storage`` 是一个参数，允许指定一个替代的会话存储方法（例如 Redis 或数据库）。如果没有指定，将使用默认的 cookie 方法"
+
+#: ../../chapter-06.rst:446
+msgid ""
+"``same_site`` is an option that prevents CSRF attacks (Cross-Site Request"
+" Forgery) and is enabled by default with the 'Lax' option. You can read "
+"more about it `here <https://owasp.org/www-community/SameSite>`__"
+msgstr ""
+"``same_site`` 是一个选项，用于防止 CSRF 攻击（跨站请求伪造），默认启用，使用 ‘Lax’ 选项模式。你可以在 `这里 "
+"<https://owasp.org/www-community/SameSite>`__ 阅读更多关于它的信息"
+
+#: ../../chapter-06.rst:450
+msgid "``name`` is the format to use for the session cookie name."
+msgstr "``name`` 是用于会话 cookie 名称的格式。"
+
+#: ../../chapter-06.rst:452
+msgid ""
+"If storage is not provided, session is stored in client-side jwt cookie. "
+"Otherwise, we have server-side session: the jwt is stored in storage and "
+"only its UUID key is stored in the cookie. This is the reason why the "
+"secret is not required with server-side sessions."
+msgstr ""
+"如果没有提供 storage 的参数值，会话将存储在客户端的 jwt cookie 中。 否则，我们会有服务器端会话：jwt 被存储在 "
+"storage 中，并且只有它的 UUID 键被存储在 cookie 中。 这就是为什么服务器端会话不需要 secret 的原因。"
+
+#: ../../chapter-06.rst:459
+msgid "Client-side session in cookies"
+msgstr "客户端 cookie 中的会话"
+
+#: ../../chapter-06.rst:461
+msgid ""
+"By default the session object is stored inside a cookie called "
+"``appname_session``. It's a JWT, hence encoded in a URL-friendly string "
+"format and signed using the provided secret for preventing tampering."
+msgstr ""
+"默认情况下，会话对象存储在一个名为 ``appname_session`` 的 cookie 中。它是一个 JWT ，因此以 URL "
+"兼容的字符串格式进行编码，并使用提供的密钥进行签名以防止篡改。"
+
+#: ../../chapter-06.rst:467
+msgid ""
+"Data embedded in cookies is signed, not encrypted! In fact it's quite "
+"trivial to read its content from http communications or from disk, so do "
+"not place any sensitive information inside, and use a complex secret."
+msgstr ""
+"嵌入在 cookie "
+"中的数据是签名的，而不是加密的！事实上，从HTTP通信或磁盘读取其内容相当简单，因此不要在其中放置任何敏感信息，并使用复杂的密钥。"
+
+#: ../../chapter-06.rst:472
+msgid ""
+"If the secret changes existing sessions are invalidated. If the user "
+"switches from HTTP to HTTPS or vice versa, the user session is also "
+"invalidated. Session in cookies have a small size limit (4 kbytes after "
+"being serialized and encoded) so do not put too much into them."
+msgstr ""
+"更改密钥会使现有会话失效。用户从 HTTP 切换到 HTTPS 或反向切换，用户会话也会失效效。cookie 中的会话大小有限制（序列化和编码后为"
+" 4 kbytes），因此不要放入太多内容。"
+
+#: ../../chapter-06.rst:479
+msgid "Server-side session in memcache"
+msgstr "服务端内存缓存中的会话"
+
+#: ../../chapter-06.rst:481
+msgid "Requires memcache installed and configured."
+msgstr "需要安装并配置内存缓存"
+
+#: ../../chapter-06.rst:491
+msgid "Server-side session in Redis"
+msgstr "服务端 Redis 中的会话"
+
+#: ../../chapter-06.rst:493
+msgid "Requires `Redis <https://redis.io/>`__ installed and configured."
+msgstr "需要提前安装和配置 `Redis <https://redis.io/>`__ 。"
+
+#: ../../chapter-06.rst:503
+msgid ""
+"Notice: a storage object must have ``get`` and ``set`` methods and the "
+"``set`` method must allow to specify an expiration. The redis connection "
+"object has a ``ttl`` method to specify the expiration, hence we monkey "
+"patch the ``set`` method to have the expected signature and "
+"functionality."
+msgstr ""
+"注意：存储对象必须有 ``get`` 和 ``set`` 方法， ``set`` 方法必须允许指定过期时间。redis 连接对象有一个 "
+"``ttl`` 方法来指定过期时间，因此我们对 ``set`` 方法进行了动态修补（monkey patch）以获得预期的签名和功能。"
+
+#: ../../chapter-06.rst:510
+msgid "Server-side session in database"
+msgstr "服务端数据库中的会话"
+
+#: ../../chapter-06.rst:520
+msgid ""
+"the ``'sqlite:memory'`` database used in this example **cannot be used in"
+" multiprocess environment**; the quirk is that your application will "
+"still work but in non-deterministic and unsafe mode, since each "
+"process/worker will have its own independent in-memory database."
+msgstr ""
+"示例中使用的 ``'sqlite:memory'`` 数据库 **在多进程环境中不能使用** "
+"；这个怪异之处在于你的应用程序仍然可以工作，但它处于不确定和不安全的状态，因为每个进程/工作进程都会有其自己的独立的内存数据库。"
+
+#: ../../chapter-06.rst:526
+msgid ""
+"This is one case when a fixture (session) requires another fixture (db). "
+"This is handled automatically by py4web and the following lines are "
+"equivalent:"
+msgstr "这是一种情况：一个fixture（会话）需要另一个fixture（数据库）。这由 py4web 自动处理，以下几行是等效的："
+
+#: ../../chapter-06.rst:536
+msgid "Server-side session anywhere"
+msgstr "服务端自由存储会话"
+
+#: ../../chapter-06.rst:538
+msgid ""
+"You can easily store sessions in any place you want. All you need to do "
+"is provide to the ``Session`` object a ``storage`` object with both "
+"``get`` and ``set`` methods. For example, imagine you want to store "
+"sessions on your local filesystem:"
+msgstr ""
+"你能够轻松地将会话存储在任何你想要的地方。你所要做的就是向 ``Session`` 对象提供一个 ``storage`` 对象，该对象具有 "
+"``get`` 和 ``set`` 方法。例如，假设你想要将会话存储在你的本地文件系统上："
+
+#: ../../chapter-06.rst:564
+msgid ""
+"We leave to you as an exercise to implement expiration, limit the number "
+"of files per folder by using subfolders, and implement file locking. Yet "
+"we do not recommend storing sessions on the filesystem: it is inefficient"
+" and does not scale well."
+msgstr "我们将实现过期、使用子文件夹限制每个文件夹的文件数量和实现文件锁定留给你自己当作练习去实现。然而，我们不建议在文件系统上存储会话：它效率低下，而且不能很好地扩展。"
+
+#: ../../chapter-06.rst:570
+msgid "Sharing sessions"
+msgstr "共享会话"
+
+#: ../../chapter-06.rst:572
+msgid ""
+"Imagine you have an app \"app1\" which uses a session and an app \"app2\""
+" that wants to share a session with app1. Assuming they use sessions in "
+"cookies, \"app2\" would use:"
+msgstr ""
+"想象一下，您有一个使用会话的应用程序 “app1” 和一个想要与 app1 共享会话的应用程序 “app2”。假设他们在 cookie "
+"中使用会话，“app2” 将使用："
+
+#: ../../chapter-06.rst:580
+msgid ""
+"The name tells app2 to use the cookie \"app1_session\" from app1. Notice "
+"it is important that the secret is the same as app1's secret. If using a "
+"session in db, then app2 must be using the same db as app1. It is up to "
+"the user to make sure that the data stored in the session and shared "
+"between the two apps are consistent and we strongly recommend that only "
+"app1 writes to the session, unless the share one and the same database."
+msgstr ""
+"\"name\" 参数告诉 app2 使用 app1 的 cookie “app1_session”。注意，secret 必须与 app1 的 "
+"secret 相同。如果使用 db 中的 session，那么 app2 必须使用与 app1 相同的 db。用户需要确保在两个应用之间共享的 "
+"session 数据是一致的，我们强烈建议只有 app1 写入 session，除非它们共享同一个数据库。"
+
+#: ../../chapter-06.rst:584
+msgid ""
+"Notice that it is possible for one app to handle multiple sessions. For "
+"example one session may be its own, and another may be used exclusively "
+"to read data from another app (app1) running on the same server:"
+msgstr "请注意，一个应用程序可以处理多个会话。例如，一个会话可能是它自己的，而另一个会话可能专门用于从同一服务器上运行的另一个应用程序（app1）读取数据："
+
+#: ../../chapter-06.rst:597
+msgid "The Condition fixture"
+msgstr "Condition 夹具"
+
+#: ../../chapter-06.rst:599
+msgid ""
+"Sometimes you want to restrict access to an action based on a given "
+"condition. For example to enforce a workflow:"
+msgstr "有时您想根据给定条件限制对操作的访问。例如，要强制执行一个工作流程："
+
+#: ../../chapter-06.rst:625
+msgid ""
+"Notice that the Condition fixtures takes a function as first argument "
+"which is called ``on_request`` and must evaluate to True or False."
+msgstr "请注意，条件夹具将函数作为第一个参数，称为 ``on_request`` ，并且运行后必须为 True 或 False 。"
+
+#: ../../chapter-06.rst:628
+msgid ""
+"Also notice that in the above example the Condition depends on the "
+"Session therefore it must be listed after ``session`` in ``action.uses``."
+msgstr ""
+"另请注意，在上面的示例中，条件依赖于会话。因此，在 ``action.uses`` 中，Condition(...) 必须列在 "
+"``session`` 之后。"
+
+#: ../../chapter-06.rst:631
+msgid ""
+"If False, by default, the Condition fixture raises 404. It is possible to"
+" specify a different exception:"
+msgstr "如果为 False，则默认情况下，Condition 夹具会引发 404。 可以指定不同的异常："
+
+#: ../../chapter-06.rst:638
+msgid ""
+"It is also possible to call a function before the exception is raised, "
+"for example, to redirect to another page:"
+msgstr "还可以在引发异常之前调用其它函数，例如，重定向到另一个页面："
+
+#: ../../chapter-06.rst:645
+msgid ""
+"You can use condition to check permissions. For example, if you are "
+"giving group memberships to users using ``Tags`` (it will be explained "
+"later on the :ref:`Authorization using Tags` chapter), then you can "
+"require that users action have specific group membership:"
+msgstr ""
+"您可以使用条件来检查权限。例如，如果您使用 ``Tags`` 向用户提供组成员资格（稍后将在 :ref:`Authorization using "
+"Tags` 章节中解释），那么您可以要求用户操作具有特定的组成员资格："
+
+#: ../../chapter-06.rst:662
+msgid "The URLsigner fixture"
+msgstr "URLsigner 夹具"
+
+#: ../../chapter-06.rst:664
+msgid ""
+"A signed URL is a URL that provides limited permission and time to make "
+"an HTTP request by containing authentication information in its query "
+"string. The typical usage is as follows:"
+msgstr "签名的 URL 是通过在查询字符串中包含身份验证信息来提供有限权限和时间来发出 HTTP 请求的 URL。典型用法如下："
+
+#: ../../chapter-06.rst:688
+msgid "The DAL fixture"
+msgstr "DAL 夹具"
+
+#: ../../chapter-06.rst:690
+msgid ""
+"We have already used the ``DAL`` fixture in the context of sessions but "
+"maybe you want direct access to the DAL object for the purpose of "
+"accessing the database, not just sessions."
+msgstr "我们已经在会话的上下文中使用了 ``DAL`` 夹具，但您可能希望直接访问 DAL 对象以访问数据库，而不仅仅是会话。"
+
+#: ../../chapter-06.rst:694
+msgid ""
+"PY4WEB, by default, uses the **PyDAL** (Python Database Abstraction "
+"Layer) which is documented in the next chapter. Here is an example, "
+"please remember to create the ``databases`` folder under your project in "
+"case it doesn't exist:"
+msgstr ""
+"PY4WEB 默认使用 **PyDAL** (Python Database Abstraction Layer，Python 数据库抽象层) "
+"，这将在下一章中叙述。这里有一个示例，如果在您的项目下不存在 ``databases`` 文件夹，请记得先创建它："
+
+#: ../../chapter-06.rst:717
+msgid ""
+"Notice that the database fixture defines (creates/re-creates) tables "
+"automatically when py4web starts (and every time it reloads this app) and"
+" picks a connection from the connection pool at every HTTP request. Also "
+"each call to the ``index()`` action is wrapped into a transaction and it "
+"commits ``on_success`` and rolls back ``on_error``."
+msgstr ""
+"请注意，当 py4web 启动时（以及每次重新加载此应用程序时），数据库夹具会自动定义（即创建/重新创建）表，并在每个 HTTP "
+"请求时从连接池中选择一个连接。此外，对  ``index()`` action 的每次调用都会被包装到一个事务中，在 ``on_success``"
+" 时它会被提交，在 ``on_error`` 时它会被回滚。"
+
+#: ../../chapter-06.rst:724
+msgid "The Auth fixture"
+msgstr "Auth 夹具"
+
+#: ../../chapter-06.rst:726
+msgid ""
+"``auth`` and ``auth.user`` are both fixtures that depend on ``session`` "
+"and ``db``. Their role is to provide the action with authentication "
+"information."
+msgstr ""
+"``auth`` 和 ``auth.user`` 都是依赖于 ``session`` 和 ``db`` 的夹具。他们的作用是为 action "
+"提供认证信息。"
+
+#: ../../chapter-06.rst:730
+msgid "Auth is used as follows:"
+msgstr "Auth 的用方法如下："
+
+#: ../../chapter-06.rst:750
+msgid ""
+"The constructor of the ``Auth`` object defines the ``auth_user`` table "
+"with the following fields: username, email, password, first_name, "
+"last_name, sso_id, and action_token (the last two are mostly for internal"
+" use)."
+msgstr ""
+"``Auth`` 对象的构造器定义了 ``auth_user`` 表，它包含以下字段：username 、 email 、 password 、 "
+"first_name 、 last_name sso_id 和 action_token（最后两个主要在内部使用）。"
+
+#: ../../chapter-06.rst:755
+msgid ""
+"If a ``auth_user`` table is defined before calling ``auth.enable()`` the "
+"provided table will be used."
+msgstr "如果在调用 ``auth.enable()`` 之前定义了 ``auth_user`` 表，那么将使用已有的 ``auth_user`` 表。"
+
+#: ../../chapter-06.rst:758
+msgid ""
+"It is also possible to add ``extra_fields`` to the ``auth_user`` table, "
+"for example:"
+msgstr "还可以将额外的 ``extra_fields`` 添加到 ``auth_user`` 表中，例如："
+
+#: ../../chapter-06.rst:768
+msgid ""
+"In any case, we recommend not to pollute the ``auth_user`` table with "
+"extra fields but, instead, to use one of more additional custom tables "
+"that reference users and store the required information."
+msgstr "无论如何，我们建议不要用额外的字段污染 `auth_user` 表，而是使用一个自定义的表，它可以引用用户并存储所需信息。"
+
+#: ../../chapter-06.rst:772
+#, python-brace-format
+msgid ""
+"The ``auth`` object exposes the method:``auth.enable()`` which registers "
+"multiple actions including ``{appname}/auth/login``. It requires the "
+"presence of the ``auth.html`` template and the ``auth`` value component "
+"provided by the ``_scaffold`` app. It also exposes the method:"
+msgstr ""
+"``auth`` 对象公开了 ``auth.enable()`` 方法，该方法注册了包括 ``{appname}/auth/login`` "
+"在内的多个操作（actions）。它需要 ``auth.html`` 模板和 ``_scaffold`` 应用程序提供的赋予 ``auth`` "
+"值的 Auth 组件的存在。它还公开了下面的方法："
+
+#: ../../chapter-06.rst:782
+msgid ""
+"which returns a python dictionary containing the information of the "
+"currently logged in user. If the user is not logged-in, it returns "
+"``None`` and in this case the code of the example redirects to the "
+"``auth/login`` page."
+msgstr ""
+"该方法返回一个包含当前登录用户信息的 python 字典。如果用户未登录，则返回 ``None`` ，在这种情况下，示例代码将重定向到 "
+"``auth/login`` 页面。"
+
+#: ../../chapter-06.rst:787
+msgid ""
+"Since this check is very common, py4web provides an additional fixture "
+"``auth.user``:"
+msgstr "由于这个检查非常常见，py4web 提供了一个额外的夹具（fixture） ``auth.user`` ："
+
+#: ../../chapter-06.rst:798
+msgid ""
+"This fixture automatically redirects to the ``auth/login`` page if user "
+"is not logged-in, hence this example is equivalent to the previous one."
+msgstr "如果用户未登录，此夹具会自动重定向到 ``auth/login`` 页面，因此此示例与上一个示例等效。"
+
+#: ../../chapter-06.rst:801
+msgid ""
+"The ``auth`` fixture is plugin based: it supports multiple plugin methods"
+" including OAuth2 (Google, Facebook, Twitter), PAM and LDAP. The "
+":ref:`Authentication and authorization` chapter will show you all the "
+"related details."
+msgstr ""
+"身份验证夹具 ``auth`` 是基于插件的：它支持多种插件方法，包括 OAuth2（Google、Facebook、Twitter）、PAM 和"
+" LDAP。身份验证和授权章节（ :ref:`Authentication and authorization` ）将向您展示所有相关详细信息。"
+
+#: ../../chapter-06.rst:807
+msgid "Caveats about fixtures"
+msgstr "关于 fixtures 的注意事项"
+
+#: ../../chapter-06.rst:809
+msgid ""
+"Since fixtures are shared by multiple actions you are not allowed to "
+"change their state because it would not be thread safe. There is one "
+"exception to this rule. Actions can change some attributes of database "
+"fields:"
+msgstr "由于夹具（fixtures）由多个操作（Actions）共享，因此不允许更改它们的状态，因为它不是线程安全的。这条规则有一个例外，操作（Actions）可以更改数据库字段的一些属性："
+
+#: ../../chapter-06.rst:831
+msgid ""
+"Note that this code will only be able to display a form, to process it "
+"after submit, additional code needs to be added, as we will see later on."
+" This example is assuming that you created the application from the "
+"scaffolding app, so that a generic.html is already created for you."
+msgstr ""
+"注意，这里的代码只能显示一个表单，要在提交后处理表单，还需要添加额外的代码，我们稍后会看到。这个例子假设你已经从 “scaffolding 应用”"
+" 创建了应用程序，因此已经为你创建了一个模板文件 generic.html。"
+
+#: ../../chapter-06.rst:836
+msgid ""
+"The full list of database field attributes which can be changed safely is"
+" found here: :ref:`Thread safety and Field attributes`"
+msgstr "在 :ref:`Thread safety and Field attributes` 章节，可以找到能够被安全更改的数据库字段属性的完整列表。"
+
+#: ../../chapter-06.rst:840
+msgid "Custom fixtures"
+msgstr "自定义夹具"
+
+#: ../../chapter-06.rst:842
+msgid "A fixture is an object with the following minimal structure:"
+msgstr "夹具是具有以下最小结构的对象："
+
+#: ../../chapter-06.rst:853
+msgid ""
+"For example in the DAL fixture case, ``on_request`` starts a transaction,"
+" ``on_success`` commits it, and ``on_error`` rolls it back."
+msgstr ""
+"例如，在使用 DAL fixture 的情况下， ``on_request`` 启动一个事务， ``on_success`` 提交这个事务，而 "
+"``on_error`` 回滚这个事务。"
+
+#: ../../chapter-06.rst:856
+msgid ""
+"In the case of a template, ``on_request`` and ``on_error`` do nothing but"
+" ``on_success`` transforms the output."
+msgstr "在使用模板的情况下， ``on_request`` 和 ``on_error`` 不做任何事情，但 ``on_success`` 转换输出。"
+
+#: ../../chapter-06.rst:859
+msgid ""
+"In the case of ``auth.user`` fixtures, ``on_request`` does all the work "
+"of determining if the user is logged in (from the dependent session "
+"fixture) and eventually preventing the request from accessing the inner "
+"layers."
+msgstr ""
+"使用 ``auth.user`` 夹具的情况下， ``on_request`` 确定用户是否已登录（从依赖的 session "
+"夹具）并最终阻止请求访问内部层。"
+
+#: ../../chapter-06.rst:863
+msgid ""
+"Now imagine a request coming in calling an action with three fixtures A, "
+"B, and C. Under normal circumstances above methods are executed in this "
+"order:"
+msgstr "现在，假设一个请求调用了一个具有三个 Fixture（A、B 和 C）的 Action。在正常情况下，上述方法按以下顺序执行："
+
+#: ../../chapter-06.rst:871
+msgid ""
+"i.e. the first fixture (A) is the first one to call ``on_request`` and "
+"the last one to call ``on_success``. You can think of them as layers of "
+"an onion with the action (user code) at the center. ``on_success`` is "
+"called when entering a layer from the outside and ``on_success`` is "
+"called when exiting a layer from the inside (like WSGI middleware)."
+msgstr ""
+"即，第一个 Fixture （A） 是第一个调用 ``on_request`` 的，也是最后一个调用 ``on_success`` "
+"的。您可以将它们视为以 action （用户代码） 为中心的洋葱层。 在从外部进入层时调用 ``on_request`` ，在从内部退出层时调用 "
+"``on_success`` （如 WSGI 中间件）。"
+
+#: ../../chapter-06.rst:877
+msgid ""
+"If any point an exception is raised inner layers are not called and outer"
+" layers will call ``on_error`` instead of ``on_success``."
+msgstr "如果在任何一处引发异常，则不再调用内层，外层将调用 ``on_error`` 而不是 ``on_success`` 。"
+
+#: ../../chapter-06.rst:880
+msgid "Context is a shared object which contains:"
+msgstr "context 是一个共享对象，它包含："
+
+#: ../../chapter-06.rst:882
+msgid "content['fixtures']: the list of all the fixtures for the action."
+msgstr "content['fixtures']: 该操作的 Fixture 列表。"
+
+#: ../../chapter-06.rst:883
+msgid ""
+"context['processed']: the list of fixtures that called ``on_request`` "
+"previously within the request."
+msgstr "context['processed']: 在请求中先前调用 ``on_request`` 的 Fixture 列表。"
+
+#: ../../chapter-06.rst:884
+msgid ""
+"context['exception']: the exception raised by the action or any previous "
+"fixture logic (usually None)"
+msgstr "context['exception']: 由当前操作或任何之前的 Fixture 逻辑引发的异常（通常是 None）"
+
+#: ../../chapter-06.rst:885
+msgid "context['output']: the action output."
+msgstr "context['output']: 操作输出。"
+
+#: ../../chapter-06.rst:887
+msgid ""
+"``on_success`` and ``on_error`` can see the current "
+"``context['exception']`` and transform it. They can see the current "
+"``context['output']`` and transform it as well."
+msgstr ""
+"``on_success`` 和 ``on_error`` 能够访问当前的 ``context['exception']`` "
+"并对其进行转换。它们也可以访问当前的 ``context['output']`` 并对其进行转换。"
+
+#: ../../chapter-06.rst:890
+msgid ""
+"For example here is a fixture that transforms the output text to upper "
+"case:"
+msgstr "例如，这里有一个将输出文本转换为大写的 Fixture："
+
+#: ../../chapter-06.rst:904
+msgid ""
+"Notice that this fixture assumes the ``context['output']`` is a string "
+"and therefore it must come before the template."
+msgstr "注意，这个 Fixture 假设 ``context['output']`` 是一个字符串，因此它必须出现在模板之前。"
+
+#: ../../chapter-06.rst:907
+msgid "Here is a fixture that logs exceptions tracebacks to a file:"
+msgstr "这是一个将异常跟踪记录到文件的 Fixture："
+
+#: ../../chapter-06.rst:924
+msgid ""
+"Fixtures also have a ``__prerequisite__`` attribute. If a fixture takes "
+"another fixture as an argument, its value must be appended to the list of"
+" ``__prerequisites__``. This guarantees that they are always executed in "
+"the proper order even if listed in the wrong order. It also makes it "
+"optional to declare prerequisite fixtures in ``action.uses``."
+msgstr ""
+"夹具也有一个 ``__prerequisite__`` 属性。如果一个 fixture 将另一个 fixtures 作为参数，则其值必然会被附加到"
+" ``__prerequisites__`` 列表中。这保证了即使以错误的顺序列出，它们也始终以正确的顺序执行。它还允许将已在 "
+"``__prerequisites__`` 中的夹具作为 ``action.uses`` 中的可选项目 。"
+
+#: ../../chapter-06.rst:930
+msgid ""
+"For example ``Auth`` depends on ``db``, ``session``, and ``flash``. "
+"``db`` and ``session`` are indeed arguments. ``flash`` is a special "
+"singleton fixture declared within ``Auth``. This means that"
+msgstr ""
+"例如， ``Auth`` 依赖于 ``db`` 、 ``session`` 和 ``flash`` 。 ``db`` 和 ``session`` "
+"是真正的参数。 ``flash`` 是一个在 ``Auth`` 内声明的特殊单例夹具。这意味着"
+
+#: ../../chapter-06.rst:938
+msgid "is equivalent to"
+msgstr "等价于"
+
+#: ../../chapter-06.rst:944
+msgid "Why are fixtures not simply functions that contain a try/except?"
+msgstr "为什么 fixtures 不是简单的包含 try/except 的函数？"
+
+#: ../../chapter-06.rst:946
+msgid ""
+"We considered the option but there are some special exceptions that "
+"should not be considered errors but success (``py4web.HTTP``, "
+"``bottle.HTTResponse``) while other exceptions are errors. The actual "
+"logic can be complicated and individual fixtures do not need to know "
+"these details."
+msgstr ""
+"我们考虑过这种选择，但是有一些特殊的异常不应该被认为是错误而是成功（ ``py4web.HTTP`` ， "
+"``bottle.HTTResponse`` ）而其他异常是错误。实际的逻辑可能很复杂，而各个 fixture 不需要知道这些细节。"
+
+#: ../../chapter-06.rst:951
+msgid ""
+"They all need to know what the context is and whether they are processing"
+" a new request or a response and whether the response is a success or an "
+"error. We believe this logic keeps the fixtures easy."
+msgstr "他们都需要知道上下文是什么，他们是否正在处理一个新的请求或响应，以及响应是否成功或错误。我们相信这种逻辑使 fixture 变得简单。"
+
+#: ../../chapter-06.rst:955
+msgid ""
+"Fixtures should not in general communicate with each other but nothing "
+"prevents one fixture to put data in the context and another fixture to "
+"retrieve that data."
+msgstr "一般来说，fixtures 不应该相互通信，但没有什么阻止一个 fixture 将数据放入上下文，另一个 fixture 从中检索数据。"
+
+#: ../../chapter-06.rst:960
+msgid "Fixtures with dependencies"
+msgstr "具有依赖关系的 Fixtures"
+
+#: ../../chapter-06.rst:962
+msgid ""
+"If a fixture depends on another fixture, it needs to be passed that "
+"fixture in the initializer, and the fixture must be listed in the "
+"``__prerequisites__`` attribute. For example, suppose we want to create a"
+" fixture that grants access to a controller only to users whose email "
+"address is included in an ADMIN_EMAILS list. We can write the following "
+"fixture:"
+msgstr ""
+"如果一个 fixture 依赖于另一个 fixture ，那么需要在初始化器中传递那个 fixture，并且该 fixture 需要在 "
+"``__prerequisites__`` 属性中列出。例如，假设我们想创建一个 fixture，只允许电子邮件地址包含在 "
+"ADMIN_EMAILS 列表中的用户访问控制器。我们可以编写以下 fixture："
+
+#: ../../chapter-06.rst:990
+msgid "The fixture can be created and used as follows:"
+msgstr "我们可以像下面那样创建 fixture 对象并使用它："
+
+#: ../../chapter-06.rst:1002
+msgid "Using local storage"
+msgstr "使用本地存储"
+
+#: ../../chapter-06.rst:1004
+msgid ""
+"Fixtures can use a thread-local storage for data they need. Here is an "
+"example:"
+msgstr "Fixtures 可以使用线程本地存储来存储它们需要的数据。这里有一个例子："
+
+#: ../../chapter-06.rst:1026
+msgid "Notably, the initializer should contain the line:"
+msgstr "值得注意的是，初始化器应包含以下行："
+
+#: ../../chapter-06.rst:1032
+msgid ""
+"in order to initialize the thread-local storage. Once this is done, the "
+"thread-local storage can be used to store and retrieve data using the the"
+" ``self.local`` object."
+msgstr "以便初始化线程本地存储。完成此操作后，可以使用 ``self.local`` 对象在线程本地存储中存储和检索数据。"
+
+#: ../../chapter-06.rst:1038
+msgid "Multiple fixtures"
+msgstr "使用多个 fixture"
+
+#: ../../chapter-06.rst:1040
+msgid ""
+"As previously stated, it's generally not important the order you use to "
+"specify the fixtures but it's mandatory that you always place the "
+"template as the **first one**. Consider this:"
+msgstr "如前所述，你指定 fixture 的顺序通常并不重要，但必须始终将模板作指定为 **第一个** 夹具。考虑一下："
+
+#: ../../chapter-06.rst:1050
+msgid ""
+"Pre-processing (``on_request``) in the fixtures happen in the sequence "
+"they are listed and then the ``on_success`` or ``on_error`` methods will "
+"be executed in reverse order (as an onion)."
+msgstr ""
+"fixture 中的预处理（ ``on_request`` ）在 fixture 按列出 fixture 的顺序发生，然后按相反的顺序执行 "
+"``on_success`` 或 ``on_error`` 方法（如洋葱）。"
+
+#: ../../chapter-06.rst:1054
+msgid "Hence the previous code can be explicitly transformed to:"
+msgstr "因此，前面的代码可以显式地转换为："
+
+#: ../../chapter-06.rst:1064
+msgid ""
+"So if A.on_success() is a template and B is an inject fixture that allows"
+" you to add some extra variables to your templates, then A must come "
+"first."
+msgstr "因此，如果 A.on_success() 是一个模板，而 B 是一个允许你向模板中添加一些额外变量的注入夹具，那么 A 必须先出现。"
+
+#: ../../chapter-06.rst:1067
+msgid "Notice that"
+msgstr "注意"
+
+#: ../../chapter-06.rst:1074
+msgid "is almost equivalent to"
+msgstr "几乎等同于"
+
+#: ../../chapter-06.rst:1080
+msgid ""
+"but not quite. All fixtures declared in one ``action.uses`` share the "
+"same context while fixtures in different ``action.uses`` use different "
+"contexts and therefore they cannot communicate with each other. This may "
+"change in the future. For now we recommend using a single call to "
+"``action.uses``."
+msgstr ""
+"但并不完全一样。在一个 ``action.uses`` 中声明的所有夹具共享同一个上下文，而不同 ``action.uses`` "
+"中的夹具使用不同的上下文，因此它们无法相互通信。这可能在将来会改变。目前我们建议使用对 ``action.uses`` "
+"的单个调用，同时传入多个夹具。"
+
+#: ../../chapter-06.rst:1088
+msgid "Caching and Memoize"
+msgstr "缓存和记忆"
+
+#: ../../chapter-06.rst:1090
+msgid ""
+"py4web provides a cache in RAM object that implements the last recently "
+"used (LRU) algorithm. It can be used to cache any function via a "
+"decorator:"
+msgstr "py4web 提供了一个在 RAM 中的缓存对象，实现了最近最少使用（LRU）算法。它可以通过装饰器来缓存任何函数："
+
+#: ../../chapter-06.rst:1105
+msgid ""
+"It will cache (memoize) the return value of the ``hello`` function, as "
+"function of the input ``name``, for up to 60 seconds. It will store in "
+"cache the 1000 most recently used values. The data is always stored in "
+"RAM."
+msgstr ""
+"它将缓存（记忆）函数 ``hello`` 的返回值，它是将 ``name`` 作为输入参数的函数，最多缓存 60 秒。 例子中将缓存最近使用的 "
+"1000 个值。数据始终存储在 RAM 中。"
+
+#: ../../chapter-06.rst:1110
+msgid ""
+"The ``cache`` object is not a fixture and it should not and cannot be "
+"registered using the ``@action.uses`` decorator but we mention it here "
+"because some of the fixtures use this object internally. For example, "
+"template files are cached in RAM to avoid accessing the file system every"
+" time a template needs to be rendered."
+msgstr ""
+"``cache`` 对象不是一个 fixture，它不应该也不能作为 ``@action.uses`` 装饰器的参数使用。但在这里提到它是因为一些"
+" fixture 内部使用了这个对象。例如，模板文件被缓存在 RAM 中，以避免每次需要渲染模板时都访问文件系统。"
+
+#: ../../chapter-06.rst:1117
+msgid "Convenience Decorators"
+msgstr "便利的装饰器"
+
+#: ../../chapter-06.rst:1119
+msgid ""
+"The ``_scaffold`` application, in ``common.py`` defines two special "
+"convenience decorators using ActionFactory:"
+msgstr "``_scaffold`` 应用程序，在 ``common.py`` 中定义了两个特殊的便利装饰器："
+
+#: ../../chapter-06.rst:1128
+msgid "and"
+msgstr "和"
+
+#: ../../chapter-06.rst:1136
+msgid ""
+"They apply all of the decorators below (db, session, T, flash, auth), use"
+" a template with the same name as the function (.html), and also register"
+" a route with the name of action followed by the number of arguments of "
+"the action separated by a slash (/)."
+msgstr ""
+"它们应用下面所有的装饰器（db, session, T, flash, "
+"auth），使用与函数同名的模板（.html），并还注册一个路由，路由名称由 action 名称，后跟数个用斜线（/）分隔而成的 action "
+"参数组成。"
+
+#: ../../chapter-06.rst:1141
+msgid "@unauthenticated does not require the user to be logged in."
+msgstr "@unauthenticated 不需要用户登录。"
+
+#: ../../chapter-06.rst:1142
+msgid "@authenticated required the user to be logged in."
+msgstr "@authenticated 要求用户已登录。"
+
+#: ../../chapter-06.rst:1146
+msgid ""
+"ActionFactory decorators like these cannot be combined with @action or "
+"@action.uses"
+msgstr "此类 ActionFactory 装饰器无法与 @action 或 @action.uses 组合使用"
+
+#: ../../chapter-06.rst:1149
+msgid ""
+"The decorators can be used directly as shown above, which enables all "
+"HTTP methods (GET, POST, PUT, ...) but you can also create separate "
+"controllers for each HTTP method:"
+msgstr "装饰器可直接使用（如上所示），支持所有 HTTP 方法（GET、POST、PUT 等），也可为每种 HTTP 方法单独创建控制器。"
+
+#: ../../chapter-06.rst:1165
+msgid "The both decorator and its HTTP method calls have the following arguments:"
+msgstr "这两个装饰器及其 HTTP 方法调用均包含以下参数："
+
+#: ../../chapter-06.rst:1167
+msgid ""
+"``path`` overwrites the path built from the function name with the given "
+"string. Does not automatically handle arguments."
+msgstr "``path`` 用给定的字符串覆盖从函数名构建的路径。不自动处理参数。"
+
+#: ../../chapter-06.rst:1168
+msgid ""
+"``template`` specifies the template name, instead of using the function "
+"name."
+msgstr "``template`` 指定模板名称，而不是使用函数名。"
+
+#: ../../chapter-06.rst:1169
+msgid "``uses`` specify extra fixtures for this specific controllers."
+msgstr "``uses``  为这些特定控制器指定额外的夹具。"
+
+#: ../../chapter-06.rst:1181
+msgid ""
+"As manual ordering of fixtures isn't possible with ``uses``, make sure "
+"the fixtures define their dependencies. See: :ref:`Fixtures with "
+"dependencies`"
+msgstr ""
+"由于无法通过使用 ``uses`` 为夹具手动排序，请确保夹具已定义其依赖项。请参阅： :ref:`Fixtures with "
+"dependencies` "
+

@@ -1,0 +1,1115 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced topics and examples &mdash; py4web 20251209 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=86175f30"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="From web2py to py4web" href="chapter-15.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-scheduler">The scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sending-messages-using-a-background-task">Sending messages using a background task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery">Celery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#py4web-and-asyncio">py4web and asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#htmx">htmx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-form">htmx usage in Form</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-grid">htmx usage in Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#autocomplete-widget-using-htmx">Autocomplete Widget using htmx</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utils-js">utils.js</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#string-format">string.format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-q-object">The Q object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-t-object">The T object</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-captcha-solution-with-altcha">Adding a Captcha Solution with Altcha</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Advanced topics and examples</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-16.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-topics-and-examples">
+<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link to this heading"></a></h1>
+<section id="the-scheduler">
+<h2>The scheduler<a class="headerlink" href="#the-scheduler" title="Link to this heading"></a></h2>
+<p>Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work.</p>
+<p>Given a task (just a python function), you can schedule async runs of that function.
+The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.</p>
+<p>The scheduler works by creating a table <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and enqueueing runs of the predefined task as table records.
+Each <code class="docutils literal notranslate"><span class="pre">task_run</span></code> references a task and contains the input to be passed to that task. The scheduler will capture the
+task stdout+stderr in a <code class="docutils literal notranslate"><span class="pre">db.task_run.log</span></code> and the task output in <code class="docutils literal notranslate"><span class="pre">db.task_run.output</span></code>.</p>
+<p>A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
+and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
+The worker processes are daemons and they only live for the life of one task run. Each worker process is only
+responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.</p>
+<p>The system is very robust because the only source of truth is the database and its integrity is guaranteed by
+transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitly killed.</p>
+<p>Aside for allowing multiple concurrent task runs in execution on one node,
+it is also possible to run multiple instances of the scheduler on different computing nodes,
+as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
+they all define the same tasks.</p>
+<p>Here is an example of how to use the scheduler:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.tools.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scheduler</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">now</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">db</span>
+
+<span class="c1"># create and start the scheduler</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">sleep_time</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_concurrent_runs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># register your tasks</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hi!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am periodic!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># enqueue some task runs:</span>
+
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># start in 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Notice that in scaffolding app, the scheduler is created and started in common if
+<code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
+<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(db.task_run)</span></code>.</p>
+<p>To prevent database locks (in particular with sqlite) we recommend:</p>
+<ul class="simple">
+<li><p>Use a different database for the scheduler and everything else</p></li>
+<li><p>Always <code class="docutils literal notranslate"><span class="pre">db.commit()</span></code> as soon as possible after any insert/update/delete</p></li>
+<li><p>wrap your database logic in tasks in a try…except as in</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># do something</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-messages-using-a-background-task">
+<h2>Sending messages using a background task<a class="headerlink" href="#sending-messages-using-a-background-task" title="Link to this heading"></a></h2>
+<p>As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (<a class="reference external" href="https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python">https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python</a>).</p>
+<p>Here is a possible scheduler task to send the email:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sendgrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sendgrid.helpers.mail</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">To</span><span class="p">,</span> <span class="n">Content</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sendmail_task</span><span class="p">(</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">to_addrs</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="c1"># build the messages using sendgrid API</span>
+    <span class="n">from_email</span> <span class="o">=</span> <span class="n">Email</span><span class="p">(</span><span class="n">from_addr</span><span class="p">)</span>  <span class="c1"># Must be your verified sender</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span> <span class="k">if</span> <span class="n">body</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&lt;html&gt;&quot;</span> <span class="k">else</span> <span class="s2">&quot;text/html&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">Content</span><span class="p">(</span><span class="n">content_type</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">mail</span> <span class="o">=</span> <span class="n">Mail</span><span class="p">(</span><span class="n">from_email</span><span class="p">,</span> <span class="n">To</span><span class="p">(</span><span class="n">to_addrs</span><span class="p">),</span> <span class="n">subject</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+    <span class="c1"># ask sendgrid to deliver it</span>
+    <span class="n">sg</span> <span class="o">=</span> <span class="n">sendgrid</span><span class="o">.</span><span class="n">SendGridAPIClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">SENDGRID_API_KEY</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">request_body</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="c1"># check if worked</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="s2">&quot;200&quot;</span>
+
+<span class="c1"># register the above task with the scheduler</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">sendmail_task</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To schedule sending a new email do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="s2">&quot;me@example.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;I am alive!&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The key:value in the email representation must match the arguments of the task.
+The <code class="docutils literal notranslate"><span class="pre">scheduled_for</span></code> argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your <code class="docutils literal notranslate"><span class="pre">task_run</span></code>s for the task called <code class="docutils literal notranslate"><span class="pre">sendmail</span></code>.</p>
+<p>You can also tell auth to tap into above mechanism for sending emails:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MySendGridSender</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_adds</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span><span class="p">,</span>
+            <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">to_addr</span><span class="p">],</span>
+            <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">MySendGridSender</span><span class="p">(</span><span class="n">from_addr</span><span class="o">=</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+Notice the only requirement here is that <code class="docutils literal notranslate"><span class="pre">auth.sender</span></code> must be an object with a <code class="docutils literal notranslate"><span class="pre">send</span></code> method with the same signature as in the example.</p>
+<p>Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> and 2) override the <code class="docutils literal notranslate"><span class="pre">Auth.send</span></code> method.</p>
+</section>
+<section id="celery">
+<h2>Celery<a class="headerlink" href="#celery" title="Link to this heading"></a></h2>
+<p>Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
+Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
+tasks and/or they are short running tasks.</p>
+</section>
+<section id="py4web-and-asyncio">
+<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link to this heading"></a></h2>
+<p>Asyncio is not strictly needed, at least for most of the normal use
+cases where it will add problems more than value because of its concurrency model.
+On the other hand, we think py4web needs a built-in websocket async based solution.</p>
+<p>If you plan to play with asyncio be careful that you should also deal with all
+the framework’s components: in particular pydal is not asyncio compliant because
+not all the adapters work with async.</p>
+</section>
+<section id="htmx">
+<h2>htmx<a class="headerlink" href="#htmx" title="Link to this heading"></a></h2>
+<p>There are many javascript front-end frameworks available today that allow you great flexibility
+over how you design your web client. Vue, React and Angular are just a few.  However, the
+complexity in building one of these systems prevents many developers from reaping those benefits.
+Add to that the rapid state of change in the ecosystem and you soon have an application that is
+difficult to maintain just a year or two down the road.</p>
+<p>As a consequence, there is a growing need to use simple html elements to add reactivity to your web
+pages. htmx is one of the tools emerging as a leader in page reactivity without the complexities of javascript.
+Technically, htmx allows you to access AJAX, CSS Transitions, Web Sockets and Server Sent Events directly
+in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext.
+<a class="reference internal" href="#cit1601" id="id1"><span>[CIT1601]</span></a></p>
+<p>Read all about htmx and its capabilities on the official site at <a class="reference external" href="https://htmx.org">https://htmx.org</a> . If you prefer,
+there is also a video tutorial: <a class="reference external" href="https://www.youtube.com/watch?v=cBfz4W_KvEI">Simple, Fast Frontends With htmx</a> .</p>
+<p>py4web enables htmx integration in a couple of ways.</p>
+<ol class="arabic simple">
+<li><p>Allow you to add htmx attributes to your forms and buttons</p></li>
+<li><p>Includes an htmx attributes plugin for the py4web grid</p></li>
+</ol>
+<section id="htmx-usage-in-form">
+<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Link to this heading"></a></h3>
+<p>The py4web Form class allows you to pass **kwargs to it that will be passed along as attributes to the html
+form. For example, to add the hx-post and hx-target to the &lt;form&gt; element you would use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;url_to_post_to/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+    <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#detail-target&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">tablename</span><span class="p">,</span>
+    <span class="n">record</span><span class="o">=</span><span class="n">record_id</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">attrs</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now when your form is submitted it will call the URL in the hx-post attribute and whatever is returned
+to the browser will replace the html inside of the element with id=”detail-target”.</p>
+<p>Let’s continue with a full example (started from scaffold).</p>
+<p><strong>controllers.py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo.html&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form_demo</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_list.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_list</span><span class="p">():</span>
+    <span class="n">superheros</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">superheros</span><span class="o">=</span><span class="n">superheros</span><span class="p">)</span>
+
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">))</span>
+
+    <span class="n">cancel_attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">sidecar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">cancel_attrs</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form_demo.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+
+[[=timestamp]]
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-form-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_list&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://unpkg.com/htmx.org@1.3.2&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_list.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[for sh in superheros:]]
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_form/%s&#39; % sh.id)]]&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;</span>[[=sh.name]]<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=form]]
+</pre></div>
+</div>
+<p>We now have a functional maintenance app to update our superheros.  In your browser navigate to the htmx_form_demo page
+in your new application.  The hx-trigger=”load” attribute on the inner div of the htmx_form_demo.html page
+loads the htmx_list.html page inside the htmx-form-demo DIV once the htmx_form_demo page is loaded.</p>
+<p>Notice the timestamp added outside of the htmx-form-demo DIV does not change when transitions occur.  This is
+because the outer page is never reloaded, only the content inside the htmx-form-demo DIV.</p>
+<p>The htmx attributes hx-get and hx-target are then used on the anchor tags to call the htmx_form page to
+load the form inside the htmx-form-demo DIV.</p>
+<p>So far we’ve just seen standard htmx processing. Nothing fancy here, and nothing specific to py4web. However,
+in the htmx_form method we see how you can pass any attribute to a py4web form that will be rendered on the
+&lt;form&gt; element as we add the hx-post and hx-target. This tells the form to allow htmx to override the default
+form behavior and to render the resulting output in the target specified.</p>
+<p>The default py4web form does not include a Cancel button in case you want to cancel out of the edit form. But
+you can add ‘sidecar’ elements to your forms. You can see in htmx_form that we add a cancel option and add the
+required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV.</p>
+</section>
+<section id="htmx-usage-in-grid">
+<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Link to this heading"></a></h3>
+<p>The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes
+for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for
+htmx.</p>
+<p>Here is an example building off the previous htmx forms example.</p>
+<p><strong>controller.py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">))</span>
+
+    <span class="n">cancel_attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">sidecar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">cancel_attrs</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span> <span class="s2">&quot;htmx_grid.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmx_grid</span><span class="p">():</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">auto_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">attributes_plugin</span> <span class="o">=</span> <span class="n">AttributesPluginHtmx</span><span class="p">(</span><span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">)</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span>
+            <span class="s2">&quot;htmx_grid&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">grid</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">new_sidecar</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">grid</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">edit_sidecar</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form_demo.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+
+[[=timestamp]]
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-form-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_list&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-grid-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_grid&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-grid-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://unpkg.com/htmx.org@1.3.2&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Notice that we added the #htmx-grid-demo DIV which calls the htmx_grid route.</p>
+<p><strong>templates/htmx_grid.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>In htmx_grid we take advantage of deferred processing on the grid. We setup a standard CRUD grid, defer
+processing and then tell the grid we’re going to use an alternate attributes plugin to build our navigation.
+Now the forms, links and delete confirmations are all handled by htmx.</p>
+</section>
+<section id="autocomplete-widget-using-htmx">
+<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Link to this heading"></a></h3>
+<p>htmx can be used for much more than just form/grid processing. In this example we’ll take advantage of htmx and the
+py4web form widgets to build an autocomplete widget that can be used in your forms. <em>NOTE: this is just an example, none
+of this code comes with py4web</em></p>
+<p>Again we’ll use the superheros database as defined in the examples app.</p>
+<p>Add the following to your controllers.py.  This code will build your autocomplete dropdowns as well as
+handle the database calls to get your data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIV</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">SCRIPT</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span>
+
+
+<span class="nd">@action</span><span class="p">(</span>
+    <span class="s2">&quot;htmx/autocomplete&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span>
+    <span class="s2">&quot;htmx/autocomplete.html&quot;</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">,</span>
+    <span class="n">db</span><span class="p">,</span>
+    <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">autocomplete</span><span class="p">():</span>
+    <span class="n">tablename</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">tablename</span>
+    <span class="n">fieldname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">fieldname</span>
+    <span class="n">autocomplete_query</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">query</span>
+
+    <span class="n">field</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">tablename</span><span class="p">][</span><span class="n">fieldname</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">fk_table</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="p">:</span>
+        <span class="n">fk_table</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">ktable</span>
+        <span class="n">fk_field</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">kfield</span>
+
+        <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;_autocomplete_search_fields&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">_autocomplete_search_fields</span><span class="p">:</span>
+                <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">][</span><span class="n">sf</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span>
+                        <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tablename</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">_search&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">]:</span>
+                    <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">][</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span>
+                            <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tablename</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">_search&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">autocomplete_query</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="n">autocomplete_query</span><span class="p">,</span> <span class="n">query</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">orderby</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">orderby</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">tablename</span><span class="o">=</span><span class="n">tablename</span><span class="p">,</span>
+        <span class="n">fieldname</span><span class="o">=</span><span class="n">fieldname</span><span class="p">,</span>
+        <span class="n">fk_table</span><span class="o">=</span><span class="n">fk_table</span><span class="p">,</span>
+        <span class="n">data_label</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HtmxAutocompleteWidget</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simple_query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">simple_query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span> <span class="k">else</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx/autocomplete&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;simple_query&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1">#  TODO: handle readonly parameter</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;_table&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">tablename</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">_table</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tablename</span> <span class="o">=</span> <span class="s2">&quot;no_table&quot;</span>
+
+        <span class="c1">#  build the div-hidden input field to hold the value</span>
+        <span class="n">hidden_input</span> <span class="o">=</span> <span class="n">INPUT</span><span class="p">(</span>
+            <span class="n">_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+            <span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="n">_name</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">hidden_div</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">hidden_input</span><span class="p">,</span> <span class="n">_style</span><span class="o">=</span><span class="s2">&quot;display: none;&quot;</span><span class="p">)</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hidden_div</span><span class="p">)</span>
+
+        <span class="c1">#  build the input field to accept the text</span>
+
+        <span class="c1">#  set the htmx attributes</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;tablename&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">tablename</span><span class="p">),</span>
+            <span class="s2">&quot;fieldname&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-trigger&quot;</span><span class="p">:</span> <span class="s2">&quot;keyup changed delay:500ms&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_autocomplete_results&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">&quot;_hx-indicator&quot;</span><span class="p">:</span> <span class="s2">&quot;.htmx-indicator&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-vals&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">search_value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">ktable</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">kfield</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
+                <span class="n">search_value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">label</span> <span class="o">%</span> <span class="n">row</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">INPUT</span><span class="p">(</span>
+                <span class="n">_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+                <span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_search&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="n">_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_search&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="n">_value</span><span class="o">=</span><span class="n">search_value</span><span class="p">,</span>
+                <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">,</span>
+                <span class="n">_placeholder</span><span class="o">=</span><span class="n">placeholder</span> <span class="k">if</span> <span class="n">placeholder</span> <span class="ow">and</span> <span class="n">placeholder</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span>
+                <span class="n">_title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">_autocomplete</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">attrs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_autocomplete_results&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)))</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">SCRIPT</span><span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        htmx.onLoad(function(elt) {</span>
+<span class="sd">            document.querySelector(&#39;#%(table)s_%(field)s_search&#39;).onkeydown = check_%(table)s_%(field)s_down_key;</span>
+<span class="sd">            \n</span>
+<span class="sd">            function check_%(table)s_%(field)s_down_key(e) {</span>
+<span class="sd">                if (e.keyCode == &#39;40&#39;) {</span>
+<span class="sd">                    document.querySelector(&#39;#%(table)s_%(field)s_autocomplete&#39;).focus();</span>
+<span class="sd">                    document.querySelector(&#39;#%(table)s_%(field)s_autocomplete&#39;).selectedIndex = 0;</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+<span class="sd">        })</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+                <span class="o">%</span> <span class="p">{</span>
+                    <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">tablename</span><span class="p">,</span>
+                    <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">control</span>
+</pre></div>
+</div>
+<p>Usage - in your controller code, this example uses bulma as the base css formatter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span> <span class="o">=</span> <span class="n">FormStyleFactory</span><span class="p">()</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleBulma</span><span class="o">.</span><span class="n">classes</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">class_inner_exceptions</span> <span class="o">=</span> <span class="n">FormStyleBulma</span><span class="o">.</span><span class="n">class_inner_exceptions</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;vendor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">HtmxAutocompleteWidget</span><span class="p">(</span>
+    <span class="n">simple_query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">vendor</span><span class="o">.</span><span class="n">vendor_type</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">product</span><span class="p">,</span>
+    <span class="n">record</span><span class="o">=</span><span class="n">product_record</span><span class="p">,</span>  <span class="c1"># defined earlier in controller</span>
+    <span class="n">formstyle</span><span class="o">=</span><span class="n">formstyle</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>First, get an instance of FormStyleFactory.  Then get the base css classes from whichever css framework you wish. Add
+the class inner exceptions from your css framework. Once this is set up you can override the default widget for a
+field based on its name.  In this case we’re overriding the widget for the ‘vendor’ field. Instead of including all
+vendors in the select dropdown, we’re limiting only to those with a vendor type equal to ‘S’.</p>
+<p>When this is rendered in your page, the default widget for the vendor field is replaced with the widget generated by
+the HtmxAutocompleteWidget. When you pass a simple query to the HtmxAutocompleteWidget the widget will use the default
+route to fill the dropdown with data.</p>
+<p>If using the simple query and default build url, you are limited to a simple DAL query. You cannot use DAL subqueries
+within this simple query.  If the data for the dropdown requires a more complex DAL query you can override the default
+data builder URL to provide your own controller function to retrieve the data.</p>
+<div role="list" class="citation-list">
+<div class="citation" id="cit1601" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">CIT1601</a><span class="fn-bracket">]</span></span>
+<p>from the <a class="reference external" href="https://htmx.org">https://htmx.org</a> website</p>
+</div>
+</div>
+</section>
+</section>
+<section id="utils-js">
+<h2>utils.js<a class="headerlink" href="#utils-js" title="Link to this heading"></a></h2>
+<p>Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
+yet we never clearly listed what is in there. So here it is.</p>
+<section id="string-format">
+<h3>string.format<a class="headerlink" href="#string-format" title="Link to this heading"></a></h3>
+<p>It extends the String object prototype to allow expressions like this:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello {name}&quot;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="the-q-object">
+<h3>The Q object<a class="headerlink" href="#the-q-object" title="Link to this heading"></a></h3>
+<p>The Q object can be used like a selector supporting jQuery like syntax:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element-id&quot;</span><span class="p">)[</span><span class="mf">0</span><span class="p">];</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">selected_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;.element-class&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It supports the same syntax as JS <code class="docutils literal notranslate"><span class="pre">querySelectorAll</span></code>
+and always returns an array of selected elements (can be empty).</p>
+<p>The Q objects is also a container for functions that can be useful when programming in Javascript.
+It is stateless.</p>
+<p>For example:</p>
+<p><strong>Q.clone</strong></p>
+<p>A function to clone any object:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">any</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.eval</strong></p>
+<p>It evaluates JS expressions in a string. It is not a sandbox.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;2+3+Math.random()&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.ajax</strong></p>
+<p>A wrapper for the JS fetch method which provides a nicer syntax:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;custom-header-name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;value&#39;</span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="nx">Q</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">success</span><span class="p">,</span><span class="w"> </span><span class="nx">failure</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.get_cookie</strong></p>
+<p>Extracts a cookie by name from the header of cookies in the current page:
+returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
+in case it is needed to call an API.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">get_cookie</span><span class="p">(</span><span class="s2">&quot;session&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.register_vue_component</strong></p>
+<p>This is specific for Vue 2 and may be deprecated in the future but it allows
+to define a vue component where the template is stored in a separate HTML file
+and the template will be loaded lazily only when/if the component is used.</p>
+<p>For example instead of doing:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;button-counter&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">},</span>
+<span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&lt;button v-on:click=&quot;count++&quot;&gt;You clicked me {{ count }} times.&lt;/button&gt;&#39;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>You would put the template in a button-counter.html and do</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">register_vue_component</span><span class="p">(</span><span class="s2">&quot;button-counter&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;button-counter.html&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p><strong>Q.upload_helper</strong></p>
+<p>It allows to bind an input tag of type file to a callback so that when a file is selected
+the content of the selected file is loaded, base64 encoded, and passed to the callback.</p>
+<p>This is useful to create form which include an input field selector - but you want to
+place the content of the selected file into a variable, for example to do an ajax post of that content.</p>
+<p>For example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;file&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;my-id&quot;</span> <span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>and</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">file_content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="nx">Q</span><span class="p">.</span><span class="nx">upload_helper</span><span class="p">(</span><span class="s2">&quot;my_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">content</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nx">file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">name</span><span class="p">;</span>
+<span class="w">   </span><span class="nx">file_content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">content</span><span class="p">;</span><span class="w"> </span><span class="c1">// base 64 encoded;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="the-t-object">
+<h3>The T object<a class="headerlink" href="#the-t-object" title="Link to this heading"></a></h3>
+<p>This is a Javascript reimplementation of the Python pluralize library in Python
+which is used by the Python T object in py4web. So basically a client-side T.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">T</span><span class="p">.</span><span class="nx">translations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;dog&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="mf">0</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;no cane&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;un case&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{n} cani&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;tanti cani&#39;</span><span class="p">}};</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">T</span><span class="p">(</span><span class="s1">&#39;dog&#39;</span><span class="p">).</span><span class="nx">format</span><span class="p">({</span><span class="nx">n</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="p">});</span><span class="w"> </span><span class="c1">// &quot;5 cani&quot;</span>
+</pre></div>
+</div>
+<p>The intended usage is to create a server endpoint that can provide translations
+for the client accepted-language, obtain T.translations via ajax get, and then use
+T to translate and pluralize all messages clientside rather than serverside.</p>
+<p><strong>Q.debounce</strong></p>
+<p>Prevents a function from stepping on itself.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">setInterval</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">debounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;hello!&quot;</span><span class="p">)},</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and the function will be called every 500ms
+but will skip if the previous call did not terminate.
+Unlike other debounce implementations out there, it makes sure
+the last call is always executed by delaying it (in the example 200ms);</p>
+<p><strong>Q.debounce</strong></p>
+<p>Prevents a function from being called too often;</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element&quot;</span><span class="p">).</span><span class="nx">onclick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">debounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;clicked!&quot;</span><span class="p">)},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If the element is clicked more often than once every 1000ms, the other clicks will be ignored.</p>
+<p><strong>Q.tags_inputs</strong></p>
+<p>It turns a regular text input containing a string of comma separated tags into a tag widgets.
+For example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;browsers&quot;</span><span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>and in JSL</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can restrict the set of options with:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nx">freetext</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">   </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;Chrome&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Firefox&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Safari&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Edge&#39;</span><span class="p">]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>It works with the datalist element to provide autocomplete. Simply prepend <cite>-list</cite> to the datalist id:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;browsers&quot;</span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">datalist</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;browses-list&quot;</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Chrome<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Firfox<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Safari<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Edge<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">datalist</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>and in JS:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">freetext</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>It provides more undocumented options.
+You need to style the tags. For example:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">padding-left</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="nt">li</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">inline-block</span><span class="p">;</span>
+<span class="w">  </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#111111</span><span class="p">;</span>
+<span class="w">  </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.8</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.2</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.8</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">  </span><span class="k">cursor</span><span class="p">:</span><span class="w"> </span><span class="kc">pointer</span><span class="p">;</span>
+<span class="w">  </span><span class="k">text-transform</span><span class="p">:</span><span class="w"> </span><span class="kc">capitalize</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="nt">li</span><span class="o">[</span><span class="nt">data-selected</span><span class="o">=</span><span class="nt">true</span><span class="o">]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice that if an input element has class <cite>.type-list-string</cite> or <cite>.type-list-integer</cite>, utils.js applies the
+<cite>tag_input</cite> function automatically.</p>
+<p><em>Q.score_input*</em></p>
+<p>..code:: javascript</p>
+<blockquote>
+<div><p>Q.score_input(Q(‘input[type=password]’)[0]);</p>
+</div></blockquote>
+<p>This will turn the password input into a widget that scores the password complexity.
+It is applied automatically to inputs with name “password” or “new_password”.</p>
+<p><strong>Components</strong></p>
+<p>This is a poor man version of HTMX. It allows to insert in the page ajax-component tags that
+are loaded via ajax and any form in those components will be trapped
+(i.e. the result of form submission will also be displayed inside the same component)</p>
+<p>For example imagine an index.html that contains</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ajax-component</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;component_1&quot;</span> <span class="na">url</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;mycomponent&#39;)]]&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">blink</span><span class="p">&gt;</span>Loading...<span class="p">&lt;/</span><span class="nt">blink</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ajax-component</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>And a different action serving the component:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;mycomponent&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mycomponent</span><span class="p">():</span>
+    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span><span class="n">Field</span><span class="p">(</span><span class="s2">&quot;your_name&quot;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">DIV</span><span class="p">(</span>
+        <span class="s2">&quot;Hello &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">forms</span><span class="p">[</span><span class="s2">&quot;your_name&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span> <span class="k">else</span> <span class="n">form</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A component action is a regular action except that it should generate html without the
+<cite>&lt;html&gt;&lt;body&gt;…&lt;/body&gt;&lt;/html&gt;</cite> envelop and it can make use of templates and flash for example.</p>
+<p>Notice that if the main page supports flash messages, any flash message in the component will be displayed
+by the parent page.</p>
+<p>Moreover if the component returns a <cite>redirect(“other_page”)</cite> not just the content of the component,
+but the entire page will be redirected.</p>
+<p>The contents of the component html can contain <cite>&lt;script&gt;…&lt;/script&gt;</cite> and they can modify global page variables
+as well as modify other components.</p>
+</section>
+</section>
+<section id="adding-a-captcha-solution-with-altcha">
+<span id="altcha-captcha"></span><h2>Adding a Captcha Solution with Altcha<a class="headerlink" href="#adding-a-captcha-solution-with-altcha" title="Link to this heading"></a></h2>
+<p>This section provides a simple captcha implementation for your py4web applications using the <strong>Altcha</strong> library. While not exhaustively tested, it serves as a practical example for integrating a robust, client-side captcha solution.
+More information in <a class="reference external" href="https://altcha.org">https://altcha.org</a></p>
+<p>First, you need to install the Altcha library. You can do this using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>altcha
+</pre></div>
+</div>
+<p>You also need a secret key for HMAC verification. It’s recommended to store this in your application’s settings. For this example, we’ll assume you have a file like <code class="docutils literal notranslate"><span class="pre">.settings.py</span></code> with the following variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># .settings.py</span>
+<span class="n">ALTCHA_HMAC_KEY</span> <span class="o">=</span> <span class="s2">&quot;your-very-secret-key-here&quot;</span>
+</pre></div>
+</div>
+<p>Next, you need to add the necessary actions to your controller file. The following code provides two actions: one to generate the captcha challenge (<code class="docutils literal notranslate"><span class="pre">altcha</span></code>) and another to handle a form with the captcha (<code class="docutils literal notranslate"><span class="pre">some_form</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># controllers/default.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">altcha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_challenge</span><span class="p">,</span>
+    <span class="n">verify_solution</span><span class="p">,</span>
+    <span class="n">ChallengeOptions</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">Form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="n">XML</span><span class="p">,</span> <span class="n">T</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">ALTCHA_HMAC_KEY</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;altcha&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_altcha</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates and returns an Altcha challenge.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">challenge</span> <span class="o">=</span> <span class="n">create_challenge</span><span class="p">(</span>
+            <span class="n">ChallengeOptions</span><span class="p">(</span>
+                <span class="n">hmac_key</span><span class="o">=</span><span class="n">ALTCHA_HMAC_KEY</span><span class="p">,</span>
+                <span class="n">max_number</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span>
+        <span class="k">return</span> <span class="n">challenge</span><span class="o">.</span><span class="vm">__dict__</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">500</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Failed to create challenge: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_altcha.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_form</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An example form that uses the Altcha captcha.&quot;&quot;&quot;</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span>
+                <span class="n">csrf_session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+                <span class="n">submit_button</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Insert the Altcha widget HTML before the submit button</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;altcha-widget&gt;&lt;/altcha-widget&gt;&lt;/br&gt;&#39;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">altcha_payload</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altcha&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">altcha_payload</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+            <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;NO ALTCHA payload&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NO ALTCHA payload&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ok</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">verify_solution</span><span class="p">(</span><span class="n">altcha_payload</span><span class="p">,</span> <span class="n">ALTCHA_HMAC_KEY</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+                <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ALTCHA verification fail: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ALTCHA verification fail:&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;ALTCHA verified.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You need to include the Altcha JavaScript library and configure the widget in your HTML templates.</p>
+<p>This template works with the <code class="docutils literal notranslate"><span class="pre">some_form</span></code> action. It loads the Altcha script and sets the <code class="docutils literal notranslate"><span class="pre">challengeurl</span></code> attribute to point to our <code class="docutils literal notranslate"><span class="pre">altcha</span></code> action.</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">defer</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">altchaWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;altcha-widget&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">altchaWidget</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">altchaWidget</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&quot;challengeurl&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;[[=URL(&#39;altcha&#39;)]]&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;vars&quot;</span><span class="p">&gt;</span>[[=form]]<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>For a custom authentication form, you can follow a similar approach. Make sure to insert the <code class="docutils literal notranslate"><span class="pre">&lt;altcha-widget&gt;</span></code> tag into the form’s structure and include the necessary JavaScript.</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &quot;layout.html&quot;]]
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">async</span> <span class="na">defer</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/gh/altcha-org/altcha/dist/altcha.min.js&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">altchaWidget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&quot;altcha-widget&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">altchaWidget</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">altchaWidget</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&quot;challengeurl&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;[[=URL(&#39;altcha&#39;)]]&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">.</span><span class="nc">auth-container</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="kt">%</span><span class="p">;</span>
+<span class="w">        </span><span class="k">min-width</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="k">margin-left</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">        </span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">        </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#e1e1e1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+
+[[form.structure.insert(-1,XML(&#39;<span class="p">&lt;</span><span class="nt">altcha-widget</span><span class="p">&gt;&lt;/</span><span class="nt">altcha-widget</span><span class="p">&gt;&lt;/</span><span class="nt">br</span><span class="p">&gt;</span>&#39;))]]
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;auth-container&quot;</span><span class="p">&gt;</span>[[=form]]<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>To enable Altcha in the auth form, you can use the following fixture:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AltchaServerFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hmac_key</span><span class="o">=</span><span class="n">ALTCHA_HMAC_KEY</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;altcha_server&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hmac_key</span> <span class="o">=</span> <span class="n">hmac_key</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c1"># Only verify Altcha for POST requests</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;altcha&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">payload</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;ALTCHA payload not received&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">verified</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">verify_solution</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hmac_key</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">verified</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;Invalid ALTCHA&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Altcha verification passed&quot;</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;Exception in Altcha verification&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+</pre></div>
+</div>
+<p>Make sure <code class="docutils literal notranslate"><span class="pre">AltchaServerFixture</span></code> is accessible in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> where <code class="docutils literal notranslate"><span class="pre">auth</span></code> is instantiated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.fixtures</span><span class="w"> </span><span class="kn">import</span> <span class="n">AltchaServerFixture</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">AltchaServerFixture</span><span class="p">()),</span> <span class="n">env</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will ensure Altcha verification is performed for POST requests in your authentication forms.</p>
+<p>You can also use the <code class="docutils literal notranslate"><span class="pre">AltchaServerFixture</span></code> in a form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;other_form&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_altcha.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">AltchaServerFixture</span><span class="p">())</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">other_form</span><span class="p">():</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="s2">&quot;green&quot;</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span>
+                <span class="n">csrf_session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
+                <span class="n">submit_button</span><span class="o">=</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;Submit&quot;</span><span class="p">))</span>
+    <span class="n">antes_submit</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">antes_submit</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;altcha-widget&gt;&lt;/altcha-widget&gt;&lt;/br&gt;&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="c1"># You can assume here that the Altcha payload was verified by the fixture</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Form and Altcha successfully verified.&quot;</span><span class="p">)</span>
+        <span class="c1"># Process the form data here</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="chapter-15.html" class="btn btn-neutral float-left" title="From web2py to py4web" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

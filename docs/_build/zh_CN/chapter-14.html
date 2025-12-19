@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>表格（Grid） &mdash; py4web 20251209 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=96e44453"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="从 web2py 迁移到 py4web" href="chapter-15.html" />
+    <link rel="prev" title="身份验证与授权" href="chapter-13.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">安装和启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">夹具（Fixture）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">身份验证与授权</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">表格（Grid）</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">主要特点</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-grid-example">grid 的基本示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-grid-object">Grid 对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#searching-and-filtering">搜索和过滤</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crud-settings">CRUD 设置</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-columns">自定义列</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-templates">使用模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-path-parameter-old-vs-new-usage">Grid 的 'path' 参数：新、旧用法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-mode-parameter-path-replacement">Grid 模式参数（路径替换）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-style">自定义样式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-action-buttons">自定义操作按钮</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-callable-parameters">使用 “可调用参数”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-fields">引用字段</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grids-with-checkboxes">带有复选框的 Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">表格（Grid）</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-14.rst" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="grid">
+<h1>表格（Grid）<a class="headerlink" href="#grid" title="Link to this heading"></a></h1>
+<p>py4web附带了一个 Grid 对象，提供表格和 CRUD（创建、更新和删除）功能。这使您能够快速安全地提供数据接口。由于它也是高度可定制的，因此它是大多数 py4web 应用程序的基石。</p>
+<section id="key-features">
+<h2>主要特点<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>带删除确认的完整的 CRUD 功能</p></li>
+<li><p>单击列标题进行排序 - 再次单击以进行降序排序</p></li>
+<li><p>分页控制</p></li>
+<li><p>内置搜索（可以使用 Search_queries 或 Search_form ）</p></li>
+<li><p>操作按钮- 带文本或不带文本</p></li>
+<li><p>操作前与操作后（在每行添加自己的按钮）</p></li>
+<li><p>本地格式的表格日期</p></li>
+<li><p>按类型的默认格式，以及用户自定义设置（覆盖默认值）</p></li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">提示</p>
+<p>Jim Steil 在 <a class="reference external" href="https://github.com/jpsteil/grid_tutorial">https://github.com/jpsteil/grid_tutorial</a> 上制作了一份非常出色的表格（grid）教程。强烈建议您在有任何疑问时查阅该教程，同时您也能在其中找到许多实用的示例、提示与技巧。</p>
+</div>
+</section>
+<section id="basic-grid-example">
+<h2>grid 的基本示例<a class="headerlink" href="#basic-grid-example" title="Link to this heading"></a></h2>
+<p>在这个简单示例中，我们将使用前面的 superhero 表制作了一个表格（grid）对象。</p>
+<p>创建一个新的小型 app ，称其为 <code class="docutils literal notranslate"><span class="pre">grid</span></code> ，使用下面的内容进行修改：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in grid/__init__.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.grid</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.form</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
+
+
+<span class="c1"># database definition</span>
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
+   <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+   <span class="s1">&#39;person&#39;</span><span class="p">,</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">),</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;job&#39;</span><span class="p">))</span>
+
+<span class="c1"># add example entries in db</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Superman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Clark Kent&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;Journalist&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Spiderman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Peter Park&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;Photographer&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Batman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bruce Wayne&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;CEO&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;grid.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+            <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span> <span class="c1"># FormStyleDefault, FormStyleBulma, FormStyleBootstrap4, or FormStyleBootstrap5</span>
+            <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5</span>
+            <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawesome</span><span class="p">,</span> <span class="c1"># IconStyle, IconStyleFontawesome, or IconStyleBootstrapIcons</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+            <span class="n">search_queries</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;Search by Name&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">val</span><span class="p">)]])</span>
+
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>添加一个新的文件 templates/grid.html ，其中包含以下基本内容：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>然后重启 py4web。如果您浏览 <a class="reference external" href="http://127.0.0.1:8000/grid/index">http://127.0.0.1:8000/grid/index</a> ，您将得到以下结果：</p>
+<img alt="_images/grid.png" src="_images/grid.png" />
+<p>它的布局很简朴，但非常有用。</p>
+<p>主要问题是，默认情况下使用 no.css 样式表，请参阅 <a class="reference external" href="https://github.com/mdipierro/no.css/">here</a> 。但我们还没启用它！使用以下内容更改文件 templates/grid.tml：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+   &lt;head&gt;
+      &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css&quot;  /&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+      [[=grid.render()]]
+   &lt;body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>然后刷新页面。</p>
+<img alt="_images/grid_nocss.png" src="_images/grid_nocss.png" />
+<p>现在情况好多了，有了 “详细信息” 、“编辑 ”和 “删除” 操作的适当图标。</p>
+<p>我们还可以考虑使用 <strong>bulma.css</strong> ，请参阅 <a class="reference external" href="https://bulma.io/">here</a> 。在这种情况下，您需要将 __init__.py 里的 grid 对象更改为：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma,FormStyleBootstrap4, or FormStyleBootstrap5</span>
+<span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyleBulma</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma or GridClassStyleBootstrap5</span>
+</pre></div>
+</div>
+<p>请注意，在这种情况下，您需要提前导入相应的 python 模块（我们已经在上面的第 4 行和第 5 行完成了）。如果使用默认的 no.css 样式，则不需要手动导入其样式模块（甚至不需要 formstyle 和 grid_ass_style 参数）。</p>
+<p>您还必须使用以下内容更改文件 templates/grid.html ：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+   &lt;head&gt;
+      &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css&quot;&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+         [[=grid.render()]]
+   &lt;body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>然后刷新页面。</p>
+<img alt="_images/grid_bulmacss.png" src="_images/grid_bulmacss.png" />
+<p>这好多了，不是吗？</p>
+<p>Bootstrap4 和 Bootstrap5 也有可用的样式，您可以在 Fontawesome、Bootstrap Icons 和自己编写的 CSS 的基本 IconStyle 之间更改图标样式。更多信息请参阅 <a class="reference internal" href="#customizing-style"><span class="std std-ref">自定义样式</span></a> 一节</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>这些只是展示 <code class="docutils literal notranslate"><span class="pre">grid</span></code> 内部工作原理的最小示例。通常，您应该从标准 <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> 应用程序的副本开始，其中已经定义了所有会话和身份验证内容。此外，您应该遵循代码的标准规则，比如将 db 定义放在 models.py 中等等。使用标准将使您的代码更简单、更安全、更易于维护。</p>
+<p>此外，不要直接在应用程序的根操作（ root action ）上使用 grid 对象，因为它不会添加 'index' 路由。因此，在本例中，如果您浏览到 <a class="reference external" href="http://127.0.0.1:8000/grid">http://127.0.0.1:8000/grid</a> ，主页将显示良好，但任何包含的操作都会导致页面不存在。</p>
+</div>
+<p>在 <a class="reference internal" href="chapter-16.html#advanced-topics-and-examples"><span class="std std-ref">高级主题和示例</span></a> 一章中，您可以找到更多示例，包括用 <strong>htmx</strong> 编写的主/细节 grid 示例。别忘了 <a class="reference external" href="https://github.com/jpsteil/grid_tutorial">https://github.com/jpsteil/grid_tutorial</a> 上面 Jim Steil 的详细教程。</p>
+</section>
+<section id="the-grid-object">
+<h2>Grid 对象<a class="headerlink" href="#the-grid-object" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Grid</span><span class="p">:</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+      <span class="bp">self</span><span class="p">,</span>
+      <span class="n">query</span><span class="p">,</span>
+      <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+      <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">groupby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">headings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">validation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">pre_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">post_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">auto_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">rows_per_page</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+      <span class="n">include_action_button_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
+      <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
+      <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
+      <span class="n">icon_style</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="p">,</span>
+      <span class="n">T</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+   <span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>query：待处理的 pydal 查询语句。</p></li>
+<li><p>search_form：要作为搜索表单嵌入的 py4web 表单。若传入了 search_form ，则由开发者负责将筛选条件应用到传入的查询语句中。这一点与 search_queries 不同。</p></li>
+<li><p>search_queries：用于构建搜索表单的查询列表的集合（列表的列表）。若使用了search_form，该参数将被忽略。</p></li>
+<li><p>columns：要在列表页面显示的字段或列的列表，详见后文的 <a class="reference internal" href="#custom-columns"><span class="std std-ref">自定义列</span></a> 章节。若为空，grid 将使用被查询表的所有可读字段。</p></li>
+<li><p>show_id：是否在列表页面显示记录的 ID 字段。默认值为 None，此时会自动检测是否存在类型为 “id” 的字段（若有则显示）。</p></li>
+<li><p>orderby：pydal 的排序字段或字段列表。用于控制 grid 的默认排序顺序。</p></li>
+<li><p>left：若需关联其他表，在此处指定 pydal 的左连接表达式。</p></li>
+<li><p>groupby：pydal 的分组表达式。用于对 grid 中的结果进行分组。</p></li>
+<li><p>headings：列表页面使用的标题列表 —— 若未提供，则使用字段的标签作为标题。</p></li>
+<li><p>create：控制 grid 是否允许创建记录。可取值为：True（显示按钮）、False（隐藏按钮）、URL 字符串，或自定义逻辑的可调用对象。</p></li>
+<li><p>details：控制 grid 是否允许查看记录详情。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。</p></li>
+<li><p>editable: 控制 grid 格是否允许编辑记录。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。</p></li>
+<li><p>deletable：控制 grid 是否允许删除记录。可取值为：True、False、URL 字符串，或自定义逻辑的可调用对象。</p></li>
+<li><p>required_fields：必须包含在 grid' 的查询语句和表单中的字段列表。用于确保某些字段始终被加载。</p></li>
+<li><p>validation：可选的验证函数，被传入到创建和编辑表单中使用。</p></li>
+<li><p>pre_action_buttons：要在标准操作按钮之前显示的操作按钮实例列表</p></li>
+<li><p>post_action_buttons: 要在标准操作按钮之后显示的操作按钮实例列表</p></li>
+<li><p>auto_process：布尔值 —— grid 是否应立即执行处理逻辑。若为 False，开发者必须在所有参数配置完成后调用 grid.process() 方法。</p></li>
+<li><p>rows_per_page：每页显示的记录行数。默认值为 15。</p></li>
+<li><p>include_action_button_text：布尔值，用于告知 grid 是否要在其内部的操作按钮上显示文本。</p></li>
+<li><p>search_button_text：搜索表单的提交按钮上显示的文本。</p></li>
+<li><p>formstyle：py4web 的表单样式（Form formstyle），用于在自动构建增删改查（CRUD）表单时为表单设置样式。</p></li>
+<li><p>grid_class_style: 表格样式类（GridClassStyle），用于覆盖 grid 渲染样式的默认设置。允许你为 grid 的特定位置指定要应用的类或样式。</p></li>
+<li><p>icon_style: 默认值是 IconStyleFontawsome。用来获取图标的 css 样式。其它可选值：IconStyle, IconStyleBootstrapIcons。</p></li>
+<li><p>T: 可选的多元化对象，用来翻译某些字符串。</p></li>
+</ul>
+<p>(*) 参数 <code class="docutils literal notranslate"><span class="pre">details</span></code> 、 <code class="docutils literal notranslate"><span class="pre">editable</span></code> 和 <code class="docutils literal notranslate"><span class="pre">deletable</span></code> 也能接受一个可调用的函数，grid 中当前的 row 对象会被作为参数传递给那个函数。这很有用，因为你能依据 row 对象中的值来启用或禁用某个操作按钮。 换句话说，你能使用一个如下的表达式，而不是提供一个简单的 boolean 类型的值；</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deletable</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">job</span><span class="o">==</span><span class="s2">&quot;CEO&quot;</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>也请参考后面的  <a class="reference internal" href="#using-callable-parameters"><span class="std std-ref">使用 “可调用参数”</span></a></p>
+<section id="searching-and-filtering">
+<h3>搜索和过滤<a class="headerlink" href="#searching-and-filtering" title="Link to this heading"></a></h3>
+<p>这有两种构建搜索表单的方法：</p>
+<ul class="simple">
+<li><p>为 search_queries 参数提供一个列表</p></li>
+<li><p>构建自己的自定义搜索表单</p></li>
+<li><p>构建一个搜索表单。如果列表中有多个搜索查询，它还将生成一个下拉列表，以选择要搜索的搜索字段</p></li>
+</ul>
+<p>但是，如果这没有给你足够的灵活性，你可以自己提供。</p>
+</section>
+<section id="crud-settings">
+<h3>CRUD 设置<a class="headerlink" href="#crud-settings" title="Link to this heading"></a></h3>
+<p>grid 对象利用 py4web Form 提供 CRUD（创建、读取、更新和删除）功能。您可以在 grid 对象实例化期间通过设置 create/details/editable/deletable 来关闭 CRUD 功能</p>
+<p>此外，您可以为 create/details/editable/deletable 参数提供一个单独的 URL，以绕过自动生成的 CRUD 页面，打开自己处理细节的页面。</p>
+</section>
+</section>
+<section id="custom-columns">
+<h2>自定义列<a class="headerlink" href="#custom-columns" title="Link to this heading"></a></h2>
+<p>如果 grid 对象不涉及多表联接（join），仅展示来自单个数据表的结果，那么可以这样添加自定义列：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">job</span><span class="p">,</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Web Site&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">),</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Go To&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">))</span>
+<span class="p">]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>请注意，在这个例子中，第一列是常规字段，第五列有一个标题 “Web Site” ，由当前 row 对象生成的 URL 字符串当成此列的值。最后一列有一个标题 “Go To” ，并使用 <code class="docutils literal notranslate"><span class="pre">A</span></code>  helper 生成实际的可点击链接当成此列的值。结果如下：</p>
+<img alt="_images/grid_columns.png" src="_images/grid_columns.png" />
+<p>请注意，我们还使用了如前所述 <code class="docutils literal notranslate"><span class="pre">deletable</span></code> 参数，以便仅对 Batman 禁用和隐藏 “Delete” 按钮。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>不要在使用它们的控制器方法之外定义列，否则每次用户按下浏览器的刷新按钮时，表的结构都会发生变化！</p>
+<p>原因是每次 grid 对象显示时，它都会通过向其中添加操作按钮来修改 “columns” 变量（在 grid 中）。因此，如果列是在控制器方法之外定义的，它只会不断添加操作列。</p>
+</div>
+</section>
+<section id="using-templates">
+<h2>使用模板<a class="headerlink" href="#using-templates" title="Link to this heading"></a></h2>
+<p>显示 grid 对象或 CRUD 表单</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>您可以像普通表单一样自定义 CRUD 表单布局（请参阅 <a class="reference internal" href="chapter-12.html#custom-forms"><span class="std std-ref">自定义表单</span></a> ）. 因此，您可以使用以下结构：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[form = grid.render() ]]
+[[form.custom[&quot;begin&quot;] ]]
+...
+[[form.custom[&quot;submit&quot;]
+[[form.custom[&quot;end&quot;]
+</pre></div>
+</div>
+<p>但请注意，在处理自定义表单布局时，您需要知道是要显示 grid 对象还是 form 表单。使用以下内容来决定：</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[if grid.action in [&#39;details&#39;, &#39;edit&#39;]: ]]
+    #  Display the custom form
+    [[form = grid.render() ]]
+    [[form.custom[&quot;begin&quot;] ]]
+    ...
+    [[form.custom[&quot;submit&quot;]
+    [[form.custom[&quot;end&quot;]
+[[else:]]
+    [[grid.render() ]]
+[[pass]]
+</pre></div>
+</div>
+</section>
+<section id="grid-path-parameter-old-vs-new-usage">
+<h2>Grid 的 'path' 参数：新、旧用法<a class="headerlink" href="#grid-path-parameter-old-vs-new-usage" title="Link to this heading"></a></h2>
+<p>在 py4web 早于 v1.20240501 的先前版本中， <cite>Grid</cite> 对象的构造函数需要一个 <cite>path</cite> 参数。这被用来帮助 grid 对象解析 URL 并决定启用的 action （例如， select、 edit、 details、 delete 等）。</p>
+<p><strong>旧用法示例：</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+   <span class="n">path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+   <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
+   <span class="c1"># ...other parameters...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>但是，从 py4web 1.20240501 及更高版本开始，不再需要或支持 <cite>path</cite> 参数。 grid 现在根据 py4web 请求上下文和 URL 参数自动确定当前操作和路由。您只需省略 <cite>path</cite> 参数，并按如下方式使用构造函数：</p>
+<p><strong>新用法示例：</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+   <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
+   <span class="c1"># ...other parameters...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>此更改使 API 变得更简单，并且更少出错。现在，所有路由和操作处理都由 py4web 的&#64;action 装饰器和请求上下文管理，因此您不需要手动传递路径。</p>
+<p>如果要更新旧代码，只需从 Grid 实例化中删除 path 参数即可。</p>
+</section>
+<section id="grid-mode-parameter-path-replacement">
+<h2>Grid 模式参数（路径替换）<a class="headerlink" href="#grid-mode-parameter-path-replacement" title="Link to this heading"></a></h2>
+<p><cite>Grid</cite> 对象使用一个 <cite>mode</cite> 变量，该变量通过 py4web 中的 <cite>request.query</cite> 对象传递。此变量决定 grid 将呈现什么类型的页面或表单。 <cite>mode</cite> 的可能值有：</p>
+<ul class="simple">
+<li><p><cite>select</cite>: 显示列出所有记录的主表（如果未指定，则默认）。</p></li>
+<li><p><cite>new</cite>: 显示一个表单以创建新记录。</p></li>
+<li><p><cite>details</cite>: 显示一个只读表单，其中包含单个记录的详细信息。</p></li>
+<li><p><cite>edit</cite>: 显示一个表单以编辑现有记录。</p></li>
+<li><p><cite>delete</cite>: 显示删除记录的确认表单。</p></li>
+</ul>
+<p>grid 会自动从 URL 查询参数中解析 <cite>mode</cite> 。例如，如果您访问 <cite>/myapp/mygrid?mode=edit&amp;id=5</cite> ，grid 将呈现 id 为 5 的记录的编辑表单。如果未指定 <cite>mode</cite> ，则 grid 默认使用 <cite>select</cite> 模式并显示主表视图。</p>
+<p>如果要自定义导航或操作，可以生成链接或按钮，在查询字符串中设置所需的模式和 id 。</p>
+</section>
+<section id="customizing-style">
+<h2>自定义样式<a class="headerlink" href="#customizing-style" title="Link to this heading"></a></h2>
+<p>您可以为 grid 提供自己的表单样式或 grid 样式类以及样式。</p>
+<blockquote>
+<div><p>formstyle 用于 grid 的某些部分。</p>
+</div></blockquote>
+<p>默认的 <code class="docutils literal notranslate"><span class="pre">GridClassStyle</span></code> 基于 <strong>no.css</strong> ，主要使用样式来修改网格的布局。我们已经看到，可以使用其他 class_style ，特别是 <code class="docutils literal notranslate"><span class="pre">GridClassStyleBulma</span></code> 或 <code class="docutils literal notranslate"><span class="pre">GridClassStyleBootstrap5</span></code>。</p>
+<p>您甚至可以构建自己的 class_style ，以便与您选择的 css 框架一起使用。</p>
+<p>使用 icon_style ，您可以自定义所使用的图标字体。目前，存在以下情况：</p>
+<blockquote>
+<div><p>使用此功能请添加 <a class="reference external" href="https://fontawesome.com/">fontawesome</a> 图标字体 CSS 。类似 <code class="docutils literal notranslate"><span class="pre">icon-edit-button</span></code> 的 css 类，您可以为其编写自己的 css 。可以将 <a class="reference external" href="https://icons.getbootstrap.com/#install">Bootstrap Icons</a>  用于您的 html 模板。</p>
+</div></blockquote>
+</section>
+<section id="custom-action-buttons">
+<h2>自定义操作按钮<a class="headerlink" href="#custom-action-buttons" title="Link to this heading"></a></h2>
+<p>与 web2py 一样，您可以在 grid 中的每一行添加额外的按钮。为此，您可以向 grid 对象的 <strong>init</strong> 方法提供 <code class="docutils literal notranslate"><span class="pre">pre_action_buttons</span></code> 或 <code class="docutils literal notranslate"><span class="pre">post_action_buttons</span></code> 。</p>
+<blockquote>
+<div><p>在标准操作按钮之前，或在标准操作按钮之后</p>
+</div></blockquote>
+<p>您可以根据下面的模板构建自己的 Action Button 类，以传递给操作前/操作后的按钮（py4web 不提供此模板）。</p>
+<p>这是一个示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://www.google.com/search?q=</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Google for </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">_style</span> <span class="o">=</span> <span class="s2">&quot;font-weight: 200&quot;</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="n">pre_action_buttons</span>  <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>请注意，按钮可以用具有以下键的 dict 来表示：</p>
+<ul class="simple">
+<li><p>url：按钮指向的 url（必填）</p></li>
+<li><p>text：按钮的文本（必填）</p></li>
+<li><p>icon：按钮中图标的可选名称，例如 <code class="docutils literal notranslate"><span class="pre">fa-gear</span></code></p></li>
+<li><p>lasses：要为按钮标记添加的可选类&quot;</p></li>
+<li><p>kind：用于从 GridStyle 中检索样式信息的可选按钮。默认为 “grid-button”</p></li>
+<li><p>_{name}：传递给构建按钮的 <code class="docutils literal notranslate"><span class="pre">A(...,</span> <span class="pre">_{name}=...)</span></code> helper 的可选属性。</p></li>
+</ul>
+<p>还可以使用 helpers 显式构建按钮，以增加灵活性和减少魔力：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Google for </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">_href</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://www.google.com/search?q=</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">_style</span> <span class="o">=</span> <span class="s2">&quot;font-weight: 200&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="n">pre_action_buttons</span>  <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-callable-parameters">
+<h2>使用 “可调用参数”<a class="headerlink" href="#using-callable-parameters" title="Link to this heading"></a></h2>
+<p>对 py4web 最近的一项改进是，允许你传递一个 <strong>可调用对象</strong> 来代替 GridActionButton。这允许你更容易地改变标准或自定义的 Acion 的行为。</p>
+<p>可调用对象能被用于以下参数：</p>
+<ul class="simple">
+<li><p>details</p></li>
+<li><p>editable</p></li>
+<li><p>deletable</p></li>
+<li><p>additional_classes</p></li>
+<li><p>additional_styles</p></li>
+<li><p>override_classes</p></li>
+<li><p>override_styles</p></li>
+</ul>
+<p>用法示例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+   <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="n">IconStyleFontawsome</span><span class="o">.</span><span class="n">add_button</span><span class="p">,</span> <span class="c1"># same as &quot;fa-plus&quot;</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+      <span class="p">)</span>
+   <span class="p">]</span>
+
+   <span class="n">post_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me!!!&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-plus&quot;</span><span class="p">,</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+      <span class="p">)</span>
+   <span class="p">]</span>
+
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+      <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+      <span class="n">query</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span>
+      <span class="n">pre_action_buttons</span><span class="o">=</span><span class="n">pre_action_buttons</span><span class="p">,</span>
+      <span class="n">post_action_buttons</span><span class="o">=</span><span class="n">post_action_buttons</span><span class="p">,</span>
+   <span class="p">)</span>
+
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="reference-fields">
+<h2>引用字段<a class="headerlink" href="#reference-fields" title="Link to this heading"></a></h2>
+<p>在 PyDAL 表中显示字段时，有时您希望显示比外键值更具描述性的字段值。使用 py4web grid 有几种方法可以处理这个问题。</p>
+<p>PyDAL 字段定义的 <code class="docutils literal notranslate"><span class="pre">filter_out</span></code> - 下面是一个外键字段的示例</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;company&#39;</span><span class="p">,</span> <span class="s1">&#39;reference company&#39;</span><span class="p">,</span>
+      <span class="n">requires</span><span class="o">=</span><span class="n">IS_NULL_OR</span><span class="p">(</span><span class="n">IS_IN_DB</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;company.id&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">zero</span><span class="o">=</span><span class="s1">&#39;..&#39;</span><span class="p">)),</span>
+      <span class="n">filter_out</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>这将在 grid 中显示公司名称，而不是公司 ID</p>
+<p>使用这种方法的缺点是，排序和筛选是基于员工表中的公司 id 字段，而不是公司名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">left</span> <span class="pre">join</span></code> 并指定连接表中的字段-在 Grid 实例化的左参数上指定</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">company</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>您可以指定一个标准的 PyDAL 左连接，包括要使用的连接列表。现在公司名称字段可以包含在您的字段列表中，可以点击并排序。</p>
+<p>您还可以指定一个查询，例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>此方法允许您进行排序和筛选，但不允许您像 filter_out 方法那样将要显示的字段组合在一起</p>
+<p>您需要确定哪种方法最适合您的用例。</p>
+</section>
+<section id="grids-with-checkboxes">
+<h2>带有复选框的 Grid<a class="headerlink" href="#grids-with-checkboxes" title="Link to this heading"></a></h2>
+<p>虽然 grid 本身不支持复选框，但您可以使用自定义列添加一列或多列复选框。您还可以添加 helper 逻辑（grid 使用 helpers 生成HTML），将其包装在 <code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code> 中，并添加一个或多个提交按钮。然后，您可以在选择按钮时添加逻辑来处理所选行。例如：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span><span class="n">_name</span><span class="o">=</span><span class="s2">&quot;selected_id&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;manage.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">manage</span><span class="p">():</span>
+
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+   <span class="c1"># if we are displaying a &quot;select&quot; grid page (not a form)</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+      <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+      <span class="c1"># if checkboxes selection was submitted</span>
+      <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+         <span class="c1"># do something with the selected ids</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;you selected&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;selected_id&quot;</span><span class="p">))</span>
+      <span class="c1"># inject a ``&lt;form&gt;`` and a ``submit`` button</span>
+      <span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FORM</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+            <span class="n">DIV</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="s2">&quot;do it!&quot;</span><span class="p">)),</span>
+            <span class="n">_method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="n">_action</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)]</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>请注意上述示例中的  <code class="docutils literal notranslate"><span class="pre">request.POST.get(&quot;selected_id&quot;)</span></code> 可以是单个 id（如果选择了一个）或 id 的列表（如果选择了多个）。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chapter-13.html" class="btn btn-neutral float-left" title="身份验证与授权" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="chapter-15.html" class="btn btn-neutral float-right" title="从 web2py 迁移到 py4web" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2020, BSDv3 License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>语言</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>版本</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>下载</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

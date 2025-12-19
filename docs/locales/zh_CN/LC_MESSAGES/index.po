@@ -1,0 +1,45 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 20:03+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../index.rst:5
+msgid "Contents:"
+msgstr "目录"
+
+#: ../../index.rst:3
+msgid "py4web: the reference Manual"
+msgstr "py4web: 参考手册"
+
+#: ../../index.rst:28
+msgid "Indices and tables"
+msgstr "索引和表格"
+
+#: ../../index.rst:30
+msgid ":ref:`genindex`"
+msgstr ""
+
+#: ../../index.rst:31
+msgid ":ref:`modindex`"
+msgstr ""
+
+#: ../../index.rst:32
+msgid ":ref:`search`"
+msgstr ""
+

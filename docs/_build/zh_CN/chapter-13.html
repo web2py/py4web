@@ -1,0 +1,779 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>身份验证与授权 &mdash; py4web 20251209 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=96e44453"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="表格（Grid）" href="chapter-14.html" />
+    <link rel="prev" title="表单（Forms）" href="chapter-12.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            py4web
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">py4web 是什么？</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">帮助、资源和提示</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">安装和启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">创建一个应用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">夹具（Fixture）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">数据库抽象层（DAL）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL 模板语言</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL 中的助手（helpers）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">国际化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">表单（Forms）</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">身份验证与授权</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication-using-auth">使用 Auth 进行身份验证</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auth-ui">Auth UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-auth-inside-actions">在 actions 中使用 Auth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#two-factor-authentication">双因素身份验证</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-required">two_factor_required</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-send">two_factor_send</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-validate">two_factor_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-tries">two_factor_tries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-plugins">身份验证的插件</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pam">PAM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ldap">LDAP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-google">用于 Google 的 OAuth2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-facebook">用于 Facebook 的 OAuth2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-discord">用于 Discord 的 OAuth2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-api-plugins">Auth API 插件</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-simpletokenplugin">SimpleTokenPlugin 的示例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-jwttokenplugin">JwtTokenPlugin 示例</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-custom-token-plugin">自定义令牌插件示例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#authorization-using-tags">使用 Tags 进行授权</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tags-and-permissions">Tags 和权限</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-tags-objects">多个标签的对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-impersonation">用户模拟</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">表格（Grid）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">从 web2py 迁移到 py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">高级主题和示例</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">身份验证与授权</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-13.rst" class="fa fa-github"> 在 GitHub 上编辑</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="authentication-and-authorization">
+<h1>身份验证与授权<a class="headerlink" href="#authentication-and-authorization" title="Link to this heading"></a></h1>
+<p>强大的身份验证和授权方法对于现代多用户 web 应用程序至关重要。虽然它们经常可以互换使用，但身份验证和授权是独立的过程：</p>
+<ul class="simple">
+<li><p>身份验证，就是确认用户就是他们所说的那个人</p></li>
+<li><p>授权，就是赋予这些用户访问资源的权限</p></li>
+</ul>
+<section id="authentication-using-auth">
+<h2>使用 Auth 进行身份验证<a class="headerlink" href="#authentication-using-auth" title="Link to this heading"></a></h2>
+<p>py4web 附带了一个 <code class="docutils literal notranslate"><span class="pre">Auth</span></code> 对象和一个用于用户身份验证的插件系统。它与相应的 web2py 名称相同、用途相同，但 API 和内部设计非常不同。</p>
+<p>_scaffold 应用程序为其标准用法提供了指导。默认情况下，它使用本地 SQLite 数据库，并允许创建新用户、登录和注销。请注意，如果不进行配置，则必须手动启用新用户（通过访问控制台上登录的链接或直接编辑数据库）。</p>
+<p>要使用 Auth 对象，首先要做的是导入它，并进行实例化、配置和启用。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">Auth</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="c1"># (configure here)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>导入步骤是显而易见的。第二步除了告诉 Auth 对象使用哪个会话对象和使用哪个数据库外，不执行任何操作。Auth 数据存储在会话 <code class="docutils literal notranslate"><span class="pre">session['user']</span></code> 中，如果用户登录，则用户id 存储在会话 <code class="docutils literal notranslate"><span class="pre">session[‘user’][‘id’]</span></code> 中。 <code class="docutils literal notranslate"><span class="pre">db</span></code> 对象用于在 <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表中存储有关用户的持久信息，如果缺少该表，则会创建该表。<code class="docutils literal notranslate"><span class="pre">auth_user</span></code> 表包含以下字段：</p>
+<ul class="simple">
+<li><p>username</p></li>
+<li><p>email</p></li>
+<li><p>password</p></li>
+<li><p>first_name</p></li>
+<li><p>last_name</p></li>
+<li><p>sso_id （用于单点登录，见下文）</p></li>
+<li><p>action_token （用于验证电子邮件、禁用用户和其他任务，另见下文）</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> 会创建和公开下面的 RESTful API ：</p>
+<ul class="simple">
+<li><p>{appname}/auth/api/register (POST)</p></li>
+<li><p>{appname}/auth/api/login (POST)</p></li>
+<li><p>{appname}/auth/api/request_reset_password (POST)</p></li>
+<li><p>{appname}/auth/api/reset_password (POST)</p></li>
+<li><p>{appname}/auth/api/verify_email (GET, POST)</p></li>
+<li><p>{appname}/auth/api/logout (GET, POST) (+)</p></li>
+<li><p>{appname}/auth/api/profile (GET, POST) (+)</p></li>
+<li><p>{appname}/auth/api/change_password (POST) (+)</p></li>
+<li><p>{appname}/auth/api/change_email (POST) (+)</p></li>
+</ul>
+<p>标有（+）的需要登录用户。</p>
+<section id="auth-ui">
+<h3>Auth UI<a class="headerlink" href="#auth-ui" title="Link to this heading"></a></h3>
+<p>您可以使用上述 API 创建自己的 web UI 来登录用户，但 py4web 提供了一个示例，在以下文件中实现：</p>
+<ul class="simple">
+<li><p>_scaffold/templates/auth.html</p></li>
+<li><p>_scaffold/templates/layout.html</p></li>
+</ul>
+<p>关键部分位于 <code class="docutils literal notranslate"><span class="pre">layout.html</span></code> 中，其中（使用 no.css 框架）定义了菜单操作：</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos"> 2</span>   [[if globals().get(&#39;user&#39;):]]
+<span class="linenos"> 3</span>   <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos"> 4</span>   <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-link is-primary&quot;</span><span class="p">&gt;</span>
+<span class="linenos"> 5</span>      [[=globals().get(&#39;user&#39;,{}).get(&#39;email&#39;)]]
+<span class="linenos"> 6</span>   <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="linenos"> 7</span>   <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos"> 8</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/profile&#39;)]]&quot;</span><span class="p">&gt;</span>Edit Profile<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos"> 9</span>      [[if &#39;change_password&#39; in globals().get(&#39;actions&#39;,{}).get(&#39;allowed_actions&#39;,{}):]]
+<span class="linenos">10</span>         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/change_password&#39;)]]&quot;</span><span class="p">&gt;</span>Change Password<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">11</span>      [[pass]]
+<span class="linenos">12</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/logout&#39;)]]&quot;</span><span class="p">&gt;</span>Logout<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">13</span>   <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">14</span>   <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">15</span>   [[else:]]
+<span class="linenos">16</span>   <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">17</span>   Login
+<span class="linenos">18</span>   <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">19</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/register&#39;)]]&quot;</span><span class="p">&gt;</span>Sign up<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">20</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/login&#39;)]]&quot;</span><span class="p">&gt;</span>Log in<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">21</span>   <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">22</span>   <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">23</span>   [[pass]]
+<span class="linenos">24</span><span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>菜单是动态的：在第 2 行检查用户是否已经定义（即用户是否已经登录）。在用户登录后，电子邮件显示在顶部菜单中，以及菜单选项 <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">Profile</span></code> 、 <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Password</span></code> （可选）和 <code class="docutils literal notranslate"><span class="pre">Logout</span></code> 。相反，如果用户尚未登录，则从第 15 行开始，只允许使用相应的菜单选项： <code class="docutils literal notranslate"><span class="pre">Sign</span> <span class="pre">up</span></code> 和 <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">in</span></code> 。</p>
+<p>然后，每个菜单选项都会将用户重定向到相应的标准 URL ，这反过来会激活对应的 Auth 操作。</p>
+</section>
+<section id="using-auth-inside-actions">
+<h3>在 actions 中使用 Auth<a class="headerlink" href="#using-auth-inside-actions" title="Link to this heading"></a></h3>
+<p>在 action 中使用 Auth 对象有两种方法。</p>
+<p>第一种，不强制登录。使用 <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth)</span></code> ，我们告诉 py4web ，此操作应该包含有关用户的信息，并尝试解析用户会话中的信息。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span> <span class="k">else</span> <span class="s1">&#39;not logged in&#39;</span>
+</pre></div>
+</div>
+<p>第二种，在需要时会强制登录：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里 <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth.user)</span></code> 告诉 py4web ，此操作需要登录的用户，如果没有用户登录，则应重定向到登录页面。</p>
+</section>
+<section id="two-factor-authentication">
+<h3>双因素身份验证<a class="headerlink" href="#two-factor-authentication" title="Link to this heading"></a></h3>
+<p>双因素身份验证（或两步验证）是一种提高身份验证安全性的方法。激活后，登录过程中会添加一个额外的步骤。在第一步中，用户将看到标准的用户名/密码表单。如果他们通过提交正确的用户名和密码成功通过了此步验证，并且为用户启用了双因素身份验证，服务器将在他们登录之前显示第二个表单。</p>
+<p>有一些 Auth 设置可用于控制双因素身份验证的工作方式。</p>
+<p>可以在 Auth 实例化时指定以下内容：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code></p></li>
+</ul>
+<section id="two-factor-required">
+<h4>two_factor_required<a class="headerlink" href="#two-factor-required" title="Link to this heading"></a></h4>
+<p>当您将方法名称传递给 <code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> 参数时，您是在告诉 py4web 调用该方法，以确定是否应该使用或绕过双因素身份验证。如果您的方法返回 True ，则此登录需要双因素身份验证。如果返回 False ，则此登录将绕过双因素身份验证。</p>
+<p><code class="docutils literal notranslate"><span class="pre">two_factor_required</span></code> 方法的示例</p>
+<p>此示例显示了如何允许特定网络上的用户。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_outside_network</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ipaddress</span>
+
+    <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;10.10.0.0/22&quot;</span><span class="p">]</span>
+
+    <span class="n">ip_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="nb">range</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
+        <span class="n">ip_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Network</span><span class="p">(</span><span class="nb">range</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Address</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ip_list</span><span class="p">:</span>
+        <span class="c1">#  if the client address is in the network address list, then do NOT require MFA</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-send">
+<h4>two_factor_send<a class="headerlink" href="#two-factor-send" title="Link to this heading"></a></h4>
+<p>当双因素身份验证处于活动状态时，py4web 可以生成一个 6 位代码（使用 random.randint ），并可以将其发送给用户。如何发送此代码取决于您。Auth 类的``two_factor_send`` 参数允许您指定将双因素代码发送给用户的方法。</p>
+<p>此示例显示了如何使用双因素代码发送电子邮件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+            <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
+            <span class="n">subject</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Two factor login verification code&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;You&#39;re verification code is </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;from_address@youremail.com&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">code</span>
+</pre></div>
+</div>
+<p>请注意，此方法接受两个参数：当前用户和要发送的代码。还要注意，此方法可以覆盖代码并返回一个新的代码。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_required</span> <span class="o">=</span> <span class="n">user_outside_network</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_send</span> <span class="o">=</span> <span class="n">send_two_factor_email</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-validate">
+<h4>two_factor_validate<a class="headerlink" href="#two-factor-validate" title="Link to this heading"></a></h4>
+<p>默认情况下，py4web 将通过比较用户输入的代码与使用 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> 生成和发送的代码来验证双因素表单中的用户输入。然而，有时定义用户输入代码的自定义验证可能是有用的。例如，如果要使用 TOTP（或基于时间的一次性密码）作为双因素身份验证方法，验证需要将用户输入的代码与服务器端同时生成的值进行比较。因此，在显示表单时（例如使用 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> 方法）提前生成该值是不够的，因为到用户提交表单时，当前有效值可能已经不同。相反，应在验证用户提交的表单时生成此值。</p>
+<p>为了完成这种自定义验证，可以使用 <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> 方法。这需要两个参数：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>user ：当前用户</p></li>
+<li><p>code ：用户在双因素身份验证表单中输入的代码</p></li>
+</ul>
+</div></blockquote>
+<p>此方法的主要用例是验证基于时间的密码。</p>
+<p>此示例显示了如何验证基于时间的双因素代码</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_code</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="c1"># get the correct code from an external function</span>
+      <span class="n">correct_code</span> <span class="o">=</span> <span class="n">generate_time_based_code</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+   <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="c1"># return None to indicate that validation could not be performed</span>
+      <span class="k">return</span> <span class="kc">None</span>
+
+   <span class="c1"># compare the value entered in the auth form with the correct code</span>
+   <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="n">correct_code</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">True</span>
+   <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">validate_code</span></code> 方法必须返回以下三个值之一：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> - 如果验证成功</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code> - 如果严重失败</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - 如果因任何原因无法验证</p></li>
+</ul>
+<p>请注意，如果定义了此方法，则总会调用它来验证双因素身份验证表单。由您决定它执行何种验证。如果返回值为 <code class="docutils literal notranslate"><span class="pre">True</span></code> ，则用户输入将被视为有效。如果返回值为 <code class="docutils literal notranslate"><span class="pre">False</span></code> ，则用户输入将被视为无效而被拒绝，尝试次数将减少一次，并要求用户重试。如果返回值为 <code class="docutils literal notranslate"><span class="pre">None</span></code> ，则将根据使用 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> 方法生成的代码检查用户输入，最终结果将取决于该比较。在这种情况下，如果未定义 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> 方法，则身份验证将失败，因此不向用户发送代码。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_validate</span> <span class="o">=</span> <span class="n">validate_code</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-tries">
+<h4>two_factor_tries<a class="headerlink" href="#two-factor-tries" title="Link to this heading"></a></h4>
+<p>默认情况下，用户有 3 次机会尝试双因素身份验证。您可以使用下面的设置覆盖此内容：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_tries</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>完成所有设置后，双因素身份验证的流程为：</p>
+<ul class="simple">
+<li><p>显示登录页面</p></li>
+<li><dl class="simple">
+<dt>成功登录后，用户通过 two_factor_required 验证流程</dt><dd><ul>
+<li><p>定向到 py4web 的 auth/two_factor 处&quot;</p></li>
+<li><dl class="simple">
+<dt>如果定义了 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> ：</dt><dd><ul>
+<li><p>生成 6 位的数字验证码</p></li>
+<li><p>调用 <code class="docutils literal notranslate"><span class="pre">two_factor_send</span></code> 将验证码发送给用户</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>显示验证页面，用户可以在其中输入他们的代码</p></li>
+<li><p>如果定义了 <code class="docutils literal notranslate"><span class="pre">two_factor_validate</span></code> 方法，则调用它来验证用户输入的代码</p></li>
+<li><p>验证成功后，将用户带到传递给登录页面的 _next_url</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>重要！如果您在应用程序中过滤了 <code class="docutils literal notranslate"><span class="pre">ALLOWED_ACTIONS</span></code> ，请确保将 &quot;two_factor&quot; 操作列入白名单，以免阻止双因素 API。</p>
+</section>
+</section>
+<section id="auth-plugins">
+<h3>身份验证的插件<a class="headerlink" href="#auth-plugins" title="Link to this heading"></a></h3>
+<p>插件在 “py4web/utils/auth_plugins” 中定义，它们具有层次结构。有些是排他性的，有些不是。例如，默认情况下，LDAP、PAM 和 SAML 是排他的（开发人员必须选择一个）。默认情况下， Google、Facebook 和 Twitter OAuth 不是排他性的（开发人员可以全部选择，用户可以使用 UI 进行选择）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;auth/&gt;</span></code> 组件将根据安装的插件的要求自动适应显示登录表单。</p>
+<p>在 _scaffold/settings.py 和 _scaffold/common.py 文件中，您可以看到支持的插件的默认值设置。</p>
+<section id="pam">
+<h4>PAM<a class="headerlink" href="#pam" title="Link to this heading"></a></h4>
+<p>配置 PAM 最简单：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.pam_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">PamPlugin</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">PamPlugin</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>与所有插件一样，此插件必须导入并注册。此插件的构造函数不需要任何参数（其他插件需要）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">auth.register_plugin(...)</span></code> <strong>必须</strong> 位于 <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> 之前，因为在挂载所需的插件之前公开 API 是没有意义的。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>根据设计，只有当 py4web 由 root 运行时，使用本地用户的 PAM 身份验证才能正常工作。否则，您只能对运行 py4web 进程的特定用户进行身份验证。</p>
+</div>
+</section>
+<section id="ldap">
+<h4>LDAP<a class="headerlink" href="#ldap" title="Link to this heading"></a></h4>
+<p>这是一种常见的身份验证方法，特别是在企业中使用 Microsoft Active Directory。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.ldap_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">LDAPPlugin</span>
+<span class="n">LDAP_SETTING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;ad&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;server&#39;</span><span class="p">:</span> <span class="s1">&#39;my.domain.controller&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;base_dn&#39;</span><span class="p">:</span> <span class="s1">&#39;cn=Users,dc=domain,dc=com&#39;</span>
+<span class="p">}</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">LDAPPlugin</span><span class="p">(</span><span class="o">**</span><span class="n">LDAP_SETTINGS</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>它需要 python-lda 模块。在 Ubuntu 上，您还应该使用 <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libldap2-dev</span> <span class="pre">libsasl2-dev</span></code> 提前安装一些开发人员库。</p>
+</div>
+</section>
+<section id="oauth2-with-google">
+<h4>用于 Google 的 OAuth2<a class="headerlink" href="#oauth2-with-google" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2google</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Google</span> <span class="c1"># TESTED</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Google</span><span class="p">(</span>
+    <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
+    <span class="n">client_secret</span><span class="o">=</span><span class="n">CLIENT_SECRET</span><span class="p">,</span>
+    <span class="n">callback_url</span><span class="o">=</span><span class="s1">&#39;auth/plugin/oauth2google/callback&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>客户 id 和客户密钥必须由 Google 提供。</p>
+<p>默认情况下，Google OAuth 将用户的名字、姓氏和电子邮件存储在 auth_user 表中，但不存储配置文件图片。您只需在 common.py 中添加几行代码即可包含个人资料图片 URL 。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2google</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Google</span>  <span class="c1"># TESTED</span>
+<span class="o">...</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">define_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">extra_auth_user_fields</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;profile_picture&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">readable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">writable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="o">...</span>
+<span class="n">OAuth2Google</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="s1">&#39;profile_picture&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;picture&#39;</span>
+</pre></div>
+</div>
+<p>一旦配置文件图片 URL 存储在 auth_user 中，您就可以轻松地将其与其他用户信息一起使用。</p>
+</section>
+<section id="oauth2-with-facebook">
+<h4>用于 Facebook 的 OAuth2<a class="headerlink" href="#oauth2-with-facebook" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2facebook</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Facebook</span> <span class="c1"># UNTESTED</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Facebook</span><span class="p">(</span>
+    <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
+    <span class="n">client_secret</span><span class="o">=</span><span class="n">CLIENT_SECRET</span><span class="p">,</span>
+    <span class="n">callback_url</span><span class="o">=</span><span class="s1">&#39;auth/plugin/oauth2google/callback&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>客户 id 和客户密钥必须由 Facebook 提供。</p>
+</section>
+<section id="oauth2-with-discord">
+<h4>用于 Discord 的 OAuth2<a class="headerlink" href="#oauth2-with-discord" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth_plugins.oauth2discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2Discord</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Discord</span><span class="p">(</span>
+    <span class="n">client_id</span><span class="o">=</span><span class="n">DISCORD_CLIENT_ID</span><span class="p">,</span>
+    <span class="n">client_secret</span><span class="o">=</span><span class="n">DISCORD_CLIENT_SECRET</span><span class="p">,</span>
+    <span class="n">callback_url</span><span class="o">=</span><span class="s2">&quot;auth/plugin/oauth2discord/callback&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>要获取 Discord 客户端 ID 和密钥，请在以下位置创建应用程序 <a class="reference external" href="https://discord.com/developers/applications">https://discord.com/developers/applications</a> 。您还必须在创建的应用程序中以h <code class="docutils literal notranslate"><span class="pre">http(s)://&lt;your</span> <span class="pre">host&gt;/&lt;your</span> <span class="pre">app</span> <span class="pre">name&gt;/auth/plugin/oauth2discord/callback</span></code> 的形式注册您的 OAuth2 重定向 URI 。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>由于 Discord 用户没有名字/姓氏的概念，因此 auth 表中的用户将包含 Discord 的用户名作为名字，discriminator 作为姓氏。</p>
+</div>
+</section>
+</section>
+<section id="auth-api-plugins">
+<h3>Auth API 插件<a class="headerlink" href="#auth-api-plugins" title="Link to this heading"></a></h3>
+<p>有两种类型的 web API，一种是单页 web 应用程序，可由浏览器调用的，例如由调用的，另一种是设计为由不同类型的程序调用的。两者都可能需要支持身份验证。这种区分很重要，因为在浏览器调用的情况下，不需要管理任何身份验证令牌，因为浏览器已经提供了 Cookie ，而py4web 使用 Cookie 来处理 seesions 。如果操作浏览器的用户是已经登录，那么当调用 API 时，相应的 action 就知道用户是谁。不需要额外的逻辑。在这种情况下，不需要任何类型的附加 API 令牌，这只会削弱基于 cookie 的会话令牌所提供的安全性。</p>
+<p>当 API 被不同的程序（例如脚本）访问时，情况就不同了。没有会话，我们不想每次都向用户询问密码。在这种情况下，验证用户的标准方法是向用户颁发 API 令牌，也就是字符串，当与 API 请求一起呈现时，该令牌允许 py4web 识别调用者的身份。这也被称为 &quot;Authentication bearer&quot; 。</p>
+<p>Py4web 提供了一个插件系统，为您提供了很大的灵活性，但它也提供了两个在大多数情况下都足够的实用插件。这两个插件名为：SimpleTokenPlugin 和 JwtTokenPlugin 。在大多数情况下，建议使用两者中的第一种。</p>
+<p>所有插件的共同点：</p>
+<ul class="simple">
+<li><p>它们为用户提供了一种创建字符串令牌的方法。</p></li>
+<li><p>当对 &#64;action.uses(auth) 或 &#64;action.users(auth.user) 的操作发出 HTTP(S) 请求时，如果令牌存在，py4web 将识别用户，就像用户登录一样。</p></li>
+</ul>
+<p>SimpleTokenPlugin 和 JwtTokenPlugin 的共同点：</p>
+<ul class="simple">
+<li><p>当发出 HTTP(S) 请求时，令牌必须放在 “Authentication” 的标头中。如果你想以其他方式传递它，需要你创建自己的插件。</p></li>
+<li><p>每个用户都可以根据需要创建任意数量的令牌。</p></li>
+<li><p>如果应用程序逻辑需要/允许，用户可以为其他用户创建令牌。</p></li>
+</ul>
+<p>SimpleTokenPlugin 的独特功能：</p>
+<ul class="simple">
+<li><p>令牌是一个 UUID</p></li>
+<li><p>令牌可以在服务器端进行管理（创建、删除、过期、更改过期）。</p></li>
+<li><p>当前令牌存储在数据库表中。</p></li>
+<li><p>默认表将令牌与所有者和文本描述相关联。然而，用户可以提供自己的表，并将任何所需的元数据添加到令牌中，应用程序可以检索这些令牌，以区分同一用户的不同令牌。这是通过向表中添加字段来实现的。</p></li>
+<li><p>在幕后，令牌的查找需要数据库查询。</p></li>
+</ul>
+<p>JvtokenPlugin 的独特功能：</p>
+<ul class="simple">
+<li><p>令牌是一个加密和数字签名的字典，用于存储 user_id 和过期时间。</p></li>
+<li><p>令牌的作者可以在创建时将任何元数据添加到令牌中。</p></li>
+<li><p>令牌不存储在服务器端的任何位置，也没有对应的数据库表。</p></li>
+<li><p>可以创建令牌（有一个函数可以这样做），但不能对其进行管理。服务器无法使令牌过期或更改过期时间。这将需要根据数据库验证令牌，而这正是 JwtTokenPlugin 试图避免的。</p></li>
+<li><p>使令牌过期的唯一方法是更改用于验证的服务器端密钥，这样当令牌过期时，所有令牌都会过期。</p></li>
+</ul>
+<p>SimpleTokenPlugin 是大多数应用程序的推荐令牌类型。JwtTokenPlugin 在过期时间较短且提前知道的情况下以及在避免数据库查找非常重要的情况下是有价值的，例如对于非常快速的 action ，并且为了避免数据库访问而愿意牺牲一点安全性（服务器端令牌过期能力）。</p>
+<section id="example-of-simpletokenplugin">
+<h4>SimpleTokenPlugin 的示例<a class="headerlink" href="#example-of-simpletokenplugin" title="Link to this heading"></a></h4>
+<p>在 common.py 中添加:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<span class="n">simple_token_plugin</span> <span class="o">=</span> <span class="n">SimpleTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simple_token_plugin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>您可以选择使用参数 <code class="docutils literal notranslate"><span class="pre">table=db.mytable</span></code> 来自定义表。否则，它将创建并使用一个名为 “auth_simple_token” 的存储令牌的表。</p>
+<p>在 controllers.py 中添加</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_api</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>用户可通过以下方式访问此 action ：若使用浏览器且已登录，无需令牌（token）即可访问；若通过 API 访问，则需提供令牌。</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://127.0.0.1:8000/test1/test_api<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer {token}&quot;</span>
+</pre></div>
+</div>
+<p>为了创建和管理令牌，您可以使用 grid 。在 controllers.py 中</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;tokens&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_</span><span class="p">():</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_simple_token</span><span class="o">.</span><span class="n">user_id</span><span class="o">==</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-jwttokenplugin">
+<h4>JwtTokenPlugin 示例<a class="headerlink" href="#example-of-jwttokenplugin" title="Link to this heading"></a></h4>
+<p>在 common.py 中添加:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTokenPlugin</span>
+<span class="n">jwt_token_plugin</span> <span class="o">=</span> <span class="n">JwtTokenPlugin</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jwt_token_plugin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在 controllers.py 中，它的工作原理与 SimpleTokenPlugin 相同：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;test_api&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_api</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;hello&quot;</span><span class="p">:</span> <span class="s2">&quot;world&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>令牌也使用与上例中相同的标头传递：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://127.0.0.1:8000/test1/test_api<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer {token}&quot;</span>
+</pre></div>
+</div>
+<p>虽然你不能管理令牌，但你仍然需要一种创建它们的方法。例如，您可以创建一个 action ，当调用它时，它会给您一个新的令牌。在 controllers.py 中添加</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;make_token&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;generic.html&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_token</span><span class="p">():</span>
+     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">jwt_token_plugin</span><span class="o">.</span><span class="n">make</span><span class="p">(</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">current_user</span><span class="p">,</span>
+        <span class="n">expiration</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">10</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-custom-token-plugin">
+<h4>自定义令牌插件示例<a class="headerlink" href="#example-of-custom-token-plugin" title="Link to this heading"></a></h4>
+<p>令牌插件只是一个类，在收到请求后，它会返回一个关联的用户。例如，这里有一个愚蠢且不安全的插件，只要提供 “Authentication” 标头，它就会授权每个人作为用户 1</p>
+<p>从 py4web 导入 request</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCustomTokenPlugin</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authentication&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">authorization</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">token_plugins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyCustomTokenPlugin</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="authorization-using-tags">
+<h2>使用 Tags 进行授权<a class="headerlink" href="#authorization-using-tags" title="Link to this heading"></a></h2>
+<p>如前所述，授权是验证用户可以访问哪些特定应用程序、文件和数据的过程。这是在py4web 中使用 <code class="docutils literal notranslate"><span class="pre">Tags</span></code> 完成的，我们已经在 DAL 章节中的 <a class="reference internal" href="chapter-07.html#tagging-records"><span class="std std-ref">标记记录（Tagging records）</span></a> （标记记录）部分了解了。</p>
+<section id="tags-and-permissions">
+<h3>Tags 和权限<a class="headerlink" href="#tags-and-permissions" title="Link to this heading"></a></h3>
+<p>Py4web 提供了一种通用的标记机制，允许开发人员标记任何表的任何记录，检查标记的存在，以及检查包含标记的记录。组成员资格可以被认为是我们应用于用户的一种标签。权限也可以是标签。开发人员可以在标记系统之上自由创建自己的逻辑。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>Py4web 没有 web2p y那样的组概念。经验表明，虽然这种机制很强大，但它存在两个问题：对于大多数应用程序来说，它过于强大，对于非常复杂的应用程序来说不够灵活。</p>
+</div>
+<p>要使用标记系统，您首先需要从 <code class="docutils literal notranslate"><span class="pre">pydal.tools</span></code> 导入 Tags 模块。然后创建一个Tags 对象来标记表：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydal.tools.tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tags</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">,</span> <span class="s1">&#39;groups&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>tail_name 参数是可选的，如果未指定，将使用默认值 'default' 。如果您在数据库级别查看，里面创建了一个新表，其名称等于 <code class="docutils literal notranslate"><span class="pre">tagged_db.table</span> <span class="pre">+</span> <span class="pre">'_tag_'</span> <span class="pre">+</span> <span class="pre">tail_name</span></code> ，在本例中为 <code class="docutils literal notranslate"><span class="pre">auth_user_tag_groups</span></code> ：</p>
+<img alt="_images/tags_db.png" src="_images/tags_db.png" />
+<p>然后，您可以向表的记录添加一个或多个标记，也可以删除现有的标记：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;manager&#39;</span><span class="p">)</span>
+<span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;dancer&#39;</span><span class="p">,</span> <span class="s1">&#39;teacher&#39;</span><span class="p">])</span>
+<span class="n">groups</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;dancer&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>在 <code class="docutils literal notranslate"><span class="pre">auth_user_tag_groups</span></code> 上，这将生成两条记录，其中不同的组分配给同一个 user.id（“Record ID” 字段）：</p>
+<img alt="_images/tags2.png" src="_images/tags2.png" />
+<p>标签开头或结尾的斜线是可选的。所有其他字符在同等条件下都是允许的。</p>
+<p>一个常见的用例是 <strong>基于组的访问控制</strong> 。在这里，开发人员首先检查用户是否是 <code class="docutils literal notranslate"><span class="pre">'manager'</span></code> 组的成员，如果用户不是经理（或没有人登录），py4web 就会重定向到 <code class="docutils literal notranslate"><span class="pre">'not</span> <span class="pre">authorized</span> <span class="pre">url'</span></code> 。否则，如果用户属于正确的组， py4web 就显示 “hello manager” ：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;manager&#39;</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]):</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;not_authorized&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;hello manager&#39;</span>
+</pre></div>
+</div>
+<p>在这里，开发人员查询数据库中具有所需标签的所有记录：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;find_by_tag/</span><span class="si">{group_name}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">find</span><span class="p">([</span><span class="n">group_name</span><span class="p">]))</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">first_name</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">last_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">users</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>我们已经在 :ref:<code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">Condition</span> <span class="pre">fixture</span></code> 上看到了一个简单的 <code class="docutils literal notranslate"><span class="pre">requires_membership</span></code> 夹具。它支持以下语法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">requires_membership</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prerequisites__</span> <span class="o">=</span> <span class="p">[</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">]</span> <span class="c1"># you must have a user before you can check</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span>  <span class="o">=</span> <span class="n">group</span> <span class="c1"># store the group when action defined</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="c1"># will be called if the action is called</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span> <span class="c1"># check and do something</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">requires_membership</span><span class="p">(</span><span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;hello teacher&#39;</span>
+</pre></div>
+</div>
+<p>作为留给你的练习，我们将创建夹具 <code class="docutils literal notranslate"><span class="pre">has_membership</span></code> 以启用以下语法：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">has_membership</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;hello teacher&#39;</span>
+</pre></div>
+</div>
+<p>重要提示： <code class="docutils literal notranslate"><span class="pre">Tags</span></code> 会自动分层。例如，如果用户有一个组标签 ‘teacher/high-school/physics’ ，那么以下所有搜索都将返回该用户：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher/high-school/physics')</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher/high-school')</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher')</span></code></p></li>
+</ul>
+<p>这意味着斜线对标签具有特殊含义。</p>
+</section>
+<section id="multiple-tags-objects">
+<h3>多个标签的对象<a class="headerlink" href="#multiple-tags-objects" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>一个表可以有多个关联的 <code class="docutils literal notranslate"><span class="pre">Tags</span></code> 对象。这里的 “groups” 这个名字完全是任意的，但有特定的语义含义。不同的 <code class="docutils literal notranslate"><span class="pre">Tags</span></code> 对象彼此独立。它们的使用上限，取决于你的创造力。</p>
+</div>
+<p>例如，您可以创建一个表 <code class="docutils literal notranslate"><span class="pre">auth_group</span></code> ：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;auth_group&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>和两个与其关联的标签</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+<span class="n">permissions</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_groups</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>然后在 <code class="docutils literal notranslate"><span class="pre">auth_group</span></code> 中创建一个 “zapper” 记录，给它一个权限，并将一个用户设置为该组的成员：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">zap_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_group</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;zapper&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;can zap database&#39;</span><span class="p">)</span>
+<span class="n">permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">zap_id</span><span class="p">,</span> <span class="s1">&#39;zap database&#39;</span><span class="p">)</span>
+<span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;zapper&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>您可以通过显式加入来检查用户权限：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;zap&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zap</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;zap database&#39;</span>
+    <span class="k">if</span> <span class="n">db</span><span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">permission</span><span class="p">))(</span>
+          <span class="n">db</span><span class="o">.</span><span class="n">auth_group</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">belongs</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+          <span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+        <span class="c1"># zap db</span>
+        <span class="k">return</span> <span class="s1">&#39;database zapped&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;you do not belong to any group with permission to zap db&#39;</span>
+</pre></div>
+</div>
+<p>请注意， <code class="docutils literal notranslate"><span class="pre">permissions.find(permission)</span></code> 会生成一个查询，用于查找所有拥有该权限（permission）的用户组，随后我们会进一步筛选出当前用户所属的那些用户组。我们对筛选后的用户组进行计数，若能找到任何一个（即计数大于 0），则说明该用户拥有此权限。</p>
+</section>
+<section id="user-impersonation">
+<h3>用户模拟<a class="headerlink" href="#user-impersonation" title="Link to this heading"></a></h3>
+<p>Auth 提供 API，允许您模拟其他用户。下面是一个开始模拟和停止模拟另一个用户的 action 示例。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;impersonate/{user_id:int}&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">()</span> <span class="ow">and</span>
+        <span class="n">user_id</span> <span class="ow">and</span>
+        <span class="n">user_id</span> <span class="o">!=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span> <span class="ow">and</span>
+        <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">id</span><span class="o">==</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+
+ <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;stop_impersonating&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
+ <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">stop_impersonating</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">auth</span> <span class="ow">and</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">():</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">stop_impersonating</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+    <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chapter-12.html" class="btn btn-neutral float-left" title="表单（Forms）" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="chapter-14.html" class="btn btn-neutral float-right" title="表格（Grid）" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2020, BSDv3 License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 20251209
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>语言</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+          
+          
+          <dd><a href="../zh_CN/index.html">zh_CN</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>版本</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>下载</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

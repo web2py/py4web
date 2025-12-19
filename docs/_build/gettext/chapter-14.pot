@@ -1,0 +1,562 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20251209\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 20:25+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../chapter-14.rst:3
+msgid "Grid"
+msgstr ""
+
+#: ../../chapter-14.rst:5
+msgid "py4web comes with a Grid object providing grid and CRUD (create, update and delete) capabilities. This allows you to quickly and safely provide an interface to your data. Since it's also highly customizable, it's the corner stone of most py4web's applications."
+msgstr ""
+
+#: ../../chapter-14.rst:11
+msgid "Key features"
+msgstr ""
+
+#: ../../chapter-14.rst:13
+msgid "Full CRUD with Delete Confirmation"
+msgstr ""
+
+#: ../../chapter-14.rst:14
+msgid "Click column heads for sorting - click again for DESC"
+msgstr ""
+
+#: ../../chapter-14.rst:15
+msgid "Pagination control"
+msgstr ""
+
+#: ../../chapter-14.rst:16
+msgid "Built in Search (can use search_queries OR search_form)"
+msgstr ""
+
+#: ../../chapter-14.rst:17
+msgid "Action Buttons - with or without text"
+msgstr ""
+
+#: ../../chapter-14.rst:18
+msgid "Pre and Post Action (add your own buttons to each row)"
+msgstr ""
+
+#: ../../chapter-14.rst:19
+msgid "Grid dates in local format"
+msgstr ""
+
+#: ../../chapter-14.rst:20
+msgid "Default formatting by type plus user overrides"
+msgstr ""
+
+#: ../../chapter-14.rst:24
+msgid "There is an excellent grid tutorial made by Jim Steil on https://github.com/jpsteil/grid_tutorial. You're strongly advised to check it for any doubt and for finding many precious examples, hints & tips."
+msgstr ""
+
+#: ../../chapter-14.rst:30
+msgid "Basic grid example"
+msgstr ""
+
+#: ../../chapter-14.rst:32
+msgid "In this simple example we will make a grid over the superhero table."
+msgstr ""
+
+#: ../../chapter-14.rst:34
+msgid "Create a new minimal app called ``grid``. Change it with the following content."
+msgstr ""
+
+#: ../../chapter-14.rst:77
+msgid "Add a new file templates/grid.html with this basic content:"
+msgstr ""
+
+#: ../../chapter-14.rst:83
+msgid "Then restart py4web. If you browse to http://127.0.0.1:8000/grid/index you'll get this result:"
+msgstr ""
+
+#: ../../chapter-14.rst:89
+msgid "Its layout is quite minimal, but it's perfectly usable."
+msgstr ""
+
+#: ../../chapter-14.rst:91
+msgid "The main problem is that by default the **no.css** stylesheet is used, see `here <https://github.com/mdipierro/no.css/>`__. But we've not loaded it! Change the file templates/grid.html with this content:"
+msgstr ""
+
+#: ../../chapter-14.rst:109
+#: ../../chapter-14.rst:146
+msgid "Then refresh the page."
+msgstr ""
+
+#: ../../chapter-14.rst:115
+msgid "This is better now, with proper icons for Details, Edit and Delete actions."
+msgstr ""
+
+#: ../../chapter-14.rst:117
+msgid "We can also think about using the **bulma.css**, see `here <https://bulma.io/>`__. In this case you need to change the grid object on __init__.py to:"
+msgstr ""
+
+#: ../../chapter-14.rst:127
+msgid "Notice that in this case you need to import the corresponding python modules in advance (we've already done it on line 4 and 5 above). If you use the default no.css style instead, you don't need to manually import its style modules (and you even don't need the formstyle and grid_class_style parameters)."
+msgstr ""
+
+#: ../../chapter-14.rst:132
+msgid "You also have to change the file templates/grid.html with this content:"
+msgstr ""
+
+#: ../../chapter-14.rst:151
+msgid "This is much better, isn't it?"
+msgstr ""
+
+#: ../../chapter-14.rst:153
+msgid "Bootstrap4 and Bootstrap5 also have styles available, and you can change the icon style between Fontawesome, Bootstrap Icons, and a basic IconStyle you can write your own CSS for. More info in the section: :ref:`Customizing style`"
+msgstr ""
+
+#: ../../chapter-14.rst:159
+msgid "These are just minimal examples for showing how ``grid`` works internally. Normally you should start from a copy of the standard ``_scaffold`` app, with all the Session and Authentication stuff already defined. Also, you should follow the standard rules for code, like placing the db definition inside models.py and so on. Using standards will make your code simpler, safer and more maintainable."
+msgstr ""
+
+#: ../../chapter-14.rst:166
+msgid "Also, do not use grid objects directly on the root action of an app, because it does not add the 'index' route. So, in this example if you browse to http://127.0.0.1:8000/grid the main page is displayed fine but any contained action will lead to a non existent page."
+msgstr ""
+
+#: ../../chapter-14.rst:171
+msgid "In the :ref:`Advanced topics and examples` chapter you can find more examples, including a master/detail grid example written with **htmx**. And don't forget Jim Steil's detailed tutorial on https://github.com/jpsteil/grid_tutorial."
+msgstr ""
+
+#: ../../chapter-14.rst:177
+msgid "The Grid object"
+msgstr ""
+
+#: ../../chapter-14.rst:211
+msgid "query: pydal query to be processed"
+msgstr ""
+
+#: ../../chapter-14.rst:212
+msgid "search_form: py4web FORM to be included as the search form. If search_form is passed in then the developer is responsible for applying the filter to the query passed in. This differs from search_queries."
+msgstr ""
+
+#: ../../chapter-14.rst:213
+msgid "search_queries: list of query lists to use to build the search form. Ignored if search_form is used."
+msgstr ""
+
+#: ../../chapter-14.rst:214
+msgid "columns: list of fields or columns to display on the list page, see the :ref:`Custom columns` paragraph later. If blank, the table will use all readable fields of the searched table."
+msgstr ""
+
+#: ../../chapter-14.rst:215
+msgid "show_id: show the record id field on list page. Default is None, which enables automatic detection if any field is of type \"id\"."
+msgstr ""
+
+#: ../../chapter-14.rst:216
+msgid "orderby: pydal orderby field or list of fields. Controls the default sort order of the grid."
+msgstr ""
+
+#: ../../chapter-14.rst:217
+msgid "left: if joining other tables, specify the pydal left expression here"
+msgstr ""
+
+#: ../../chapter-14.rst:218
+msgid "groupby: pydal groupby expression. Used to group results in the grid."
+msgstr ""
+
+#: ../../chapter-14.rst:219
+msgid "headings: list of headings to be used for list page - if not provided use the field label"
+msgstr ""
+
+#: ../../chapter-14.rst:220
+msgid "create: Controls whether the grid allows record creation. Can be True (show button), False (hide button), a URL string, or a callable for custom logic."
+msgstr ""
+
+#: ../../chapter-14.rst:221
+msgid "details: Controls whether the grid allows viewing record details. Can be True, False, a URL string, or a callable for custom logic."
+msgstr ""
+
+#: ../../chapter-14.rst:222
+msgid "editable: Controls whether the grid allows editing records. Can be True, False, a URL string, or a callable for custom logic."
+msgstr ""
+
+#: ../../chapter-14.rst:223
+msgid "deletable: Controls whether the grid allows deleting records. Can be True, False, a URL string, or a callable for custom logic."
+msgstr ""
+
+#: ../../chapter-14.rst:224
+msgid "required_fields: list of fields that must be included in the grid's queries and forms. Used to ensure certain fields are always loaded."
+msgstr ""
+
+#: ../../chapter-14.rst:225
+msgid "validation: optional validation function to pass to create and edit forms"
+msgstr ""
+
+#: ../../chapter-14.rst:226
+msgid "pre_action_buttons: list of action_button instances to include before the standard action buttons"
+msgstr ""
+
+#: ../../chapter-14.rst:227
+msgid "post_action_buttons: list of action_button instances to include after the standard action buttons"
+msgstr ""
+
+#: ../../chapter-14.rst:228
+msgid "auto_process: Boolean - whether or not the grid should be processed immediately. If False, developer must call grid.process() once all params are setup."
+msgstr ""
+
+#: ../../chapter-14.rst:229
+msgid "rows_per_page: number of rows to display per page. Default 15"
+msgstr ""
+
+#: ../../chapter-14.rst:230
+msgid "include_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid"
+msgstr ""
+
+#: ../../chapter-14.rst:231
+msgid "search_button_text: text to appear on the submit button on your search form"
+msgstr ""
+
+#: ../../chapter-14.rst:232
+msgid "formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms"
+msgstr ""
+
+#: ../../chapter-14.rst:233
+msgid "grid_class_style: GridClassStyle class used to override defaults for styling your rendered grid. Allows you to specify classes or styles to apply at certain points in the grid"
+msgstr ""
+
+#: ../../chapter-14.rst:234
+msgid "icon_style: default: IconStyleFontawsome. used to get icon css classes. Other options: IconStyle, IconStyleBootstrapIcons"
+msgstr ""
+
+#: ../../chapter-14.rst:235
+msgid "T: optional pluralize object"
+msgstr ""
+
+#: ../../chapter-14.rst:237
+msgid "(*) The parameters ``details``, ``editable`` and ``deletable`` can also take a **callable** that will be passed the current row of the grid. This is useful because you can then turn a button on or off depending on the values in the row. In other words, instead of providing a simple Boolean value you can use an expression like:"
+msgstr ""
+
+#: ../../chapter-14.rst:248
+msgid "See also :ref:`Using callable parameters` later on."
+msgstr ""
+
+#: ../../chapter-14.rst:252
+msgid "Searching and filtering"
+msgstr ""
+
+#: ../../chapter-14.rst:254
+msgid "There are two ways to build a search form:"
+msgstr ""
+
+#: ../../chapter-14.rst:256
+msgid "Provide a search_queries list"
+msgstr ""
+
+#: ../../chapter-14.rst:257
+msgid "Build your own custom search form"
+msgstr ""
+
+#: ../../chapter-14.rst:259
+msgid "build a search form. If more than one search query in the list, it will also generate a dropdown to select which search field to search against"
+msgstr ""
+
+#: ../../chapter-14.rst:263
+msgid "However, if this doesn’t give you enough flexibility you can provide by yourself."
+msgstr ""
+
+#: ../../chapter-14.rst:267
+msgid "CRUD settings"
+msgstr ""
+
+#: ../../chapter-14.rst:269
+msgid "The grid provides CRUD (create, read, update and delete) capabilities utilizing py4web Form. You can turn off CRUD features by setting create/details/editable/deletable during grid instantiation."
+msgstr ""
+
+#: ../../chapter-14.rst:274
+msgid "Additionally, you can provide a separate URL to the create/details/editable/deletable parameters to bypass the auto-generated CRUD pages and handle the detail pages yourself."
+msgstr ""
+
+#: ../../chapter-14.rst:279
+msgid "Custom columns"
+msgstr ""
+
+#: ../../chapter-14.rst:281
+msgid "If the grid does not involve a join but displays results from a single table"
+msgstr ""
+
+#: ../../chapter-14.rst:299
+msgid "Notice in this example the first columns are regular fields, The fifth column has a header \"Web Site\" and consists of URL strings generated from the rows. The last column has a header \"Go To\" and generates actual clickable links using the ``A`` helper. This is the result:"
+msgstr ""
+
+#: ../../chapter-14.rst:306
+msgid "Notice that we've also used the ``deletable`` parameter in order to disable and hide it for Batman only, as explained before."
+msgstr ""
+
+#: ../../chapter-14.rst:311
+msgid "Do not define columns outside of the controller methods that use them, otherwise the structure of the table will change every time the user press the refresh button of the browser!"
+msgstr ""
+
+#: ../../chapter-14.rst:314
+msgid "The reason is that each time the grid displays, it modifies the 'columns' variable (in the grid) by adding the action buttons to it. So, if columns are defined outside of the controller method, it just keeps adding the actions column."
+msgstr ""
+
+#: ../../chapter-14.rst:320
+msgid "Using templates"
+msgstr ""
+
+#: ../../chapter-14.rst:323
+msgid "Display the grid or a CRUD Form"
+msgstr ""
+
+#: ../../chapter-14.rst:329
+msgid "You can customize the CRUD form layout like a normal form (see :ref:`Custom forms`). So you can use the following structure:"
+msgstr ""
+
+#: ../../chapter-14.rst:341
+msgid "But notice that when handling custom form layouts you need to know if you are displaying the grid or a form. Use the following to decide:"
+msgstr ""
+
+#: ../../chapter-14.rst:359
+msgid "Grid 'path' parameter: Old vs New Usage"
+msgstr ""
+
+#: ../../chapter-14.rst:361
+msgid "In previous versions of py4web, the `Grid` object required a `path` parameter in its constructor. This was used to help the grid parse the URL and determine the current action (such as select, edit, details, delete, etc.)."
+msgstr ""
+
+#: ../../chapter-14.rst:363
+msgid "**Old usage example:**"
+msgstr ""
+
+#: ../../chapter-14.rst:373
+msgid "However, starting with py4web 1.20240501 and later, the `path` parameter is no longer needed or supported. The grid now automatically determines the current action and routing from the py4web request context and URL parameters. You should simply omit the `path` argument and use the constructor as follows:"
+msgstr ""
+
+#: ../../chapter-14.rst:375
+msgid "**New usage example:**"
+msgstr ""
+
+#: ../../chapter-14.rst:384
+msgid "This change makes the API simpler and less error-prone. All routing and action handling is now managed by py4web's @action decorator and the request context, so you do not need to manually pass the path."
+msgstr ""
+
+#: ../../chapter-14.rst:386
+msgid "If you are updating older code, simply remove the `path` argument from your Grid instantiations."
+msgstr ""
+
+#: ../../chapter-14.rst:389
+msgid "Grid mode parameter (path replacement)"
+msgstr ""
+
+#: ../../chapter-14.rst:391
+msgid "The `Grid` object uses a `mode` variable, which is passed via the `request.query` object in py4web. This variable determines what kind of page or form the grid will render. Possible values for `mode` are:"
+msgstr ""
+
+#: ../../chapter-14.rst:393
+msgid "`select`: Shows the main grid listing all records (default if not specified)."
+msgstr ""
+
+#: ../../chapter-14.rst:394
+msgid "`new`: Shows a form to create a new record."
+msgstr ""
+
+#: ../../chapter-14.rst:395
+msgid "`details`: Shows a read-only form with details of a single record."
+msgstr ""
+
+#: ../../chapter-14.rst:396
+msgid "`edit`: Shows a form to edit an existing record."
+msgstr ""
+
+#: ../../chapter-14.rst:397
+msgid "`delete`: Shows a confirmation form to delete a record."
+msgstr ""
+
+#: ../../chapter-14.rst:399
+msgid "The grid automatically parses the `mode` from the URL query parameters. For example, if you visit `/myapp/mygrid?mode=edit&id=5`, the grid will render the edit form for the record with ID 5. If no `mode` is specified, the grid defaults to `select` and shows the main table view."
+msgstr ""
+
+#: ../../chapter-14.rst:401
+msgid "If you want to customize navigation or actions, you can generate links or buttons that set the desired `mode` and `id` in the query string."
+msgstr ""
+
+#: ../../chapter-14.rst:404
+msgid "Customizing style"
+msgstr ""
+
+#: ../../chapter-14.rst:406
+msgid "You can provide your own formstyle or grid classes and style to grid."
+msgstr ""
+
+#: ../../chapter-14.rst:408
+msgid "forms. used for certain portions of the grid."
+msgstr ""
+
+#: ../../chapter-14.rst:411
+msgid "The default ``GridClassStyle`` - based on **no.css**, primarily uses styles to modify the layout of the grid. We've already seen that it's possible to use other class_style, in particular ``GridClassStyleBulma`` or ``GridClassStyleBootstrap5``."
+msgstr ""
+
+#: ../../chapter-14.rst:415
+msgid "You can even build your own class_style to be used with the css framework of your choice."
+msgstr ""
+
+#: ../../chapter-14.rst:418
+msgid "With icon_style, you can customize the icon font used. Currently, the following exist:"
+msgstr ""
+
+#: ../../chapter-14.rst:420
+msgid "to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use this. css classes like ``icon-edit-button`` which you can write your own css for. `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__ to your html templates to use this."
+msgstr ""
+
+#: ../../chapter-14.rst:426
+msgid "Custom Action Buttons"
+msgstr ""
+
+#: ../../chapter-14.rst:428
+msgid "As with web2py, you can add additional buttons to each row in your grid. You do this by providing ``pre_action_buttons`` or ``post_action_buttons`` to the Grid **init** method."
+msgstr ""
+
+#: ../../chapter-14.rst:432
+msgid "before the standard action buttons after the standard action buttons"
+msgstr ""
+
+#: ../../chapter-14.rst:435
+msgid "You can build your own Action Button class to pass to pre/post action buttons based on the template below (this is not provided with py4web)."
+msgstr ""
+
+#: ../../chapter-14.rst:438
+msgid "Here is an example:"
+msgstr ""
+
+#: ../../chapter-14.rst:452
+msgid "Notice that a button can be represented by a dict with the following keys:"
+msgstr ""
+
+#: ../../chapter-14.rst:454
+msgid "url: the url the button points to (required)"
+msgstr ""
+
+#: ../../chapter-14.rst:455
+msgid "text: the text of the button (required)"
+msgstr ""
+
+#: ../../chapter-14.rst:456
+msgid "icon: the optional name of the icon in the button, for example ``fa-gear``"
+msgstr ""
+
+#: ../../chapter-14.rst:457
+msgid "classes: optional classes to be added to the button tag"
+msgstr ""
+
+#: ../../chapter-14.rst:458
+msgid "kind: optional kind of button used to retrieve style infro from the GridStyle. Defaults to \"grid-button\""
+msgstr ""
+
+#: ../../chapter-14.rst:459
+msgid "_{name}: optional attributes to be passed to the ``A(..., _{name}=...)`` helper building the button."
+msgstr ""
+
+#: ../../chapter-14.rst:461
+msgid "A button can also be built explicitely using helpers for added flexibility and less magic:"
+msgstr ""
+
+#: ../../chapter-14.rst:477
+msgid "Using callable parameters"
+msgstr ""
+
+#: ../../chapter-14.rst:479
+msgid "A recent improvement to py4web allows you to pass a **callable** instead of a GridActionButton. This allow you to more easily change the behaviour of standard and custom Actions."
+msgstr ""
+
+#: ../../chapter-14.rst:481
+msgid "Callable can be used with:"
+msgstr ""
+
+#: ../../chapter-14.rst:483
+msgid "details"
+msgstr ""
+
+#: ../../chapter-14.rst:484
+msgid "editable"
+msgstr ""
+
+#: ../../chapter-14.rst:485
+msgid "deletable"
+msgstr ""
+
+#: ../../chapter-14.rst:486
+msgid "additional_classes"
+msgstr ""
+
+#: ../../chapter-14.rst:487
+msgid "additional_styles"
+msgstr ""
+
+#: ../../chapter-14.rst:488
+msgid "override_classes"
+msgstr ""
+
+#: ../../chapter-14.rst:489
+msgid "override_styles"
+msgstr ""
+
+#: ../../chapter-14.rst:491
+msgid "Example usage:"
+msgstr ""
+
+#: ../../chapter-14.rst:529
+msgid "Reference Fields"
+msgstr ""
+
+#: ../../chapter-14.rst:531
+msgid "When displaying fields in a PyDAL table, you sometimes want to display a more descriptive field than a foreign key value. There are a couple of ways to handle that with the py4web grid."
+msgstr ""
+
+#: ../../chapter-14.rst:535
+msgid "``filter_out`` on PyDAL field definition - here is an example of a foreign key field"
+msgstr ""
+
+#: ../../chapter-14.rst:546
+msgid "This will display the company name in the grid instead of the company ID"
+msgstr ""
+
+#: ../../chapter-14.rst:548
+msgid "The downfall of using this method is that sorting and filtering are based on the company field in the employee table and not the name of the company"
+msgstr ""
+
+#: ../../chapter-14.rst:552
+msgid "``left join`` and specify fields from joined table - specified on the left parameter of Grid instantiation"
+msgstr ""
+
+#: ../../chapter-14.rst:559
+msgid "You can specify a standard PyDAL left join, including a list of joins to consider. Now the company name field can be included in your fields list can be clicked on and sorted."
+msgstr ""
+
+#: ../../chapter-14.rst:564
+msgid "Also you can specify a query such as:"
+msgstr ""
+
+#: ../../chapter-14.rst:570
+msgid "This method allows you to sort and filter, but doesn’t allow you to combine fields to be displayed together as the filter_out method would"
+msgstr ""
+
+#: ../../chapter-14.rst:573
+msgid "You need to determine which method is best for your use case behave differently."
+msgstr ""
+
+#: ../../chapter-14.rst:578
+msgid "Grids with checkboxes"
+msgstr ""
+
+#: ../../chapter-14.rst:580
+msgid "While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checkboxes. You can also add the helpers logic (the grid uses helpers to generate HTML) to wrap it in a ``<form>`` and add one or more submit buttons. You can then add logic to process the selected rows when the button is selected. For example:"
+msgstr ""
+
+#: ../../chapter-14.rst:609
+msgid "Notice in the above example ``request.POST.get(\"selected_id\")`` can be a single ID (if one selected) or a list of IDs (if more than one is selected)."
+msgstr ""

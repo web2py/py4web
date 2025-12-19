@@ -1,0 +1,548 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20251209\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-18 21:04+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../chapter-16.rst:3
+msgid "Advanced topics and examples"
+msgstr ""
+
+#: ../../chapter-16.rst:6
+msgid "The scheduler"
+msgstr ""
+
+#: ../../chapter-16.rst:8
+msgid "Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work."
+msgstr ""
+
+#: ../../chapter-16.rst:10
+msgid "Given a task (just a python function), you can schedule async runs of that function. The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time."
+msgstr ""
+
+#: ../../chapter-16.rst:13
+msgid "The scheduler works by creating a table ``task_run`` and enqueueing runs of the predefined task as table records. Each ``task_run`` references a task and contains the input to be passed to that task. The scheduler will capture the task stdout+stderr in a ``db.task_run.log`` and the task output in ``db.task_run.output``."
+msgstr ""
+
+#: ../../chapter-16.rst:17
+msgid "A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process and assigns the task to the worker process. You can specify how many worker processes should run concurrently. The worker processes are daemons and they only live for the life of one task run. Each worker process is only responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts."
+msgstr ""
+
+#: ../../chapter-16.rst:22
+msgid "The system is very robust because the only source of truth is the database and its integrity is guaranteed by transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are explicitly killed."
+msgstr ""
+
+#: ../../chapter-16.rst:26
+msgid "Aside for allowing multiple concurrent task runs in execution on one node, it is also possible to run multiple instances of the scheduler on different computing nodes, as long as they use the same client/server database for ``task_run`` and as long as they all define the same tasks."
+msgstr ""
+
+#: ../../chapter-16.rst:31
+msgid "Here is an example of how to use the scheduler:"
+msgstr ""
+
+#: ../../chapter-16.rst:56
+msgid "Notice that in scaffolding app, the scheduler is created and started in common if ``USE_SCHEDULER=True`` in ``settings.py``."
+msgstr ""
+
+#: ../../chapter-16.rst:59
+msgid "You can manage your task runs busing the dashboard or using a ``Grid(db.task_run)``."
+msgstr ""
+
+#: ../../chapter-16.rst:61
+msgid "To prevent database locks (in particular with sqlite) we recommend:"
+msgstr ""
+
+#: ../../chapter-16.rst:63
+msgid "Use a different database for the scheduler and everything else"
+msgstr ""
+
+#: ../../chapter-16.rst:64
+msgid "Always ``db.commit()`` as soon as possible after any insert/update/delete"
+msgstr ""
+
+#: ../../chapter-16.rst:65
+msgid "wrap your database logic in tasks in a try...except as in"
+msgstr ""
+
+#: ../../chapter-16.rst:78
+msgid "Sending messages using a background task"
+msgstr ""
+
+#: ../../chapter-16.rst:80
+msgid "As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task. In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python)."
+msgstr ""
+
+#: ../../chapter-16.rst:83
+msgid "Here is a possible scheduler task to send the email:"
+msgstr ""
+
+#: ../../chapter-16.rst:107
+msgid "To schedule sending a new email do:"
+msgstr ""
+
+#: ../../chapter-16.rst:119
+msgid "The key:value in the email representation must match the arguments of the task. The ``scheduled_for`` argument is optional and allows you to specify when the email should be sent. You can use the Dashboard to see the status of your ``task_run``\\s for the task called ``sendmail``."
+msgstr ""
+
+#: ../../chapter-16.rst:123
+msgid "You can also tell auth to tap into above mechanism for sending emails:"
+msgstr ""
+
+#: ../../chapter-16.rst:141
+msgid "With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler. Notice the only requirement here is that ``auth.sender`` must be an object with a ``send`` method with the same signature as in the example."
+msgstr ""
+
+#: ../../chapter-16.rst:144
+msgid "Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in ``auth_user`` and 2) override the ``Auth.send`` method."
+msgstr ""
+
+#: ../../chapter-16.rst:148
+msgid "Celery"
+msgstr ""
+
+#: ../../chapter-16.rst:150
+msgid "Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust. Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent tasks and/or they are short running tasks."
+msgstr ""
+
+#: ../../chapter-16.rst:157
+msgid "py4web and asyncio"
+msgstr ""
+
+#: ../../chapter-16.rst:159
+msgid "Asyncio is not strictly needed, at least for most of the normal use cases where it will add problems more than value because of its concurrency model. On the other hand, we think py4web needs a built-in websocket async based solution."
+msgstr ""
+
+#: ../../chapter-16.rst:163
+msgid "If you plan to play with asyncio be careful that you should also deal with all the framework's components: in particular pydal is not asyncio compliant because not all the adapters work with async."
+msgstr ""
+
+#: ../../chapter-16.rst:168
+msgid "htmx"
+msgstr ""
+
+#: ../../chapter-16.rst:170
+msgid "There are many javascript front-end frameworks available today that allow you great flexibility over how you design your web client. Vue, React and Angular are just a few.  However, the complexity in building one of these systems prevents many developers from reaping those benefits. Add to that the rapid state of change in the ecosystem and you soon have an application that is difficult to maintain just a year or two down the road."
+msgstr ""
+
+#: ../../chapter-16.rst:176
+msgid "As a consequence, there is a growing need to use simple html elements to add reactivity to your web pages. htmx is one of the tools emerging as a leader in page reactivity without the complexities of javascript. Technically, htmx allows you to access AJAX, CSS Transitions, Web Sockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext. [CIT1601]_"
+msgstr ""
+
+#: ../../chapter-16.rst:182
+msgid "Read all about htmx and its capabilities on the official site at https://htmx.org . If you prefer, there is also a video tutorial: `Simple, Fast Frontends With htmx <https://www.youtube.com/watch?v=cBfz4W_KvEI>`__ ."
+msgstr ""
+
+#: ../../chapter-16.rst:186
+msgid "py4web enables htmx integration in a couple of ways."
+msgstr ""
+
+#: ../../chapter-16.rst:188
+msgid "Allow you to add htmx attributes to your forms and buttons"
+msgstr ""
+
+#: ../../chapter-16.rst:189
+msgid "Includes an htmx attributes plugin for the py4web grid"
+msgstr ""
+
+#: ../../chapter-16.rst:192
+msgid "htmx usage in Form"
+msgstr ""
+
+#: ../../chapter-16.rst:194
+msgid "The py4web Form class allows you to pass \\**kwargs to it that will be passed along as attributes to the html form. For example, to add the hx-post and hx-target to the <form> element you would use:"
+msgstr ""
+
+#: ../../chapter-16.rst:209
+msgid "Now when your form is submitted it will call the URL in the hx-post attribute and whatever is returned to the browser will replace the html inside of the element with id=\"detail-target\"."
+msgstr ""
+
+#: ../../chapter-16.rst:212
+msgid "Let's continue with a full example (started from scaffold)."
+msgstr ""
+
+#: ../../chapter-16.rst:214
+msgid "**controllers.py**"
+msgstr ""
+
+#: ../../chapter-16.rst:252
+#: ../../chapter-16.rst:353
+msgid "**templates/htmx_form_demo.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:265
+msgid "**templates/htmx_list.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:275
+msgid "**templates/htmx_form.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:282
+msgid "We now have a functional maintenance app to update our superheros.  In your browser navigate to the htmx_form_demo page in your new application.  The hx-trigger=\"load\" attribute on the inner div of the htmx_form_demo.html page loads the htmx_list.html page inside the htmx-form-demo DIV once the htmx_form_demo page is loaded."
+msgstr ""
+
+#: ../../chapter-16.rst:286
+msgid "Notice the timestamp added outside of the htmx-form-demo DIV does not change when transitions occur.  This is because the outer page is never reloaded, only the content inside the htmx-form-demo DIV."
+msgstr ""
+
+#: ../../chapter-16.rst:289
+msgid "The htmx attributes hx-get and hx-target are then used on the anchor tags to call the htmx_form page to load the form inside the htmx-form-demo DIV."
+msgstr ""
+
+#: ../../chapter-16.rst:292
+msgid "So far we've just seen standard htmx processing. Nothing fancy here, and nothing specific to py4web. However, in the htmx_form method we see how you can pass any attribute to a py4web form that will be rendered on the <form> element as we add the hx-post and hx-target. This tells the form to allow htmx to override the default form behavior and to render the resulting output in the target specified."
+msgstr ""
+
+#: ../../chapter-16.rst:297
+msgid "The default py4web form does not include a Cancel button in case you want to cancel out of the edit form. But you can add 'sidecar' elements to your forms. You can see in htmx_form that we add a cancel option and add the required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV."
+msgstr ""
+
+#: ../../chapter-16.rst:303
+msgid "htmx usage in Grid"
+msgstr ""
+
+#: ../../chapter-16.rst:305
+msgid "The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for htmx."
+msgstr ""
+
+#: ../../chapter-16.rst:309
+msgid "Here is an example building off the previous htmx forms example."
+msgstr ""
+
+#: ../../chapter-16.rst:311
+msgid "**controller.py**"
+msgstr ""
+
+#: ../../chapter-16.rst:370
+msgid "Notice that we added the #htmx-grid-demo DIV which calls the htmx_grid route."
+msgstr ""
+
+#: ../../chapter-16.rst:372
+msgid "**templates/htmx_grid.html**"
+msgstr ""
+
+#: ../../chapter-16.rst:378
+msgid "In htmx_grid we take advantage of deferred processing on the grid. We setup a standard CRUD grid, defer processing and then tell the grid we're going to use an alternate attributes plugin to build our navigation. Now the forms, links and delete confirmations are all handled by htmx."
+msgstr ""
+
+#: ../../chapter-16.rst:383
+msgid "Autocomplete Widget using htmx"
+msgstr ""
+
+#: ../../chapter-16.rst:385
+msgid "htmx can be used for much more than just form/grid processing. In this example we'll take advantage of htmx and the py4web form widgets to build an autocomplete widget that can be used in your forms. *NOTE: this is just an example, none of this code comes with py4web*"
+msgstr ""
+
+#: ../../chapter-16.rst:389
+msgid "Again we'll use the superheros database as defined in the examples app."
+msgstr ""
+
+#: ../../chapter-16.rst:391
+msgid "Add the following to your controllers.py.  This code will build your autocomplete dropdowns as well as handle the database calls to get your data."
+msgstr ""
+
+#: ../../chapter-16.rst:558
+msgid "Usage - in your controller code, this example uses bulma as the base css formatter."
+msgstr ""
+
+#: ../../chapter-16.rst:575
+msgid "First, get an instance of FormStyleFactory.  Then get the base css classes from whichever css framework you wish. Add the class inner exceptions from your css framework. Once this is set up you can override the default widget for a field based on its name.  In this case we're overriding the widget for the 'vendor' field. Instead of including all vendors in the select dropdown, we're limiting only to those with a vendor type equal to 'S'."
+msgstr ""
+
+#: ../../chapter-16.rst:580
+msgid "When this is rendered in your page, the default widget for the vendor field is replaced with the widget generated by the HtmxAutocompleteWidget. When you pass a simple query to the HtmxAutocompleteWidget the widget will use the default route to fill the dropdown with data."
+msgstr ""
+
+#: ../../chapter-16.rst:584
+msgid "If using the simple query and default build url, you are limited to a simple DAL query. You cannot use DAL subqueries within this simple query.  If the data for the dropdown requires a more complex DAL query you can override the default data builder URL to provide your own controller function to retrieve the data."
+msgstr ""
+
+#: ../../chapter-16.rst:589
+msgid "from the https://htmx.org website"
+msgstr ""
+
+#: ../../chapter-16.rst:592
+msgid "utils.js"
+msgstr ""
+
+#: ../../chapter-16.rst:594
+msgid "Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application, yet we never clearly listed what is in there. So here it is."
+msgstr ""
+
+#: ../../chapter-16.rst:598
+msgid "string.format"
+msgstr ""
+
+#: ../../chapter-16.rst:600
+msgid "It extends the String object prototype to allow expressions like this:"
+msgstr ""
+
+#: ../../chapter-16.rst:607
+msgid "The Q object"
+msgstr ""
+
+#: ../../chapter-16.rst:609
+msgid "The Q object can be used like a selector supporting jQuery like syntax:"
+msgstr ""
+
+#: ../../chapter-16.rst:616
+msgid "It supports the same syntax as JS ``querySelectorAll`` and always returns an array of selected elements (can be empty)."
+msgstr ""
+
+#: ../../chapter-16.rst:619
+msgid "The Q objects is also a container for functions that can be useful when programming in Javascript. It is stateless."
+msgstr ""
+
+#: ../../chapter-16.rst:622
+#: ../../chapter-16.rst:704
+msgid "For example:"
+msgstr ""
+
+#: ../../chapter-16.rst:624
+msgid "**Q.clone**"
+msgstr ""
+
+#: ../../chapter-16.rst:626
+msgid "A function to clone any object:"
+msgstr ""
+
+#: ../../chapter-16.rst:633
+msgid "**Q.eval**"
+msgstr ""
+
+#: ../../chapter-16.rst:635
+msgid "It evaluates JS expressions in a string. It is not a sandbox."
+msgstr ""
+
+#: ../../chapter-16.rst:641
+msgid "**Q.ajax**"
+msgstr ""
+
+#: ../../chapter-16.rst:643
+msgid "A wrapper for the JS fetch method which provides a nicer syntax:"
+msgstr ""
+
+#: ../../chapter-16.rst:653
+msgid "**Q.get_cookie**"
+msgstr ""
+
+#: ../../chapter-16.rst:655
+msgid "Extracts a cookie by name from the header of cookies in the current page: returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie in case it is needed to call an API."
+msgstr ""
+
+#: ../../chapter-16.rst:663
+msgid "**Q.register_vue_component**"
+msgstr ""
+
+#: ../../chapter-16.rst:665
+msgid "This is specific for Vue 2 and may be deprecated in the future but it allows to define a vue component where the template is stored in a separate HTML file and the template will be loaded lazily only when/if the component is used."
+msgstr ""
+
+#: ../../chapter-16.rst:669
+msgid "For example instead of doing:"
+msgstr ""
+
+#: ../../chapter-16.rst:682
+msgid "You would put the template in a button-counter.html and do"
+msgstr ""
+
+#: ../../chapter-16.rst:696
+msgid "**Q.upload_helper**"
+msgstr ""
+
+#: ../../chapter-16.rst:698
+msgid "It allows to bind an input tag of type file to a callback so that when a file is selected the content of the selected file is loaded, base64 encoded, and passed to the callback."
+msgstr ""
+
+#: ../../chapter-16.rst:701
+msgid "This is useful to create form which include an input field selector - but you want to place the content of the selected file into a variable, for example to do an ajax post of that content."
+msgstr ""
+
+#: ../../chapter-16.rst:710
+msgid "and"
+msgstr ""
+
+#: ../../chapter-16.rst:723
+msgid "The T object"
+msgstr ""
+
+#: ../../chapter-16.rst:725
+msgid "This is a Javascript reimplementation of the Python pluralize library in Python which is used by the Python T object in py4web. So basically a client-side T."
+msgstr ""
+
+#: ../../chapter-16.rst:733
+msgid "The intended usage is to create a server endpoint that can provide translations for the client accepted-language, obtain T.translations via ajax get, and then use T to translate and pluralize all messages clientside rather than serverside."
+msgstr ""
+
+#: ../../chapter-16.rst:737
+#: ../../chapter-16.rst:750
+msgid "**Q.debounce**"
+msgstr ""
+
+#: ../../chapter-16.rst:739
+msgid "Prevents a function from stepping on itself."
+msgstr ""
+
+#: ../../chapter-16.rst:745
+msgid "and the function will be called every 500ms but will skip if the previous call did not terminate. Unlike other debounce implementations out there, it makes sure the last call is always executed by delaying it (in the example 200ms);"
+msgstr ""
+
+#: ../../chapter-16.rst:752
+msgid "Prevents a function from being called too often;"
+msgstr ""
+
+#: ../../chapter-16.rst:758
+msgid "If the element is clicked more often than once every 1000ms, the other clicks will be ignored."
+msgstr ""
+
+#: ../../chapter-16.rst:760
+msgid "**Q.tags_inputs**"
+msgstr ""
+
+#: ../../chapter-16.rst:762
+msgid "It turns a regular text input containing a string of comma separated tags into a tag widgets. For example:"
+msgstr ""
+
+#: ../../chapter-16.rst:769
+msgid "and in JSL"
+msgstr ""
+
+#: ../../chapter-16.rst:775
+msgid "You can restrict the set of options with:"
+msgstr ""
+
+#: ../../chapter-16.rst:784
+msgid "It works with the datalist element to provide autocomplete. Simply prepend `-list` to the datalist id:"
+msgstr ""
+
+#: ../../chapter-16.rst:796
+msgid "and in JS:"
+msgstr ""
+
+#: ../../chapter-16.rst:802
+msgid "It provides more undocumented options. You need to style the tags. For example:"
+msgstr ""
+
+#: ../../chapter-16.rst:825
+msgid "Notice that if an input element has class `.type-list-string` or `.type-list-integer`, utils.js applies the `tag_input` function automatically."
+msgstr ""
+
+#: ../../chapter-16.rst:828
+msgid "**Q.score_input**"
+msgstr ""
+
+#: ../../chapter-16.rst:834
+msgid "This will turn the password input into a widget that scores the password complexity. It is applied automatically to inputs with name \"password\" or \"new_password\"."
+msgstr ""
+
+#: ../../chapter-16.rst:837
+msgid "**Components**"
+msgstr ""
+
+#: ../../chapter-16.rst:839
+msgid "This is a poor man version of HTMX. It allows to insert in the page ajax-component tags that are loaded via ajax and any form in those components will be trapped (i.e. the result of form submission will also be displayed inside the same component)"
+msgstr ""
+
+#: ../../chapter-16.rst:843
+msgid "For example imagine an index.html that contains"
+msgstr ""
+
+#: ../../chapter-16.rst:851
+msgid "And a different action serving the component:"
+msgstr ""
+
+#: ../../chapter-16.rst:864
+msgid "A component action is a regular action except that it should generate html without the `<html><body>...</body></html>` envelop and it can make use of templates and flash for example."
+msgstr ""
+
+#: ../../chapter-16.rst:867
+msgid "Notice that if the main page supports flash messages, any flash message in the component will be displayed by the parent page."
+msgstr ""
+
+#: ../../chapter-16.rst:870
+msgid "Moreover if the component returns a `redirect(\"other_page\")` not just the content of the component, but the entire page will be redirected."
+msgstr ""
+
+#: ../../chapter-16.rst:873
+msgid "The contents of the component html can contain `<script>...</script>` and they can modify global page variables as well as modify other components."
+msgstr ""
+
+#: ../../chapter-16.rst:879
+msgid "Adding a Captcha Solution with Altcha"
+msgstr ""
+
+#: ../../chapter-16.rst:881
+msgid "This section provides a simple captcha implementation for your py4web applications using the **Altcha** library. While not exhaustively tested, it serves as a practical example for integrating a robust, client-side captcha solution. More information in https://altcha.org"
+msgstr ""
+
+#: ../../chapter-16.rst:885
+msgid "Prerequisites"
+msgstr ""
+
+#: ../../chapter-16.rst:887
+msgid "First, you need to install the Altcha library. You can do this using pip:"
+msgstr ""
+
+#: ../../chapter-16.rst:893
+msgid "You also need a secret key for HMAC verification. It's recommended to store this in your application's settings. For this example, we'll assume you have a file like ``.settings.py`` with the following variable:"
+msgstr ""
+
+#: ../../chapter-16.rst:901
+msgid "Controller Logic"
+msgstr ""
+
+#: ../../chapter-16.rst:903
+msgid "Next, you need to add the necessary actions to your controller file. The following code provides two actions: one to generate the captcha challenge (``altcha``) and another to handle a form with the captcha (``some_form``)."
+msgstr ""
+
+#: ../../chapter-16.rst:965
+msgid "View Templates"
+msgstr ""
+
+#: ../../chapter-16.rst:967
+msgid "You need to include the Altcha JavaScript library and configure the widget in your HTML templates."
+msgstr ""
+
+#: ../../chapter-16.rst:970
+msgid "``form_altcha.html``"
+msgstr ""
+
+#: ../../chapter-16.rst:972
+msgid "This template works with the ``some_form`` action. It loads the Altcha script and sets the ``challengeurl`` attribute to point to our ``altcha`` action."
+msgstr ""
+
+#: ../../chapter-16.rst:992
+msgid "Custom Auth Form"
+msgstr ""
+
+#: ../../chapter-16.rst:994
+msgid "For a custom authentication form, you can follow a similar approach. Make sure to insert the ``<altcha-widget>`` tag into the form's structure and include the necessary JavaScript."
+msgstr ""
+
+#: ../../chapter-16.rst:1025
+msgid "To enable Altcha in the auth form, you can use the following fixture:"
+msgstr ""
+
+#: ../../chapter-16.rst:1054
+msgid "Make sure ``AltchaServerFixture`` is accessible in ``common.py`` where ``auth`` is instantiated:"
+msgstr ""
+
+#: ../../chapter-16.rst:1061
+msgid "This will ensure Altcha verification is performed for POST requests in your authentication forms."
+msgstr ""
+
+#: ../../chapter-16.rst:1063
+msgid "You can also use the ``AltchaServerFixture`` in a form:"
+msgstr ""

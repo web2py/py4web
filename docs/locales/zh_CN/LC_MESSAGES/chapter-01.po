@@ -1,0 +1,330 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-01.rst:3
+msgid "What is py4web?"
+msgstr "py4web 是什么？"
+
+#: ../../chapter-01.rst:5
+msgid ""
+"PY4WEB is a web framework for rapid development of efficient database "
+"driven web applications. It is an evolution of the popular web2py "
+"framework, but much faster and slicker. Its internal design has been much"
+" simplified compared to web2py."
+msgstr ""
+"PY4WEB 是一个用于快速开发的高效数据库驱动的网络应用程序的网络框架。"
+"它是流行的 web2py 框架的演变，但更快更灵活。"
+"与 web2py 相比，它的内部设计已经大大简化。"
+
+#: ../../chapter-01.rst:10
+msgid ""
+"PY4WEB can be seen as a competitor of other frameworks like Django or "
+"Flask, and it can indeed serve the same purpose. Yet PY4WEB aims to "
+"provide a larger feature set out of the box and to reduce the development"
+" time of new apps."
+msgstr ""
+"PY4WEB 可以被视为其他框架诸如 Django 或 Flask 的竞争者，它确实可以实现相同的目的。"
+"然而，PY4WEB 旨在提供一个更大的开箱即用功能集，并减少新应用的开发时间。"
+
+#: ../../chapter-01.rst:15
+msgid ""
+"From a historical perspective, our story starts in 2007 when web2py was "
+"first released. web2py was designed to provide an all-inclusive solution "
+"for web development: one zip file containing the Python interpreter, the "
+"framework, a web based IDE, and a collection of battle-tested packages "
+"that work well together. In many ways web2py has been immensely "
+"successful. Web2py succeeded in providing a low barrier of entry for new "
+"developers, a very secure development platform, and remains backwards "
+"compatible until today."
+msgstr ""
+"从历史的角度来看，我们的故事始于 2007 年，当时 web2py 首次发布。"
+"web2py 旨在提供一个全方位的网络开发解决方案：一个包含 Python 解释器、框架、基于互联网的集成"
+"开发环境和一系列经过实战检验的良好协作的软件包的压缩文件。"
+"在许多方面，web2py 取得了巨大的成功。web2py 成功地为新开发者提供了一个低门槛的入门机会，"
+"一个非常安全的开发平台，并且至今仍保持向后兼容。"
+
+#: ../../chapter-01.rst:24
+msgid ""
+"Web2py always suffered from one problem: its monolithic design. The most "
+"experienced Python developers did not understand how to use its "
+"components outside of the framework and how to use third party components"
+" within the framework. We thought of web2py as a perfect tool that did "
+"not have to be broken into pieces because that would compromise its "
+"security. It turned out that we were wrong, and playing well with others "
+"is important. Hence, since 2015 we worked on three fronts:"
+msgstr ""
+"Web2py 一直面临一个问题：它的单体设计。经验最丰富的 Python 开发者不知道如何在框架之外使用其组件，"
+"以及如何在框架内使用第三方组件。我们认为 web2py 是一个完美的工具，不需要拆分成多个部分，因为这样会危及其安全性。"
+"结果事实证明我们错了，与他人良好合作是很重要的。因此，自 2015 年以来，我们在三个方面进行了工作："
+
+#: ../../chapter-01.rst:32
+msgid "We ported web2py to Python 3."
+msgstr "我们将 web2py 移植到了 Python 3"
+
+#: ../../chapter-01.rst:33
+msgid "We broke web2py into modules that can be used independently."
+msgstr "我们将 web2py 拆分为可以独立使用的模块。"
+
+#: ../../chapter-01.rst:34
+msgid ""
+"We reassembled some of those modules into a new more modular framework … "
+"PY4WEB."
+msgstr "我们将其中一些模块重新组装成一个新的更模块化的框架 —— PY4WEB。"
+
+#: ../../chapter-01.rst:37
+msgid ""
+"PY4WEB is more than a repackaging. It is a complete redesign. It uses "
+"some of the web2py modules, but not all of them. In some cases, it uses "
+"other and better modules. Some functionality was removed and some was "
+"added. We tried to preserve most of the syntax and features that "
+"experienced web2py users loved."
+msgstr ""
+"PY4WEB 不仅仅是重新打包。它是一个完整的重新设计。它使用了一些 web2py 模块，但不是全部。"
+"在某些情况下，它使用了其他更好的模块。一些功能被移除，另一些功能被添加。"
+"我们尽量保留大部分经验丰富的 web2py 用户所喜爱的语法和特性。"
+
+#: ../../chapter-01.rst:44
+msgid ""
+"Here is a more explicit list (see :ref:`From web2py to py4web` for more "
+"details if you come from web2py):"
+msgstr "以下是一个更明确的列表（如果你使用过 web2py，请参考 “ :ref:`From web2py to py4web` ” 以获取更多）："
+
+#: ../../chapter-01.rst:47
+msgid "PY4WEB, unlike web2py, requires Python 3."
+msgstr "与 web2py 不同，PY4WEB 需要 Python 3"
+
+#: ../../chapter-01.rst:48
+msgid ""
+"PY4WEB, unlike web2py, can be installed using pip, and its dependencies "
+"are managed using pyproject.toml"
+msgstr "PY4WEB，与 web2py 不同，PY4WEB可以使用 pip 安装，其依赖关系使用 requirements.txt 管理。"
+
+#: ../../chapter-01.rst:50
+msgid ""
+"PY4WEB apps are regular Python modules. This is very different from "
+"web2py. In particular, we ditched the custom importer, and we rely now "
+"exclusively on the regular Python import mechanism."
+msgstr ""
+"PY4WEB，是常规的 Python 模块。这与 web2py 非常不同。"
+"特别是，我们抛弃了自定义导入器，现在完全依赖常规的 Python 导入机制。"
+
+#: ../../chapter-01.rst:53
+msgid ""
+"PY4WEB, like web2py, can serve multiple applications concurrently, as "
+"long as the apps are submodules of the apps module."
+msgstr "PY4WEB，与 web2py 一样，可以同时为多个应用程序提供服务，只要这些应用程序是应用程序模块的子模块。"
+
+#: ../../chapter-01.rst:55
+msgid ""
+"PY4WEB, unlike web2py, is based on ombott (a reduced and faster spin-off "
+"of Bottle) and in particular uses a Bottle-compatible request object and "
+"routing mechanism."
+msgstr "PY4WEB，与 web2py 不同，PY4WEB 基于 ombott（Bottle 的一个简化和更快的衍生产品），特别是使用了与 Bottle 兼容的请求对象和路由机制。"
+
+#: ../../chapter-01.rst:59
+msgid ""
+"PY4WEB, unlike web2py, does not create a new environment at every "
+"request. It introduces the concept of fixtures to explicitly declare "
+"which objects need to be (re)initialized when a new http request arrives "
+"or needs cleanup when completed. This makes it much faster than web2py."
+msgstr ""
+"PY4WEB，与 web2py 不同，PY4WEB 不会在每次请求时创建新环境。"
+"它引入了 fixture 的概念，以明确声明在新的 http 请求到达时需要（重新）初始化哪些对象，"
+"或者在完成时需要清理哪些对象。这使得它比 web2py 快得多。"
+
+#: ../../chapter-01.rst:63
+msgid ""
+"PY4WEB, has a new session object which, like web2py’s, provides strong "
+"security and encryption of the session data, but sessions are no longer "
+"stored in the file system - which created performance issues. It provides"
+" sessions in cookies, in redis, in memcache, or optionally  in database. "
+"We also limited session data to objects that are json serializable."
+msgstr ""
+"PY4WEB，与 web2py 一样，它有一个新的会话对象，为会话数据提供了强大的安全性和加密，"
+"但会话不再存储在文件系统中，那会造成性能问题。它在 Cookie、redis、memcache 或可选的数据库中提供会话。"
+"我们还将会话数据限制为 json 可序列化的对象。"
+
+#: ../../chapter-01.rst:69
+msgid ""
+"PY4WEB, like web2py, has a built-in ticketing system but, unlike web2py, "
+"this system is global and not per app. Tickets are no longer stored in "
+"the filesystem with the individual apps. They are stored in a single "
+"database."
+msgstr "PY4WEB，和 web2py 一样，有一个内置的工单（Tickets）系统，"
+"但与 web2py 不同，这个系统是全局性的，而不是针对每个应用程序的。"
+"Tickets 不再与单个应用程序一起存储在文件系统中。它们存储在单个数据库中。"
+
+#: ../../chapter-01.rst:73
+msgid ""
+"PY4WEB, like web2py, is based on pydal but leverages some new features of"
+" pydal (RESTAPI)."
+msgstr "PY4WEB，PY4WEB 与 web2py 一样，基于 pydal，但利用了 pydal 的一些新功能（RESTAPI）"
+
+#: ../../chapter-01.rst:75
+msgid ""
+"PY4WEB, like web2py, uses the yatl template language but defaults to "
+"square brackets delimiters to avoid conflicts with model JS frameworks, "
+"such as Vue.js and angular.js. Yatl includes a subset of the web2py "
+"helpers."
+msgstr "PY4WEB，PY4WEB 与 web2py 一样，使用 yatl 模板语言，"
+"但默认使用方括号 [[ ]]做为分隔符，以避免与 Vue.JS 和 angular.JS 等模型 JS 框架冲突。Yatl 包含 web2py 助手的一个子集。"
+
+#: ../../chapter-01.rst:79
+msgid ""
+"PY4WEB, unlike web2py, uses the pluralization library for "
+"internationalization. In practice, this exposes an object T very similar "
+"to web2py’s T but it provides better caching and more flexible "
+"pluralization capabilities."
+msgstr "PY4WEB，与 web2py 不同，PY4WEB 使用多元化库进行国际化。"
+"在实践中，这暴露了一个与 web2py 的 T 非常相似的对象 T ，但它提供了更好的缓存和更灵活的多元化功能。"
+
+#: ../../chapter-01.rst:83
+msgid ""
+"PY4WEB comes with a Dashboard APP that replaces web2py’s admin. This is a"
+" web IDE for uploading/managing/editing apps."
+msgstr "PY4WEB 附带了一个后台管理应用程序（Dashboard APP），可以取代 web2py 的管理后台。"
+"这是一个用于上传/管理/编辑应用程序的 web IDE。"
+
+#: ../../chapter-01.rst:85
+msgid ""
+"PY4WEB’s Dashboard includes a web based database interface. This replaces"
+" the appadmin functionality of web2py."
+msgstr "PY4WEB 的后台管理应用程序包括一个基于数据库接口的 web 界面。这取代了 web2py 的应用管理功能（appadmin）。"
+
+#: ../../chapter-01.rst:87
+msgid ""
+"PY4WEB comes with Form and Grid objects that are similar to web2py’s "
+"SQLFORM and SQLFORM.grid."
+msgstr "PY4WEB 自带的 Form 和 Grid 对象类似于 web2py 的 SQLFORM 和SQLFORM.Grid。"
+
+#: ../../chapter-01.rst:89
+msgid ""
+"PY4WEB comes with an Auth object that replaces the web2py one. It is more"
+" modular and easier to extend. Out of the box, it provides the basic "
+"functionality of register, login, logout, change password, request change"
+" password, edit profile as well as integration with PAM, SAML2, LDAP, "
+"OAUTH2 (google, facebook, and twitter)."
+msgstr "PY4WEB 自带了一个 Auth 对象，用于替换 web2py 的 Auth 对象。它更模块化，更容易扩展。"
+"它提供了注册、登录、注销、更改密码、请求更改密码、编辑配置文件等开箱即用的基本功能，"
+"以及与 PAM、SAML2、LDAP、OAUTH2（谷歌、脸书和推特）的集成。"
+
+#: ../../chapter-01.rst:94
+msgid ""
+"PY4WEB leverages PyDAL's new tags functionality to tag users with groups,"
+" search users by groups, and apply permissions based on membership."
+msgstr "PY4WEB 利用 PyDAL 的新标签功能，将用户标记为组，按组搜索用户，并根据成员资格应用权限。"
+
+#: ../../chapter-01.rst:97
+msgid ""
+"PY4WEB comes with with some custom Vue.js components designed to interact"
+" with the PyDAL RESTAPI, and with PY4WEB in general. These APIs are "
+"designed to allow the server to set policies about which operations a "
+"client is allowed to perform, but give the client flexibility within "
+"those constraints. The two main components are mtable (which provides a "
+"web based interface to the database similar to web2py’s grid) and auth (a"
+" customizable interface to the Auth API)."
+msgstr "PY4WEB 附带了一些定制的 Vue.js 组件，旨在与 PyDAL RESTAPI 以及 PY4WEB 进行交互。"
+"这些 API 旨在允许服务器设置允许客户端执行哪些操作的策略，但在这些约束范围内为客户端提供灵活性。"
+"两个主要组件是 mtable（它为数据库提供了一个类似于 web2py 网格的基于 web 的接口）和 auth（auth API的可自定义接口）。"
+
+#: ../../chapter-01.rst:106
+msgid ""
+"The goal of PY4WEB is and remains the same as web2py’s: to make web "
+"development easy and accessible, while producing applications that are "
+"fast and secure."
+msgstr "PY4WEB 的目标与 web2py 相同：使 web 开发变得简单易用，同时生成快速安全的应用程序。"
+
+#: ../../chapter-01.rst:113
+msgid "Acknowledgments"
+msgstr "致谢"
+
+#: ../../chapter-01.rst:115
+msgid ""
+"Many thanks to everyone who has contributed to the project, and "
+"especially:"
+msgstr "非常感谢所有为项目做出贡献的人，特别是:"
+
+#: ../../../README.rst:3
+msgid "`Massimo Di Pierro <https://github.com/mdipierro>`__"
+msgstr ""
+
+#: ../../../README.rst:4
+msgid "`Luca de Alfaro <https://github.com/lucadealfaro>`__"
+msgstr ""
+
+#: ../../../README.rst:5
+msgid "`Cassio Botaro <https://github.com/cassiobotaro>`__"
+msgstr ""
+
+#: ../../../README.rst:6
+msgid "`Dan Carroll <https://github.com/dan-carroll>`__"
+msgstr ""
+
+#: ../../../README.rst:7
+msgid "`Jim Steil <https://github.com/jpsteil>`__"
+msgstr ""
+
+#: ../../../README.rst:8
+msgid "`John M. Wolf <https://github.com/jmwolff3>`__"
+msgstr ""
+
+#: ../../../README.rst:9
+msgid "`Micah Beasley <https://github.com/MBfromOK>`__"
+msgstr ""
+
+#: ../../../README.rst:10
+msgid "`Nico Zanferrari <https://github.com/nicozanf>`__"
+msgstr ""
+
+#: ../../../README.rst:11
+msgid "`Pirsch <https://github.com/Pirsch>`__"
+msgstr ""
+
+#: ../../../README.rst:12
+msgid "`sugizo <https://github.com/sugizo>`__"
+msgstr ""
+
+#: ../../../README.rst:13
+msgid "`valq7711 <https://github.com/valq7711>`__"
+msgstr ""
+
+#: ../../../README.rst:14
+msgid "`Kevin Keller <https://github.com/Kkeller83>`__"
+msgstr ""
+
+#: ../../../README.rst:15
+msgid "`Krzysztof Socha <https://github.com/kszys>`__"
+msgstr ""
+
+#: ../../../README.rst:16
+msgid "Sam de Alfaro sam@dealfaro.com (logo design)"
+msgstr "Sam de Alfaro sam@dealfaro.com (logo 设计者)"
+
+#: ../../chapter-01.rst:124
+msgid ""
+"Special thanks to Sam de Alfaro, who designed the official logo of "
+"py4web. We friendly call the logo \"Axel the axolotl\": it magically "
+"represents the sense of kindness and inclusion. We believe it's the "
+"cornerstone of our growing community."
+msgstr "特别感谢 Sam de Alfaro，他设计了 py4web 的官方徽标。"
+"我们友好地称这个徽标为 \"Axel the axolotl\"，它神奇地代表了善良和包容的意义。"
+"我们相信这就是我们不断壮大的社区的基石。"
+

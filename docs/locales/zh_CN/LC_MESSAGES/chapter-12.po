@@ -1,0 +1,2108 @@
+# Py4web 中文文档
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# 杨文增 <1528046831@qq.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 20250908\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 21:19+0800\n"
+"PO-Revision-Date: 2025-12-19 20:19+0800\n"
+"Last-Translator: 杨文增 <1528046831@qq.com>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../chapter-12.rst:3
+msgid "Forms"
+msgstr "表单（Forms）"
+
+#: ../../chapter-12.rst:5
+msgid ""
+"The Form class provides a high-level API for quickly building CRUD "
+"(create, update and delete) forms, especially for working on an existing "
+"database table. It can generate and process a form from a list of desired"
+" fields and/or from an existing database table."
+msgstr ""
+"Form 类提供了一个高级 API，用于快速构建 "
+"CRUD（创建、读取、更新和删除）表单，尤其是用于处理现有的数据库表。它可以根据所需字段列表和/或现有数据库表生成和处理表单。"
+
+#: ../../chapter-12.rst:9
+msgid "There are 3 types of forms:"
+msgstr "有三种形式的表单："
+
+#: ../../chapter-12.rst:11
+msgid "CRUD Create forms:"
+msgstr "添加数据的 CRUD 表单"
+
+#: ../../chapter-12.rst:24
+msgid "CRUD Update forms:"
+msgstr "更新数据的 CRUD 表单"
+
+#: ../../chapter-12.rst:37
+msgid "Non-CRUD forms (not associated to a database):"
+msgstr "非 CRUD 表单（与数据库无关联）"
+
+#: ../../chapter-12.rst:54
+msgid ""
+"The use of flash is optional. ``flash`` is defined in ``common.py`` in "
+"the scaffolding application. It simply stores a message in a cookie so it"
+" can be recovered and displayed after redirection. This is done in the "
+"default layout."
+msgstr ""
+"用于消息提示的 ``flash`` 的使用是可选的。 ``flash`` 是在脚手架应用程序中的 ``common.py`` "
+"中定义的。它只是将消息存储在 cookie 中，以便在重定向后可以恢复和显示。这是在默认布局中完成的。"
+
+#: ../../chapter-12.rst:59
+msgid ""
+"In this chapter from now on we will assume the following model and an app"
+" derived from the scaffolding app:"
+msgstr "在本章中，从现在开始，我们假设有如下的数据模型和一个派生自脚手架程序的应用程序："
+
+#: ../../chapter-12.rst:73
+msgid "The Form constructor"
+msgstr "Form 的构造函数"
+
+#: ../../chapter-12.rst:75
+msgid "The ``Form`` constructor accepts the following arguments:"
+msgstr "``Form`` 的构造函数接受以下参数："
+
+#: ../../chapter-12.rst:96 ../../chapter-12.rst:1483
+msgid "Where:"
+msgstr "参数解释："
+
+#: ../../chapter-12.rst:98
+msgid "``table``: a DAL table or a list of fields"
+msgstr "``table``: 一个 DAL 数据表或是一个 DAL 字段的列表"
+
+#: ../../chapter-12.rst:99
+msgid "``record``: a DAL record or record id"
+msgstr "``record``: 一个 DAL 数据库记录或是记录的 ID"
+
+#: ../../chapter-12.rst:100
+msgid "``readonly``: set to True to make a readonly form"
+msgstr "``readonly``: 设置为 True 可生成只读的表单"
+
+#: ../../chapter-12.rst:101
+msgid "``deletable``: set to False to disallow deletion of record"
+msgstr "``deletable``: 设置为 False 可禁用删除记录的功能"
+
+#: ../../chapter-12.rst:102
+msgid "``formstyle``: a function that renders the form using helpers."
+msgstr "``formstyle``: 一个使用 helper 渲染表单的函数"
+
+#: ../../chapter-12.rst:103
+msgid ""
+"Can be ``FormStyleDefault`` (default), ``FormStyleBulma``, "
+"``FormStyleBootstrap4``, or ``FormStyleBootstrap5``."
+msgstr ""
+"可以是 ``FormStyleDefault`` (默认值) 、 ``FormStyleBulma`` 、 "
+"``FormStyleBootstrap4`` 或者  ``FormStyleBootstrap5``"
+
+#: ../../chapter-12.rst:105
+msgid "``dbio``: set to False to prevent any DB writes"
+msgstr "``dbio``: 设置为 False 可阻止向数据库写入数据"
+
+#: ../../chapter-12.rst:106
+msgid ""
+"``keep_values``: if set to true, it remembers the values of the "
+"previously submitted form"
+msgstr "``keep_values``: 如果设置为 True ，那么页面将记住上次提交的表单中各项的值"
+
+#: ../../chapter-12.rst:107
+msgid "``form_name``: the optional name of this form"
+msgstr "``form_name``: 这个表单的可选名称"
+
+#: ../../chapter-12.rst:108
+msgid "``hidden``: a dictionary of hidden fields that is added to the form"
+msgstr "``hidden``: 已经添加给这个表单的要隐藏字段的字典。"
+
+#: ../../chapter-12.rst:109
+msgid "``validation``: an optional validator, see :ref:`Validation functions`"
+msgstr "``validation``: 一个可选的验证器，请见 :ref:`Validation functions`"
+
+#: ../../chapter-12.rst:110
+msgid ""
+"``csrf_session``: if None, no csrf token is added.  If a session, then a "
+"CSRF token is added and verified"
+msgstr "``csrf_session``: 如果为 None，则不添加 csrf 令牌。如果是 session，则添加并验证 CSRF 令牌"
+
+#: ../../chapter-12.rst:111
+msgid "``lifespan``: lifespan of CSRF token in seconds, to limit form validity"
+msgstr "``lifespan``: 以秒为单位的 CSRF 令牌的有效期，用来限制表单有效性。"
+
+#: ../../chapter-12.rst:112
+msgid ""
+"``signing_info``: information that should not change between when the "
+"CSRF token is signed and verified"
+msgstr "``signing_info``: 在 CSRF 令牌签名和验证期间不应被更改的信息"
+
+#: ../../chapter-12.rst:114
+msgid ""
+"``FormStyleDefault`` is an object that is used by default for every form "
+"and it is defined in ``py4web.utils.form.FormStyleDefault``. You should "
+"never change it but you can make a copy and pass it as ``formstyle``."
+msgstr ""
+"``FormStyleDefault`` 是一个被每个表单默认使用的对象，它在 "
+"``py4web.utils.form.FormStyleDefault`` 里被定义。你绝不应该改变它，但你可以对其进行复制后再将副本作为 "
+"``formstyle`` 传递。"
+
+#: ../../chapter-12.rst:118
+msgid ""
+"You can change the style of a field named, for example, ``color`` by "
+"changing the attribute ``color`` of the FormStyle."
+msgstr "您可以通过更改 FormStyle 的 ``color`` 属性来更改名为 ``color`` 的字段的样式。"
+
+#: ../../chapter-12.rst:123
+msgid "A minimal form example without a database"
+msgstr "一个没有数据库的最小表单示例"
+
+#: ../../chapter-12.rst:125
+msgid ""
+"Let's start with a minimal working form example. Create a new minimal app"
+" called ``form_minimal`` :"
+msgstr "让我们从一个最小的工作表单示例开始。创建一个名为 ``form_minimal`` 的新的最小应用程序："
+
+#: ../../chapter-12.rst:156
+msgid ""
+"Also, you need to create a file inside the app called "
+"``templates/form_minimal.html`` that just contains the line:"
+msgstr "也需要在应用程序里创建一个文件，称其为 ``templates/form_minimal.html`` ，它仅仅包含下面的行："
+
+#: ../../chapter-12.rst:165
+msgid ""
+"Then reload py4web and visit http://127.0.0.1:8000/form_minimal - you'll "
+"get the Form page:"
+msgstr "然后重启 py4web ，再访问 http://127.0.0.1:8000/form_minimal - 你将看到那个 Form 页面："
+
+#: ../../chapter-12.rst:169
+msgid "Note that:"
+msgstr "注意："
+
+#: ../../chapter-12.rst:172
+msgid "``Form`` is a class contained in the ``py4web.utils.form`` module"
+msgstr "``Form`` 是一个包含在模块 ``py4web.utils.form`` 里面的类"
+
+#: ../../chapter-12.rst:173
+msgid ""
+"it's possible to use **form validators** like ``IS_NOT_EMPTY``, see "
+":ref:`Form validation` later. They are imported from the "
+"``pydal.validators`` module"
+msgstr ""
+"可以使用 **表单验证器**，比如 ``IS_NOT_EMPTY`` ，请参见后面的 :ref:`Form validation` 。它们来自模块"
+" ``pydal.validators`` 。"
+
+#: ../../chapter-12.rst:175
+msgid ""
+"it's normally important to use both the **GET** and the **POST** methods "
+"in the action where the form is contained"
+msgstr "在有表单的 action 里面，同时使用  **GET** 和 **POST** 方法通常很重要"
+
+#: ../../chapter-12.rst:179
+msgid ""
+"This example is intentionally not using a database, a template, nor the "
+"session management. The next example will."
+msgstr "这个示例有意的没有使用数据库、模板，也没有使用会话管理。下面的例子将会使用。"
+
+#: ../../chapter-12.rst:184
+msgid "Basic form example"
+msgstr "基本的表单示例"
+
+#: ../../chapter-12.rst:186
+msgid ""
+"In this next basic example we generate a CRUD create form from a "
+"database. Create a new minimal app called ``form_basic`` :"
+msgstr "在下一个基本示例中，我们从数据库生成一个添加数据的 DRUD 表单。创建一个名为 ``form_basic`` 的新的最小应用程序："
+
+#: ../../chapter-12.rst:207
+msgid ""
+"Note the import of two simple validators on top, in order to be used "
+"later with the ``requires`` parameter. We'll fully explain them on the "
+":ref:`Form validation` paragraph."
+msgstr ""
+"注意在顶部导入的两个简单的验证器，这是为了稍后它们被当作 ``requires`` 的参数使用。"
+"我们将在 :ref:`Form validation` 段落部分详细解释。"
+
+#: ../../chapter-12.rst:211
+msgid ""
+"You will also need a template file ``templates/form_basic.html`` that "
+"contains, for example, the following code:"
+msgstr "你还需要一个模板文件 ``templates/form_basic.html`` ，它包含下面示例代码："
+
+#: ../../chapter-12.rst:231
+msgid ""
+"Reload py4web and visit http://127.0.0.1:8000/create_form : the result is"
+" an input form on the top of the page, and the list of all the previously"
+" added entries on the bottom:"
+msgstr ""
+"重启 py4web，再访问 http://127.0.0.1:8000/create_form "
+"：结果是一个页面，上面是一个输入表单，下面是以前添加的所有数据记录的列表。"
+
+#: ../../chapter-12.rst:237
+msgid ""
+"This is a simple example and you cannot change nor delete existing "
+"records. But if you'd like to experiment, the database content can be "
+"fully seen and changed with the Dashboard app."
+msgstr "这是一个简单的示例，你不能更改和不能删除已存在的记录。但如果你想尝试，可以使用 Dashboard 应用程序查看和更改数据库的全部内容。"
+
+#: ../../chapter-12.rst:240
+msgid ""
+"You can turn a create form into a CRUD update form by passing a record or"
+" a record id it second argument:"
+msgstr "通过将一个记录或者记录的 ID 当作表单的第二个参数，你能将一个添加数据的表单转换成更新数据的 CRUD 表单："
+
+#: ../../chapter-12.rst:255
+msgid "File upload field"
+msgstr "文件上传字典"
+
+#: ../../chapter-12.rst:257
+msgid ""
+"We can make a minor modification to our reference model and an upload "
+"type file:"
+msgstr "我们可以对使用的模型和上传类型的文件进行小幅修改："
+
+#: ../../chapter-12.rst:268
+msgid ""
+"The file upload field is quite particular. The standard way to use it (as"
+" in the _scaffold app) is to have the UPLOAD_FOLDER defined in the "
+"common.py file. But if you don't specify it, then the default value of  "
+"``your_app/upload`` folder will be used (and the folder will also be "
+"created if needed). ``download_url`` is a callback that given the image "
+"name, generated the URL to download. The ``download`` url is predefined "
+"in ``common.py``."
+msgstr ""
+"文件上传字段非常特殊。使用它的标准方法（如在 _scaffold 应用程序中）是使用在 common.py 文件中定义的 "
+"UPLOAD_FOLDER 。但如果不指定，则将使用默认值的 ``your_app/upload`` 文件夹（如果需要，还将创建该文件夹）。 "
+"``download_url`` 是一个回调函数，它给定图像名称，生成要下载的 URL 。 ``download`` url 在 "
+"``common.py`` 中预定义。"
+
+#: ../../chapter-12.rst:274
+msgid "We can modify ``form_basic.html`` to display the uploaded images:"
+msgstr "我们可以修改 ``form_basic.html`` 以显示已上传的图像："
+
+#: ../../chapter-12.rst:292
+msgid ""
+"The uploaded files (the thing images) are saved on the UPLOAD_FOLDER "
+"folder with their name hashed. Other details on the upload fields can be "
+"found on :ref:`Field constructor` paragraph, including a way to save the "
+"files inside the database itself."
+msgstr ""
+"已上传的文件（ “thing” 的图像）被存储在 UPLOAD_FOLDER 指定的文件夹中，原始文件名会被哈希处理。关于上传文件的其它内容能在 "
+":ref:`Field constructor` 段落部分中找到，包括一种将文件保存进数据库中的方法。"
+
+#: ../../chapter-12.rst:298
+msgid "Widgets"
+msgstr "小部件"
+
+#: ../../chapter-12.rst:301
+msgid "Standard widgets"
+msgstr "标准小部件"
+
+#: ../../chapter-12.rst:303
+msgid ""
+"Py4web provides many widgets in the py4web.utility.form library. They are"
+" simple plugins that easily allow you to specify the type of the input "
+"elements in a form, along with some of their properties."
+msgstr "Py4web 在 Py4web.utility.form 库中提供了许多小部件。它们是简单的插件，允许您轻松指定表单中输入元素的类型及其一些属性。"
+
+#: ../../chapter-12.rst:307
+msgid "Here is the full list:"
+msgstr "这里是完整的列表"
+
+#: ../../chapter-12.rst:309
+msgid "CheckboxWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:310
+msgid "DateTimeWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:311
+msgid "FileUploadWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:312
+msgid "ListWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:313
+msgid "PasswordWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:314
+msgid "RadioWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:315
+msgid "SelectWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:316
+msgid "TextareaWidget"
+msgstr ""
+
+#: ../../chapter-12.rst:319
+msgid "This is an improved 'Basic Form Example' with a radio button widget:"
+msgstr "这是一个改进的 “基本表单示例”，带有单选按钮小部件："
+
+#: ../../chapter-12.rst:339
+msgid ""
+"Notice the differences from the 'Basic Form example' we've seen at the "
+"beginning of the chapter:"
+msgstr "请注意与我们在本章开头看到的 “基本表单示例” 的不同之处："
+
+#: ../../chapter-12.rst:342
+msgid "you need to import the widget from the py4web.utils.form library"
+msgstr "您需要从 py4web.utils.form 库导入小部件"
+
+#: ../../chapter-12.rst:343
+msgid ""
+"before the form definition, you define the ``color`` field form style "
+"with the line:"
+msgstr "在表单定义之前，您可以使用下面的行定义 ``color`` 字段表单样式："
+
+#: ../../chapter-12.rst:349
+msgid ""
+"The result is the same as before, but now we have a radio button widget "
+"instead of the dropdown menu!"
+msgstr "结果与之前相同，但现在我们有了一个单选按钮小部件，而不是下拉菜单！"
+
+#: ../../chapter-12.rst:352
+msgid ""
+"Using widgets in forms is quite easy, and they'll let you have more "
+"control on its pieces."
+msgstr "在表单中使用小部件非常简单，它们会让你对表单的各个部分有更多的控制权。"
+
+#: ../../chapter-12.rst:356
+msgid ""
+"When using py4web, use py4web widgets, and do not use the pydal widget "
+"argument in the Field object (see :ref:`Field constructor`)."
+msgstr ""
+"当使用 py4web 时，使用 py4web 小部件，不要在 Field 对象中使用 pydal 小部件参数（请参阅 :ref:`Field "
+"constructor` ）。"
+
+#: ../../chapter-12.rst:360
+msgid "Custom widgets"
+msgstr "自定义小部件"
+
+#: ../../chapter-12.rst:362
+msgid ""
+"You can also customize the widgets properties by cloning and modifying "
+"and existing style. Let's have a quick look, improving again our "
+"Superhero example:"
+msgstr "您还可以通过克隆和修改现有样式来自定义小部件属性。让我们快速浏览一下，再次改进我们的 Superhero 示例："
+
+#: ../../chapter-12.rst:403
+msgid ""
+"The result is similar to the previous ones, but now we have a custom "
+"input field, with foreground color red and background color black,"
+msgstr "结果与前面的类似，但现在我们有一个自定义输入字段，前景颜色为红色，背景颜色为黑色，"
+
+#: ../../chapter-12.rst:406
+msgid "Even the radio button widget has changed, from red to blue."
+msgstr "甚至单选按钮小部件也发生了变化，从红色变为蓝色。"
+
+#: ../../chapter-12.rst:409
+msgid "Advanced form design"
+msgstr "高级的表单设计"
+
+#: ../../chapter-12.rst:412
+msgid "Form structure manipulation"
+msgstr "表单结构操作"
+
+#: ../../chapter-12.rst:414
+msgid ""
+"In py4web a form is rendered by YATL helpers. This means the tree "
+"structure of a form can be manipulated before the form is serialized in "
+"HTML. Here is an example of how to manipulate the generate HTML "
+"structure:"
+msgstr ""
+"在 py4web 中，表单由 YATL helpers 呈现。这意味着在表单以 HTML "
+"序列化之前，可以改变表单的树结构。以下是一个如何改变生成 HTML 结构的示例"
+
+#: ../../chapter-12.rst:424
+msgid ""
+"Notice that a form does not make an HTML tree until form structure is "
+"accessed. Once accessed you can use ``.find(...)`` to find matching "
+"elements. The argument of ``find`` is a string following the filter "
+"syntax of jQuery. In the above case there is a single match ``[0]`` and "
+"we modify the ``_class`` attribute of that element. Attribute names of "
+"HTML elements must be preceded by an underscore."
+msgstr ""
+"请注意，在访问表单结构之前，表单不会形成 HTML 树。访问后，您可以使用 ``.find(...)`` 查找匹配的元素。 ``find`` "
+"的参数是一个遵循 jQuery 过滤语法的字符串。在上述情况下，只有一个匹配的 ``[0]`` ，我们修改了该元素的 ``_class`` "
+"属性。HTML 元素的属性名称前面必须加下划线。"
+
+#: ../../chapter-12.rst:430
+msgid "Custom forms"
+msgstr "自定义表单"
+
+#: ../../chapter-12.rst:432
+msgid ""
+"Custom forms allow you to granulary control how the form is processed. In"
+" the template file, you can execute specific instructions before the form"
+" is displayed or after its data submission by inserting code among the "
+"following statements:"
+msgstr "自定义表单允许您精细控制表单的处理方式。在模板文件中，您可以在显示表单之前或提交数据之后执行特定指令，方法是在以下语句中插入代码："
+
+#: ../../chapter-12.rst:442
+msgid ""
+"For example you could use it to avoid displaying the ``id`` field while "
+"editing a record in your form:"
+msgstr "例如，可以使用自定义表单在表单中编辑记录时，不再显示 ``id`` 字段。"
+
+#: ../../chapter-12.rst:458
+msgid ""
+"Note: 'custom' is just a convention, it could be any name that does not "
+"clash with already defined objects."
+msgstr "注意：“custom” 只是一个约定，它可以是任何与已定义对象不冲突的名称。"
+
+#: ../../chapter-12.rst:462
+msgid ""
+"When working with custom forms, if you have a writable field that isn't "
+"included on your form, it will be set to null when you save a record.  "
+"Any time a field is not included on a custom form, it should be set "
+"field.writable=False to ensure that field is not updated."
+msgstr ""
+"使用自定义表单时，如果您有一个不包含在表单中的可写字段，则在保存记录时会将其设置为 null。每当字段不被包含在自定义表单中时，都应将其设置为 "
+"field.writed=False，以确保该字段不被更新。"
+
+#: ../../chapter-12.rst:466
+msgid ""
+"Also, custom forms only create the element for a given field, but no "
+"surrounding elements that might be needed based on your css framework.  "
+"For example, if you're using Bulma as your css framework, you'll have to "
+"add an outer DIV in order to get select controls to appear correctly."
+msgstr ""
+"此外，自定义表单只为给定的字段创建元素，而不创建基于 css 框架可能需要的周围元素。例如，如果你使用 Bulma 作为 css "
+"框架，你必须添加一个外部 DIV 才能让选择控件正确显示。"
+
+#: ../../chapter-12.rst:472
+msgid ""
+"You can also be more creative and use your HTML in the template instead "
+"of using widgets:"
+msgstr "你也可以更有创意地在模板中使用 HTML，而不是使用小部件："
+
+#: ../../chapter-12.rst:500
+msgid "The sidecar parameter"
+msgstr "sidecar 参数"
+
+#: ../../chapter-12.rst:502
+msgid ""
+"The sidecar is the stuff injected in the form along with the submit "
+"button."
+msgstr "sidecar 是与提交按钮一起被注入到表单中的东西。"
+
+#: ../../chapter-12.rst:504
+msgid ""
+"For example, you can inject a simple ``click me`` button in your form "
+"with the following code:"
+msgstr "例如，您可以使用以下代码在表单中注入一个简单的 ``click me`` 按钮："
+
+#: ../../chapter-12.rst:512
+msgid ""
+"In particular, this is frequently used for adding a ``Cancel`` button, "
+"which is not provided by py4web:"
+msgstr "特别是，这通常用于添加 py4web 不提供的 ``Cancel`` 按钮："
+
+#: ../../chapter-12.rst:525
+msgid "Form validation"
+msgstr "表单验证"
+
+#: ../../chapter-12.rst:527
+msgid ""
+"Validators are classes used to validate input fields (including forms "
+"generated from database tables). They are normally assigned using the "
+"``requires`` attribute of a table ``Field`` object, as already shown on "
+"the :ref:`Field constructor` paragraph of the DAL chapter. Also, you can "
+"use advanced validators in order to create widgets such as drop-down "
+"menus, radio buttons and even lookups from other tables. Last but not "
+"least, you can even explicitly define a validation function."
+msgstr ""
+"验证器是用于验证输入字段（包括从数据库表生成的表单）的类。它们通常使用表定义中的 ``Field`` 对象的 ``requires`` "
+"属性分配，如 DAL 章节中 :ref:`Field constructor` "
+"段落所示。此外，您可以使用高级验证器来创建小部件，如下拉菜单、单选按钮，甚至从其他表中查找。最后但同样重要的是，您甚至可以显式定义验证函数。"
+
+#: ../../chapter-12.rst:534
+msgid "Here is a simple example of how to require a validator for a table field:"
+msgstr "这个示例简单地说明了如何为表定义中的字段添加一个验证器，"
+
+#: ../../chapter-12.rst:544
+msgid ""
+"The validator is frequently written explicitly outside the table "
+"definition in this equivalent syntax:"
+msgstr "验证器经常以这种等效语法显式地写在表定义之外："
+
+#: ../../chapter-12.rst:557
+msgid "A field can have a single validator or a list of multiple validators:"
+msgstr "一个字段可以只有一个单独的验证器，也可以有多个验证器的列表。"
+
+#: ../../chapter-12.rst:565
+msgid ""
+"Mind that the only validators that can be used with ``list:`` type fields"
+" are:"
+msgstr "请注意，只能与 ``list:`` 类型字段一起使用的验证器是："
+
+#: ../../chapter-12.rst:567
+msgid "``IS_IN_DB(..., multiple=True)``"
+msgstr ""
+
+#: ../../chapter-12.rst:568
+msgid "``IS_IN_SET(..., multiple=True)``"
+msgstr ""
+
+#: ../../chapter-12.rst:569
+msgid "``IS_NOT_EMPTY()``"
+msgstr ""
+
+#: ../../chapter-12.rst:570
+msgid "``IS_LIST_OF_EMAILS()``"
+msgstr ""
+
+#: ../../chapter-12.rst:571
+msgid "``IS_LIST_OF(...)``"
+msgstr ""
+
+#: ../../chapter-12.rst:573
+msgid ""
+"The latter can be used to apply any validator to the individual items in "
+"the list. ``multiple=(1, 1000)`` requires a selection of between 1 and "
+"1000 items. This enforces selection of at least one choice."
+msgstr ""
+"最后一个可用于将任何验证器应用于列表中的单个项目。 ``multiple=(1, 1000)`` 需要选择 1 到 1000"
+" 个项目。这强制选择至少一个选项。"
+
+#: ../../chapter-12.rst:577
+msgid ""
+"Built-in validators have constructors that take an ``error_message`` "
+"argument:"
+msgstr "内置验证器的构造器有一个 ``error_message`` 参数："
+
+#: ../../chapter-12.rst:583
+msgid ""
+"Notice the error message is usually fist option of the constructors and "
+"you can normally avoid to name it. Hence the following syntax is "
+"equivalent:"
+msgstr "注意， ``error_message`` 通常是构造器的第一个可选参数，而且一般不用参数名称。"
+"因此，以下语法是等效的： ``IS_NOT_EMPTY('cannot be empty!')`` "
+
+#: ../../chapter-12.rst:586
+msgid ""
+"If you want to use internationalization like explained in a previous "
+"chapter you need to define your own messages and wrap the validator "
+"message in the T operator:"
+msgstr "如果你想像上一章中解释的那样使用国际化，你需要定义自己的消息，并将验证器消息包装在 T 运算符中："
+
+#: ../../chapter-12.rst:589
+msgid "IS_NOT_EMPTY(error_message=T('cannot be empty!'))"
+msgstr ""
+
+#: ../../chapter-12.rst:595
+msgid "Here is an example of a validator on a database table:"
+msgstr "这是一个基于数据库表的验证器示例："
+
+#: ../../chapter-12.rst:602
+msgid ""
+"where we have used the translation operator ``T`` to allow for "
+"internationalization. Notice that error messages are not translated by "
+"default unless you define them explicitly with ``T``."
+msgstr ""
+"这里，我们使用了翻译运算符 ``T`` 来实现国际化。注意，默认情况下，error messages 是不被翻译的，除非你明确地使用 ``T`` "
+"对其进行了定义"
+
+#: ../../chapter-12.rst:605
+msgid "One can also call validators explicitly for a field:"
+msgstr "还可以为字段显式调用验证器："
+
+#: ../../chapter-12.rst:612
+msgid ""
+"which returns a tuple ``(value, error)`` and ``error`` is ``None`` if the"
+" value validates."
+msgstr "如果 value 有效，验证器会返回一个元组 ``(value, error)``，并且  ``error`` 是 ``None`` ."
+
+#: ../../chapter-12.rst:614
+msgid ""
+"You can easily test most of the following validators directly using "
+"python only. For example:"
+msgstr "直接使用 Python ，你也能很容易地测试大部分验证器。例如："
+
+#: ../../chapter-12.rst:631
+msgid ""
+"The DAL validators are well documented inside the python source code. You"
+" can easily check it by yourself for all the details!"
+msgstr "在 python 的源代码中， DAL 验证器有完整的文档。你自己就能很容易地查看验证器的所有详细信息："
+
+#: ../../chapter-12.rst:641
+msgid "Text format validators"
+msgstr "文本格式的验证器"
+
+#: ../../chapter-12.rst:645
+msgid "``IS_ALPHANUMERIC``"
+msgstr ""
+
+#: ../../chapter-12.rst:647
+msgid ""
+"This validator checks that a field value contains only characters in the "
+"ranges a-z, A-Z, 0-9, and underscores."
+msgstr "此验证器检查字段的值是否仅包含 a-z、 A-Z、 0-9 和下划线中的字符。"
+
+#: ../../chapter-12.rst:655
+msgid "``IS_LOWER``"
+msgstr ""
+
+#: ../../chapter-12.rst:657
+msgid ""
+"This validator never returns an error. It just converts the value to "
+"lower case."
+msgstr "此验证器不返回错误信息，它只是把值转换为小写。"
+
+#: ../../chapter-12.rst:665
+msgid "``IS_UPPER``"
+msgstr ""
+
+#: ../../chapter-12.rst:667
+msgid ""
+"This validator never returns an error. It converts the value to upper "
+"case."
+msgstr "此验证器不返回错误信息，它只是把值转换为大写。"
+
+#: ../../chapter-12.rst:676
+msgid "``IS_EMAIL``"
+msgstr ""
+
+#: ../../chapter-12.rst:678
+msgid ""
+"It checks that the field value looks like an email address. It does not "
+"try to send email to confirm."
+msgstr "它检查字段值是否看起来像电子邮件地址。它不会尝试发送电子邮件进行确认。"
+
+#: ../../chapter-12.rst:686
+msgid "``IS_MATCH``"
+msgstr ""
+
+#: ../../chapter-12.rst:688
+msgid ""
+"This validator matches the value against a regular expression and returns"
+" an error if it does not match. Here is an example of usage to validate a"
+" US zip code:"
+msgstr "此验证器将值与一个正则表达式进行匹配，如果失败则返回错误信息。这里是一个用来验证美国邮政编码的示例："
+
+#: ../../chapter-12.rst:696
+msgid ""
+"Here is an example of usage to validate an IPv4 address (note: the "
+"IS_IPV4 validator is more appropriate for this purpose):"
+msgstr "这是一个用来验证 IPv4 地址的示例（注意：IS_IPV4 验证器会更适合）："
+
+#: ../../chapter-12.rst:704
+msgid "Here is an example of usage to validate a US phone number:"
+msgstr "这是一个用来验证美国电话号码的示例："
+
+#: ../../chapter-12.rst:712
+msgid ""
+"For more information on Python regular expressions, refer to the official"
+" Python documentation."
+msgstr "要更多地了解 Python 正则表达式，请参考 Python 的官方在线文档。"
+
+#: ../../chapter-12.rst:714
+msgid ""
+"``IS_MATCH`` takes an optional argument ``strict`` which defaults to "
+"``False``. When set to ``True`` it only matches the whole string (from "
+"the beginning to the end):"
+msgstr ""
+"\"``IS_MATCH`` 有一个可选参数  ``strict`` ，其值默认为 ``False``。如果被设置为 ``True`` "
+"，验证器仅按整个字符串（从头到尾）进行匹配。"
+
+#: ../../chapter-12.rst:726
+msgid ""
+"``IS_MATCH`` takes an other optional argument ``search`` which defaults "
+"to ``False``. When set to ``True``, it uses regex method ``search`` "
+"instead of method ``match`` to validate the string."
+msgstr ""
+"``IS_MATCH`` 还有一个可选参数 ``search`` ，其值默认为 ``False``。如果被设置为 ``True`` "
+"，验证器将使用正则方法 ``search`` 代替 ``match`` 方法去验证字符串。"
+
+#: ../../chapter-12.rst:728
+msgid ""
+"``IS_MATCH('...', extract=True)`` filters and extract only the first "
+"matching substring rather than the original value."
+msgstr "``IS_MATCH('...', extract=True)`` 过滤并仅提取第一个匹配的子字符串，而不是原始值。"
+
+#: ../../chapter-12.rst:732
+msgid "``IS_LENGTH``"
+msgstr ""
+
+#: ../../chapter-12.rst:734
+msgid ""
+"Checks if length of field's value fits between given boundaries. Works "
+"for both text and file inputs."
+msgstr "检查字段值的长度是否在给的范围内。适用于 text 和 file 。"
+
+#: ../../chapter-12.rst:737 ../../chapter-12.rst:1378 ../../chapter-12.rst:1436
+msgid "Its arguments are:"
+msgstr "它的参数是"
+
+#: ../../chapter-12.rst:739
+msgid "maxsize: the maximum allowed length / size (has default = 255)"
+msgstr "maxsize: 允许的最大长度/大小（默认为 255）"
+
+#: ../../chapter-12.rst:740
+msgid "minsize: the minimum allowed length / size"
+msgstr "minsize: 允许的最小长度/大小"
+
+#: ../../chapter-12.rst:742
+msgid "Examples: Check if text string is shorter than 16 characters:"
+msgstr "示例：检查文本字符串是否少于 15 个字符："
+
+#: ../../chapter-12.rst:757
+msgid "Check if uploaded file has size between 1KB and 1MB:"
+msgstr "检查上传的文件大小是否在 1KB 到 1MB 之间："
+
+#: ../../chapter-12.rst:764
+msgid ""
+"For all field types except for files, it checks the length of the value. "
+"In the case of files, the value is a ``cgi.FieldStorage``, so it "
+"validates the length of the data in the file, which is the behavior one "
+"might intuitively expect."
+msgstr ""
+"除了文件类型的字段，它检查字段值的长度（字符个数）。在是文件的情况下，值是一个 ``cgi.FieldStorage`` "
+"对象，因此他检查文件中数据的长度，这是人们直观预期的行为。"
+
+#: ../../chapter-12.rst:769
+msgid "``IS_URL``"
+msgstr ""
+
+#: ../../chapter-12.rst:771
+msgid "Rejects a URL string if any of the following is true:"
+msgstr "如果以下任何一项为真，则不是 URL 字符串："
+
+#: ../../chapter-12.rst:773 ../../chapter-12.rst:787
+msgid "The string is empty or None"
+msgstr "字符串为 空 或者 None"
+
+#: ../../chapter-12.rst:774 ../../chapter-12.rst:788
+msgid "The string uses characters that are not allowed in a URL"
+msgstr "字符串中使用了 URL 不允许的字符。"
+
+#: ../../chapter-12.rst:775
+msgid "The string breaks any of the HTTP syntactic rules"
+msgstr "该字符串违反了任何 HTTP 语法规则"
+
+#: ../../chapter-12.rst:776
+msgid "The URL scheme specified (if one is specified) is not 'http' or 'https'"
+msgstr "指定了 URL 架构，但不是 'http' 或 'https'"
+
+#: ../../chapter-12.rst:777
+msgid "The top-level domain (if a host name is specified) does not exist"
+msgstr "如果指定了主机名，但顶层域名不存在"
+
+#: ../../chapter-12.rst:779
+msgid "(These rules are based on ``RFC 2616``)"
+msgstr "(这些规则基于 ``RFC 2616``)"
+
+#: ../../chapter-12.rst:781
+msgid ""
+"This function only checks the URL's syntax. It does not check that the "
+"URL points to a real document, for example, or that it otherwise makes "
+"semantic sense. This function does automatically prepend 'http://' in "
+"front of a URL in the case of an abbreviated URL (e.g. 'google.ca'). If "
+"the parameter ``mode='generic'`` is used, then this function's behavior "
+"changes. It then rejects a URL string if any of the following is true:"
+msgstr "此函数仅按 URL 语法进行检查。它不检查 URL 是否指向了一个真正的文件，或"
+
+#: ../../chapter-12.rst:789
+msgid "The URL scheme specified (if one is specified) is not valid"
+msgstr "指定的 URL 架构无效"
+
+#: ../../chapter-12.rst:791
+msgid "(These rules are based on ``RFC 2396``)"
+msgstr "这些规则基于 ``RFC 2396``"
+
+#: ../../chapter-12.rst:793
+msgid ""
+"The list of allowed schemes is customizable with the allowed_schemes "
+"parameter. If you exclude None from the list, then abbreviated URLs "
+"(lacking a scheme such as 'http') will be rejected."
+msgstr ""
+"允许的架构列表可以使用 allowd_schemes 参数进行自定义。如果从列表中排除 None，则缩写 URL（缺少 “http” "
+"等架构）将被视为无效。"
+
+#: ../../chapter-12.rst:796
+msgid ""
+"The default prepended scheme is customizable with the prepend_scheme "
+"parameter. If you set prepend_scheme to None, then prepending will be "
+"disabled. URLs that require prepending to parse will still be accepted, "
+"but the return value will not be modified."
+msgstr ""
+"默认的预置架构可以使用 prepend_scheme 参数进行自定义。如果将 repend_scheme 设置为 "
+"None，则预先添加架构操作将被禁用。仍将接受需要预先添加架构才能解析的 URL，但不会修改返回值。"
+
+#: ../../chapter-12.rst:800
+#, python-format
+msgid ""
+"IS_URL is compatible with the Internationalized Domain Name (IDN) "
+"standard specified in ``RFC 3490``). As a result, URLs can be regular "
+"strings or unicode strings. If the URL's domain component (e.g. "
+"google.ca) contains non-US-ASCII letters, then the domain will be "
+"converted into Punycode (defined in ``RFC 3492``). IS_URL goes a bit "
+"beyond the standards, and allows non-US-ASCII characters to be present in"
+" the path and query components of the URL as well. These non-US-ASCII "
+"characters will be encoded. For example, space will be encoded as'%20'. "
+"The unicode character with hex code 0x4e86 will become '%4e%86'."
+msgstr ""
+"IS_URL 与 ``RFC 3490`` 中指定的国际化域名（IDN）标准兼容。因此，URL 可以是常规字符串或 unicode 字符串。如果 "
+"URL 的域组件（例如 google.ca）包含非美国 ASCII 字母，则域将转换为 Punycode（在 ``RFC 3492`` "
+"中定义）。IS_URL 超出了标准，允许非美国 ASCII 字符出现在 URL 的路径和查询组件中。这些非美国 ASCII "
+"字符将被编码。例如，空格将被编码为 “%20”。十六进制代码为 0x4e86 的 unicode 字符将变为 “%4e%86” 。"
+
+#: ../../chapter-12.rst:809 ../../chapter-12.rst:1446 ../../chapter-12.rst:1517
+#: ../../chapter-12.rst:1573 ../../chapter-12.rst:1623
+msgid "Examples:"
+msgstr "示例："
+
+#: ../../chapter-12.rst:823
+msgid "``IS_SAFE``"
+msgstr ""
+
+#: ../../chapter-12.rst:831
+msgid ""
+"This validators is for text fields that should contain HTML and may "
+"contain invalid tags (script, ember, object, iframe). It works by trying "
+"to sanitize the content and either provide an error (mode=\"error\") or "
+"replacing the content with the sanitized one (mode=\"sanitize\"). You can"
+" specify the error message, the mode, and provide your own sanitizer."
+msgstr ""
+"此验证器用于应包含 HTML "
+"且可能包含无效标签（脚本、成员、对象、iframe）的文本字段。它的工作原理是尝试对内容进行净化（去除或编码不安全的内容），并提供错误（mode=\"error\"）或用净化后的内容替换内容（mode=\"sanitize\"）。您可以指定错误消息、模式，并提供自己的净化函数。"
+
+#: ../../chapter-12.rst:836
+msgid "``IS_SLUG``"
+msgstr ""
+
+#: ../../chapter-12.rst:843
+msgid ""
+"If ``check`` is set to ``True`` it check whether the validated value is a"
+" slug (allowing only alphanumeric characters and non-repeated dashes)."
+msgstr "如果 ``check`` 设置为 ``True`` ，则检查验证值是否符合 slug 规则（只允许字母、数字和不重复的破折号）。"
+
+#: ../../chapter-12.rst:845
+msgid ""
+"If ``check`` is set to ``False`` (default) it converts the input value to"
+" a slug."
+msgstr "如果 ``check`` 设置为 ``False`` （默认），它把输入值转换成符合 slug 规则的内容。"
+
+#: ../../chapter-12.rst:848
+msgid "``IS_JSON``"
+msgstr ""
+
+#: ../../chapter-12.rst:855
+msgid "This validator checks that a field value is in JSON format."
+msgstr "此验证器检查字段值是否为 JSON 格式。"
+
+#: ../../chapter-12.rst:857
+msgid ""
+"If ``native_json`` is set to ``False`` (default) it converts the input "
+"value to the serialized value otherwise the input value is left "
+"unchanged."
+msgstr "如果 ``native_json`` 设置为 ``False`` （默认值），则将输入值转换为序列化值，否则输入值保持不变。"
+
+#: ../../chapter-12.rst:860
+msgid "Date and time validators"
+msgstr "日期和时间的验证器"
+
+#: ../../chapter-12.rst:863
+msgid "``IS_TIME``"
+msgstr ""
+
+#: ../../chapter-12.rst:865
+msgid ""
+"This validator checks that a field value contains a valid time in the "
+"specified format."
+msgstr "此验证器检查字段值是否是符合指定格式的时间"
+
+#: ../../chapter-12.rst:873
+msgid "``IS_DATE``"
+msgstr ""
+
+#: ../../chapter-12.rst:875
+msgid ""
+"This validator checks that a field value contains a valid date in the "
+"specified format. It is good practice to specify the format using the "
+"translation operator, in order to support different formats in different "
+"locales."
+msgstr "此验证器检查字段值是否是符合指定格式的日期。建议指定使用翻译操作符 T 的格式，这样可以在不同区域环境下支持不同的格式。"
+
+#: ../../chapter-12.rst:883 ../../chapter-12.rst:926 ../../chapter-12.rst:941
+#, python-format
+msgid ""
+"For the full description on % directives look under the IS_DATETIME "
+"validator."
+msgstr "在 ``IS_DATETIME`` 验证器部分，可以查看 ``%`` 指令的完整描述。"
+
+#: ../../chapter-12.rst:886
+msgid "``IS_DATETIME``"
+msgstr ""
+
+#: ../../chapter-12.rst:888
+msgid ""
+"This validator checks that a field value contains a valid datetime in the"
+" specified format. It is good practice to specify the format using the "
+"translation operator, in order to support different formats in different "
+"locales."
+msgstr "此验证器检查字段值是否是符合指定格式的日期时间。建议指定使用翻译操作符 T 的格式，这样可以在不同区域环境下支持不同的格式。"
+
+#: ../../chapter-12.rst:896
+msgid ""
+"The following symbols can be used for the format string (this shows the "
+"symbol, their meaning, and an example string):"
+msgstr "以下符号可用于定义格式的字符串（展示了符号、其含义和示例字符串）："
+
+#: ../../chapter-12.rst:914
+msgid "``IS_DATE_IN_RANGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:916 ../../chapter-12.rst:931
+msgid "Works very much like the previous validator but allows to specify a range:"
+msgstr "其作用和前面的验证器类似，但需在指定的范围内："
+
+#: ../../chapter-12.rst:929
+msgid "``IS_DATETIME_IN_RANGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:944
+msgid "Range, set and equality validators"
+msgstr "范围、集合和相等的验证器"
+
+#: ../../chapter-12.rst:947
+msgid "``IS_EQUAL_TO``"
+msgstr ""
+
+#: ../../chapter-12.rst:949
+msgid ""
+"Checks whether the validated value is equal to a given value (which can "
+"be a variable):"
+msgstr "检查被验证的值是否等于已给定的值（可以是一个变量）"
+
+#: ../../chapter-12.rst:958
+msgid "``IS_NOT_EMPTY``"
+msgstr ""
+
+#: ../../chapter-12.rst:960
+msgid ""
+"This validator checks that the content of the field value is neither None"
+" nor an empty string nor an empty list. A string value is checked for "
+"after a ``.strip()``."
+msgstr "这个验证器检查字段值的内容是否不是 None 、空字符串或者空列表。一个字符串类型的值会在调用 ``.strip()`` 之后才被检查。"
+
+#: ../../chapter-12.rst:967
+msgid "You can provide a regular expression for the matching of the empty string."
+msgstr "您可以提供一个正则表达式来匹配空字符串。"
+
+#: ../../chapter-12.rst:975
+msgid "``IS_NULL_OR``"
+msgstr ""
+
+#: ../../chapter-12.rst:977
+msgid "Deprecated, an alias for ``IS_EMPTY_OR`` described below."
+msgstr "已弃用，如下所述的 IS_EMPTY_OR 的别名。"
+
+#: ../../chapter-12.rst:980
+msgid "``IS_EMPTY_OR``"
+msgstr ""
+
+#: ../../chapter-12.rst:982
+msgid ""
+"Sometimes you need to allow empty values on a field along with other "
+"requirements. For example a field may be a date but it can also be empty."
+" The ``IS_EMPTY_OR`` validator allows this:"
+msgstr "有时，需要在一个有其他要求的字段上允许空值。例如，一个要求是日期的字段值也可以为空。 ``IS_EMPTY_OR`` 验证器允许这样做："
+
+#: ../../chapter-12.rst:990
+msgid ""
+"An empty value is either None or an empty string or an empty list. A "
+"string value is checked for after a ``.strip()``."
+msgstr "一个空值是 None，或者是一个空字符串，还可以是一个空列表。字符串类型的值在调用  ``.strip()`` 之后才被检查。"
+
+#: ../../chapter-12.rst:992
+msgid ""
+"You can provide a regular expression for the matching of the empty string"
+" with the ``empty_regex`` argument (like for IS_NOT_EMPTY validator)."
+msgstr "您可以为 ``empty_regex`` 参数提供一个正则表达式，用于将空字符串的匹配（类似 IS_NOT_empty 验证器）。"
+
+#: ../../chapter-12.rst:994
+msgid "You may also specify a value to be used for the empty case."
+msgstr "还可以指定一个用于 “被视为空” 的值。"
+
+#: ../../chapter-12.rst:1002
+msgid "``IS_EXPR``"
+msgstr ""
+
+#: ../../chapter-12.rst:1004
+msgid ""
+"This validator let you express a general condition by means of a callable"
+" which takes a value to validate and returns the error message or "
+"``None`` to accept the input value."
+msgstr "此验证器允许您通过可调用函数来表达一般条件，该函数接受一个值进行验证并返回错误消息，或返回 ``None`` 以接受输入值。"
+
+#: ../../chapter-12.rst:1012
+msgid ""
+"**Notice** that returned message will not be translated if you do not "
+"arrange otherwise."
+msgstr "**注意** ，如果您不像上面一样处理，返回的消息将不会被翻译。"
+
+#: ../../chapter-12.rst:1015
+msgid ""
+"For backward compatibility the condition may be expressed as a string "
+"containing a logical expression in terms of a variable value. It "
+"validates a field value if the expression evaluates to ``True``."
+msgstr "为了向后兼容，条件可以表示为包含变量值逻辑表达式的字符串。如果表达式的计算结果为 ``True`` ，字段值将通过验证。"
+
+#: ../../chapter-12.rst:1023
+msgid ""
+"One should first check that the value is an integer so that an exception "
+"will not occur."
+msgstr "应该首先确保值是一个整数，以避免发生异常。"
+
+#: ../../chapter-12.rst:1033
+msgid "``IS_DECIMAL_IN_RANGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:1040
+msgid ""
+"It converts the input into a Python Decimal or generates an error if the "
+"decimal does not fall within the specified inclusive range. The "
+"comparison is made with Python Decimal arithmetic."
+msgstr "它将输入转换为 Python 十进制。如果十进制不在指定的包含范围内，则生成错误。使用Python 十进制算法进行比较。"
+
+#: ../../chapter-12.rst:1044
+msgid ""
+"The minimum and maximum limits can be None, meaning no lower or upper "
+"limit, respectively."
+msgstr "最小和最大限制可以是 None，那分别表示没有下限或上限，"
+
+#: ../../chapter-12.rst:1047 ../../chapter-12.rst:1060
+msgid ""
+"The ``dot`` argument is optional and allows you to internationalize the "
+"symbol used to separate the decimals."
+msgstr "``dot`` 参数是可选的，允许您将用于分隔小数的符号国际化。"
+
+#: ../../chapter-12.rst:1050
+msgid "``IS_FLOAT_IN_RANGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:1052
+msgid ""
+"Checks that the field value is a floating point number within a definite "
+"range, ``0 <= value <= 100`` in the following example:"
+msgstr "检查字段值是否为一定范围内的浮点数，在以下示例中为 ``0 <= value <= 100`` ："
+
+#: ../../chapter-12.rst:1063
+msgid "``IS_INT_IN_RANGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:1065
+msgid "Checks that the field value is an integer number within a definite range,"
+msgstr "检查字段值是否为一定范围内的整数，"
+
+#: ../../chapter-12.rst:1066
+msgid "``0 <= value < 100`` in the following example:"
+msgstr "在以下示例中为 ``0 <= value < 100`` ："
+
+#: ../../chapter-12.rst:1075
+msgid "``IS_IN_SET``"
+msgstr ""
+
+#: ../../chapter-12.rst:1077
+msgid ""
+"This validator will automatically set the form field to an option field "
+"(ie, with a drop-down menu)."
+msgstr "此验证器将自动将表单字段设置为选项字段（即，使用下拉菜单）。"
+
+#: ../../chapter-12.rst:1079
+msgid "``IS_IN_SET`` checks that the field values are in a set:"
+msgstr "``IS_IN_SET`` 检查字段值是否在集合中："
+
+#: ../../chapter-12.rst:1087
+msgid ""
+"The zero argument is optional and it determines the text of the option "
+"selected by default, an option which is not accepted by the ``IS_IN_SET``"
+" validator itself. If you do not want a \"choose one\" option, set "
+"``zero=None``."
+msgstr ""
+"``zero`` 参数是可选的，它决定了默认选择的选项的文本， ``IS_IN_SET`` 验证器本身不接受该选项。如果你不想默认 “选择一个” "
+"选项，请设置为 ``zero=None`` 。"
+
+#: ../../chapter-12.rst:1090
+msgid ""
+"The elements of the set can be combined with a numerical validator, as "
+"long as IS_IN_SET is first in the list. Doing so will force conversion by"
+" the last validator to the numerical type. So, IS_IN_SET can be followed "
+"by ``IS_INT_IN_RANGE`` (which converts the value to int) or "
+"``IS_FLOAT_IN_RANGE`` (which converts the value to float). For example:"
+msgstr ""
+"只要 ``IS_IN_SET`` 是列表中的第一个，该集合的元素就可以与数字验证器组合。这样做将强制后面的验证器转换为数字类型。因此， "
+"``S_IN_SET`` 后面可以跟 ``IS_INT_IN_RANGE`` （将值转换为 INT）或 ``IS_FLOAT_IN_RANGE``"
+" （将值转化为 FLOAT）。"
+
+#: ../../chapter-12.rst:1102
+msgid "Checkbox validation"
+msgstr "复选框验证"
+
+#: ../../chapter-12.rst:1103
+msgid ""
+"To force a filled-in form checkbox (such as an acceptance of terms and "
+"conditions), use this:"
+msgstr "要强制填写表格复选框（例如接受条款和条件），请使用以下命令："
+
+#: ../../chapter-12.rst:1111
+msgid "Dictionaries and tuples with IS_IN_SET"
+msgstr "在 IS_IN_SET 中使用字典和元组"
+
+#: ../../chapter-12.rst:1113
+msgid ""
+"You may also use a dictionary or a list of tuples to make the drop down "
+"list more descriptive:"
+msgstr "您还可以使用字典或元组列表使下拉列表更具描述性："
+
+#: ../../chapter-12.rst:1125
+msgid "Sorted options"
+msgstr "排序选项"
+
+#: ../../chapter-12.rst:1127
+msgid ""
+"To keep the options alphabetically sorted by their labels into the drop "
+"down list, use the ``sort`` argument with IS_IN_SET."
+msgstr "要在下拉列表中按标签的字母顺序排列选项，请在 ``IS_IN_SET`` 中使用 ``sort`` 参数。"
+
+#: ../../chapter-12.rst:1135
+msgid "``IS_IN_SET`` and Tagging"
+msgstr "``IS_IN_SET`` 和标记"
+
+#: ../../chapter-12.rst:1137
+msgid ""
+"The ``IS_IN_SET`` validator has an optional attribute ``multiple=False``."
+" If set to True, multiple values can be stored in one field. The field "
+"should be of type ``list:integer`` or ``list:string`` as discussed in "
+":ref:`list_type and contains`. An explicit example of tagging is "
+"discussed there. We strongly suggest using the jQuery multiselect plugin "
+"to render multiple fields."
+msgstr ""
+"``IS_IN_SET`` 验证器具有可选属性 ``multiple=False`` 。如果设置为 "
+"True，则可以在一个字段中存储多个值。字段的类型应为 ``list:integer`` 或 ``list:string`` ，"
+"如 :ref:`list_type and contains` 中所述。这里讨论了一个明确的标记示例。"
+"我们强烈建议使用 jQuery multiselect 插件来呈现多个值的字段。"
+
+#: ../../chapter-12.rst:1141
+msgid ""
+"**Note** that when ``multiple=True``, ``IS_IN_SET`` will accept zero or "
+"more values, i.e. it will accept the field when nothing has been "
+"selected. ``multiple`` can also be a tuple of the form ``(a, b)`` where "
+"``a`` and ``b`` are the minimum and (exclusive) maximum number of items "
+"that can be selected respectively."
+msgstr ""
+"**请注意** ，当 ``multiple=True`` 时， ``IS_IN_SET`` "
+"将接受零个或多个值，即当没有选择任何值时，它将接受该字段。 ``multiple`` 也可以是 ``(a, b)`` 形式的元组，其中 ``a``"
+" 和 ``b`` 分别是可以选择的最小和（不包括）最大项目数。"
+
+#: ../../chapter-12.rst:1148
+msgid "Complexity and security validators"
+msgstr "复杂性和安全性的验证器"
+
+#: ../../chapter-12.rst:1151
+msgid "``IS_STRONG``"
+msgstr ""
+
+#: ../../chapter-12.rst:1153
+msgid "Enforces complexity requirements on a field (usually a password field)."
+msgstr "强制对字段执行复杂性要求（通常用于密码字段）。"
+
+#: ../../chapter-12.rst:1155
+msgid "Example:"
+msgstr "示例："
+
+#: ../../chapter-12.rst:1162
+msgid "where:"
+msgstr "参数："
+
+#: ../../chapter-12.rst:1164
+msgid "``min`` is minimum length of the value"
+msgstr "``min`` 是值的长度的最小值"
+
+#: ../../chapter-12.rst:1165
+#, python-brace-format
+msgid ""
+"``special`` is the minimum number of required special characters, by "
+"default special characters are any of the following "
+"``^!!@#$%^&*()_+-=?<>,.:;{}[]|`` (you can customize these using "
+"``specials = '...'``)"
+msgstr ""
+"``special`` 是需要的特殊字符的最小数目，默认的特殊字符是 ``^!!@#$%^&*()_+-=?<>,.:;{}[]|`` "
+"（你可以使用 ``specials = '...'`` 对其进行自定义）"
+
+#: ../../chapter-12.rst:1167
+msgid "``upper`` is the minimum number of upper case characters"
+msgstr "``upper`` 是值中大写字符的最小数目"
+
+#: ../../chapter-12.rst:1169
+msgid "other accepted arguments are:"
+msgstr "其它可使用的参数是："
+
+#: ../../chapter-12.rst:1171
+msgid ""
+"``invalid`` for the list of forbidden characters, by default ``invalid=' "
+"\"'``"
+msgstr "``invalid`` 用于禁止使用的字符的列表，默认是 ``invalid=' \"'``"
+
+#: ../../chapter-12.rst:1172
+msgid "``max`` for the maximum length of the value"
+msgstr "``max`` 是值的长度的最大值"
+
+#: ../../chapter-12.rst:1173
+msgid "``lower`` for the minimum number of lower case characters"
+msgstr "``lower``  是值中小写字符的最小数目"
+
+#: ../../chapter-12.rst:1174
+msgid "``number`` for the minimum number of digit characters"
+msgstr "``number`` 是数字字符的最小数目"
+
+#: ../../chapter-12.rst:1176
+msgid ""
+"Obviously you can provide an ``error_message`` as for any other "
+"validator, although IS_STRONG is clever enough to provide a clear message"
+" to describe the validation failure."
+msgstr ""
+"显然，您可以像其他验证器一样提供 ``error_message`` ，尽管 ``IS_STRONG`` "
+"足够聪明，可以提供一条清晰的消息来描述验证失败。"
+
+#: ../../chapter-12.rst:1178
+msgid ""
+"A special argument you can use is ``entropy``, that is a minimum value "
+"for the complexity of the value to accept (a number), experiment this "
+"with:"
+msgstr "您可以使用的一个特殊参数是 ``entropy`` ，它是要接受的值（一个数字）的复杂性的最小值，请尝试："
+
+#: ../../chapter-12.rst:1186
+msgid ""
+"**Notice** that if the argument ``entropy`` is not given then IS_STRONG "
+"implicitly sets the following defaults: ``min = 8, upper = 1, lower = 1, "
+"number = 1, special = 1`` which otherwise are all sets to ``None``."
+msgstr ""
+"**请注意** ，如果参数 ``entropy`` 没有给出，则 ``IS_STRONG`` 隐式设置以下默认值：``min = 8, upper"
+" = 1, lower = 1, number = 1, special = 1``，否则都设置为None。"
+
+#: ../../chapter-12.rst:1191
+msgid "``CRYPT``"
+msgstr ""
+
+#: ../../chapter-12.rst:1193
+msgid ""
+"This is also a filter. It performs a secure hash on the input and it is "
+"used to prevent passwords from being passed in the clear to the database."
+msgstr "这也是一个过滤器。它对输入执行安全散列，用于防止密码以明文形式传递到数据库"
+
+#: ../../chapter-12.rst:1200
+msgid ""
+"By default, CRYPT uses 1000 iterations of the pbkdf2 algorithm combined "
+"with SHA512 to produce a 20-byte-long hash. Old versions of web2py used "
+"md5 or HMAC+SHA512 depending on whether a key was specified or not."
+msgstr ""
+"默认情况下，CRYPT 使用 1000 次迭代的 pbkdf2 算法结合 SHA512 来生成 20 字节长的哈希值。旧版本的 web2py 使用"
+" md5 或 HMAC+SHA512 ，具体取决于是否指定了密钥。"
+
+#: ../../chapter-12.rst:1203
+msgid ""
+"If a key is specified, CRYPT uses the HMAC algorithm. The key may contain"
+" a prefix that determines the algorithm to use with HMAC, for example "
+"SHA512:"
+msgstr ""
+"如果指定了密钥（ key 参数），CRYPT 将使用 HMAC 算法。密钥可能包含一个前缀，用于确定与 HMAC一起使用的算法，例如 SHA512"
+" ："
+
+#: ../../chapter-12.rst:1210
+msgid ""
+"This is the recommended syntax. The key must be a unique string "
+"associated with the database used. The key can never be changed. If you "
+"lose the key, the previously hashed values become useless. By default, "
+"CRYPT uses random salt, such that each result is different. To use a "
+"constant salt value, specify its value:"
+msgstr ""
+"这是推荐的语法。密钥必须是与所使用的数据库关联的唯一字符串。钥匙永远不能改变。如果你丢失了密钥，之前散列的值将变得无用。默认情况下，CRYPT "
+"使用随机的 salt，因此每个结果都不同。要使用恒定的 salt 值，请指定其值："
+
+#: ../../chapter-12.rst:1218
+msgid "Or, to use no salt:"
+msgstr "或者，不使用 salt："
+
+#: ../../chapter-12.rst:1225
+msgid ""
+"The CRYPT validator hashes its input, and this makes it somewhat special."
+" If you need to validate a password field before it is hashed, you can "
+"use CRYPT in a list of validators, but must make sure it is the last of "
+"the list, so that it is called last. For example:"
+msgstr ""
+"CRYPT 验证器对其输入进行哈希运算，这使得它有点特别。如果需要在散列之前验证密码字段，可以在验证器列表中使用 "
+"CRYPT，但必须确保它是列表中的最后一个，以便最后调用它。例如："
+
+#: ../../chapter-12.rst:1233
+msgid "``CRYPT`` also takes a ``min_length`` argument, which defaults to zero."
+msgstr "``CRYPT`` 还接受一个 ``min_length`` 参数，其默认值为 0 "
+
+#: ../../chapter-12.rst:1235
+msgid ""
+"The resulting hash takes the form ``alg$salt$hash``, where ``alg`` is the"
+" hash algorithm used, ``salt`` is the salt string (which can be empty), "
+"and ``hash`` is the algorithm's output. Consequently, the hash is self-"
+"identifying, allowing, for example, the algorithm to be changed without "
+"invalidating previous hashes. The key, however, must remain the same."
+msgstr ""
+"生成的哈希采用 ``alg$salt$hash`` 的形式，其中 ``alg`` 是使用的哈希算法， ``salt`` 是 salt "
+"字符串（可以为空）， ``hash`` "
+"是算法的输出。因此，哈希是自我识别的，例如，在不使之前的哈希无效的情况下，允许更改算法。然而，密钥必须保持不变。"
+
+#: ../../chapter-12.rst:1241
+msgid "Special type validators"
+msgstr "特殊类型的验证器"
+
+#: ../../chapter-12.rst:1244
+msgid "``IS_LIST_OF``"
+msgstr ""
+
+#: ../../chapter-12.rst:1246
+msgid ""
+"This validator helps you to ensure length limits on values of type list, "
+"for this purpose use its ``minimum``, ``maximum``, and ``error_message`` "
+"arguments, for example:"
+msgstr ""
+"此验证器可帮助您确保列表类型值的长度限制，为此，请使用其 ``minimum` `、 ``maximum`` 和 "
+"``error_message`` 参数，例如："
+
+#: ../../chapter-12.rst:1254
+msgid ""
+"A list value may comes from a form containing multiple fields with the "
+"same name or a multiple selection box. Note that this validator "
+"automatically converts a non-list value into a single valued list:"
+msgstr "列表值可能来自包含多个同名字段的表单或多选框。请注意，此验证器会自动将非列表值转换为单值列表："
+
+#: ../../chapter-12.rst:1263
+msgid ""
+"If the first argument of IS_LIST_OF is another validator, then it applies"
+" the other validator to each element of the list. A typical usage is "
+"validation of a ``list:`` type field, for example:"
+msgstr ""
+"如果 IS_LIST_OF 的第一个参数是另一个验证器，那么它会将另一个验证器应用于列表的每个元素。一个典型的用法是验证 ``list:`` "
+"类型字段，例如："
+
+#: ../../chapter-12.rst:1272
+msgid "``IS_LIST_OF_EMAILS``"
+msgstr ""
+
+#: ../../chapter-12.rst:1274
+msgid "This validator is specifically designed to work with the following field:"
+msgstr "此验证器被专门设计以用于以下字段："
+
+#: ../../chapter-12.rst:1285
+msgid ""
+"Notice that due to the ``widget`` customization this field will be "
+"rendered by a textarea in SQLFORMs (see next [[Widgets #Widgets]] "
+"section). This let you insert and edit multiple emails in a single input "
+"field (very much like normal mail client programs do), separating each "
+"email address with ``,``, ``;``, and blanks (space, newline, and tab "
+"characters). As a consequence now we need a validator which is able to "
+"operate on a single value input and a way to split the validated value "
+"into a list to be next processed by DAL. This is accomplished by the "
+"``requires`` validator. As alternative to ``filter_in``, you can pass the"
+" following function to the ``onvalidation`` argument of form ``accepts``,"
+" ``process``, or ``validate`` method:"
+msgstr ""
+"请注意，由于 ``widget`` 的自定义，此字段将被呈现为 SQLFORM 中的文本区域（请参阅下一节 [[Widgets "
+"#Widgets]] ）。这允许您在单个输入字段中插入和编辑多封电子邮件（非常像普通邮件客户端程序），用 ``,`` 、 ``;`` 或 "
+"空白（空格、换行符或制表符）分隔每个电子邮件地址。因此，现在我们需要一个能够对单个值输入进行操作的验证器，以及一种将验证后的值拆分为 DAL "
+"下一步处理的列表的方法。这是由 ``requires`` 验证器完成的。作为 ``filter_in`` 的替代方法，您可以将以下函数传递给表单 "
+"``accepts`` 、 ``process`` 或 ``validate`` 方法的 ``onvalidation`` 参数："
+
+#: ../../chapter-12.rst:1299
+msgid ""
+"The effect of the ``represent`` argument (at lines 6 and 7) is to add a "
+"\"mailto:...\" link to each email address when the record is rendered in "
+"HTML pages."
+msgstr ""
+"``represent`` 参数（第6行和第7行）的作用是在 HTML 页面中呈现记录时，为每个电子邮件地址添加一个 “mailto:...” "
+"链接。"
+
+#: ../../chapter-12.rst:1302
+msgid "``ANY_OF``"
+msgstr ""
+
+#: ../../chapter-12.rst:1304
+msgid ""
+"This validator takes a list of validators and accepts a value if any of "
+"the validators in the list does (i.e. it acts like a logical OR with "
+"respect to given validators)."
+msgstr "此验证器接受其它验证器组成的列表，如果列表中的任何验证器接受值，则它接受该值（即，它对给定的验证器的行为类似于逻辑 OR ）。"
+
+#: ../../chapter-12.rst:1312
+msgid ""
+"When none of the validators accepts the value you get the error message "
+"form the last attempted one (the last in the list), you can customize the"
+" error message as usual:"
+msgstr "当没有验证器接受值时（验证失败），你会得到最后一个验证器的错误消息（列表中的最后一个），您可以像往常一样自定义错误消息："
+
+#: ../../chapter-12.rst:1325
+msgid "``IS_IMAGE``"
+msgstr ""
+
+#: ../../chapter-12.rst:1327
+msgid ""
+"This validator checks if a file uploaded through the file input was saved"
+" in one of the selected image formats and has dimensions (width and "
+"height) within given limits."
+msgstr "此验证器检查通过文件输入上传的文件是否以所选图像格式之一保存，并且尺寸（宽度和高度）是否在给定范围内。"
+
+#: ../../chapter-12.rst:1330
+msgid ""
+"It does not check for maximum file size (use IS_LENGTH for that). It "
+"returns a validation failure if no data was uploaded. It supports the "
+"file formats BMP, GIF, JPEG, PNG, and it does not require the Python "
+"Imaging Library."
+msgstr ""
+"它不会检查最大文件大小（使用 IS_LENGTH ）。如果没有上传数据，则返回验证失败。它支持 BMP、GIF、JPEG、PNG "
+"等文件格式，并且不需要 Python 图像库。"
+
+#: ../../chapter-12.rst:1333
+msgid "Code parts taken from ref.``source1``:cite"
+msgstr "代码部分取自 ref.``source1``:cite （？）"
+
+#: ../../chapter-12.rst:1335
+msgid ""
+"It takes the following arguments: - extensions: iterable containing "
+"allowed image file extensions in lowercase - maxsize: iterable containing"
+" maximum width and height of the image - minsize: iterable containing "
+"minimum width and height of the image"
+msgstr ""
+"它接受以下参数： - extensions:iterable 包含允许的小写图像文件扩展名； - maxsize:iterable "
+"包含图像的最大宽度和高度； - minsize:iterate 包含图像的最小宽度和高度"
+
+#: ../../chapter-12.rst:1340
+msgid "Use (-1, -1) as minsize to bypass the image-size check."
+msgstr "使用 (-1, -1) 作为最小尺寸来避免图像尺寸检查。"
+
+#: ../../chapter-12.rst:1342
+msgid ""
+"Here are some Examples: - Check if uploaded file is in any of supported "
+"image formats:"
+msgstr "这里有些示例：- 检查已上传的文件是否为任何支持的图像格式："
+
+#: ../../chapter-12.rst:1349
+msgid "Check if uploaded file is either JPEG or PNG:"
+msgstr "检查已上传的文件扩展名是否是  JPEG 或 PNG ："
+
+#: ../../chapter-12.rst:1356
+msgid "Check if uploaded file is PNG with maximum size of 200x200 pixels:"
+msgstr "检查已上传的文件扩展名是否是 PNG ，且大小最大为  200x200 像素："
+
+#: ../../chapter-12.rst:1363
+msgid ""
+"Note: on displaying an edit form for a table including ``requires = "
+"IS_IMAGE()``, a ``delete`` checkbox will NOT appear because to delete the"
+" file would cause the validation to fail. To display the ``delete`` "
+"checkbox use this validation:"
+msgstr ""
+"注意：在显示包含 ``requires=IS_IMAGE()``的表的编辑表单时，将不会出现 ``delete`` "
+"复选框，因为删除文件会导致验证失败。要显示 ``delete`` 复选框，请使用以下验证："
+
+#: ../../chapter-12.rst:1372
+msgid "``IS_FILE``"
+msgstr ""
+
+#: ../../chapter-12.rst:1374
+msgid ""
+"Checks if name and extension of file uploaded through file input matches "
+"given criteria."
+msgstr "检查通过文件输入上传的文件的名称和扩展名是否符合给定条件。"
+
+#: ../../chapter-12.rst:1376
+msgid ""
+"Does *not* ensure the file type in any way. Returns validation failure if"
+" no data was uploaded."
+msgstr "不以任何方式确保文件类型。如果没有上传数据，则返回验证失败。"
+
+#: ../../chapter-12.rst:1380
+msgid ""
+"filename: string/compiled regex or a list of strings/regex of valid "
+"filenames"
+msgstr "filename: 字符串/编译的正则表达式，或有效文件名的字符串/正则表达式列表"
+
+#: ../../chapter-12.rst:1381
+msgid ""
+"extension: string/compiled regex or a list of strings/regex of valid "
+"extensions"
+msgstr "extension: 字符串/编译后的正则表达式，或有效扩展名的字符串/正则表达式列表"
+
+#: ../../chapter-12.rst:1382 ../../chapter-12.rst:1440
+msgid ""
+"lastdot: which dot should be used as a filename / extension separator: "
+"``True`` indicates last dot (e.g., \"file.tar.gz\" will be broken in "
+"\"file.tar\" + \"gz\") while ``False`` means first dot (e.g., "
+"\"file.tar.gz\" will be broken into \"file\" + \"tar.gz\")."
+msgstr ""
+"lastdot: 应将哪个点用作文件名/扩展名分隔符：``True`` 表示最后一个点（例如，“file.tar.gz” 将被拆分为 "
+"“file.tar”+“gz” ），而 ``False`` 表示第一个点（例如，“file.tar.gz“ 将被拆分为 "
+"”file”+“tar.gz” ）。"
+
+#: ../../chapter-12.rst:1384 ../../chapter-12.rst:1442
+msgid ""
+"case: 0 means keep the case; 1 means transform the string into lowercase "
+"(default); 2 means transform the string into uppercase."
+msgstr "case: 0 表示保留原有的大小写；1 表示将字符串转换为小写（默认）；2 表示将字符串转换为大写。"
+
+#: ../../chapter-12.rst:1386
+msgid ""
+"If there is no dot present, extension checks will be done against empty "
+"string and filename checks against whole value."
+msgstr "如果没有点，将对空字符串进行扩展名检查，并对整个值进行文件名检查。"
+
+#: ../../chapter-12.rst:1388
+msgid "Examples: Check if file has a pdf extension (case insensitive):"
+msgstr "示例：检查文件是否有 pdf 扩展名（不区分大小写）："
+
+#: ../../chapter-12.rst:1397
+msgid ""
+"Check if file is called 'thumbnail' and has a jpg or png extension (case "
+"insensitive):"
+msgstr "检查文件名是否为 'thumbnail' ，同时有 jpg 或 png 扩展名（不区分大小写）"
+
+#: ../../chapter-12.rst:1407 ../../chapter-12.rst:1455
+msgid "Check if file has a tar.gz extension and name starting with backup:"
+msgstr "检查文件是否有 tar.gz 扩展名，同时文件名开头是 backup："
+
+#: ../../chapter-12.rst:1416 ../../chapter-12.rst:1462
+msgid "Check if file has no extension and name matching README (case sensitive):"
+msgstr "检查文件是否没有扩展名，并且文件名与 README 匹配（区分大小写）："
+
+#: ../../chapter-12.rst:1427
+msgid "``IS_UPLOAD_FILENAME``"
+msgstr ""
+
+#: ../../chapter-12.rst:1429
+msgid ""
+"This is the older implementation for checking files, included for "
+"backwards compatibility.  For new applications, use ``IS_FILE()``."
+msgstr "这是检查文件的旧实现，包括向后的兼容性。对于新应用程序，请使用 ``IS_FILE()`` 。"
+
+#: ../../chapter-12.rst:1431
+msgid ""
+"This validator checks if the name and extension of a file uploaded "
+"through the file input matches the given criteria."
+msgstr "此验证器检查通过文件输入上传的文件的名称和扩展名是否符合给定的条件。"
+
+#: ../../chapter-12.rst:1433
+msgid ""
+"It does not ensure the file type in any way. Returns validation failure "
+"if no data was uploaded."
+msgstr "它不会以任何方式确保文件类型。如果没有上传数据，则返回验证失败。"
+
+#: ../../chapter-12.rst:1438
+msgid "filename: filename (before dot) regex."
+msgstr "filename: 文件名（点之前的部分）正则表达式"
+
+#: ../../chapter-12.rst:1439
+msgid "extension: extension (after dot) regex."
+msgstr "extension: 扩展名（点之后的部分）正则表达式"
+
+#: ../../chapter-12.rst:1444
+msgid ""
+"If there is no dot present, extension checks will be done against an "
+"empty string and filename checks will be done against the whole value."
+msgstr "如果没有点，将对空字符串进行扩展名检查，并对整个值进行文件名检查。"
+
+#: ../../chapter-12.rst:1448
+msgid "Check if file has a pdf extension (case insensitive):"
+msgstr "检查文件是否有 pdf 扩展名（不区分大小写）："
+
+#: ../../chapter-12.rst:1470
+msgid "``IS_IPV4``"
+msgstr ""
+
+#: ../../chapter-12.rst:1472
+msgid ""
+"This validator checks if a field's value is an IP version 4 address in "
+"decimal form. Can be set to force addresses from a certain range."
+msgstr "此验证器以十进制形式检查字段的值是否为版本 4 的 IP 地址。可以设置以强制地址在特定范围内。"
+
+#: ../../chapter-12.rst:1475
+msgid ""
+"IPv4 regex taken from ``regexlib``. The signature for the ``IS_IPV4`` "
+"constructor is the following:"
+msgstr "IPv4 正则表达式取自 ``regexlib`` 。 ``IS_IPV4`` 构造函数的签名如下："
+
+#: ../../chapter-12.rst:1485
+msgid "``minip`` is the lowest allowed address"
+msgstr "``minip`` 是允许的最低/小地址"
+
+#: ../../chapter-12.rst:1486
+msgid "``maxip`` is the highest allowed address"
+msgstr "``maxip`` 是允许的最高/大地址"
+
+#: ../../chapter-12.rst:1487
+msgid ""
+"``invert`` is a flag to invert allowed address range, i.e. if set to True"
+" allows addresses only from outside of given range; note that range "
+"boundaries are not matched this way"
+msgstr "``invert`` 是一个反转允许地址范围的标志，即如果设置为 True，则只允许来自给定范围之外的地址；请注意，不会匹配范围边界。"
+
+#: ../../chapter-12.rst:1490
+msgid ""
+"You can pass an IP address either as a string (e.g. '192.168.0.1') or as "
+"a list or tuple of 4 integers (e.g. [192, 168, 0, 1])."
+msgstr ""
+"你传递的 IP 地址，可以是一个字符串（例如 “192.168.0.1” ），或是一个有 4 个整数构成的列表或元组（例如 [192, 168, "
+"0, 1]）。"
+
+#: ../../chapter-12.rst:1492
+msgid ""
+"To check for multiple address ranges pass to ``minip`` and ``maxip`` a "
+"list or tuple of boundary addresses, for example to allow only addresses "
+"between '192.168.20.10' and '192.168.20.19' or between '192.168.30.100' "
+"and '192.168.30.199' use:"
+msgstr ""
+"要检查多个地址范围，请向 ``minip`` 和 ``maxip`` 传递一个边界地址列表或元组，例如只允许 “192.168.20.10” 和 "
+"“192.168.20.19” 之间或 “192.168.30.100” 和 “168.30.199” 之间的地址，请使用："
+
+#: ../../chapter-12.rst:1501
+msgid ""
+"**Notice** that only a range for which both lower and upper limits are "
+"set is configured, that is the number of configured ranges is determined "
+"by the shorter of the iterables passed to ``minip`` and ``maxip``."
+msgstr ""
+"请注意，只配置了一个同时设置了下限和上限的范围，也就是说，配置的范围的数量由传递给 ``minip`` 和 ``maxip`` "
+"的可迭代对象中的较短者决定。"
+
+#: ../../chapter-12.rst:1505
+msgid ""
+"The arguments ``is_localhost``, ``is_private``, and ``is_automatic`` "
+"accept the following values:"
+msgstr "参数 ``is_localhost`` 、 ``is_private`` 和 ``is_automatic`` 接受以下值："
+
+#: ../../chapter-12.rst:1507 ../../chapter-12.rst:1556
+msgid "``None`` to ignore the option"
+msgstr "``None`` ：忽略"
+
+#: ../../chapter-12.rst:1508 ../../chapter-12.rst:1557
+msgid "``True`` to force the option"
+msgstr "``True`` ： 强制"
+
+#: ../../chapter-12.rst:1509
+msgid "``False`` to forbid the option"
+msgstr "``False`` ： 禁止"
+
+#: ../../chapter-12.rst:1511 ../../chapter-12.rst:1560
+msgid "The option meanings are:"
+msgstr "可选参数的含义是："
+
+#: ../../chapter-12.rst:1513
+msgid "``is_localhost``: match localhost address (127.0.0.1)"
+msgstr "``is_localhost``: 匹配本机地址 (127.0.0.1)"
+
+#: ../../chapter-12.rst:1514
+msgid ""
+"``is_private``: match address in 172.16.0.0 - 172.31.255.255 and "
+"192.168.0.0 - 192.168.255.255 ranges"
+msgstr ""
+"``is_private``: 匹配在 172.16.0.0 - 172.31.255.255 或 192.168.0.0 - "
+"192.168.255.255 范围内的地址"
+
+#: ../../chapter-12.rst:1515
+msgid "``is_automatic``: match address in 169.254.0.0 - 169.254.255.255 range"
+msgstr "``is_automatic``: 匹配 169.254.0.0 - 169.254.255.255 范围内的地址"
+
+#: ../../chapter-12.rst:1519
+msgid "Check for valid IPv4 address:"
+msgstr "检查 IPv4 地址是否有效："
+
+#: ../../chapter-12.rst:1526
+msgid "Check for valid private network IPv4 address:"
+msgstr "检查私有网络 IPv4 地址是否有效："
+
+#: ../../chapter-12.rst:1534
+msgid "``IS_IPV6``"
+msgstr ""
+
+#: ../../chapter-12.rst:1536
+msgid "This validator checks if a field's value is an IP version 6 address."
+msgstr "此验证器检查字段的值是否为版本 6 的 IP 地址。"
+
+#: ../../chapter-12.rst:1538
+msgid "The signature for the ``IS_IPV6`` constructor is the following:"
+msgstr "``IS_IPV6`` 构造函数的签名如下："
+
+#: ../../chapter-12.rst:1553
+msgid ""
+"The arguments ``is_private``, ``is_link_local``, ``is_reserved``, "
+"``is_multicast``, ``is_routeable``, ``is_6to4``, and ``is_teredo`` accept"
+" the following values:"
+msgstr ""
+"参数 ``is_private`` 、 ``is_link_local`` 、 ``is_reserved`` 、 "
+"``is_multicast`` 、 ``is_routeable`` 、 ``is_6to4`` 和 ``is_teredo`` 接受以下值："
+
+#: ../../chapter-12.rst:1558
+msgid "``False`` to forbid the option, this does not work for ``is_routeable``"
+msgstr "``False`` ：禁用该选项，对 ``is_routeable`` 无效"
+
+#: ../../chapter-12.rst:1562
+msgid "``is_private``: match an address allocated for private networks"
+msgstr "``is_private``: 匹配为专用网络分配的地址"
+
+#: ../../chapter-12.rst:1563
+msgid ""
+"``is_link_local``: match an address reserved for link-local (i.e. in "
+"fe80::/10 range), this is a private network too (also matched by "
+"``is_private`` above)"
+msgstr ""
+"``is_link_local``: 匹配为 link local 保留的地址（即在 fe80::/10 "
+"范围内），这也是一个专用网络（也可用上面的 ``is_private`` 匹配）"
+
+#: ../../chapter-12.rst:1564
+msgid "``is_reserved``: match an address otherwise IETF reserved"
+msgstr "``is_reserved``:  匹配一个地址，否则 IETF 被保留"
+
+#: ../../chapter-12.rst:1565
+msgid ""
+"``is_multicast``: match an address reserved for multicast use (i.e. in "
+"ff00::/8 range)"
+msgstr "``is_multicast``: 匹配为多播使用保留的地址（即在 ff00::/8 范围内）"
+
+#: ../../chapter-12.rst:1566
+msgid ""
+"``is_6to4``: match an address that appear to contain a 6to4 embedded "
+"address (i.e. in 2002::/16 range)"
+msgstr "``is_6to4``: 匹配一个似乎包含 6to4 嵌入式地址的地址（即在 2002::/16 范围内）"
+
+#: ../../chapter-12.rst:1567
+msgid "``is_teredo``: match a teredo address (i.e. in 2001::/32 range)"
+msgstr "``is_teredo``: 匹配 teredo 地址（即在 2001::/32 范围内）"
+
+#: ../../chapter-12.rst:1569
+msgid ""
+"Forcing ``is_routeable`` (setting to True) is a shortcut to forbid "
+"(setting to False) ``is_private``, ``is_reserved``, and ``is_multicast`` "
+"all."
+msgstr ""
+"强制 ``is_routeable`` （设置为 True）是全部禁止（设置为 False） ``is_private`` 、 "
+"``is_reserved`` 和 ``is_multicast`` 的快捷方式。"
+
+#: ../../chapter-12.rst:1571
+msgid ""
+"Use the ``subnets`` argument to pass a subnet or list of subnets to check"
+" for address membership, this way an address must be a subnet member to "
+"validate."
+msgstr "使用 ``subnets`` 参数传递子网或子网列表以检查地址成员资格，这样地址必须是要验证的子网成员。"
+
+#: ../../chapter-12.rst:1575
+msgid "Check for valid IPv6 address:"
+msgstr "检查是否为有效的 IPv6 地址："
+
+#: ../../chapter-12.rst:1582
+msgid "Check for valid private network IPv6 address:"
+msgstr "检查是否为有效的专用网络 IPv6 地址："
+
+#: ../../chapter-12.rst:1589
+msgid "Check for valid IPv6 address in subnet:"
+msgstr "检查是否为子网中的有效 IPv6 地址："
+
+#: ../../chapter-12.rst:1597
+msgid "``IS_IPADDRESS``"
+msgstr ""
+
+#: ../../chapter-12.rst:1599
+msgid ""
+"This validator checks if a field's value is an IP address (either version"
+" 4 or version 6). Can be set to force addresses from within a specific "
+"range. Checks are done using the appropriate ``IS_IPV4`` or ``IS_IPV6`` "
+"validator."
+msgstr ""
+"此验证器检查字段的值是否是 IP 地址（版本 4 或版本 6 ）。可以设置为强制地址在特定范围内。使用适当的 ``IS_IPV4`` 或 "
+"``IS_IPV6`` 验证器进行检查。"
+
+#: ../../chapter-12.rst:1603
+msgid "The signature for the ``IS_IPADDRESS`` constructor is the following:"
+msgstr "``IS_IPADDRESS`` 构造函数的签名如下："
+
+#: ../../chapter-12.rst:1616
+msgid ""
+"With respect to ``IS_IPV4`` and ``IS_IPV6`` validators the only added "
+"arguments are:"
+msgstr "对于 ``IS_IPV4`` 和 ``IS_IPV6`` 验证器，唯一添加的参数是："
+
+#: ../../chapter-12.rst:1618
+msgid ""
+"``is_ipv4``, set to True to force version 4 or set to False to forbid "
+"version 4"
+msgstr "``is_ipv4``, 设置为 True 强制为版本 4 ,或设置为 False 禁止版本 4"
+
+#: ../../chapter-12.rst:1619
+msgid ""
+"``is_ipv6``, set to True to force version 6 or set to False to forbid "
+"version 6"
+msgstr "``is_ipv6``, 设置为 True 强制为版本 6 ,或设置为 False 禁止版本 6"
+
+#: ../../chapter-12.rst:1621
+msgid ""
+"Refer to IS_IPV4 and IS_IPV6 validators for the meaning of other "
+"arguments."
+msgstr "有关其他参数的含义，请参阅 IS_IPV4 和 IS_IPV6 验证器。"
+
+#: ../../chapter-12.rst:1625
+msgid "Check for valid IP address (both IPv4 and IPv6):"
+msgstr "检查是否为有效的 IP 地址（IPv4 和 IPv6 ）："
+
+#: ../../chapter-12.rst:1632
+msgid "Check for valid IP address (IPv6 only):"
+msgstr "检查是否为有效的 IP 地址（仅限 IPv6）："
+
+#: ../../chapter-12.rst:1640
+msgid "Other validators"
+msgstr "其它的验证器"
+
+#: ../../chapter-12.rst:1644
+msgid "``CLEANUP``"
+msgstr ""
+
+#: ../../chapter-12.rst:1646
+msgid ""
+"This is a filter. It never fails. By default it just removes all "
+"characters whose decimal ASCII codes are not in the list [10, 13, "
+"32-127]. It always perform an initial strip (i.e. heading and trailing "
+"blank characters removal) on the value."
+msgstr ""
+"这是一个过滤器。它从不失败。默认情况下，它只会删除十进制 ASCII 码不在列表 [10，13，32-127] "
+"中的所有字符。它总是对值执行基本的清除（即删除开始和结尾的空白字符）。"
+
+#: ../../chapter-12.rst:1654
+msgid ""
+"You can pass a regular expression to decide what has to be removed, for "
+"example to clear all non-digit characters use:"
+msgstr "您可以传递一个正则表达式来决定必须删除的内容，例如清除所有非数字字符，请使用："
+
+#: ../../chapter-12.rst:1663
+msgid "Database validators"
+msgstr "数据库验证器"
+
+#: ../../chapter-12.rst:1666
+msgid "``IS_NOT_IN_DB``"
+msgstr ""
+
+#: ../../chapter-12.rst:1668
+msgid "Synopsis: ``IS_NOT_IN_DB(db|set, 'table.field')``"
+msgstr "用法简介：``IS_NOT_IN_DB(db|set, 'table.field')``"
+
+#: ../../chapter-12.rst:1671
+msgid "Consider the following example:"
+msgstr "考虑下面的示例："
+
+#: ../../chapter-12.rst:1679
+msgid ""
+"It requires that when you insert a new person, his/her name is not "
+"already in the database, ``db``, in the field ``person.name``."
+msgstr "它要求当您插入一个新人的数据时，他/她的名字不在数据库 ``db`` 的  ``person.name`` 字段中。"
+
+#: ../../chapter-12.rst:1681
+msgid "A set can be used instead of ``db``."
+msgstr "可以使用一个集合替代 ``db``"
+
+#: ../../chapter-12.rst:1683
+msgid ""
+"As with all other validators this requirement is enforced at the form "
+"processing level, not at the database level. This means that there is a "
+"small probability that, if two visitors try to concurrently insert "
+"records with the same person.name, this results in a race condition and "
+"both records are accepted. It is therefore safer to also inform the "
+"database that this field should have a unique value:"
+msgstr ""
+"与所有其他验证器一样，此要求是在表单处理级别执行的，而不是在数据库级别。这意味着有可能性很小的事情发生，如果两个访问者试图同时插入具有相同 "
+"person.name 的记录，则很可能会导致冲突，并且两条记录都被接受。因此，更安全的做法是通知数据库该字段应具有唯一值："
+
+#: ../../chapter-12.rst:1693
+msgid ""
+"Now if a race condition occurs, the database raises an OperationalError "
+"and one of the two inserts is rejected."
+msgstr "现在，如果发生冲突的情况，数据库将引发 OperationalError ，两个插入中的一个将被拒绝。"
+
+#: ../../chapter-12.rst:1695
+msgid ""
+"The first argument of ``IS_NOT_IN_DB`` can be a database connection or a "
+"Set. In the latter case, you would be checking only the set defined by "
+"the Set."
+msgstr "``IS_NOT_IN_DB`` 的第一个参数可以是数据库连接或 Set。在后一种情况下，将只检查 set 定义的集合。"
+
+#: ../../chapter-12.rst:1697
+msgid "A complete argument list for ``IS_NOT_IN_DB()`` is as follows:"
+msgstr "`IS_NOT_IN_DB()`` 的完整的参数列表如下："
+
+#: ../../chapter-12.rst:1705
+msgid ""
+"The following code, for example, does not allow registration of two "
+"persons with the same name within 10 days of each other:"
+msgstr "例如，以下代码不允许在 10 天内注册两个同名人员："
+
+#: ../../chapter-12.rst:1719
+msgid "``IS_IN_DB``"
+msgstr ""
+
+#: ../../chapter-12.rst:1721
+#, python-format
+msgid ""
+"Synopsis: ``IS_IN_DB(db|set, 'table.value_field', "
+"'%(representing_field)s', zero='choose one')`` where the third and fourth"
+" arguments are optional."
+msgstr ""
+"用法简介：``IS_IN_DB(db|set, 'table.value_field', '%(representing_field)s', "
+"zero='choose one')`` ，这里的第三个和第四个参数是可选的。"
+
+#: ../../chapter-12.rst:1725
+msgid ""
+"``multiple=`` is also possible if the field type is a list. The default "
+"is False. It can be set to True or to a tuple (min, max) to restrict the "
+"number of values selected. So ``multiple=(1, 10)`` enforces at least one "
+"and at most ten selections."
+msgstr ""
+"如果字段类型是 list，那么可以使用 ``multiple=`` ，其默认值为 False。可以设置其为 True 或 一个元组  (min, "
+"max) 来严格限制选择的数量。因此，  ``multiple=(1, 10)`` 要求，必须有 1 至 10 个已选择的项目。"
+
+#: ../../chapter-12.rst:1728
+msgid "Other optional arguments are discussed below."
+msgstr "其他可选参数将在下面讨论。"
+
+#: ../../chapter-12.rst:1730
+msgid "Example Consider the following tables and requirement:"
+msgstr "考虑以下示例中的表格和要求："
+
+#: ../../chapter-12.rst:1740
+msgid "the IS_IN_DB requirement could also be written to use a Set instead of db"
+msgstr "IS_IN_DB 的要求也可以写成使用 Set 来替代 DB"
+
+#: ../../chapter-12.rst:1748
+#, python-format
+msgid ""
+"It is enforced at the level of dog INSERT/UPDATE/DELETE forms. This "
+"example requires that a ``dog.owner`` be a valid id in the field "
+"``person.id`` in the database ``db``. Because of this validator, the "
+"``dog.owner`` field is represented as a drop-down list. The third "
+"argument of the validator is a string that describes the elements in the "
+"drop-down list, this is passed to the ``label`` argument of the "
+"validator. In the example you want to see the person ``%(name)s`` instead"
+" of the person ``%(id)s``. ``%(...)s`` is replaced by the value of the "
+"field in brackets for each record. Other accepted values for the "
+"``label`` are a Field instance (e.g. you could use db.person.name instead"
+" of '%(name)s') or even a callable that takes a row and returns the "
+"description for the option."
+msgstr ""
+"它在 dog 表的 INSERT/UPDATE/DELETE 表单级别强制执行。此示例要求 ``dog.owner`` 是数据库 ``db`` 中"
+" ``person.id`` 字段中的有效 id。由于这个验证器， ``dog.owner`` "
+"字段在页面被呈现为下拉列表。验证器的第三个参数是一个描述下拉列表中元素的字符串，它被传递给验证器的 ``label`` "
+"参数。在示例中，您希望看到人员的 ``%(name)s`` 而不是人员的 ``%(id)s`` 。 ``%(...)s`` "
+"将被每条记录括号中的字段值替换。 ``label`` 的其他可接受值是 Field 实例（例如，您可以使用 db.person.name 而不是 "
+"“%(name)s” ），甚至是一个可调用对象，它接受一行并返回选项的描述。"
+
+#: ../../chapter-12.rst:1756
+msgid "The ``zero`` option works very much like for the ``IS_IN_SET`` validator."
+msgstr "``zero`` 选项的工作方式与 ``IS_IN_SET`` 验证器非常相似。"
+
+#: ../../chapter-12.rst:1758
+msgid ""
+"Other optional arguments accepted by ``IS_IN_DB`` are: ``orderby``, "
+"``groupby``, ``distinct``, ``cache``, and ``left``; these are passed to "
+"the db select (see :ref:`their description <orderby, groupby, limitby>` "
+"on the DAL chapter)."
+msgstr ""
+"``IS_IN_DB`` 接受的其他可选参数有： ``orderby`` 、 ``groupby`` 、 ``distinct`` 、 "
+"``cache`` 和 ``left`` ；这些将传递给数据库查询语句（请参阅DAL章节中的 :ref:`their description "
+"<orderby, groupby, limitby>` ）。"
+
+#: ../../chapter-12.rst:1762
+msgid ""
+"**Notice** that ``groupby``, ``distinct``, and ``left`` do not apply to "
+"Google App Engine."
+msgstr "**请注意** ， ``groupby`` 、 ``distinct`` 和 ``left`` 不适用于 Google App Engine。"
+
+#: ../../chapter-12.rst:1765
+msgid ""
+"To alphabetically sort the options listed in the drop-down list you can "
+"set the ``sort`` argument to ``True`` (sorting is case-insensitive), this"
+" may be usefull when no ``orderby`` is feasible or practical."
+msgstr ""
+"要按字母顺序对下拉列表中列出的选项进行排序，可以将 ``sort`` 参数设置为 ``True`` "
+"（排序不区分大小写），当没有可行或实用的排序方式时，这可能会很有用。"
+
+#: ../../chapter-12.rst:1768
+msgid ""
+"The first argument of the validator can be a database connection or a DAL"
+" Set, as in ``IS_NOT_IN_DB``. This can be useful for example when wishing"
+" to limit the records in the drop-down list. In this example, we use "
+"``IS_IN_DB`` in a controller to limit the records dynamically each time "
+"the controller is called:"
+msgstr ""
+"验证器的第一个参数可以是数据库连接或一个 DAL 数据集，如 ``IS_NOT_IN_DB`` "
+"。例如，当希望限制下拉列表中的记录时，这可能很有用。在这个例子中，我们在控制器中使用``IS_IN_DB`` 来动态限制每次调用控制器时的记录："
+
+#: ../../chapter-12.rst:1783
+msgid ""
+"If you want the field validated, but you do not want a drop-down, you "
+"must put the validator in a list."
+msgstr "如果您希望验证字段，但不希望出现下拉列表，则必须将验证器放入列表中。"
+
+#: ../../chapter-12.rst:1791
+msgid ""
+"Occasionally you want the drop-down (so you do not want to use the list "
+"syntax above) yet you want to use additional validators. For this purpose"
+" the ``IS_IN_DB`` validator takes an extra argument ``_and`` that can "
+"point to a list of other validators applied if the validated value passes"
+" the ``IS_IN_DB`` validation. For example to validate all dog owners in "
+"db that are not in a subset:"
+msgstr ""
+"有时您需要下拉列表（因此您不想使用上面的列表语法），但您想使用其他验证器。为此，``IS_IN_DB`` 验证器需要一个额外的 ``_and`` "
+"参数，如果值需要通过 ``IS_IN_DB`` 验证，该参数可以指向其他要添加的验证器的列表。例如，要验证数据库中不在某个子集中的所有狗主人："
+
+#: ../../chapter-12.rst:1804
+msgid "``IS_IN_DB`` and Tagging"
+msgstr "``IS_IN_DB`` 和标记"
+
+#: ../../chapter-12.rst:1806
+msgid ""
+"The ``IS_IN_DB`` validator has an optional attribute ``multiple=False``. "
+"If set to ``True`` multiple values can be stored in one field. This field"
+" should be of type ``list:reference`` as discussed in :ref:`list_type and"
+" contains`. An explicit example of tagging is discussed there. Multiple "
+"references are handled automatically in create and update forms, but they"
+" are transparent to the DAL. We strongly suggest using the jQuery "
+"multiselect plugin to render multiple fields."
+msgstr ""
+"``IS_IN_DB`` 验证器具有可选属性 ``multiple=False``。如果设置为 ``True`` ，"
+"则可以在一个字段中存储多个值。此字段的类型应为 ``list:reference`` ，"
+"如 :ref:`list_type and contains` 中所述，里面讨论了一个明确的标记示例。"
+"在创建和更新表单中会自动处理多个引用，但它们对 DAL 是透明的。我们强烈建议使用 "
+"jQuery 的 multiselect 插件来呈现多个字段。"
+
+#: ../../chapter-12.rst:1813
+msgid "Validation functions"
+msgstr "验证函数"
+
+#: ../../chapter-12.rst:1815
+msgid ""
+"In order to explicitly define a validation function, we pass to the "
+"``validation`` parameter a function that takes the form and returns a "
+"dictionary, mapping field names to errors. If the dictionary is non-"
+"empty, the errors will be displayed to the user, and no database I/O will"
+" take place."
+msgstr ""
+"为了显式定义验证函数，我们向参数 ``validation`` "
+"传递一个函数，该函数采把表单作为参数并返回一个字典，将字段的名称映射到错误信息中。如果字典非空，则错误将显示给用户，并且不会发生数据库读写操作。"
+
+#: ../../chapter-12.rst:1820
+msgid "Here is an example:"
+msgstr "这里是一个示例："
+
