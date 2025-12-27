@@ -39,7 +39,7 @@
             <h2>API error</h2>
             <pre v-text="last_error"></pre>
             <button v-on:click="close_dialog_error">Ignore and Dismiss</button>
-        </div>"
+        </div>
         <div class="panel accordion">
             <input type="checkbox" id="applications">
             <label for="applications">Installed Applications</label>
@@ -272,10 +272,12 @@
 <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/utils.js"></script>
 <script>
-  var USER_ID = [[= user_id or 0]];
+  var USER_ID = Number('[[= user_id or 0 ]]');
+  // "Number" is used only to avoid javascript linter warning about non-constant in template literal
 </script>
 <script>
-  T.languages = [[= languages]];
+  T.languages = JSON.parse('[[= languages ]]');
+    // "JSON.parse" is used only to avoid javascript linter warning about non-constant in template literal
 </script>
 <script src="js/index.js"></script>
 </html>

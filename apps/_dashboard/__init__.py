@@ -650,7 +650,7 @@ if MODE == "full":
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)
         redirect(URL("gitlog", project))
-        return diff2kryten(patch)
+        # return diff2kryten(patch)
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
