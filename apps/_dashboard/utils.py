@@ -15,7 +15,9 @@ import logging
 import os
 import re
 import shutil
+import subprocess
 import tarfile
+
 
 __all__ = (
     "safe_join",
@@ -141,3 +143,62 @@ def unpack(filename, path, delete_tar=True):
 
 def create_app(path, model="scaffold.w3p"):
     unpack(model, path)
+
+
+def make_safe(db):
+    def make_safe_field(func):
+        def wrapper():
+            try:
+                return func()
+            except Exception as exp:
+                print(exp)
+                print("Warning: _dashboard trying to access a forbidden method of app")
+                return None
+
+    for table in db:
+        for field in table:
+            if callable(field.default):
+                field.default = make_safe_field(field.default)
+            if callable(field.update):
+                field.update = make_safe_field(field.update)
+
+
+def run(command, cwd="."):
+    """for runing git commands inside an app (project)"""
+    return subprocess.check_output(command.split(), cwd=cwd).decode(errors="ignore")
+
+
+def get_commits(project, cwd="."):
+    """List of git commits for the project"""
+    output = run("git log", cwd=cwd)
+    commits = []
+    for line in output.split("\n"):
+        if line.startswith("commit "):
+            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
+            commits.append(commit)
+        elif line.startswith("Author: "):
+            commit["author"] = line[8:]
+        elif line.startswith("Date: "):
+            commit["date"] = datetime.datetime.strptime(
+                line[6:].strip(), "%a %b %d %H:%M:%S %Y %z"
+            )
+        else:
+            commit["message"] += line.strip() + "\n"
+    return commits
+
+
+def get_branches(cwd="."):
+    """Dictionary of git local branches for the project"""
+    output = run("git branch", cwd=cwd)
+    branches = {"current": "", "other": []}
+    for line in output.split("\n"):
+        if line.startswith("* "):
+            branches["current"] = line[2:]
+        elif not line == "":
+            branches["other"].append(line[2:])
+    return branches
+
+
+def is_git_repo(cwd="."):
+    """Checks if the cwd is a git repo"""
+    return os.path.exists(os.path.join(cwd, ".git/config"))

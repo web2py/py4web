@@ -39,34 +39,20 @@ from yatl.helpers import A
 
 from .diff2kryten import diff2kryten
 from .utils import *
-
-MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
-FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
-APP_NAMES = os.environ.get("PY4WEB_APP_NAMES")
-APP_FOLDER = os.path.dirname(__file__)
-T_FOLDER = os.path.join(APP_FOLDER, "translations")
-T = Translator(T_FOLDER)
-PY4WEB_IGNORE = ".py4web_ignore"
-
-session = Session()
+from .settings import *
 
 
-def make_safe(db):
-    def make_safe_field(func):
-        def wrapper():
-            try:
-                return func()
-            except Exception as exp:
-                print(exp)
-                print("Warning: _dashboard trying to access a forbidden method of app")
-                return None
+class Logged(Fixture):
+    """Fixture to ensure user is logged in"""
 
-    for table in db:
-        for field in table:
-            if callable(field.default):
-                field.default = make_safe_field(field.default)
-            if callable(field.update):
-                field.update = make_safe_field(field.update)
+    def __init__(self, session):
+        self.__prerequisites__ = [session]
+        self.session = session
+
+    def on_request(self, context):
+        user = self.session.get("user")
+        if not user or not user.get("id"):
+            abort(403)
 
 
 def catch_errors(func):
@@ -83,59 +69,8 @@ def catch_errors(func):
     return wrapper
 
 
-def run(command, project):
-    """for runing git commands inside an app (project)"""
-    return subprocess.check_output(
-        command.split(), cwd=os.path.join(FOLDER, project)
-    ).decode(errors="ignore")
-
-
-def get_commits(project):
-    """list of git commits for the project"""
-    output = run("git log", project)
-    commits = []
-    for line in output.split("\n"):
-        if line.startswith("commit "):
-            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
-            commits.append(commit)
-        elif line.startswith("Author: "):
-            commit["author"] = line[8:]
-        elif line.startswith("Date: "):
-            commit["date"] = datetime.datetime.strptime(
-                line[6:].strip(), "%a %b %d %H:%M:%S %Y %z"
-            )
-        else:
-            commit["message"] += line.strip() + "\n"
-    return commits
-
-
-def get_branches(project):
-    """dictionary of git local branches for the project"""
-    output = run("git branch", project)
-    branches = {"current": "", "other": []}
-    for line in output.split("\n"):
-        if line.startswith("* "):
-            branches["current"] = line[2:]
-        elif not line == "":
-            branches["other"].append(line[2:])
-    return branches
-
-
-def is_git_repo(project):
-    return os.path.exists(os.path.join(FOLDER, project, ".git/config"))
-
-
-class Logged(Fixture):
-    def __init__(self, session):
-        self.__prerequisites__ = [session]
-        self.session = session
-
-    def on_request(self, context):
-        user = self.session.get("user")
-        if not user or not user.get("id"):
-            abort(403)
-
-
+session = Session()
+T = Translator(settings.T_FOLDER)
 authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
@@ -618,10 +553,10 @@ if MODE == "full":
     @action.uses(Logged(session), "gitlog.html")
     @catch_errors
     def gitlog(project):
-        if not is_git_repo(project):
+        if not is_git_repo(os.path.join(FOLDER, project)):
             return "Project is not a GIT repo"
-        branches = get_branches(project)
-        commits = get_commits(project)
+        branches = get_branches(cwd=os.path.join(FOLDER, project))
+        commits = get_commits(cwd=os.path.join(FOLDER, project))
         return dict(
             status="success",
             commits=commits,
@@ -634,8 +569,8 @@ if MODE == "full":
     def checkout(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
-        run("git stash", project)
-        run("git checkout " + commit, project)
+        run("git stash", cwd=os.path.join(FOLDER, project))
+        run("git checkout " + commit, cwd=os.path.join(FOLDER, project))
         Reloader.import_app(project)
 
     @action("swapbranch/<project>", method="POST")
@@ -650,7 +585,6 @@ if MODE == "full":
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)
         redirect(URL("gitlog", project))
-        # return diff2kryten(patch)
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
@@ -661,7 +595,7 @@ if MODE == "full":
         opt = ""
         if flag == "true":
             opt = " -U9999"
-        patch = run("git show " + commit + opt, project)
+        patch = run("git show " + commit + opt, cwd=os.path.join(FOLDER, project))
         return diff2kryten(patch)
 
 
