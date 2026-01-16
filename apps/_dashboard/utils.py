@@ -17,7 +17,7 @@ import re
 import shutil
 import subprocess
 import tarfile
-
+import datetime
 
 __all__ = (
     "safe_join",
@@ -28,6 +28,11 @@ __all__ = (
     "pack",
     "unpack",
     "create_app",
+    "make_safe",
+    "run",
+    "get_commits",
+    "get_branches",
+    "is_git_repo",
 )
 
 
