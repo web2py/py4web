@@ -56,9 +56,9 @@ and installing py4web in it:
          python3 -m venv venv
          . venv/bin/activate
          python -m pip install --upgrade py4web --no-cache-dir
-         python py4web setup apps
-         python py4web set_password
-         python py4web run apps
+         py4web setup apps
+         py4web set_password
+         py4web run apps
 
       Starting py4web is same with or without a virtual environment
       python py4web run apps
