@@ -1075,7 +1075,7 @@ class Form(object):
         """
         if value:
             (_, extension) = os.path.splitext(value)
-            if extension in [".gif", ".png", ".jpg", ".jpeg", ".bmp"]:
+            if extension in [".gif", ".png", ".jpg", ".jpeg",".webp", ".bmp"]:
                 return True
         return False
 
