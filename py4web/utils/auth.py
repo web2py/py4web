@@ -995,10 +995,10 @@ class Auth(Fixture):
         subject = message["subject"].format(**d)
         if isinstance(message["body"], (list, tuple)):
             # the body is (TEXT, HTML)
-            body = [element.format(**d) for element in message["body"]]
+            body = [str(element.format(**d)) for element in message["body"]]
         else:
             # the body is TEXT
-            body = message["body"].format(**d)
+            body = str(message["body"].format(**d))
         if not self.sender:
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True
@@ -1069,13 +1069,13 @@ class Auth(Fixture):
             for group in self.param.messages.values():
                 for key, value in group.items():
                     if isinstance(value, str):
-                        group[key] = str(T(value))
+                        group[key] = T(value)
                     elif (
                         key == "body"
                         and isinstance(value, (list, tuple))
                         and len(value) == 2
                     ):
-                        group[key] = (str(T(value[0])), str(T(value[1])))
+                        group[key] = (T(value[0]), T(value[1]))
                     else:
                         raise RuntimeError(f"Invalid message type {key}:{value}")
 
