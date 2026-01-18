@@ -1,5 +1,5 @@
 /*****************************************************
- no.css version 2020-08-09.1
+ no.css version 2026-01-16.1
 
  Designed to style pages without need for custom classes.
  headers, paragraphs, buttons, tables, forms,
@@ -201,7 +201,6 @@ thead th {
  ****************************************************/
 
 input[type='color'], input[type='date'], input[type='datetime'], input[type='time'], input[type='datetime-local'], input[type='email'], input[type='month'], input[type='number'], input[type='password'], input[type='search'], input[type='tel'], input[type='text'], input[type='url'], input[type='week'], input:not([type]), textarea, select {
-  -webkit-appearance: none;
   background-color: transparent;
   border: 0.1rem solid #d1d1d1;
   border-radius: 5px;
@@ -282,7 +281,6 @@ body > center > * {
   .col,.c25,.c33,.c50,.c66,.c75 {
     padding: 20px;
     display: block;
-    vertical-align: top;
   }
 }
 
@@ -302,7 +300,7 @@ body > center > * {
 .warning{background-color:#ffdc00;color:#111}
 .error{background-color:#cc1f00;color:white}
 .info{background-color:#f1f1f1;color:#111}
-.white{background-color:white;color:#111;padding 5px;}
+.white{background-color:white;color:#111;padding: 5px;}
 .black{background-color:#111;color:white}
 
 /****************************************************
