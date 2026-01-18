@@ -24,7 +24,7 @@ uv:
 	which uv || curl -LsSf https://astral.sh/uv/install.sh | sh
 
 lock: uv
-	uv lock --refresh
+	uv lock --refresh --no-cache
 
 docs: uv
 	docs/updateDocs.sh html

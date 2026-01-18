@@ -861,7 +861,7 @@ requires-dist = [
     { name = "pluralize", specifier = ">=20250901.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20260110.1" },
+    { name = "pydal", specifier = ">=20260118.1" },
     { name = "pyjwt", specifier = ">=2.0.1" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
     { name = "pytest", marker = "extra == 'test'" },
@@ -935,11 +935,11 @@ wheels = [
 
 [[package]]
 name = "pydal"
-version = "20260110.1"
+version = "20260118.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5e/22/4fa31224688e5b3e08ad14a86f8d9bcccd8602f740d1cf70ebbb9119fa9d/pydal-20260110.1.tar.gz", hash = "sha256:60171907dab9e29a6108339b52046a3dee8b50ef7da232d32b81aac2ebf445a0", size = 634719, upload-time = "2026-01-10T20:38:30.839Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/0a/e7803126b2adbe64d15656a167a6f007516de0442edac6db3cf954c224ed/pydal-20260118.1.tar.gz", hash = "sha256:6c9f7fa678a9d082b323f9e64d770d7efd50a46543107fb57908b6cccaffbbcf", size = 635934, upload-time = "2026-01-18T16:33:29.667Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/12/c2/77b53f73a20b1e788737952a79344cefca26d387952f138011c12b8f2d6b/pydal-20260110.1-py2.py3-none-any.whl", hash = "sha256:5b0a9ad35e6d58f83dd920286a20e1baf5c945ac2081a1da3c20a7433045e500", size = 252495, upload-time = "2026-01-10T20:38:28.56Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/aa/f3286142ce9a67654b52785f5220942531f86809ff0595c0d051ad6ceb7c/pydal-20260118.1-py2.py3-none-any.whl", hash = "sha256:9b0ae4d57218ea4a3bd97385a4932575dd81ae59762521c5d9a9991236740eed", size = 253950, upload-time = "2026-01-18T16:33:27.778Z" },
 ]
 
 [[package]]
