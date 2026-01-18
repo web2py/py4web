@@ -1068,10 +1068,16 @@ class Auth(Fixture):
             T = translators[0]
             for group in self.param.messages.values():
                 for key, value in group.items():
-                    if isinstance(value, (list, tuple)):
-                        group[key] = map(T, value)
+                    if isinstance(value, str):
+                        group[key] = str(T(value))
+                    elif (
+                        key == "body"
+                        and isinstance(value, (list, tuple))
+                        and len(value) == 2
+                    ):
+                        group[key] = (str(T(value[0])), str(T(value[1])))
                     else:
-                        group[key] = T(value)
+                        raise RuntimeError(f"Invalid message type {key}:{value}")
 
         methods = ["GET", "POST", "OPTIONS"]
 
