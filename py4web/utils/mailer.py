@@ -15,6 +15,9 @@ import re
 import smtplib
 from email import message_from_string
 from email.encoders import encode_base64
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
 
 from pydal._compat import *
 
@@ -45,6 +48,31 @@ except ImportError:
 
 class Settings:
     pass
+
+
+def to_bytes(text, encoding="utf8"):
+    """Converts a text (str, bytes, file-like) to encoded bytes"""
+    # if the text is not a string or bytes, maybe it is a file
+    if not isinstance(text, (str, bytes)):
+        text = text.read()
+    # if it is a unicode string encode it
+    if isinstance(text, str):
+        text = text.encode("utf-8")
+    # if it is not a unicode string
+    elif isinstance(text, bytes) and encoding != "utf-8":
+        text = text.decode(encoding).encode("utf-8")
+    return text
+
+
+def to_unicode(text, encoding="utf8"):
+    """Converts a body (str, bytes, file-like) to unicode"""
+    # if the text is not a string or bytes, maybe it is a file
+    if not isinstance(text, (str, bytes)):
+        text = text.read()
+    # if it is a bytes string encode it
+    if isinstance(text, bytes):
+        text = text.decode(encoding)
+    return text
 
 
 class Mailer:
@@ -379,15 +407,7 @@ class Mailer:
             # Use multipart/mixed if there is attachments
             payload_in = MIMEMultipart("mixed")
         elif raw:
-            # No encoding configuration for raw messages
-            if not isinstance(body, basestring):
-                body = body.read()
-            if isinstance(body, unicodeT):
-                text = body.encode("utf-8")
-            elif not encoding == "utf-8":
-                text = body.decode(encoding).encode("utf-8")
-            else:
-                text = body
+            text = to_bytes(body, encoding)
             # No charset passed to avoid transport encoding
             # NOTE: some unicode encoded strings will produce
             # unreadable mail contents.
@@ -421,19 +441,9 @@ class Mailer:
 
         if (text is not None or html is not None) and (not raw):
             if text is not None:
-                if not isinstance(text, basestring):
-                    text = text.read()
-                if isinstance(text, unicodeT):
-                    text = text.encode("utf-8")
-                elif not encoding == "utf-8":
-                    text = text.decode(encoding).encode("utf-8")
+                text = to_bytes(body, encoding)
             if html is not None:
-                if not isinstance(html, basestring):
-                    html = html.read()
-                if isinstance(html, unicodeT):
-                    html = html.encode("utf-8")
-                elif not encoding == "utf-8":
-                    html = html.decode(encoding).encode("utf-8")
+                html = to_bytes(html, encoding)
 
             # Construct mime part only if needed
             if text is not None and html:

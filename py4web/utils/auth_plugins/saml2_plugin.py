@@ -16,7 +16,7 @@ def obj2dict(obj, processed=None):
     processed = processed if processed is not None else set()
     if obj is None:
         return None
-    if isinstance(obj, (int, long, str, unicode, float, bool)):
+    if isinstance(obj, (int, str, bytes, float, bool)):
         return obj
     if id(obj) in processed:
         return "<reference>"

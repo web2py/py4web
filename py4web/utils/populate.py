@@ -8,7 +8,7 @@ import re
 import sys
 import uuid
 
-from pydal._compat import pickle, unicodeT
+from pydal._compat import pickle
 
 IUP = {
     "ad": {"minim": 1},
@@ -223,7 +223,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                 continue  # if user supplied it, let it be.
 
             field = table[fieldname]
-            if not isinstance(field.type, (str, unicodeT)):
+            if not isinstance(field.type, str):
                 continue
             elif field.type == "id":
                 continue
