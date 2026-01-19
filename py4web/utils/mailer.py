@@ -53,6 +53,8 @@ class Settings:
 def to_bytes(text, encoding="utf8"):
     """Converts a text (str, bytes, file-like) to encoded bytes"""
     # if the text is not a string or bytes, maybe it is a file
+    if text is None:
+        text = b""
     if not isinstance(text, (str, bytes)):
         text = text.read()
     # if it is a unicode string encode it
@@ -61,17 +63,23 @@ def to_bytes(text, encoding="utf8"):
     # if it is not a unicode string
     elif isinstance(text, bytes) and encoding != "utf-8":
         text = text.decode(encoding).encode("utf-8")
+    elif not isinstance(text, bytes):
+        raise RuntimeError(f"{text} is not not in bytes or string")
     return text
 
 
 def to_unicode(text, encoding="utf8"):
     """Converts a body (str, bytes, file-like) to unicode"""
     # if the text is not a string or bytes, maybe it is a file
-    if not isinstance(text, (str, bytes)):
+    if text is None:
+        text = ""
+    elif not isinstance(text, (str, bytes)):
         text = text.read()
     # if it is a bytes string encode it
     if isinstance(text, bytes):
         text = text.decode(encoding)
+    elif not isinstance(text, str):
+        text = str(text)
     return text
 
 
@@ -427,11 +435,11 @@ class Mailer:
             text = html = None
         elif isinstance(body, (list, tuple)):
             text, html = body
-        else:
-            if isinstance(body, bytes):
-                body = body.decode()
-            if not isinstance(body, str):
-                body = str(body)
+        if body is not None:
+            body = to_unicode(body, "utf8")
+        if text is not None:
+            text = to_unicode(text, "utf8")
+        if text is None and body is not None:
             if body.lstrip().startswith("<html") and body.rstrip().endswith("</html>"):
                 text = self.settings.server == "gae" and body or None
                 html = body
@@ -440,21 +448,16 @@ class Mailer:
                 html = None
 
         if (text is not None or html is not None) and (not raw):
-            if text is not None:
-                text = to_bytes(body, encoding)
-            if html is not None:
-                html = to_bytes(html, encoding)
-
             # Construct mime part only if needed
             if text is not None and html:
                 # We have text and html we need multipart/alternative
                 attachment = MIMEMultipart("alternative")
-                attachment.attach(MIMEText(text, _charset="utf-8"))
-                attachment.attach(MIMEText(html, "html", _charset="utf-8"))
+                attachment.attach(MIMEText(text))
+                attachment.attach(MIMEText(html, "html"))
             elif text is not None:
-                attachment = MIMEText(text, _charset="utf-8")
+                attachment = MIMEText(text)
             elif html:
-                attachment = MIMEText(html, "html", _charset="utf-8")
+                attachment = MIMEText(html, "html")
 
             if attachments:
                 # If there are attachments put text and html into
