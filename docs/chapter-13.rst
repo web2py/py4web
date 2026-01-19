@@ -150,6 +150,175 @@ The second one forces the login if needed:
 Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.
 
+Custom actions after Auth events
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+After every Auth event, like: password_reset, login, register, verify_email, etc, it is possible to trigger an action.
+For exmaple, to redirect a user to specific page after sign up and successfully email verification, we can do the following:
+
+in ``common.py``
+.. code:: python
+   #function triggered after a sign up with email verification sign up.
+   def after_register_callback(_, user_row):
+    redirect(URL('pending_registration'))
+
+   #function triggered after a successfull email verification.
+   def after_verify_email_callback(_, user_row):
+      redirect(URL('success_verification'))
+
+
+In ``Auth `` section before auth.definetables() or auth.fix_actions(), add:
+
+.. code:: python
+   # custom action after email verification
+   auth.on_accept['verify_email'] = after_verify_email_callback
+   auth.on_accept['register'] = after_register_callback
+   
+
+Example:
+
+.. code:: python
+   # #######################################################
+   # Instantiate the object and actions that handle auth
+   # #######################################################
+   auth = Auth(session, db, define_tables=False)
+   auth.use_username = False
+   auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL #False
+   auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL #False
+   auth.param.login_after_registration = settings.LOGIN_AFTER_REGISTRATION #False
+   auth.param.allowed_actions = settings.ALLOWED_ACTIONS
+   auth.param.login_expiration_time = 3600
+   auth.param.password_complexity = {"entropy": 50}
+   auth.param.block_previous_password_num = 3
+   auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED #True
+   
+   auth.on_accept['verify_email'] = after_verify_email_callback
+   auth.on_accept['register'] = after_register_callback
+
+   auth.define_tables()
+   auth.fix_actions()
+
+
+
+Authentication with CAPTCHA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CAPTCHAs are essential security measures that prevent automated bot abuse on public forms. 
+To implement Google reCAPTCHA or hCAPTCHA in your authentication form, follow these steps:
+
+Enabling Google reCAPTCHA
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In ``settings.py`` add your keys:
+
+.. code:: python
+
+   RECAPTCHA_API_SECRET_V3 = "your_recaptcha_secret_key_v3"
+   RECAPTCHA_API_KEY_V3 = "your_recaptcha_site_key_v3"
+
+   RECAPTCHA_API_KEY_V2 = "your_recaptcha_site_key_v2"
+   RECAPTCHA_API_SECRET_V2 = "your_recaptcha_secret_key_v2"
+
+
+In ``common.py`` add:
+
+.. code:: python
+
+   #import the functionality
+   from . import settings
+   from py4web.utils.recaptcha import ReCaptcha
+
+   # To use recaptcha v3 
+   recaptcha = ReCaptcha(settings.RECAPTCHA_API_KEY_V3, settings.RECAPTCHA_API_SECRET_V3, "v3")
+   or 
+   # To use  recaptcha v2 
+   recaptcha = ReCaptcha(settings.RECAPTCHA_API_KEY_V2, settings.RECAPTCHA_API_SECRET_V2, "v2")
+
+
+   # in the section that auth is defined
+   # Example:
+   auth = Auth(session, db, define_tables=False)
+
+   # Add this line at the end of auth declaration to enable recaptcha on login, register and request_reset_password forms.
+   # or enable it on the action that you want by especifying the action name
+   
+   #Example:
+
+   auth.extra_form_fields = {"login": [recaptcha.field], "register": [recaptcha.field], "request_reset_password": [recaptcha.field], }
+
+
+   #In section where auth is enabled, add the recaptcha fixture
+   # Example:
+
+   # #######################################################
+   # Enable authentication line
+   # #######################################################
+   auth.enable(uses=(session, T, db, recaptcha.fixture),env=dict(T=T))
+
+Finally in ``auth.html`` add:
+
+.. code:: python
+   [[try:]]
+   [[=form]]
+   [[except:]]
+   [[pass]]
+   [[=recaptcha]]
+
+
+After completing these steps, the reCAPTCHA field will be added to the login, register, and request_reset_password forms.
+
+Enabling hCAPTCHA
+^^^^^^^^^^^^^^^^^
+
+in ``settings.py`` add your HCAPTCHA_SITE_KEY and HCAPTCHA_SECRET_KEY:
+
+.. code:: python
+   HCAPTCHA_SITE_KEY = "your_hcaptcha_site_key"
+   HCAPTCHA_SECRET_KEY = "your_hcaptcha_secret_key"
+      
+
+In ``common.py`` add:
+
+.. code:: python
+   #import the functionality
+   from . import settings
+   from py4web.utils.hcaptcha import Hcaptcha
+
+   hcaptcha = Hcaptcha(settings.HCAPTCHA_SITE_KEY, settings.HCAPTCHA_SECRET_KEY)
+   
+
+   # in the section that auth is defined
+   # Example:
+   auth = Auth(session, db, define_tables=False)
+
+   # Add this line at the end of auth declaration to enable hcaptcha on login, register and request_reset_password forms.
+   # or enable it on the action that you want by especifying the action name
+   
+   #Example:
+   auth.extra_form_fields = {"login": [hcaptcha.field], "register": [hcaptcha.field], "request_reset_password": [hcaptcha.field], }
+
+   #In section where auth is enabled, add the hcaptcha fixture
+   # Example:
+
+   # #######################################################
+   # Enable authentication
+   # #######################################################
+   auth.enable(uses=(session, T, db, hcaptcha.fixture),env=dict(T=T))
+
+
+Finally in ``auth.html`` add:
+
+.. code:: python
+   [[try:]]
+   [[=form]]
+   [[except:]]
+   [[pass]]
+   [[=hcaptcha]]
+
+After completing these steps, the hCAPTCHA field will be added to the login, register, and request_reset_password forms.
+
+
+
 Two Factor Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -430,6 +599,8 @@ You will also have to register your OAuth2 redirect URI in your created applicat
 .. note::
     As Discord users have no concept of first/last name, the user in the auth table will contain the
     Discord username as the first name and discriminator as the last name.
+
+
 
 Auth API Plugins
 ~~~~~~~~~~~~~~~~
