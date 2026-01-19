@@ -55,7 +55,7 @@ def to_bytes(text, encoding="utf8"):
     # if the text is not a string or bytes, maybe it is a file
     if text is None:
         text = b""
-    if not isinstance(text, (str, bytes)):
+    elif hasattr(text, "read") and callable(text.read):
         text = text.read()
     # if it is a unicode string encode it
     if isinstance(text, str):
@@ -73,7 +73,7 @@ def to_unicode(text, encoding="utf8"):
     # if the text is not a string or bytes, maybe it is a file
     if text is None:
         text = ""
-    elif not isinstance(text, (str, bytes)):
+    elif hasattr(text, "read") and callable(text.read):
         text = text.read()
     # if it is a bytes string encode it
     if isinstance(text, bytes):
