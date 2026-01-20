@@ -431,21 +431,30 @@ class Mailer:
         if bcc:
             if not isinstance(bcc, (list, tuple)):
                 bcc = [bcc]
+        # body can be None
         if body is None:
             text = html = None
+        # body can be (text, html)
         elif isinstance(body, (list, tuple)):
             text, html = body
-        if body is not None:
-            body = to_unicode(body, "utf8")
+        # body can be just text
+        else:
+            text = body
+            html = None
+        # make sure that, if provided, both text and html bodies are inn unicode
         if text is not None:
             text = to_unicode(text, "utf8")
-        if text is None and body is not None:
-            if body.lstrip().startswith("<html") and body.rstrip().endswith("</html>"):
-                text = self.settings.server == "gae" and body or None
-                html = body
+        if html is not None:
+            html = to_unicode(html, "utf8")
+        # in case html is provided but text is not
+        if text is None and html is not None:
+            # check that html is indeed html
+            if html.lstrip().startswith("<html") and html.rstrip().endswith("</html>"):
+                # on gae also duplicated it into text because that's how GAE email works
+                text = self.settings.server == "gae" and html or None
             else:
-                text = body
-                html = None
+                # if the html does not contain <html...</html> than it is not html and move it to text
+                text, html = html, None
 
         if (text is not None or html is not None) and (not raw):
             # Construct mime part only if needed
