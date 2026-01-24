@@ -82,7 +82,7 @@ def friends():
     # a search form (simply by first name)
     form = Form([Field("name", required=True)])
     users = []
-    if form.accepted:
+    if form.accepted and form.vars.get("name"):
         # select users based on the tokens in the search input
         query = None
         for token in form.vars.get("name").split():

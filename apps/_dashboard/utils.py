@@ -19,6 +19,9 @@ import subprocess
 import tarfile
 import datetime
 
+from py4web import URL
+from yatl.helpers import A
+
 __all__ = (
     "safe_join",
     "list_dir",
@@ -33,6 +36,7 @@ __all__ = (
     "get_commits",
     "get_branches",
     "is_git_repo",
+    "make_admin_reference_represent",
 )
 
 
@@ -207,3 +211,39 @@ def get_branches(cwd="."):
 def is_git_repo(cwd="."):
     """Checks if the cwd is a git repo"""
     return os.path.exists(os.path.join(cwd, ".git/config"))
+
+
+def fieldformat(table, row):
+    """
+    Given a table and a record, returns a string representation for the record
+    Compatible with pydal.helpers.methods._fieldformat
+    """
+    format = getattr(table, "_format", None)
+    if format:
+        if isinstance(format, str):
+            return table._format % row
+        elif callable(table._format):
+            return table._format(row)
+        else:
+            raise NotImplementedError
+    return str(row.id)
+
+
+# Create a custom represent function that returns a clickable link
+def make_admin_reference_represent(app_name, db_name, db, field):
+    def represent(value, _):
+        if not value:
+            return ""
+        ref_table = field.referenced_table()
+        ref_row = ref_table(value)
+        if not ref_row:
+            return f"#{value}(missing)"
+        # Create text to be displayed
+        display_text = fieldformat(ref_table, ref_row)
+        # Create link to the referenced record's table
+        link_url = URL(
+            "dbadmin", app_name, db_name, ref_table._tablename, vars=dict(id=value)
+        )
+        return A(display_text, _href=link_url)
+
+    return represent

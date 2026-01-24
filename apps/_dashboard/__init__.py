@@ -153,30 +153,18 @@ if MODE in ("demo", "readonly", "full"):
                 field.readable = True
                 field.writable = True
                 # Make reference fields clickable
-                if field.type.startswith("reference ") or field.type.startswith("big-reference "):
-                    referenced_table_name = field.type.split()[1]
-                    # Create a custom represent function that returns a clickable link
-                    def make_reference_represent(ref_table_name, app_n, db_n):
-                        def represent(value, row):
-                            if not value:
-                                return ""
-                            ref_table = db[ref_table_name]
-                            ref_row = ref_table(value)
-                            if not ref_row:
-                                return f"#{value}(missing)"
-                            # Get display text using table format
-                            if isinstance(ref_table._format, str):
-                                display_text = ref_table._format % ref_row
-                            elif callable(ref_table._format):
-                                display_text = ref_table._format(ref_row)
-                            else:
-                                display_text = str(value)
-                            # Create link to the referenced record's table
-                            link_url = URL("dbadmin", app_n, db_n, ref_table_name, vars=dict(id=value))
-                            return XML(f'<a href="{link_url}">{display_text}</a>')
-                        return represent
-                    field.represent = make_reference_represent(referenced_table_name, app_name, db_name)
-            
+                if field.type_name in ("reference", "big-reference"):
+                    field.represent = make_admin_reference_represent(
+                        app_name, db_name, db, field
+                    )
+                elif field.type_name in ("list:reference"):
+                    representer = make_admin_reference_represent(
+                        app_name, db_name, db, field
+                    )
+                    field.represent = lambda values, _: [
+                        representer(item, _) for item in values
+                    ]
+
             columns = [
                 field
                 for field in table
