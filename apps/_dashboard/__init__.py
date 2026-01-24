@@ -170,7 +170,7 @@ if MODE in ("demo", "readonly", "full"):
             columns = [
                 field
                 for field in table
-                if field.type
+                if field.type_name
                 in (
                     "id",
                     "string",
@@ -180,6 +180,8 @@ if MODE in ("demo", "readonly", "full"):
                     "date",
                     "datetime",
                     "boolean",
+                    "reference",
+                    "big-reference",
                 )
             ]
             return Grid(table, columns=columns)
