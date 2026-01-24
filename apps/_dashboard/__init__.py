@@ -161,9 +161,11 @@ if MODE in ("demo", "readonly", "full"):
                     representer = make_admin_reference_represent(
                         app_name, db_name, db, field
                     )
-                    field.represent = lambda values, _: [
-                        representer(item, _) for item in values
-                    ]
+                    field.represent = (
+                        lambda values, _: [representer(item, _) for item in values]
+                        if isinstance(values, list)
+                        else ""
+                    )
 
             columns = [
                 field
