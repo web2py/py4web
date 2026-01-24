@@ -35,7 +35,7 @@ from py4web import (
 from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
 from py4web.utils.grid import Grid
-from yatl.helpers import A
+from yatl.helpers import A, XML
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -152,6 +152,31 @@ if MODE in ("demo", "readonly", "full"):
             for field in table:
                 field.readable = True
                 field.writable = True
+                # Make reference fields clickable
+                if field.type.startswith("reference ") or field.type.startswith("big-reference "):
+                    referenced_table_name = field.type.split()[1]
+                    # Create a custom represent function that returns a clickable link
+                    def make_reference_represent(ref_table_name, app_n, db_n):
+                        def represent(value, row):
+                            if not value:
+                                return ""
+                            ref_table = db[ref_table_name]
+                            ref_row = ref_table(value)
+                            if not ref_row:
+                                return f"#{value}(missing)"
+                            # Get display text using table format
+                            if isinstance(ref_table._format, str):
+                                display_text = ref_table._format % ref_row
+                            elif callable(ref_table._format):
+                                display_text = ref_table._format(ref_row)
+                            else:
+                                display_text = str(value)
+                            # Create link to the referenced record's table
+                            link_url = URL("dbadmin", app_n, db_n, ref_table_name, vars=dict(id=value))
+                            return XML(f'<a href="{link_url}">{display_text}</a>')
+                        return represent
+                    field.represent = make_reference_represent(referenced_table_name, app_name, db_name)
+            
             columns = [
                 field
                 for field in table
@@ -294,7 +319,7 @@ if MODE in ("demo", "readonly", "full"):
                             [
                                 {"name": d, "content": store[os.path.join(root, d)]}
                                 for d in dirs
-                                if visible(root, d) and os.path.join(root, d) in store
+                                if visible(root, d)
                             ],
                             key=lambda item: item["name"],
                         )
