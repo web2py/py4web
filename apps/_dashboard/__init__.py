@@ -294,7 +294,7 @@ if MODE in ("demo", "readonly", "full"):
                             [
                                 {"name": d, "content": store[os.path.join(root, d)]}
                                 for d in dirs
-                                if visible(root, d)
+                                if visible(root, d) and os.path.join(root, d) in store
                             ],
                             key=lambda item: item["name"],
                         )
