@@ -568,4 +568,6 @@ tr:hover {background:#111111}
 .grid-search-form {width:100%; max-width: 100%}
 tbody tr:hover { background-color:#002233 }
 .grid-search-form-tr {border-bottom: none}
+/* Prevent word wrapping in grid cells - truncate with ellipsis instead */
+.grid-td { max-width: 300px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 .grid-td:last-child {text-align: right}
