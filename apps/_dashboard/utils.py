@@ -20,7 +20,7 @@ import tarfile
 import datetime
 
 from py4web import URL
-from yatl.helpers import A
+from yatl.helpers import A, SPAN
 
 __all__ = (
     "safe_join",
@@ -229,12 +229,17 @@ def fieldformat(table, row):
     return str(row.id)
 
 
-# Create a custom represent function that returns a clickable link
-def make_admin_reference_represent(app_name, db_name, db, field):
-    def represent(value, _):
-        if not value:
-            return ""
-        ref_table = field.referenced_table()
+class make_admin_reference_represent:
+    """An object that knows how to represent reference fields and list of references"""
+
+    def __init__(self, app_name, db_name, field):
+        self.app_name = app_name
+        self.db_name = db_name
+        self.field = field
+
+    def represent_item(self, value):
+        ref_table = self.field.referenced_table()
+
         ref_row = ref_table(value)
         if not ref_row:
             return f"#{value}(missing)"
@@ -242,8 +247,17 @@ def make_admin_reference_represent(app_name, db_name, db, field):
         display_text = fieldformat(ref_table, ref_row)
         # Create link to the referenced record's table
         link_url = URL(
-            "dbadmin", app_name, db_name, ref_table._tablename, vars=dict(id=value)
+            "dbadmin",
+            self.app_name,
+            self.db_name,
+            ref_table._tablename,
+            vars=dict(id=value),
         )
         return A(display_text, _href=link_url)
 
-    return represent
+    def __call__(self, value, _):
+        if not value:
+            return ""
+        if isinstance(value, list):
+            return SPAN(*list(map(self.represent_item, value)))
+        return self.represent_item(value)

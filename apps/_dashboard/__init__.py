@@ -35,7 +35,6 @@ from py4web import (
 from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
 from py4web.utils.grid import Grid
-from yatl.helpers import A, XML
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -153,18 +152,9 @@ if MODE in ("demo", "readonly", "full"):
                 field.readable = True
                 field.writable = True
                 # Make reference fields clickable
-                if field.type_name in ("reference", "big-reference"):
+                if field.type_name in ("reference", "big-reference", "list:reference"):
                     field.represent = make_admin_reference_represent(
-                        app_name, db_name, db, field
-                    )
-                elif field.type_name in ("list:reference"):
-                    representer = make_admin_reference_represent(
-                        app_name, db_name, db, field
-                    )
-                    field.represent = (
-                        lambda values, _: [representer(item, _) for item in values]
-                        if isinstance(values, list)
-                        else ""
+                        app_name, db_name, field
                     )
 
             columns = [
