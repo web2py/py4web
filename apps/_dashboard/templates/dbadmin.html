@@ -1,3 +1,58 @@
 [[extend "layout.html"]]
+
+<style>
+    html,
+    body {
+        overflow-x: visible;
+    }
+
+    .grid-table-wrapper {
+        overflow-x: visible;
+    }
+</style>
+
+<style>
+    header {
+        background-color: #111;
+    }
+
+    nav {
+        width: auto;
+    }
+
+    @media (min-width: 600px) {
+        nav>ul>li {
+            padding: 0.5em 0.5em;
+        }
+    }
+
+    div:has(> flash-alerts) {
+        height: 6px;
+    }
+
+    h2 {
+        margin-top: 0px;
+        font-size: 1.5em;
+    }
+
+    .padded {
+        max-width: unset;
+        padding-top: 0;
+    }
+
+    .grid-search-form-table {
+        width: 70vw;
+    }
+
+    .grid-search-form-tr:hover {
+        background-color: transparent;
+    }
+
+    td,
+    th {
+        padding: 1px 8px;
+    }
+</style>
+
 <h2>Table "[[=table_name]]"</h2>
 [[=grid]]
