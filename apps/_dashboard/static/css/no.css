@@ -46,6 +46,10 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 
+body > center, body > center > main {
+  width: 100vw;
+}
+
 /****************************************************
  elements style
  ****************************************************/
@@ -565,9 +569,26 @@ button, a[role=button], input[type=submit], input[type=button] { background-colo
 p, input, textarea { margin: 5px}
 thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
 tr:hover {background:#111111}
-.grid-search-form {width:100%; max-width: 100%}
-tbody tr:hover { background-color:#002233 }
-.grid-search-form-tr {border-bottom: none}
+
+header { background-color: #111; }
+nav { width: auto; }
+
+@media (min-width: 600px) {
+  nav>ul>li { padding: 0.5em 0.5em; }
+}
+
+.padded { max-width: unset; padding-top: 0; }
+
+.dbadmin { width: 100%;}
+.dbadmin .grid-search-form {width:100%; max-width: 100%}
+.dbadmin tbody tr:hover { background-color:#002233 }
+.dbadmin .grid-search-form-tr {border-bottom: none}
 /* Prevent word wrapping in grid cells - truncate with ellipsis instead */
-.grid-td { max-width: 300px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
-.grid-td:last-child {text-align: right}
+.dbadmin .grid-td { max-width: 300px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.dbadmin .grid-td:last-child {text-align: right}
+.dbadmin .grid-table-wrapper { overflow-x: auto; }
+.dbadmin div:has(> flash-alerts) { height: 6px; }
+.dbadmin h2 { margin-top: 0px; font-size: 1.5em; }
+.dbadmin .grid-search-form-table { width: 70vw; }
+.dbadmin .grid-search-form-tr:hover { background-color: transparent; }
+.dbadmin td, .dbadmin th { padding: 1px 8px; }
