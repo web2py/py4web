@@ -46,10 +46,6 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 
-body > center, body > center > main {
-  width: 100vw;
-}
-
 /****************************************************
  elements style
  ****************************************************/
@@ -587,8 +583,15 @@ nav { width: auto; }
 .dbadmin .grid-td { max-width: 300px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 .dbadmin .grid-td:last-child {text-align: right}
 .dbadmin .grid-table-wrapper { overflow-x: auto; }
-.dbadmin div:has(> flash-alerts) { height: 6px; }
 .dbadmin h2 { margin-top: 0px; font-size: 1.5em; }
 .dbadmin .grid-search-form-table { width: 70vw; }
 .dbadmin .grid-search-form-tr:hover { background-color: transparent; }
 .dbadmin td, .dbadmin th { padding: 1px 8px; }
+.dbadmin .grid-table-wrapper { overflow-x: visible; }
+
+html:has(.dbadmin),
+body:has(.dbadmin) {
+    overflow-x: visible;
+}
+
+div:has(> flash-alerts) { height: 6px; }
