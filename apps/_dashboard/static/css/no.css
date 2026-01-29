@@ -575,7 +575,7 @@ label ~ div {
   /* top: -5px; */
   padding: 5px;
   background-color: hsl(0, 0%, 15%);
-  /* border-radius: 6px; */
+  border-radius: 6px;
   min-height: 35px;
   max-height: 150px;
   overflow-wrap: break-word;
