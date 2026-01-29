@@ -209,7 +209,11 @@ input[type='color'], input[type='date'], input[type='datetime'], input[type='tim
   font-family: monospace;
   font-size: 1em;
   padding: .5em 1.0em .5em;
+
+  /* The intended value is -webkit-fill-available, with fallbacks provided just in case. */
   width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
 }
 
 input[type='color']:focus, input[type='date']:focus, input[type='time']:focus, input[type='datetime']:focus, input[type='datetime-local']:focus, input[type='email']:focus, input[type='month']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, input[type='week']:focus, input:not([type]):focus, textarea:focus, select:focus {
@@ -221,6 +225,11 @@ select {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%23d1d1d1" d="M0,0l6,8l6-8"/></svg>') center right no-repeat;
   background-color: #222 !important;
   color: white !important;
+
+  /* Remove the browser’s native <select> arrow */
+  appearance: none;
+  -webkit-appearance: none; /* Safari / Chrome */
+  -moz-appearance: none;    /* Firefox */
 }
 
 select option {
@@ -244,6 +253,7 @@ fieldset {
 
 input[type='checkbox'], input[type='radio'] {
   display: inline;
+  margin-right: 10px;
 }
 
 [disabled] {
@@ -507,7 +517,7 @@ input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
 }
 
 /****************************************************
- convenience
+ Convenience
  ****************************************************/
 
 [role="alert"] {
@@ -558,9 +568,24 @@ body { background: black; color: white; }
 body > center > * { max-width: 90vw; }
 form { max-width: 900px; }
 nav.black a, a { color: #33BFFF; }
-label:not(.help) { color: black; background-color: #CCC; padding: 2px 5px; margin: 5px 0 0 10px; border-top-left-radius: 5px; border-top-right-radius: 5px}
+label:not(.help) { color: black; background-color: #CCC; padding: 2px 5px; margin: 5px 0 0 0px; border-top-left-radius: 5px; border-top-right-radius: 5px}
 span ~ label { border-radius: 5px;}
-label ~ div { position: relative; top: -5px}
+label ~ div { 
+  position: relative; 
+  /* top: -5px; */
+  padding: 5px;
+  background-color: hsl(0, 0%, 15%);
+  border-radius: 6px;
+  min-height: 35px;
+  max-height: 150px;
+  overflow-wrap: break-word;
+  overflow: auto;
+}
+
+div:has(> label) {
+  margin-bottom: 18px;
+}
+
 button, a[role=button], input[type=submit], input[type=button] { background-color: #33BFFF; color: black}
 p, input, textarea { margin: 5px}
 thead>tr {background: black; border-top: 2px solid #33BFFF; border-bottom: 2px solid #33BFFF;}
