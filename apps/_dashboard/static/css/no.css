@@ -562,7 +562,7 @@ ul.tags-list li[data-selected=true] {
   opacity: 1.0;
 }
 
-.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red;}
+.py4web-validation-error{margin-top:-3px; font-size:0.8em;color:red;}
 .grid-table-wrapper{overflow-x: auto;}
 body { background: black; color: white; }
 body > center > * { max-width: 90vw; }
@@ -575,7 +575,7 @@ label ~ div {
   /* top: -5px; */
   padding: 5px;
   background-color: hsl(0, 0%, 15%);
-  border-radius: 6px;
+  /* border-radius: 6px; */
   min-height: 35px;
   max-height: 150px;
   overflow-wrap: break-word;
