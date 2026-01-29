@@ -258,10 +258,7 @@ In ``common.py`` add:
 Finally in ``auth.html`` add:
 
 .. code:: python
-   [[try:]]
-   [[=form]]
-   [[except:]]
-   [[pass]]
+   [[=globals().get("form","")]]
    [[=recaptcha]]
 
 
@@ -309,10 +306,8 @@ In ``common.py`` add:
 Finally in ``auth.html`` add:
 
 .. code:: python
-   [[try:]]
-   [[=form]]
-   [[except:]]
-   [[pass]]
+	  
+   [[=globals().get("form","")]]
    [[=hcaptcha]]
 
 After completing these steps, the hCAPTCHA field will be added to the login, register, and request_reset_password forms.
