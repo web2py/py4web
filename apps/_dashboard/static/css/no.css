@@ -574,7 +574,7 @@ label ~ div {
   position: relative; 
   /* top: -5px; */
   padding: 5px;
-  background-color: hsl(0, 0%, 15%);
+  background-color: hsl(0, 0%, 10%);
   border-radius: 6px;
   min-height: 35px;
   max-height: 150px;
