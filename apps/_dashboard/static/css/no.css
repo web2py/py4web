@@ -610,6 +610,8 @@ nav { width: auto; }
 .dbadmin .grid-table-wrapper { overflow-x: auto; }
 .dbadmin h2 { margin-top: 0px; font-size: 1.5em; }
 .dbadmin .grid-search-form-table { width: 70vw; }
+.dbadmin .grid-search-form-td { vertical-align: middle; }
+.dbadmin .grid-search-form-td input[type="submit"] { margin-top: 0; }
 .dbadmin .grid-search-form-tr:hover { background-color: transparent; }
 .dbadmin td, .dbadmin th { padding: 1px 8px; }
 .dbadmin .grid-table-wrapper { overflow-x: visible; }
