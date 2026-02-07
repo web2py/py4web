@@ -1,0 +1,169 @@
+/**
+ * AlienDark Theme - Dark Mode Dashboard Theme
+ * 
+ * A sleek dark theme with cyan accents designed for the py4web dashboard.
+ * Provides a modern, low-light interface perfect for extended viewing sessions.
+ * 
+ * CSS Variable Dependencies:
+ * All styling uses CSS custom properties defined in :root below.
+ * To customize this theme, modify the variables rather than hardcoding colors.
+ * 
+ * File Structure:
+ * 1. CSS Variables (:root) - Color palette and design tokens
+ * 2. Base Elements - html, body, and general text styling
+ * 3. Form Elements - input, textarea, select, button styling
+ * 4. Content - Links, panels, modals, and general content
+ * 5. Tables & Database - Grid and dbadmin specific overrides
+ * 6. Navigation - Header, nav, footer styling
+ */
+
+/* ============================================================================
+   1. CSS VARIABLES - Color Palette & Design Tokens
+   ========================================================================== */
+:root {
+  --bg-primary: black;            /* Main page background */
+  --text-primary: #d1d1d1;        /* Main text color (light gray) */
+  --accent: #33BFFF;              /* Primary accent color (cyan) */
+  --accent-dark: #139FDF;         /* Darker accent for hover states */
+  --bg-secondary: #222;           /* Secondary background (dark gray) */
+  --border-color: #33BFFF;        /* Border and divider color (matches accent) */
+}
+
+html {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   3. FORM ELEMENTS - Inputs, Textareas, Selects, and Buttons
+   ========================================================================== */
+
+button {
+  background-color: var(--bg-primary);
+  color: var(--accent);   
+  border: 2px solid var(--accent);
+  box-shadow: inset 0 0 0 0 var(--accent);
+}
+
+button:hover {
+  border: 2px solid var(--accent-dark);
+  box-shadow: inset 0 0 0 50px var(--accent); 
+  color: black;
+}
+
+input[type=text],
+input[type=password], 
+input[type=number],
+input[type=date], 
+input[type=time], 
+input[type=datetime-local],
+input[type=file], 
+select,
+textarea {
+  background-color: var(--bg-primary);
+  color: var(--accent);
+}
+
+input[type=text],
+input[type=password], 
+input[type=number],
+input[type=date], 
+input[type=time], 
+input[type=datetime-local],
+select,
+textarea {
+  border-bottom: 2px solid var(--accent);
+}
+
+/* ============================================================================
+   4. CONTENT - Links, Panels, Modals, and Interactive Elements
+   ========================================================================== */
+.my-effects a, .my-effects a:hover, .my-effects a:visited {
+  color: var(--accent);
+}
+
+.my-effects a:not(.btn):after {
+  background-color: var(--accent);
+}
+
+.panel > label {
+  border: 4px solid var(--accent);
+  background: linear-gradient(to right, var(--accent-dark), var(--accent));
+}
+
+.modal-inner {
+  border: 5px solid var(--accent);
+}
+
+.login {
+  color: var(--accent);
+}
+
+.login input[type=password] { 
+  border: 2px solid var(--accent);
+} 
+
+.loading {
+  background-color: var(--bg-primary);
+}
+
+.my-effects .accordion>label:before,
+.my-effects .accordion>input:checked ~ label:before {
+  color: var(--accent);
+}
+
+tbody {
+  border-bottom: 1px solid var(--accent);
+}
+
+/* ============================================================================
+   5. TABLES & DATABASE GRID - Grid and DBAdmin styling
+   ========================================================================== */
+.dbadmin tbody tr:hover {
+  background-color: #002233;
+}
+
+thead>tr {
+  background: var(--bg-primary);
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+/* ============================================================================
+   6. BUTTONS & NAVIGATION - Button, nav, and header styling
+   ========================================================================== */
+button, a[role=button], input[type=submit], input[type=button] { 
+  background-color: var(--accent);
+  color: black;
+}
+
+nav.black a, a { 
+  color: var(--accent);
+}
+
+label ~ div { 
+  background-color: hsl(0, 0%, 10%);
+}
+
+header { 
+  background-color: #111;
+}
+
+nav:not(.black) {
+  background-color: #111;
+}
+
+select {
+  background-color: var(--bg-secondary) !important;
+  color: white !important;
+}
+
+select option {
+  background-color: var(--bg-secondary);
+  color: white;
+}

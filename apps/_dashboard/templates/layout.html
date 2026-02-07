@@ -3,18 +3,29 @@
   <head>
     <base href="[[=URL('static')]]/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
+    <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
     <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script src="js/theme-selector.js"></script>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
     <header>
       <!-- Navigation bar -->
-      <nav class="black">
-        <ul>
-          <li><a href="[[=URL('index')]]">Dashboard</a> / dbadmin</li>
+      <nav class="black" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: auto; min-height: 48px; line-height: 28px;">
+        <ul style="margin: 0; display: flex; align-items: center; height: 100%; line-height: 28px;">
+          <li style="padding: 0; margin: 0; line-height: 28px;">
+            <a href="[[=URL('index')]]">Dashboard</a> / dbadmin
+          </li>
         </ul>
+        <!-- Theme Selector for DBAdmin Pages - Positioned Right -->
+        <div style="display: flex; align-items: center; gap: 10px; line-height: 28px;">
+          <label for="dashboard-theme-select" style="font-size: 14px; color: inherit; margin: 0; white-space: nowrap; display: inline-flex; align-items: center; height: 28px; line-height: 28px;">Theme:</label>
+          <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 130px; height: 28px; padding: 0 8px; background-color: #333; color: white; border: 1px solid #666; border-radius: 3px; line-height: 28px; margin: 0;">
+            [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
+          </select>
+        </div>
       </nav>
     </header>
     <!-- beginning of HTML inserted by extending template -->
@@ -29,10 +40,11 @@
       </main>
     </center>
     <!-- end of HTML inserted by extending template -->
-    <footer class="black padded">
+    <footer class="black padded" style="display: flex; justify-content: space-between; align-items: center;">
       <p>
         Part of <a href="https://py4web.com">py4web</a>
       </p>
+      <a href="[[=URL('index')]]" style="text-decoration: none; margin-right: 20px;"><button>Back</button></a>
     </footer>
   </body>
   <!-- You've gotta have utils.js -->

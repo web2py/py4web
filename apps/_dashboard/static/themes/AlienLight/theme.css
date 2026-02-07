@@ -1,0 +1,335 @@
+/**
+ * AlienLight Theme - Light Mode Dashboard Theme
+ * 
+ * An elegant light theme with blue accents designed for the py4web dashboard.
+ * Provides excellent readability with high contrast text on light backgrounds.
+ * 
+ * CSS Variable Dependencies:
+ * All styling uses CSS custom properties defined in :root below.
+ * To customize this theme, modify the variables rather than hardcoding colors.
+ * 
+ * File Structure:
+ * 1. CSS Variables (:root) - Color palette and design tokens
+ * 2. Base Elements - html, body, and general text styling
+ * 3. Form Elements - input, textarea, select, button styling
+ * 4. Navigation - header, nav, footer styling
+ * 5. Content - Links, panels, modals, and general content
+ * 6. Database/Table - Grid and dbadmin specific overrides
+ * 7. Interactive - Hover states and focus states
+ */
+
+/* ============================================================================
+   1. CSS VARIABLES - Color Palette & Design Tokens
+   ========================================================================== */
+:root {
+  --bg-primary: white;           /* Main page background */
+  --text-primary: #333;           /* Main text color */
+  --accent: #0074d9;              /* Primary accent color (blue) */
+  --accent-dark: #0052a3;         /* Darker accent for hover states */
+  --bg-secondary: #f5f5f5;        /* Secondary background (light gray) */
+  --border-color: #d1d1d1;        /* Border and divider color */
+}
+
+/* ============================================================================
+   2. BASE ELEMENTS - Document Root, Body, and General Styling
+   ========================================================================== */
+html {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html, body {
+  min-height: 100%;
+}
+
+.my-effects {
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* ============================================================================
+   3. FORM ELEMENTS - Inputs, Textareas, Selects, and Buttons
+   ========================================================================== */
+
+button {
+  background-color: var(--accent);
+  color: white;
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: var(--accent-dark);
+  border: 2px solid var(--accent-dark);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=date],
+input[type=time],
+input[type=datetime-local],
+input[type=file],
+select,
+textarea {
+  background-color: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=number]:focus,
+input[type=date]:focus,
+input[type=time]:focus,
+input[type=datetime-local]:focus,
+select:focus,
+textarea:focus {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 5px rgba(0, 116, 217, 0.3);
+}
+
+/* ============================================================================
+   4. NAVIGATION - Header, Nav, and Footer
+   ========================================================================== */
+.my-effects a, .my-effects a:hover, .my-effects a:visited {
+  color: var(--accent);
+}
+
+.my-effects a:not(.btn):after {
+  background-color: var(--accent);
+}
+
+.panel > label {
+  border: 2px solid var(--accent);
+  background: linear-gradient(to right, #e3f2fd, #bbdefb);
+  color: var(--text-primary);
+}
+
+.modal-inner {
+  border: 2px solid var(--accent);
+  background-color: white;
+}
+
+/* ============================================================================
+   5. CONTENT - Login and Interactive Elements
+   ========================================================================== */
+
+.login {
+  background: rgba(247, 247, 247, 0.9);
+  color: var(--accent);
+}
+
+.login h1, .login h2 {
+  color: var(--accent);
+}
+
+.login input[type=password] {
+  border: 2px solid var(--accent);
+  background-color: white;
+  color: var(--text-primary);
+}
+
+.loading {
+  background-color: var(--bg-primary);
+}
+
+tbody {
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* ============================================================================
+   6. TABLES & DATABASE GRID - DBAdmin and table styling
+   ========================================================================== */
+.dbadmin tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+thead tr {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+thead th {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+button, a[role=button], input[type=submit], input[type=button] {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* ============================================================================
+   7. NAVIGATION & INTERACTIVE - Header, nav, footer, and interactive elements
+   ========================================================================== */
+nav.black a, a {
+  color: var(--accent);
+}
+
+label ~ div {
+  background-color: white;
+  border: 1px solid var(--border-color);
+}
+
+header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+nav {
+  background-color: var(--bg-secondary);
+}
+
+header.black,
+footer.black,
+nav.black {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+nav.black a,
+footer.black a {
+  color: var(--accent);
+}
+
+.spinner-top {
+  background-color: white;
+}
+
+nav li:hover {
+  background-color: #e8e8e8;
+}
+
+select {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+select option {
+  background-color: white;
+  color: var(--text-primary);
+}
+
+label:not(.help) {
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.tag {
+  background-color: var(--accent);
+  color: white;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* ============================================================================
+   8. DBADMIN-SPECIFIC OVERRIDES - Comprehensive styling for dbadmin pages
+   ========================================================================== */
+
+/* Ensure all containers and content areas are light */
+main,
+article,
+section,
+.container,
+.content,
+.grid,
+.form-container {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Form wrappers and content divs */
+.form-group,
+.form-wrapper,
+.fieldset {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+/* Ensure all input types have proper styling */
+input[type=search],
+input[type=email],
+input[type=url] {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Ensure checkboxes and radio buttons visibility */
+input[type=checkbox],
+input[type=radio] {
+  background-color: white !important;
+}
+
+/* Table styling - ensure visibility */
+table {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+/* Grid and data cells */
+td,
+.grid-cell {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+th,
+.grid-header {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Panel and card backgrounds */
+.panel,
+.card,
+.box {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Ensure light background for any dark elements */
+.dark,
+.bg-dark,
+[style*="background: black"],
+[style*="background-color: black"] {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Remove any dark overlays */
+.overlay,
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure list items are properly colored */
+li {
+  color: var(--text-primary);
+}
+
+/* Ensure all text content is readable */
+p, span, div {
+  color: var(--text-primary);
+}
+
+/* Style favicon icons to green */
+img[src*="favicon.ico"] {
+  filter: hue-rotate(110deg) saturate(1.5) brightness(0.8);
+}

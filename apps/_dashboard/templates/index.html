@@ -3,9 +3,11 @@
 
 <head>
     <base href="[[=URL('static')]]/">
-    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA==" />
+    <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
     <link rel="stylesheet" type="text/css" href="css/future.css" />
+    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <script src="js/theme-selector.js"></script>
 </head>
 
 <body>
@@ -31,10 +33,18 @@
         </div>
         <div class="loading" v-if="loading"></div>
         <div v-if="user">
-            <div class="header">
-            <img src="images/widget.gif" class="spinner-top" />
-            <span class="logo">py4web Dashboard</span>
-        </div>
+            <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                    <img src="images/widget.gif" class="spinner-top" />
+                    <span class="logo">py4web Dashboard</span>
+                </div>
+                <div style="padding-right: 100px; display: flex; align-items: center; gap: 8px;">
+                    <label for="dashboard-theme-select" style="font-size: 12px;">Theme</label>
+                    <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 140px;">
+                        [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
+                    </select>
+                </div>
+            </div>
         <div v-if="last_error" class="dialog-error">
             <h2>API error</h2>
             <pre v-text="last_error"></pre>
