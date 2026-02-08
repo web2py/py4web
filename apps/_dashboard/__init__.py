@@ -68,6 +68,21 @@ def catch_errors(func):
     return wrapper
 
 
+def get_available_themes():
+    """Get list of available themes by reading static/themes/ folder"""
+    themes_dir = os.path.join(settings.APP_FOLDER, "static", "themes")
+    try:
+        if os.path.isdir(themes_dir):
+            themes = sorted([
+                d for d in os.listdir(themes_dir)
+                if os.path.isdir(os.path.join(themes_dir, d)) and not d.startswith('.')
+            ])
+            return themes
+    except (OSError, IOError):
+        pass
+    return ["AlienDark", "AlienLight"]  # Fallback
+
+
 session = Session()
 T = Translator(settings.T_FOLDER)
 authenticated = ActionFactory(Logged(session))
@@ -88,6 +103,7 @@ if MODE in ("demo", "readonly", "full"):
             languages=dumps(getattr(T.local, "language", {})),
             mode=MODE,
             user_id=(session.get("user") or {}).get("id"),
+            themes=get_available_themes(),
         )
 
     @action("login", method="POST")
@@ -137,11 +153,12 @@ if MODE in ("demo", "readonly", "full"):
             )
 
         grid = action.uses(db)(make_grid)()
-        return dict(table_name="py4web_error", grid=grid)
+        return dict(table_name="py4web_error", grid=grid, themes=get_available_themes())
 
     @action("dbadmin/<app_name>/<db_name>/<table_name>")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin(app_name, db_name, table_name):
+        themes = get_available_themes()
         module = Reloader.MODULES.get(app_name)
         db = getattr(module, db_name)
 
@@ -177,7 +194,7 @@ if MODE in ("demo", "readonly", "full"):
             return Grid(table, columns=columns)
 
         grid = action.uses(db)(make_grid)()
-        return dict(table_name=table_name, grid=grid)
+        return dict(app_name=app_name, table_name=table_name, grid=grid, themes=themes)
 
     @action("info")
     @session_secured

@@ -1,5 +1,10 @@
 <html>
   <head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/future.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
+    <script src="js/theme-selector.js"></script>
     <style>
   * {
     font-family: courier;
@@ -8,9 +13,9 @@
   body {
     margin: 0;
     border: 0;
-    padding: 9;
-    background-color: #111111;
-    color: #e1e1e1;
+    padding: 9px;
+    background-color: var(--bg-primary, #111111);
+    color: var(--text-primary, #e1e1e1);
   }
   h2.page-title { font-size: 2em }
   .ticket {
@@ -20,7 +25,7 @@
     margin-top: -1px;
   }
   .ticket tr {
-    border-top: 1px solid #e1e1e1;        
+    border-top: 1px solid var(--border-color, #e1e1e1);        
     padding-left: 5px;
   }
   .ticket th:after {
@@ -31,7 +36,7 @@
     text-align: left;
     vertical-align: top;
     padding-right: 10px;
-    border-right: 5px solid #d2d2d2;
+    border-right: 5px solid var(--border-color, #d2d2d2);
   }
   .ticket td {
     white-space: pre;
