@@ -765,10 +765,8 @@ class Grid:
                 type_name = strip_field_type(col.type)
                 # upload type is always special!
                 if type_name == "upload" and hasattr(col, "download_url"):
-                    represent_col = (
-                        lambda row, name=str(col), f=col.download_url: row[name]
-                        and A("download", _href=f(row[name]))
-                        or ""
+                    represent_col = lambda row, name=str(col), f=col.download_url: (
+                        row[name] and A("download", _href=f(row[name])) or ""
                     )
                 # field represent override default representation by type
                 elif col.represent:
@@ -777,9 +775,11 @@ class Grid:
                     )
                 # we do not know better, use formarepresent by type (type is the stripped Field type)
                 elif type_name in self.represent_by_type:
-                    represent_col = lambda row, col=col, f=self.represent_by_type[
-                        col.type_name
-                    ]: f(col, row[str(col)])
+                    represent_col = (
+                        lambda row, col=col, f=self.represent_by_type[col.type_name]: f(
+                            col, row[str(col)]
+                        )
+                    )
                 else:
                     represent_col = lambda row, name=str(col): row[name]
 

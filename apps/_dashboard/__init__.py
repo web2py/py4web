@@ -73,10 +73,14 @@ def get_available_themes():
     themes_dir = os.path.join(settings.APP_FOLDER, "static", "themes")
     try:
         if os.path.isdir(themes_dir):
-            themes = sorted([
-                d for d in os.listdir(themes_dir)
-                if os.path.isdir(os.path.join(themes_dir, d)) and not d.startswith('.')
-            ])
+            themes = sorted(
+                [
+                    d
+                    for d in os.listdir(themes_dir)
+                    if os.path.isdir(os.path.join(themes_dir, d))
+                    and not d.startswith(".")
+                ]
+            )
             return themes
     except (OSError, IOError):
         pass

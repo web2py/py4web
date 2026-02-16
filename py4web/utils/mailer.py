@@ -878,16 +878,18 @@ def dkim_sign(payload, dkim_key, dkim_selector):
     # http://dkim.org/specs/rfc4871-dkimbase.html#rfc.section.5.5
     headers = list(
         filter(
-            lambda h: h
-            not in [
-                "Return-Path",
-                "Received",
-                "Comments",
-                "Keywords",
-                "Resent-Bcc",
-                "Bcc",
-                "DKIM-Signature",
-            ],
+            lambda h: (
+                h
+                not in [
+                    "Return-Path",
+                    "Received",
+                    "Comments",
+                    "Keywords",
+                    "Resent-Bcc",
+                    "Bcc",
+                    "DKIM-Signature",
+                ]
+            ),
             payload,
         )
     )
