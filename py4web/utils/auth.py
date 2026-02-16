@@ -2210,7 +2210,7 @@ class SimpleTokenPlugin:
             db = self.auth.db
             token = authorization[6:].strip()
             row = self.table(token=token)
-            if row and row.expiration_date.isoformat() > utcnow().isoformat():
+            if row and (not row.expiration_date or row.expiration_date > utcnow()):
                 user = db.auth_user(row.user_id)
                 return user.as_dict()
         return None
