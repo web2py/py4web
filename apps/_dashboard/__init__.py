@@ -5,6 +5,7 @@ import functools
 import io
 import json
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -68,6 +69,91 @@ def catch_errors(func):
     return wrapper
 
 
+def change_password_handler(old_password, new_password):
+    """Change the dashboard password"""
+    password_file = os.environ.get("PY4WEB_PASSWORD_FILE")
+    if not password_file:
+        return {"status": "error", "message": "PY4WEB_PASSWORD_FILE environment variable not set"}
+    if not os.path.exists(password_file):
+        return {"status": "error", "message": f"Password file not found: {password_file}"}
+    
+    try:
+        # Read current password from file
+        with open(password_file, "r") as fp:
+            stored_password = fp.read().strip()
+        
+        # Verify old password matches
+        if CRYPT()(old_password)[0] != stored_password:
+            return {"status": "error", "message": "Current password is incorrect"}
+        
+        # Encrypt new password
+        encrypted_password = str(CRYPT()(new_password)[0])
+        if not encrypted_password:
+            return {"status": "error", "message": "Failed to encrypt password"}
+        
+        # Write to temporary file first, then rename to avoid data loss
+        temp_fd, temp_path = tempfile.mkstemp(text=True)
+        try:
+            with os.fdopen(temp_fd, 'w') as fp:
+                fp.write(encrypted_password)
+            # Only rename if write was successful
+            shutil.move(temp_path, password_file)
+        except Exception as temp_error:
+            # Clean up temp file if it exists
+            try:
+                os.unlink(temp_path)
+            except:
+                pass
+            raise temp_error
+        
+        return {"status": "success", "message": "Password changed successfully"}
+    except Exception as e:
+        return {"status": "error", "message": f"Error: {str(e)}"}
+
+
+def load_user_settings():
+    """Load user settings from user_settings.toml"""
+    settings_file = os.path.join(settings.APP_FOLDER, "user_settings.toml")
+    default_settings = {"selected_theme": "AlienDark"}
+    
+    if not os.path.exists(settings_file):
+        # Create default settings file
+        try:
+            with open(settings_file, "w") as fp:
+                fp.write('selected_theme = "AlienDark"\n')
+            return default_settings
+        except Exception:
+            return default_settings
+    
+    try:
+        with open(settings_file, "r") as fp:
+            content = fp.read()
+        # Simple TOML parser for key = "value" format
+        parsed_settings = {}
+        for line in content.split('\n'):
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                key = key.strip()
+                value = value.strip().strip('"').strip("'")
+                parsed_settings[key] = value
+        return parsed_settings if parsed_settings else default_settings
+    except Exception:
+        return default_settings
+
+
+def save_user_settings(settings_dict):
+    """Save user settings to user_settings.toml"""
+    settings_file = os.path.join(settings.APP_FOLDER, "user_settings.toml")
+    try:
+        with open(settings_file, "w") as fp:
+            for key, value in settings_dict.items():
+                fp.write(f'{key} = "{value}"\n')
+        return {"status": "success"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
 def get_available_themes():
     """Get list of available themes by reading static/themes/ folder"""
     themes_dir = os.path.join(settings.APP_FOLDER, "static", "themes")
@@ -84,7 +170,19 @@ def get_available_themes():
             return themes
     except (OSError, IOError):
         pass
-    return ["AlienDark", "AlienLight"]  # Fallback
+    return []
+
+
+def normalize_selected_theme(selected_theme, available_themes=None):
+    """Normalize a selected theme against currently available themes."""
+    themes = available_themes if available_themes is not None else get_available_themes()
+    if selected_theme and selected_theme in themes:
+        return selected_theme
+    if "AlienDark" in themes:
+        return "AlienDark"
+    if themes:
+        return themes[0]
+    return "AlienDark"
 
 
 session = Session()
@@ -101,14 +199,22 @@ def version():
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
-    @action.uses("index.html", session, T)
+    @action.uses(session, T, "index.html")
     def index():
+        themes = get_available_themes()
+        user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "AlienDark"), themes
+        )
+        
         return dict(
             languages=dumps(getattr(T.local, "language", {})),
             mode=MODE,
             user_id=(session.get("user") or {}).get("id"),
-            themes=get_available_themes(),
+            themes=themes,
+            selected_theme=selected_theme,
         )
+
 
     @action("login", method="POST")
     @action.uses(session)
@@ -133,10 +239,38 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
+    @action("change_password", method="POST")
+    @action.uses(Logged(session))
+    @catch_errors
+    def change_password():
+        old_password = request.json.get("old_password")
+        password = request.json.get("password")
+        if not old_password:
+            return {"status": "error", "message": "Current password is required"}
+        if not password:
+            return {"status": "error", "message": "New password is required"}
+        return change_password_handler(old_password, password)
+
+    @action("save_theme", method="POST")
+    @action.uses(Logged(session))
+    @catch_errors
+    def save_theme():
+        theme = request.json.get("theme")
+        if not theme:
+            return {"status": "error", "message": "Theme name is required"}
+        themes = get_available_themes()
+        if theme not in themes:
+            return {"status": "error", "message": "Theme is not available"}
+        user_settings = load_user_settings()
+        user_settings["selected_theme"] = theme
+        return save_user_settings(user_settings)
+
     @action("tickets/search")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
         db = error_logger.database_logger.db
+        themes = get_available_themes()
+        user_settings = load_user_settings()
 
         def make_grid():
             make_safe(db)
@@ -157,12 +291,20 @@ if MODE in ("demo", "readonly", "full"):
             )
 
         grid = action.uses(db)(make_grid)()
-        return dict(table_name="py4web_error", grid=grid, themes=get_available_themes())
+        return dict(
+            table_name="py4web_error",
+            grid=grid,
+            themes=themes,
+            selected_theme=normalize_selected_theme(
+                user_settings.get("selected_theme", "AlienDark"), themes
+            ),
+        )
 
     @action("dbadmin/<app_name>/<db_name>/<table_name>")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin(app_name, db_name, table_name):
         themes = get_available_themes()
+        user_settings = load_user_settings()
         module = Reloader.MODULES.get(app_name)
         db = getattr(module, db_name)
 
@@ -198,13 +340,27 @@ if MODE in ("demo", "readonly", "full"):
             return Grid(table, columns=columns)
 
         grid = action.uses(db)(make_grid)()
-        return dict(app_name=app_name, table_name=table_name, grid=grid, themes=themes)
+        return dict(
+            app_name=app_name,
+            table_name=table_name,
+            grid=grid,
+            themes=themes,
+            selected_theme=normalize_selected_theme(
+                user_settings.get("selected_theme", "AlienDark"), themes
+            ),
+        )
 
     @action("info")
     @session_secured
     @catch_errors
     def info():
-        vars = [{"name": "python", "version": sys.version}]
+        # Start with OS information
+        os_info = f"{platform.system()} {platform.release()}"
+        vars = [
+            {"name": "os", "version": os_info},
+            {"name": "py4web", "version": __version__},
+            {"name": "python", "version": sys.version}
+        ]
         for module in sorted(sys.modules):
             if not "." in module:
                 try:
@@ -234,7 +390,12 @@ if MODE in ("demo", "readonly", "full"):
         apps = os.listdir(FOLDER)
         exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
-            {"name": app, "error": Reloader.ERRORS.get(app)}
+            {
+                "name": app,
+                "error": Reloader.ERRORS.get(app),
+                "running": app in Reloader.ROUTES and not Reloader.ERRORS.get(app),
+                "edit_url": URL("app_detail", app),
+            }
             for app in apps
             if os.path.isdir(os.path.join(FOLDER, app))
             and not app.startswith("__")
@@ -243,6 +404,72 @@ if MODE in ("demo", "readonly", "full"):
         ]
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
+
+    @action("app_detail/<name:re:\\w+>")
+    @session_secured
+    @catch_errors
+    def app_detail(name):
+        """Returns a focused payload for app edit layout."""
+        app_path = os.path.join(FOLDER, name)
+        if not os.path.isdir(app_path):
+            return {"status": "error", "message": "App does not exist"}
+
+        def normalize_path(path):
+            """Convert Windows backslashes to forward slashes for consistent frontend handling"""
+            return path.replace(os.sep, '/')
+
+        def list_files_recursive(base_path, relative_path=""):
+            """Recursively list all folders and their files"""
+            sections = {}
+            full_path = os.path.join(base_path, relative_path) if relative_path else base_path
+            
+            try:
+                for item in os.listdir(full_path):
+                    if item.startswith(".") or item == "__pycache__":
+                        continue
+                    
+                    item_path = os.path.join(full_path, item)
+                    # Normalize to forward slashes for frontend
+                    item_relative = os.path.join(relative_path, item) if relative_path else item
+                    item_relative = normalize_path(item_relative)
+                    
+                    if os.path.isdir(item_path):
+                        # Add this directory as a section
+                        files_in_dir = [
+                            f for f in os.listdir(item_path)
+                            if not f.startswith(".")
+                            and os.path.isfile(os.path.join(item_path, f))
+                        ]
+                        sections[item_relative] = sorted(files_in_dir)
+                        
+                        # Recursively process subdirectories
+                        subsections = list_files_recursive(base_path, os.path.join(relative_path, item) if relative_path else item)
+                        sections.update(subsections)
+                    elif os.path.isfile(item_path) and not relative_path:
+                        # Root-level files
+                        if "" not in sections:
+                            sections[""] = []
+                        sections[""].append(item)
+            except (OSError, IOError):
+                pass
+            
+            return sections
+
+        all_sections = list_files_recursive(app_path)
+        
+        # Sort root files if they exist
+        if "" in all_sections:
+            all_sections[""] = sorted(all_sections[""])
+
+        payload = {
+            "name": name,
+            "path": app_path,
+            "error": Reloader.ERRORS.get(name),
+            "running": name in Reloader.ROUTES and not Reloader.ERRORS.get(name),
+            "edit_layout": True,
+            "sections": all_sections,
+        }
+        return {"status": "success", "payload": payload}
 
     @action("delete_app/<name:re:\\w+>", method="POST")
     @session_secured
@@ -263,14 +490,28 @@ if MODE in ("demo", "readonly", "full"):
     @action("new_file/<name:re:\\w+>/<file_name:path>", method="POST")
     @session_secured
     def new_file(name, file_name):
-        """creates a new file"""
+        """creates a new file or folder"""
         path = os.path.join(FOLDER, name)
-        form = request.json
+        
+        # Check if this is a folder creation request (query parameter)
+        is_folder = request.query.get("folder") == "1"
+        
         if not os.path.exists(path):
             return {"status": "success", "payload": "App does not exist"}
+        
         full_path = os.path.join(path, file_name)
         if not full_path.startswith(path + os.sep):
             return {"status": "success", "payload": "Invalid path"}
+        
+        # Create folder
+        if is_folder:
+            try:
+                os.makedirs(full_path, exist_ok=True)
+                return {"status": "success"}
+            except Exception as e:
+                return {"status": "error", "message": str(e)}
+        
+        # File creation (existing logic)
         if os.path.exists(full_path):
             return {"status": "success", "payload": "File already exists"}
         parent = os.path.dirname(full_path)
@@ -390,14 +631,20 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("ticket.html")
     @session_secured
     def error_ticket(ticket_uuid):
+        themes = get_available_themes()
+        user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "AlienDark"), themes
+        )
         if MODE != "demo":
             return dict(
                 ticket=safely(
                     lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
-                )
+                ),
+                selected_theme=selected_theme
             )
         else:
-            return dict(ticket=None)
+            return dict(ticket=None, selected_theme=selected_theme)
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
@@ -497,8 +744,15 @@ if MODE == "full":
     @session_secured
     @catch_errors
     def delete(path):
-        """Deletes a file"""
+        """Deletes a file or empty folder"""
         fullpath = safe_join(FOLDER, path) or abort()
+        
+        # Check if it's a directory
+        if os.path.isdir(fullpath):
+            # Only allow deletion if directory is empty
+            if os.listdir(fullpath):
+                return {"status": "error", "message": "Cannot delete non-empty folder. Delete all files first."}
+
         recursive_unlink(fullpath)
         return {"status": "success"}
 
@@ -581,6 +835,8 @@ if MODE == "full":
     @action.uses(Logged(session), "gitlog.html")
     @catch_errors
     def gitlog(project):
+        themes = get_available_themes()
+        user_settings = load_user_settings()
         if not is_git_repo(os.path.join(FOLDER, project)):
             return "Project is not a GIT repo"
         branches = get_branches(cwd=os.path.join(FOLDER, project))
@@ -591,6 +847,9 @@ if MODE == "full":
             checkout=checkout,
             project=project,
             branches=branches,
+            selected_theme=normalize_selected_theme(
+                user_settings.get("selected_theme", "AlienDark"), themes
+            ),
         )
 
     @authenticated.callback()
@@ -635,11 +894,18 @@ if MODE == "full":
 @action.uses(Logged(session), "translations.html")
 def translations(name):
     """returns a json with all translations for all languages"""
+    themes = get_available_themes()
+    user_settings = load_user_settings()
     folder = os.path.join(FOLDER, name, "translations")
     if not os.path.exists(folder):
         os.makedirs(folder)
     t = Translator(folder)
-    return t.languages
+    return dict(
+        languages=t.languages,
+        selected_theme=normalize_selected_theme(
+            user_settings.get("selected_theme", "AlienDark"), themes
+        ),
+    )
 
 
 @action("api/translations/<name>", method="GET")

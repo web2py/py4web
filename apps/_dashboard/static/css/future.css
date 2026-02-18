@@ -27,6 +27,9 @@ p {
    height: 80px;
    padding: 10px;
 }
+.header-right {
+   align-items: center;
+}
 .ace-pastel-on-dark {
     background-color: black !important;
 }
@@ -252,7 +255,7 @@ label {
   right:0;
   height: 100vh;
   background-color: black;
-  background-image: url(../images/widget.gif);
+   background-image: url(../themes/AlienDark/widget.gif);
   background-repeat: no-repeat;
   background-position: center center;
 }

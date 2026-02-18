@@ -167,3 +167,65 @@ select option {
   background-color: var(--bg-secondary);
   color: white;
 }
+
+/* Files accordion: reduce vertical spacing between folders */
+.my-effects .files li,
+.my-effects .dirs li,
+.my-effects .accordion .files li,
+.my-effects .accordion .dirs li,
+.my-effects .accordion li {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.my-effects .files ul,
+.my-effects .dirs ul {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Folder rows: reduce accordion spacing inside dirs tree */
+.my-effects .dirs .accordion > * {
+  margin-bottom: 2px !important;
+}
+
+.my-effects .dirs .accordion > label {
+  padding: 2px 0 !important;
+}
+
+.my-effects .subfolder {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Database table buttons: vertically center labels */
+.my-effects .panel.accordion input#databases ~ div button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2 !important;
+  padding: 4px 10px !important;
+  height: auto !important;
+}
+
+/* Database table rows: center buttons within row height */
+.my-effects .panel.accordion input#databases ~ div td {
+  vertical-align: middle !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* App buttons: vertically center labels */
+button.btn-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: auto !important;
+  line-height: 1.2 !important;
+  padding: 4px 10px !important;
+}
+
+button.btn-app i {
+  align-self: center;
+}

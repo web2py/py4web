@@ -3,14 +3,14 @@
 
 <head>
     <base href="[[=URL('static')]]/">
-    <link rel="shortcut icon" href="themes/AlienDark/favicon.ico" />
+    <link rel="shortcut icon" href="themes/AlienLight/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" type="text/css" href="css/future.css" />
     <!-- Theme CSS is swapped at runtime by theme-selector.js based on the selected theme. -->
-    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'AlienDark' ]]/theme.css" />
+    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienLight/theme.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <script>
-      var SELECTED_THEME = '[[= selected_theme or "AlienDark" ]]';
+      var SELECTED_THEME = '[[= selected_theme or "AlienLight" ]]';
     </script>
     <script src="js/theme-selector.js"></script>
 </head>
@@ -18,6 +18,7 @@
 <body>
     <!-- 
         PY4WEB Dashboard 2.0 - Vue 3 Conversion
+        AlienLight Theme
     -->
     <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png" /></a>
     <div id="target" class="my-effects" v-cloak>
@@ -40,7 +41,7 @@
         <div v-if="user">
             <div class="header">
                 <div class="header-left">
-                    <img src="themes/AlienDark/widget.gif" class="spinner-top" />
+                    <img src="themes/AlienLight/widget.gif" class="spinner-top" />
                     <span class="logo">py4web Dashboard</span>
                 </div>
                 <div class="header-right">
@@ -68,7 +69,8 @@
               <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
               <i v-else class="fa fa-cog red blink"></i>
               {{app.name}}
-                            <img align="right" alt=" " src="themes/[[= selected_theme or 'AlienDark' ]]/favicon.ico" :data-original-src="'/'+app.name+'/static/favicon.ico'" height="18"/>
+              <img v-if="app.name=='_default'" align="right" alt=" " src="/static/favicon.ico" height="18"/>
+              <img v-else align="right" alt=" " :src="'/'+app.name+'/static/favicon.ico'" height="18"/>
             </button>
                 </div>
             </div>

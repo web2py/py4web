@@ -600,6 +600,103 @@ nav { width: auto; }
 
 .padded { max-width: unset; padding-top: 0; }
 
+/* DBAdmin Page: Header Layout for All Themes */
+body.dbadmin-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 20px;
+}
+
+body.dbadmin-page .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.dbadmin-page .header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+body.dbadmin-page .header-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+body.dbadmin-page .header-theme label {
+  font-size: 12px;
+  margin: 0;
+}
+
+body.dbadmin-page .header-theme select {
+  width: 140px;
+  height: auto;
+  padding: 4px 8px;
+  margin: 0;
+}
+
+body.dbadmin-page .spinner-top {
+  height: 64px;
+  width: 64px;
+  padding: 0;
+}
+
+body.dbadmin-page .logo {
+  font-size: 32px;
+  line-height: 1.1;
+  padding: 0;
+}
+
+body.dbadmin-page {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+@supports (height: 100dvh) {
+  body.dbadmin-page {
+    height: 100dvh;
+  }
+}
+
+body.dbadmin-page .my-effects {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@supports (height: 100dvh) {
+  body.dbadmin-page .my-effects {
+    height: 100%;
+  }
+}
+
+body.dbadmin-page .dbadmin {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+body.dbadmin-page .dbadmin .dbadmin-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+body.dbadmin-page footer {
+  flex: 0 0 auto;
+}
+
 .dbadmin { width: 100%;}
 .dbadmin .grid-search-form {width:100%; max-width: 100%}
 .dbadmin tbody tr:hover { background-color:#002233 }
