@@ -55,9 +55,6 @@ th {
 td.middle {
    vertical-align: middle;
 }
-tbody {
-   border-bottom: 1px solid #33BFFF;
-}
 button {
    background-color: black;
    color: #33BFFF;   
@@ -241,11 +238,11 @@ label {
   border: 2px solid #33BFFF;
   padding:10px 20px;
   transition: all .5s ease;
-  width: 210px;
+  width: 231px;
 } 
 .login input[type=password]:focus {
   padding:10px 40px;
-  width: 250px;
+  width: 275px;
 }
 .loading {
   z-index: 100;

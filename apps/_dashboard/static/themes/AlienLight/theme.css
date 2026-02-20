@@ -202,10 +202,6 @@ button.btn-app i {
   background-color: var(--bg-primary);
 }
 
-tbody {
-  border-bottom: 1px solid var(--border-color);
-}
-
 tbody tr:hover {
   background-color: #f9f9f9;
 }
@@ -219,14 +215,11 @@ tbody tr:hover {
 
 thead tr {
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
 }
 
 thead th {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-color);
 }
 
 button, a[role=button], input[type=submit], input[type=button] {

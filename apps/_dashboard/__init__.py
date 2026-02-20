@@ -199,7 +199,7 @@ def version():
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
-    @action.uses(session, T, "index.html")
+    @action.uses("index.html", session, T)
     def index():
         themes = get_available_themes()
         user_settings = load_user_settings()

@@ -172,13 +172,6 @@ tbody tr:hover {
   transition: background-color 0.2s;
 }
 
-thead tr {
-  border-bottom: 2px solid;
-}
-
-tbody tr {
-  border-bottom: 1px solid;
-}
 
 td, th {
   padding: 4px 8px;
