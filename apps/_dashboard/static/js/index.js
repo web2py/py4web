@@ -58,7 +58,8 @@ const app = Vue.createApp({
       modal: null,
       editor: null,
       modelist: null,
-      last_error: ""
+      last_error: "",
+      show_system_info: false
     };
   },
   
@@ -74,21 +75,26 @@ const app = Vue.createApp({
     to_json(r) {
       let json = {};
       try {
-        console.log(r.data);
         json = r.json();
-        console.log(json);
       } catch (e) {
         app.vue.last_error = "Invalid JSON:\n" + r.data;
         return {};
       }      
-      if (json.status === "error") { app.vue.last_error = json.traceback; return {}; }
+      if (json.status === "error") { 
+        app.vue.last_error = json.traceback || json.message || "Unknown error"; 
+        return json;  // Return json to preserve message field
+      }
       return json;
     },
     activate_editor(path, payload) {
       this.files[path] = payload;
       if (!this.editor) {
         this.editor = ace.edit("editor");
-        this.editor.setTheme("ace/theme/pastel_on_dark");
+        var dashboardTheme = document.documentElement.getAttribute("data-theme") || "";
+        var aceTheme = dashboardTheme === "AlienLight"
+          ? "ace/theme/chrome"
+          : "ace/theme/pastel_on_dark";
+        this.editor.setTheme(aceTheme);
         this.editor.$blockScrolling = Infinity;
       }
       this.editor.session.setValue(payload);
@@ -131,6 +137,72 @@ const app = Vue.createApp({
 
     modal_dismiss() {
       this.modal = null;
+    },
+
+    change_password() {
+      if (!this.modal || !this.modal.form) return;
+      const old_pwd = this.modal.form.old_password;
+      const pwd = this.modal.form.password;
+      const pwd_confirm = this.modal.form.password_confirm;
+      
+      if (!old_pwd) {
+        alert('Current password is required');
+        return;
+      }
+      if (!pwd) {
+        alert('New password cannot be empty');
+        return;
+      }
+      if (pwd !== pwd_confirm) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      Q.post('../change_password', { old_password: old_pwd, password: pwd })
+        .then(r => {
+          const response = this.to_json(r);
+          if (response.status === 'success') {
+            alert('Password changed successfully');
+            this.modal_dismiss();
+          } else {
+            alert('Failed to change password: ' + (response.message || 'Unknown error'));
+          }
+        })
+        .catch((e) => {
+          alert('Error changing password: ' + e);
+        });
+    },
+
+    open_change_password_modal() {
+      this.modal = {
+        title: 'Change Dashboard Password',
+        color: 'orange',
+        message: 'Enter your current password and new password',
+        form_name: 'change-password',
+        form: {old_password: '', password: '', password_confirm: ''},
+        buttons: [
+          {text: 'Change', onclick: () => {this.change_password();}},
+          {text: 'Cancel', onclick: () => {this.modal_dismiss();}}
+        ]
+      };
+    },
+
+    copy_system_info() {
+      if (!this.info || this.info.length === 0) return;
+      
+      // Format system info as text
+      let text = 'System Information\n';
+      text += '==================\n\n';
+      for (let i = 0; i < this.info.length; i++) {
+        text += this.info[i].name + ': ' + this.info[i].version + '\n';
+      }
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(text).then(() => {
+        alert('System information copied to clipboard');
+      }).catch(() => {
+        alert('Failed to copy to clipboard');
+      });
     },
 
     reload(name) {
@@ -182,7 +254,6 @@ const app = Vue.createApp({
 
     process_new_app() {
       let form = this.modal.form;
-      console.log(form);
       if(!form.name) alert('An app name must be provided');
       else if(!form.name.match(/^[\w_]+$/)) alert('Invalid file name');
       else if(form.mode=='new' && this.apps.map((a)=>{return a.name;}).indexOf(form.name)>=0) {
@@ -334,6 +405,14 @@ const app = Vue.createApp({
       this.reload_tickets();
       this.reload_files();
       setTimeout(()=>{this.loading=false;}, 1000);
+    },
+
+    handleEdit(appName) {
+      const selected = this.apps.filter((appItem) => appItem.name === appName)[0] || null;
+      if (!selected) {
+        return;
+      }
+      this.select(selected);
     }
   },
   

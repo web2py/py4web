@@ -27,6 +27,9 @@ p {
    height: 80px;
    padding: 10px;
 }
+.header-right {
+   align-items: center;
+}
 .ace-pastel-on-dark {
     background-color: black !important;
 }
@@ -51,9 +54,6 @@ th {
 }
 td.middle {
    vertical-align: middle;
-}
-tbody {
-   border-bottom: 1px solid #33BFFF;
 }
 button {
    background-color: black;
@@ -238,11 +238,11 @@ label {
   border: 2px solid #33BFFF;
   padding:10px 20px;
   transition: all .5s ease;
-  width: 210px;
+  width: 231px;
 } 
 .login input[type=password]:focus {
   padding:10px 40px;
-  width: 250px;
+  width: 275px;
 }
 .loading {
   z-index: 100;
@@ -252,7 +252,7 @@ label {
   right:0;
   height: 100vh;
   background-color: black;
-  background-image: url(../images/widget.gif);
+   background-image: url(../themes/AlienDark/widget.gif);
   background-repeat: no-repeat;
   background-position: center center;
 }

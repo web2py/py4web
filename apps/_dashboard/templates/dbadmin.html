@@ -1,6 +1,68 @@
-[[extend "layout.html"]]
+<!DOCTYPE html>
+<html data-theme="[[= selected_theme or 'AlienDark' ]]">
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="themes/AlienDark/favicon.ico" />    <link rel="stylesheet" href="css/base.css">    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'AlienDark' ]]/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script>
+      var SELECTED_THEME = '[[= selected_theme or "AlienDark" ]]';
+    </script>
+    <script src="js/theme-selector.js"></script>
+</head>
+<body class="dbadmin-page">
+    <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0; z-index:9999;" src="../static/images/forkme.png" /></a>
+    
+    <div class="my-effects">
+        <!-- Main Header with py4web branding and navigation -->
+        <div class="header dbadmin-header">
+            <div class="header-left">
+                <img src="themes/AlienDark/widget.gif" class="spinner-top" />
+                <span class="logo">py4web Dashboard</span>
+            </div>
+            <div class="header-right">
+                <div class="header-theme">
+                    <label for="dashboard-theme-select">Theme</label>
+                    <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
+                        [[for theme in __vars__.get('themes', []):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
+                    </select>
+                </div>
+            </div>
+        </div>
 
-<div class="dbadmin">
-<h2>Application "[[=app_name]]" - Table "[[=table_name]]"</h2>
-[[=grid]]
-</div>
+        <!-- DBAdmin Content -->
+        <div class="dbadmin">
+            <div class="dbadmin-content">
+                <h2>Application "[[=app_name]]" - Table "[[=table_name]]"</h2>
+                [[=grid]]
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="black padded" style="display: flex; justify-content: flex-start; align-items: center;">
+            <button class="header-btn" onclick="goBackFromTable()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </footer>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script>
+      const dbAdminAppName = '[[=app_name]]';
+      
+            function goBackFromTable() {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '[[=URL("index")]]';
+                }
+            }
+
+            function goToAppView(view) {
+        // Navigate back to index with the app edit view
+        window.location.href = '[[=URL("index")]]?app=' + encodeURIComponent(dbAdminAppName) + '&view=' + view;
+      }
+    </script>
+</body>
+</html>

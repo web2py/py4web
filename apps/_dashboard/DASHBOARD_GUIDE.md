@@ -149,154 +149,175 @@ export PY4WEB_PASSWORD_FILE=password.txt
 
 ## Theming
 
-The dashboard supports multiple themes using a CSS override pattern. This allows users to switch between themes dynamically without reloading the page, with theme preference persisted in browser localStorage.
+The dashboard supports multiple built-in themes (AlienDark, AlienLight) with a fully extensible theming system. Users can switch themes dynamically without page reload, with preferences persisted to the backend.
+
+**For comprehensive theming documentation**, see [THEMES_GUIDE.md](THEMES_GUIDE.md).
+
+### Quick Overview
+
+**Currently Available Themes:**
+- **AlienDark** - Modern dark theme with cyan accents (default)
+- **AlienLight** - Professional light theme with blue accents
+
+**Key Features:**
+- Dynamic theme discovery from `static/themes/` folder
+- CSS custom properties (variables) for styling
+- Optional theme-specific JavaScript initialization
+- Theme metadata in `theme.toml`
+- User preference persisted to `user_settings.toml`
 
 ### Theme System Architecture
 
-**Folder Structure:**
 ```
-static/
-├── css/
-│   ├── future.css          # Dark base stylesheet (main dashboard)
-│   ├── no.css              # Light base stylesheet (dbadmin pages)
-│   └── ...
-├── js/
-│   ├── theme-selector.js   # Theme switching logic
-│   └── ...
-├── themes/
-│   ├── AlienDark/
-│   │   └── theme.css       # Dark theme overrides
-│   └── AlienLight/
-│       └── theme.css       # Light theme overrides
-└── ...
+static/themes/{ThemeName}/
+├── theme.toml              # Metadata (name, description, author, etc.)
+├── theme.css               # Styling with CSS variables
+├── theme.js                # Optional JS initialization
+├── favicon.ico             # Browser tab icon
+├── widget.gif              # Loading spinner
+└── templates/              # Optional custom templates
+    ├── index.html
+    └── ...
 ```
 
-### How Theming Works
+**Frontend System:**
+- `js/theme-selector.js` - Manages all client-side theme switching
+- Loads theme CSS dynamically by updating `<link id="dashboard-theme">`
+- Persists selection to localStorage and backend
+- Synchronizes multiple theme selectors on same page
 
-1. **Base Stylesheets:** Dashboard loads a base stylesheet (`future.css` for main dashboard, `no.css` for dbadmin) that defines the default dark theme
-2. **Theme CSS Variables:** Each theme defines CSS custom properties (variables) for colors and styling
-3. **Dynamic Theme Loading:** JavaScript (`theme-selector.js`) dynamically loads theme CSS files by updating the `href` of a `<link>` tag with id `dashboard-theme`
-4. **Local Storage Persistence:** Selected theme is stored in browser localStorage under key `py4web-dashboard-theme`
-5. **Auto-Apply:** On page load, theme-selector.js automatically applies the saved theme preference
+**Backend System:**
+- `get_available_themes()` - Scans `static/themes/` folder
+- `normalize_selected_theme()` - Validates stored/requested theme values against available themes
+- `load_user_settings()` / `save_user_settings()` - Persists theme selection
+- `@action("save_theme")` - HTTP endpoint for theme persistence
 
-### Available Themes
+### Adding a Custom Theme
 
-#### AlienDark
-- **Description:** Dark theme with cyan accents
-- **CSS Variables:**
-  - `--bg-primary: black` - Main background
-  - `--text-primary: #d1d1d1` - Primary text color
-  - `--accent: #33BFFF` - Accent color (cyan)
-  - `--accent-dark: #007a99` - Dark accent variant
-  - `--bg-secondary: #1a1a1a` - Secondary background
-  - `--border-color: #333` - Border color
-- **File:** `static/themes/AlienDark/theme.css`
+1. **Create folder:** `static/themes/MyTheme/`
+2. **Create `theme.toml`:**
+   ```toml
+   name = "My Theme"
+   description = "Brief description"
+   version = "1.0.0"
+   author = "Your Name"
+   ```
+3. **Create `theme.css`:**
+   ```css
+   :root {
+     --bg-primary: white;
+     --text-primary: #333;
+     --accent: #0074d9;
+     --accent-dark: #0052a3;
+     --bg-secondary: #f5f5f5;
+     --border-color: #d1d1d1;
+   }
+   body { background: var(--bg-primary); color: var(--text-primary); }
+   ```
+4. **Optional - Add assets:** `favicon.ico`, `widget.gif`, custom `templates/`
+5. **Optional - Add behavior:** `theme.js` for theme-specific JavaScript
 
-#### AlienLight
-- **Description:** Light theme with blue accents
-- **CSS Variables:**
-  - `--bg-primary: white` - Main background
-  - `--text-primary: #333` - Primary text color
-  - `--accent: #0074d9` - Accent color (blue)
-  - `--accent-dark: #003d74` - Dark accent variant
-  - `--bg-secondary: #f5f5f5` - Secondary background
-  - `--border-color: #ddd` - Border color
-- **File:** `static/themes/AlienLight/theme.css`
-
-### Using CSS Variables in Theme Files
-
-Each theme file uses CSS custom properties for consistent styling across components:
-
-```css
-:root {
-  --bg-primary: black;
-  --text-primary: #d1d1d1;
-  --accent: #33BFFF;
-  /* ... other variables ... */
-}
-
-/* Override specific elements using variables */
-body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-button {
-  background: var(--accent);
-  color: var(--bg-primary);
-}
-```
+**That's it!** The theme automatically appears in the dropdown.
 
 ### Theme Selector UI
 
-The theme selector is visible on the main dashboard (`index.html`):
+Dropdowns appear on all dashboard pages:
 
 ```html
-<select id="dashboard-theme-select" data-theme-selector 
-        onchange="setDashboardTheme(this.value)" 
-        style="width: 140px">
-  <option value="AlienDark">AlienDark</option>
-  <option value="AlienLight">AlienLight</option>
+<select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
+  [[for theme in themes:]]
+    <option value="[[=theme]]">[[=theme]]</option>
+  [[pass]]
 </select>
 ```
 
-**Features:**
-- Dropdown positioned in top-right corner of header
-- Uses `data-theme-selector` attribute for synchronization
-- Calls `setDashboardTheme()` function from `theme-selector.js`
-- Multiple selectors on the same page stay synchronized
+**Multiple selectors on the same page stay synchronized** via `data-theme-selector` attribute.
 
-### JavaScript Theme Switching (theme-selector.js)
+### Best Practices
 
-The theme selector module is now fully dynamic, detecting themes from the select element. See [theme-selector.js](static/js/theme-selector.js) for the implementation.
+1. **Use CSS Variables** - Define all colors in `:root`, never hardcode
+2. **Foundation Pattern** - Override only the styles you need, let defaults cascade
+3. **Metadata Matters** - Complete `theme.toml` helps users understand your theme
+4. **Test All Pages** - Verify on main dashboard, dbadmin, and other pages
+5. **Accessibility** - Ensure sufficient text contrast (WCAG AA minimum)
+6. **Dynamic Features** - Use `theme.js` for ACE editor config, custom UI hooks, etc.
 
-**Key Features:**
-- `getAvailableThemes()` - Dynamically reads themes from select element options (no hardcoded list)
-- `getDefaultTheme()` - Returns "AlienDark" if available, otherwise the first theme alphabetically
-- `applyTheme(theme)` - Loads theme CSS and persists selection in localStorage
-- Auto-applies saved theme on page load, or default theme if none saved
-- Multiple selectors on the same page stay synchronized
-- Automatically detects new themes when they're added to the select element
+### How Theming Works (Flow Diagram)
 
-### Adding a New Theme
+```
+Page loads
+  ↓
+Backend loads theme from user_settings.toml
+  ↓
+Renders HTML with SELECTED_THEME variable
+  ↓
+theme-selector.js runs
+  ↓
+getStoredTheme() checks: Backend → localStorage → default
+  ↓
+loadThemeConfig() fetches theme.toml
+  ↓
+applyTheme() orchestrates:
+  • Update CSS link href
+  • Update favicon
+  • Load theme.js
+  • Save to localStorage + backend
+  • Sync all selectors
+  ↓
+Theme is now active
+```
 
-To create a new theme (e.g., `MyCustomTheme`):
+### Persistence
 
-1. **Create theme folder:**
+Theme selection is saved in two places:
+
+1. **Backend** - `apps/_dashboard/user_settings.toml`
+   ```toml
+   selected_theme = "AlienDark"
    ```
-   static/themes/MyCustomTheme/
-   ```
+   Survives browser cache clear / private browsing
 
-2. **Create `theme.css` with CSS variables:**
-   ```css
-   :root {
-     --bg-primary: #your-bg-color;
-     --text-primary: #your-text-color;
-     --accent: #your-accent-color;
-     --accent-dark: #your-accent-dark-color;
-     --bg-secondary: #your-secondary-bg;
-     --border-color: #your-border-color;
-   }
-   
-   /* Override styles using variables */
-   body {
-     background: var(--bg-primary);
-     color: var(--text-primary);
-   }
-   /* ... more overrides ... */
-   ```
+2. **Browser** - localStorage key: `py4web-dashboard-theme`
+   Provides immediate fallback if backend unavailable
 
-3. **Add to theme selector in templates:**
-   The theme selector options are now **dynamically generated** from available theme folders in the backend. When you create a new theme folder, it's automatically listed in the select dropdown on both `index.html` and dbadmin pages via Python template iteration.
+**Selection Priority:**
+1. Backend setting (from `user_settings.toml`)
+2. Browser storage (from localStorage)
+3. Default theme (AlienDark if available, else first alphabetically)
 
-### Best Practices for Theme Development
+### Troubleshooting Themes
 
-1. **Use CSS Variables:** Always reference theme colors via custom properties, never hardcode colors
-2. **Minimal Overrides:** Only include CSS rules that differ from the base stylesheet
-3. **Test Both Locations:** Verify theme works on main dashboard (`index.html`) and dbadmin pages (`layout.html`)
-4. **Check Full Viewport:** Ensure backgrounds extend to full viewport height, no black/white strips at bottom
-5. **Text Contrast:** Verify text colors have sufficient contrast with background colors for accessibility
-6. **Form Elements:** Ensure all form inputs (text, select, button, checkbox) are styled consistently
+**Theme not appearing in dropdown:**
+- Verify folder exists: `static/themes/MyTheme/`
+- Hard refresh browser (Ctrl+Shift+R)
+- Restart dashboard to rescan folder
+
+**CSS not loading:**
+- Check Network tab for 4xx errors on `themes/MyTheme/theme.css`
+- Verify `:root` block has all required CSS variables
+- Check Browser Console for JavaScript errors in theme.js
+
+**JavaScript not running:**
+- Verify `theme.js` is valid with a linter
+- Use retry logic if depending on Vue app (may not be ready yet)
+- Check Console for syntax errors
+
+**Settings not persisting:**
+- Verify `apps/_dashboard/user_settings.toml` is writable
+- Ensure you're logged in (theme save requires `USER_ID`)
+- Check Network tab - POST `/save_theme` should return `{"status": "success"}`
+
+---
+
+## Advanced Theming
+
+For advanced features like:
+- Theme-specific templates (custom layouts)
+- ACE editor theme configuration
+- Favicon management
+- Complex initialization patterns
+
+See [THEMES_GUIDE.md - Advanced Patterns](THEMES_GUIDE.md#advanced-patterns) section.
 
 ---
 
