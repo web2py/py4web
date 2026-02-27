@@ -8,6 +8,7 @@ Themes are discovered from `static/themes/` and can be switched without a page r
 Current built-in themes:
 - **AlienDark** (default dark UI)
 - **AlienLight** (light UI)
+- **Classic** (legacy-inspired dashboard style)
 
 ---
 
@@ -46,7 +47,12 @@ static/themes/MyTheme/
 ├── theme.css
 ├── theme.js        # optional
 ├── favicon.ico     # optional
-└── widget.gif      # optional
+├── widget.gif      # optional
+└── templates/
+  └── partials/   # optional (small structural overrides)
+    ├── index_header_actions.html
+    ├── dbadmin_nav.html
+    └── dbadmin_footer_back.html
 ```
 
 ### `theme.toml`
@@ -134,6 +140,29 @@ If a stored theme is unavailable:
 
 ## Template Requirements
 
+The dashboard keeps canonical page templates in:
+
+- `apps/_dashboard/templates/index.html`
+- `apps/_dashboard/templates/dbadmin.html`
+
+The revised structure keeps the main `apps/_dashboard/templates/index.html` as the single source of truth.
+Avoid creating per-theme full page templates (for example a separate `index.html` for each theme), and use optional partial hooks instead.
+
+### Partial Override Resolution
+
+For each supported hook, the dashboard resolves in this order:
+
+1. `apps/_dashboard/static/themes/{SelectedTheme}/templates/partials/{hook}.html`
+2. `apps/_dashboard/templates/partials/{hook}.html`
+
+If neither exists, the hook renders empty safely.
+
+Current hook names:
+
+- `index_header_actions`
+- `dbadmin_nav`
+- `dbadmin_footer_back`
+
 In dashboard templates, keep these elements:
 
 ```html
@@ -190,5 +219,5 @@ No backend code changes are required.
 
 ## Notes
 
-- The current dashboard implementation uses a single base layout.
-- Theme-specific visual customization is expected to be done primarily through CSS variables and optional `theme.js` behavior.
+- The dashboard uses canonical page templates plus optional hook partials.
+- Theme-specific customization should stay primarily in `theme.css` and optional `theme.js`; use hook partials only for small structural differences.

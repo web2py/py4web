@@ -21,7 +21,38 @@
     -->
     <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png" /></a>
     <div id="target" class="my-effects" v-cloak>
-        <div class="login" v-if="!user">
+        <div class="login" v-if="!user && is_classic_theme()">
+            <div class="classic-login-top header">
+                <div class="header-left" @click="go_to_main_dashboard()">
+                    <img src="themes/[[= selected_theme or 'Classic' ]]/widget.gif" class="spinner-top" />
+                    <span class="logo">py4web Dashboard</span>
+                </div>
+            </div>
+            <div class="classic-login-shell">
+                <div class="classic-login-panel">
+                    <form @submit.prevent="login">
+                        <input
+                            v-model="password"
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Administrator password"
+                            autocomplete="current-password"
+                        />
+                    </form>
+                    <a class="classic-forgot-link" href="#" @click.prevent="open_forgotten_password_modal()">Forgotten Administrator password?</a>
+                    [[if mode=='demo':]]
+                    <div class="classic-demo-note">Demo mode: any password will get you in</div>[[pass]]
+                </div>
+                <div class="classic-login-footer-panel">
+                    <button @click="login()">Login</button>
+                    <div class="right">
+                        Created by Massimo Di Pierro @ BSDv3 License
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="login" v-if="!user && !is_classic_theme()">
             <h1>PY4WEB</h1>
             <h2><i class="fa fa-lock fa-2x"></i></h2>
             <form @submit.prevent="login">
@@ -39,11 +70,12 @@
         <div class="loading" v-if="loading"></div>
         <div v-if="user">
             <div class="header">
-                <div class="header-left">
+                <div class="header-left" @click="go_to_main_dashboard()">
                     <img src="themes/AlienDark/widget.gif" class="spinner-top" />
                     <span class="logo">py4web Dashboard</span>
                 </div>
                 <div class="header-right">
+                    [[=theme_partials.get("index_header_actions", "")]]
                     <label for="dashboard-theme-select" style="font-size: 12px;">Theme</label>
                     <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 200px;">
                         [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
@@ -54,6 +86,129 @@
             <h2>API error</h2>
             <pre v-text="last_error"></pre>
             <button v-on:click="close_dialog_error">Ignore and Dismiss</button>
+        </div>
+        <div class="classic-main-layout" v-if="user">
+            <div class="classic-left-panel">
+                <div v-if="show_classic_tickets" class="classic-tickets-view">
+                    <div class="classic-tickets-header">
+                        <h2>Recent Tickets</h2>
+                        <button class="btn-back" @click="back_classic_tickets_view()"><i class="fas fa-arrow-left"></i> BACK</button>
+                    </div>
+                    <div style="overflow-x: auto">
+                        <table class="classic-tickets-table" v-if="tickets.length>0">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" @click="set_classic_tickets_sort('count')">Occurrences <span>{{ classic_tickets_sort_key === 'count' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('timestamp')">Most Recent <span>{{ classic_tickets_sort_key === 'timestamp' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('client_ip')">Client IP <span>{{ classic_tickets_sort_key === 'client_ip' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('app_name')">App <span>{{ classic_tickets_sort_key === 'app_name' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('method')">Method <span>{{ classic_tickets_sort_key === 'method' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('path')">Path <span>{{ classic_tickets_sort_key === 'path' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th class="sortable" @click="set_classic_tickets_sort('error')">Error <span>{{ classic_tickets_sort_key === 'error' ? (classic_tickets_sort_dir === 'asc' ? '▲' : '▼') : '' }}</span></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="ticket in get_sorted_classic_tickets()" :key="ticket.uuid">
+                                    <td>{{ticket.count}}</td>
+                                    <td>{{ticket.timestamp}}</td>
+                                    <td>{{ticket.client_ip}}</td>
+                                    <td>{{ticket.app_name}}</td>
+                                    <td>{{ticket.method}}</td>
+                                    <td>{{ticket.path}}</td>
+                                    <td><a target="blank" :href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
+                                    <td><a class="button" target="blank" :href="'[[=URL('tickets/search')]]?search_string=path is '+ticket.path+' and error is &quot;'+ticket.error+'&quot;'">Search</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div v-else-if="classic_tickets_loading">Loading tickets...</div>
+                        <div v-else-if="classic_tickets_error">{{ classic_tickets_error }}</div>
+                        <div v-else>No tickets found.</div>
+                    </div>
+                </div>
+                <div v-else-if="!show_system_info">
+                    <div class="classic-apps-header">
+                        <h2>Installed Applications</h2>
+                        <div class="classic-apps-actions">
+                            <button class="btn-create-upload" type="button" @click="upload_new_app()">
+                                <i class="fas fa-magic"></i> Create/Upload App
+                            </button>
+                            <button class="btn-reload" type="button" @click="reload()" :disabled="reloadingApps">
+                                <i class="fas fa-sync-alt" :class="{ 'fa-spin': reloadingApps }"></i> Reload Apps
+                            </button>
+                        </div>
+                    </div>
+                    <div class="apps-list">
+                        <div class="app-row" :class="{ 'app-row-error': !!app.error }" v-for="app in apps" :key="app.name">
+                            <div class="app-name">
+                                <span class="app-status-dot" :class="app.running ? 'app-status-running' : 'app-status-stopped'"></span>
+                                <span class="app-name-text">{{app.name}}</span>
+                            </div>
+                            <div class="app-buttons">
+                                <button class="btn-small" @click="handleEdit(app.name)"><i class="fas fa-edit"></i> EDIT</button>
+                                <button class="btn-small btn-delete" @click="select(app); delete_selected_app()"><i class="fas fa-trash"></i> DELETE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else>
+                    <div class="classic-system-info-header">
+                        <h2>System Information</h2>
+                        <div class="system-info-buttons">
+                            <button class="btn-copy" @click="copy_system_info()"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+                            <button class="btn-save-details" @click="save_system_info()"><i class="fas fa-save"></i> Save details</button>
+                            <button class="btn-back" @click="show_system_info = false"><i class="fas fa-arrow-left"></i> Back</button>
+                        </div>
+                    </div>
+                    <div class="os-info" v-if="info.length">
+                        <h3>Operating System</h3>
+                        <p><strong>{{info[0].version}}</strong></p>
+                    </div>
+                    <table class="modules-table">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>Version</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in info" :key="row.name">
+                                <td>{{row.name}}</td>
+                                <td>{{row.version}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="classic-right-panel">
+                <h2>This site</h2>
+                <div class="info-section">
+                    <h3>System Information</h3>
+                    <table class="info-table">
+                        <tr>
+                            <td><strong>OS</strong></td>
+                            <td v-if="info.length">{{info[0].version}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>py4web</strong></td>
+                            <td v-if="info.length">{{info[1].version}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Python</strong></td>
+                            <td v-if="info.length">{{info[2].version}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn-details" @click="show_classic_tickets = false; show_system_info = !show_system_info"><i class="fas fa-info-circle"></i> More Details</button>
+                <div class="recent-tickets-section">
+                    <h3>Recent Tickets</h3>
+                    <button class="btn-show-all" @click="open_classic_tickets_view()"><i class="fas fa-ticket-alt"></i> Show all</button>
+                </div>
+                <div class="password-section">
+                    <h3>Security</h3>
+                    <button class="btn-password" @click="open_change_password_modal()"><i class="fas fa-key"></i> Change Password</button>
+                </div>
+            </div>
         </div>
         <div class="panel accordion" id="applications-panel">
             <input type="checkbox" id="applications">
@@ -91,24 +246,24 @@
                 <table v-if="routes[selected_app.name]?.length">
                     <thead>
                         <tr>
-                            <th>Rule</th>
-                            <th>Method</th>
-                            <th>Filename</th>
-                            <th>Action</th>
-                            <th>Time(s)</th>
-                            <th>Calls/s</th>
-                            <th>Errors/s</th>
+                            <th @click="set_routes_sort('rule')" style="cursor:pointer">Rule {{ routes_sort_key === 'rule' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('method')" style="cursor:pointer">Method {{ routes_sort_key === 'method' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('filename')" style="cursor:pointer">Filename {{ routes_sort_key === 'filename' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('action')" style="cursor:pointer">Action {{ routes_sort_key === 'action' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('time')" style="cursor:pointer">Time(s) {{ routes_sort_key === 'time' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('calls')" style="cursor:pointer">Calls/s {{ routes_sort_key === 'calls' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
+                            <th @click="set_routes_sort('errors')" style="cursor:pointer">Errors/s {{ routes_sort_key === 'errors' ? (routes_sort_dir === 'asc' ? '▲' : '▼') : '' }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="route in routes[selected_app.name]" :key="route.rule">
+                        <tr v-for="route in get_sorted_routes_for_selected_app()" :key="route.rule + '-' + route.method">
                             <td><a :href="route.rule" target="_blank"><tt>{{route.rule}}</tt></a></td>
                             <td><tt>{{route.method}}</tt></td>
                             <td><a @click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>
                             <td><tt>{{route.action}}</tt></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><tt>{{ format_route_metric(route.time) }}</tt></td>
+                            <td><tt>{{ format_route_metric(route.calls) }}</tt></td>
+                            <td><tt>{{ format_route_metric(route.errors) }}</tt></td>
                         </tr>
                     </tbody>
                 </table>
@@ -230,6 +385,7 @@
                 Created by Massimo Di Pierro @ BSDv3 License
             </div>
         </div>
+        </div>
         <div class="modal" v-if="modal">
             <div class="modal-inner">
                 <div>
@@ -274,11 +430,40 @@
                             </tr>
                         </table>
                     </div>
+                    <div v-if="modal.form_name=='change-password'">
+                        <table>
+                            <tr>
+                                <td><label>Current Password:</label></td>
+                                <td><input type="password" v-model="modal.form.old_password" placeholder="Enter current password"></td>
+                            </tr>
+                            <tr>
+                                <td><label>New Password:</label></td>
+                                <td><input type="password" v-model="modal.form.password" placeholder="Enter new password"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Confirm Password:</label></td>
+                                <td><input type="password" v-model="modal.form.password_confirm" placeholder="Confirm password"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div v-if="modal.form_name=='upload-file'">
+                        <table>
+                            <tr>
+                                <td><label>Destination path:</label></td>
+                                <td><input type="text" v-model="modal.form.filename" placeholder="folder/filename.ext"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Local file:</label></td>
+                                <td><input type="file" id="upload-new-file" @change="() => handle_upload_file('upload-new-file')" /></td>
+                            </tr>
+                        </table>
+                    </div>
                     <div style="text-align: right; padding-top:30px">
                         <button v-for="button in modal.buttons" :key="button.text" @click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" @click="modal_dismiss()">Dismiss</button>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </body>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>

@@ -124,10 +124,13 @@
       for (var i = 0; i < selector.options.length; i += 1) {
         themes.push(selector.options[i].value);
       }
-      return themes.length > 0 ? themes : ["AlienDark", "AlienLight"];
+      return themes.length > 0 ? themes : ["AlienDark", "AlienLight", "Classic"];
+    }
+    if (typeof SELECTED_THEME !== "undefined" && SELECTED_THEME) {
+      return [SELECTED_THEME, "AlienDark", "AlienLight", "Classic"];
     }
     // Fallback to known themes if selector not found (useful during page load)
-    return ["AlienDark", "AlienLight"];
+    return ["AlienDark", "AlienLight", "Classic"];
   }
 
   /**

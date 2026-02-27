@@ -17,6 +17,7 @@ import pathlib
 
 import pathspec
 import requests
+from yatl.helpers import XML
 
 from pydal.restapi import Policy, RestAPI
 from pydal.validators import CRYPT
@@ -185,6 +186,53 @@ def normalize_selected_theme(selected_theme, available_themes=None):
     return "AlienDark"
 
 
+def _safe_name(value):
+    """Normalize untrusted filesystem names to a conservative subset."""
+    if not value:
+        return ""
+    return "".join(char for char in str(value) if char.isalnum() or char in ("-", "_"))
+
+
+def load_theme_partial(selected_theme, partial_name):
+    """Load an optional HTML partial for a theme with a safe default fallback."""
+    theme_name = _safe_name(selected_theme)
+    partial = _safe_name(partial_name)
+    if not partial:
+        return XML("")
+
+    candidate_paths = []
+    if theme_name:
+        candidate_paths.append(
+            os.path.join(
+                settings.APP_FOLDER,
+                "static",
+                "themes",
+                theme_name,
+                "templates",
+                "partials",
+                f"{partial}.html",
+            )
+        )
+    candidate_paths.append(
+        os.path.join(settings.APP_FOLDER, "templates", "partials", f"{partial}.html")
+    )
+
+    for filename in candidate_paths:
+        try:
+            with open(filename, "r", encoding="utf-8") as fp:
+                return XML(fp.read())
+        except (OSError, IOError):
+            continue
+    return XML("")
+
+
+def build_theme_partials(selected_theme, partial_names):
+    """Build a mapping of partial names to rendered HTML fragments."""
+    return {
+        name: load_theme_partial(selected_theme, name) for name in partial_names or []
+    }
+
+
 session = Session()
 T = Translator(settings.T_FOLDER)
 authenticated = ActionFactory(Logged(session))
@@ -206,6 +254,7 @@ if MODE in ("demo", "readonly", "full"):
         selected_theme = normalize_selected_theme(
             user_settings.get("selected_theme", "AlienDark"), themes
         )
+        theme_partials = build_theme_partials(selected_theme, ["index_header_actions"])
         
         return dict(
             languages=dumps(getattr(T.local, "language", {})),
@@ -213,6 +262,7 @@ if MODE in ("demo", "readonly", "full"):
             user_id=(session.get("user") or {}).get("id"),
             themes=themes,
             selected_theme=selected_theme,
+            theme_partials=theme_partials,
         )
 
 
@@ -271,6 +321,12 @@ if MODE in ("demo", "readonly", "full"):
         db = error_logger.database_logger.db
         themes = get_available_themes()
         user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "AlienDark"), themes
+        )
+        theme_partials = build_theme_partials(
+            selected_theme, ["dbadmin_nav", "dbadmin_footer_back"]
+        )
 
         def make_grid():
             make_safe(db)
@@ -292,12 +348,12 @@ if MODE in ("demo", "readonly", "full"):
 
         grid = action.uses(db)(make_grid)()
         return dict(
+            app_name="",
             table_name="py4web_error",
             grid=grid,
             themes=themes,
-            selected_theme=normalize_selected_theme(
-                user_settings.get("selected_theme", "AlienDark"), themes
-            ),
+            selected_theme=selected_theme,
+            theme_partials=theme_partials,
         )
 
     @action("dbadmin/<app_name>/<db_name>/<table_name>")
@@ -305,6 +361,12 @@ if MODE in ("demo", "readonly", "full"):
     def dbadmin(app_name, db_name, table_name):
         themes = get_available_themes()
         user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "AlienDark"), themes
+        )
+        theme_partials = build_theme_partials(
+            selected_theme, ["dbadmin_nav", "dbadmin_footer_back"]
+        )
         module = Reloader.MODULES.get(app_name)
         db = getattr(module, db_name)
 
@@ -345,9 +407,8 @@ if MODE in ("demo", "readonly", "full"):
             table_name=table_name,
             grid=grid,
             themes=themes,
-            selected_theme=normalize_selected_theme(
-                user_settings.get("selected_theme", "AlienDark"), themes
-            ),
+            selected_theme=selected_theme,
+            theme_partials=theme_partials,
         )
 
     @action("info")
@@ -376,10 +437,18 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def routes():
         """Returns current registered routes"""
-        sorted_routes = {
-            name: list(sorted(routes, key=lambda route: route["rule"]))
-            for name, routes in Reloader.ROUTES.items()
-        }
+        sorted_routes = {}
+        for name, app_routes in Reloader.ROUTES.items():
+            normalized_routes = []
+            for route in app_routes:
+                normalized_route = dict(route)
+                normalized_route.setdefault("time", 0.0)
+                normalized_route.setdefault("calls", 0.0)
+                normalized_route.setdefault("errors", 0.0)
+                normalized_routes.append(normalized_route)
+            sorted_routes[name] = list(
+                sorted(normalized_routes, key=lambda route: route["rule"])
+            )
         return {"payload": sorted_routes, "status": "success"}
 
     @action("apps")
@@ -492,6 +561,7 @@ if MODE in ("demo", "readonly", "full"):
     def new_file(name, file_name):
         """creates a new file or folder"""
         path = os.path.join(FOLDER, name)
+        payload = request.json if isinstance(request.json, dict) else {}
         
         # Check if this is a folder creation request (query parameter)
         is_folder = request.query.get("folder") == "1"
@@ -507,6 +577,21 @@ if MODE in ("demo", "readonly", "full"):
         if is_folder:
             try:
                 os.makedirs(full_path, exist_ok=True)
+                return {"status": "success"}
+            except Exception as e:
+                return {"status": "error", "message": str(e)}
+
+        # File upload (base64 payload)
+        file_data = payload.get("file")
+        if file_data:
+            if os.path.exists(full_path):
+                return {"status": "error", "message": "File already exists"}
+            parent = os.path.dirname(full_path)
+            if not os.path.exists(parent):
+                os.makedirs(parent)
+            try:
+                with open(full_path, "wb") as fp:
+                    fp.write(base64.b64decode(file_data))
                 return {"status": "success"}
             except Exception as e:
                 return {"status": "error", "message": str(e)}
@@ -549,7 +634,6 @@ if MODE in ("demo", "readonly", "full"):
                 or name.endswith("~")
                 or name[-4:] in (".pyc", ".pyo")
                 or name == "__pycache__"
-                or os.path.basename(root) == "uploads"
             )
 
         if not os.path.exists(top) or not os.path.isdir(top):

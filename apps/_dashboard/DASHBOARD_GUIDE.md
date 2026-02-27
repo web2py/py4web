@@ -149,7 +149,7 @@ export PY4WEB_PASSWORD_FILE=password.txt
 
 ## Theming
 
-The dashboard supports multiple built-in themes (AlienDark, AlienLight) with a fully extensible theming system. Users can switch themes dynamically without page reload, with preferences persisted to the backend.
+The dashboard supports multiple built-in themes (AlienDark, AlienLight, Classic) with a fully extensible theming system. Users can switch themes dynamically without page reload, with preferences persisted to the backend.
 
 **For comprehensive theming documentation**, see [THEMES_GUIDE.md](THEMES_GUIDE.md).
 
@@ -158,9 +158,11 @@ The dashboard supports multiple built-in themes (AlienDark, AlienLight) with a f
 **Currently Available Themes:**
 - **AlienDark** - Modern dark theme with cyan accents (default)
 - **AlienLight** - Professional light theme with blue accents
+- **Classic** - Legacy-inspired dashboard appearance
 
 **Key Features:**
 - Dynamic theme discovery from `static/themes/` folder
+- Canonical page templates remain in `templates/index.html` and `templates/dbadmin.html`
 - CSS custom properties (variables) for styling
 - Optional theme-specific JavaScript initialization
 - Theme metadata in `theme.toml`
@@ -175,9 +177,11 @@ static/themes/{ThemeName}/
 ├── theme.js                # Optional JS initialization
 ├── favicon.ico             # Browser tab icon
 ├── widget.gif              # Loading spinner
-└── templates/              # Optional custom templates
-    ├── index.html
-    └── ...
+└── templates/
+  └── partials/           # Optional hook overrides, not full pages
+    ├── index_header_actions.html
+    ├── dbadmin_nav.html
+    └── dbadmin_footer_back.html
 ```
 
 **Frontend System:**
@@ -214,7 +218,7 @@ static/themes/{ThemeName}/
    }
    body { background: var(--bg-primary); color: var(--text-primary); }
    ```
-4. **Optional - Add assets:** `favicon.ico`, `widget.gif`, custom `templates/`
+4. **Optional - Add assets:** `favicon.ico`, `widget.gif`, `templates/partials/` hook overrides
 5. **Optional - Add behavior:** `theme.js` for theme-specific JavaScript
 
 **That's it!** The theme automatically appears in the dropdown.
@@ -285,6 +289,8 @@ Theme selection is saved in two places:
 2. Browser storage (from localStorage)
 3. Default theme (AlienDark if available, else first alphabetically)
 
+Themes should not ship full-page replacements for the dashboard main pages; keep the main `index.html` in `apps/_dashboard/templates/` and use `templates/partials/` hooks for small structural overrides.
+
 ### Troubleshooting Themes
 
 **Theme not appearing in dropdown:**
@@ -312,12 +318,12 @@ Theme selection is saved in two places:
 ## Advanced Theming
 
 For advanced features like:
-- Theme-specific templates (custom layouts)
+- Theme partial hooks (`templates/partials/`)
 - ACE editor theme configuration
 - Favicon management
 - Complex initialization patterns
 
-See [THEMES_GUIDE.md - Advanced Patterns](THEMES_GUIDE.md#advanced-patterns) section.
+See [THEMES_GUIDE.md](THEMES_GUIDE.md).
 
 ---
 

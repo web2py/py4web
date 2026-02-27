@@ -22,6 +22,7 @@
                 <span class="logo">py4web Dashboard</span>
             </div>
             <div class="header-right">
+                [[=theme_partials.get("dbadmin_nav", "")]]
                 <div class="header-theme">
                     <label for="dashboard-theme-select">Theme</label>
                     <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
@@ -41,9 +42,7 @@
 
         <!-- Footer -->
         <footer class="black padded" style="display: flex; justify-content: flex-start; align-items: center;">
-            <button class="header-btn" onclick="goBackFromTable()">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
+            [[=theme_partials.get("dbadmin_footer_back", "")]]
         </footer>
     </div>
 

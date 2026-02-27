@@ -271,6 +271,9 @@ label {
    margin: 20px 0;
    font-size: 1.2em;
 }
+.classic-main-layout {
+   display: none;
+}
 .right {
   text-align: right;
   margin-bottom: 10px;

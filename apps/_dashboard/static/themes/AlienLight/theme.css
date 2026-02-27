@@ -200,6 +200,7 @@ button.btn-app i {
 
 .loading {
   background-color: var(--bg-primary);
+  background-image: url(widget.gif);
 }
 
 tbody tr:hover {
