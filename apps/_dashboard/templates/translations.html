@@ -2,11 +2,15 @@
 
 <head>
     <base href="[[=URL('static')]]/">
+    [[if selected_theme == "Classic":]]
+    <link rel="stylesheet" type="text/css" href="themes/Classic/theme.css" />
+    [[else:]]
     <link rel="stylesheet" type="text/css" href="css/future.css" />
+    [[pass]]
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <style>
         .unverified {
-            color: yellow;
+            color: #33BFFF;
         }
         
         button {
@@ -36,7 +40,7 @@
         <div style="position: absolute;  box-sizing: border-box; width: 100%; padding: 10px 10px 10px 200px; left:0; top:0;">
             <h1>Internationalization (i18n) and Pluralization (p11n) Interface</h1>
             <p>
-                Select or add the language you want to support. Click on "update languages" to find all strings that may need translation. Each string may have multiple translations such as "0 dogs, 1 dog, 2 dogs". Read more <a href="https://github.com/web2py/pluralize">here</a>                Untranslated strings will be marked in yellow.
+                Select or add the language you want to support. Click on "update languages" to find all strings that may need translation. Each string may have multiple translations such as "0 dogs, 1 dog, 2 dogs". Read more <a href="https://github.com/web2py/pluralize">here</a>                Untranslated strings will be marked in blue.
             </p>
             <h2 v-if="selected_language">Selected Language: {{selected_language}}</h2>
             <table v-if="selected_language">

@@ -1,0 +1,7 @@
+name = "Classic"
+description = "Light web2py admin inspired theme with gray chrome, green and orange accents."
+version = "1.0.0"
+author = "py4web team"
+homepage = "https://py4web.com"
+screenshot = "widget.gif"
+headerButtons = "themes/Classic/header-buttons.html"

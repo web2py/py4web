@@ -1,0 +1,1981 @@
+/*
+ * Classic Theme - web2py admin inspired
+ * Light UI with gray chrome, green accents, and orange highlights.
+ */
+:root {
+  --bg-primary: #f8f8f8;
+  --bg-secondary: #e3e3e3;
+  --text-primary: #222;
+  --border-color: #b5b5b5;
+  --accent: #3a8d3a;
+  --accent-dark: #2f6f2f;
+  --accent-warn: #e08b2c;
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Tahoma", "Verdana", "Arial", sans-serif;
+}
+
+.my-effects {
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.my-effects a, .my-effects a:hover, .my-effects a:visited {
+  color: var(--accent);
+}
+
+.my-effects a:not(.btn):after {
+  background-color: var(--accent);
+}
+
+/* Buttons */
+button, a[role=button], input[type=submit], input[type=button] {
+  background: linear-gradient(#f8f8f8, #dedede);
+  color: var(--text-primary);
+  border: 1px solid #9c9c9c;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+}
+
+button:hover, a[role=button]:hover, input[type=submit]:hover, input[type=button]:hover {
+  background: linear-gradient(#f2fff2, #d7f0d7);
+  border-color: var(--accent);
+  color: #1e1e1e;
+}
+
+[data-theme="Classic"] .header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="Classic"] .header-left {
+  transition: opacity 0.2s;
+}
+
+[data-theme="Classic"] .header-left:hover {
+  opacity: 0.7;
+}
+
+/* Inputs */
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=date],
+input[type=time],
+input[type=datetime-local],
+input[type=file],
+select,
+textarea {
+  background-color: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=number]:focus,
+input[type=date]:focus,
+input[type=time]:focus,
+input[type=datetime-local]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(58, 141, 58, 0.15);
+}
+
+select {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+select option {
+  background-color: white;
+  color: var(--text-primary);
+}
+
+/* Panels */
+.panel > label {
+  border: 1px solid #8f8f8f;
+  border-left: 6px solid var(--accent);
+  background: linear-gradient(#f2f2f2, #dcdcdc);
+  color: var(--text-primary);
+}
+
+label ~ div {
+  background-color: white;
+  border: 1px solid #c6c6c6;
+}
+
+.tag {
+  background-color: var(--accent-warn);
+  color: white;
+}
+
+tbody tr:hover {
+  background-color: #f6f6f6;
+}
+
+thead tr {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+thead th {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Modal */
+.modal-inner {
+  border: 2px solid var(--accent);
+  background-color: white;
+}
+
+/* Login */
+[data-theme="Classic"] .login {
+  background: #f0f0f0;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  padding: 10px 15px 0 15px;
+}
+
+[data-theme="Classic"] .classic-login-shell {
+  width: min(760px, 100%);
+  margin: 14vh auto 0 auto;
+}
+
+[data-theme="Classic"] .classic-login-top {
+  width: 100%;
+  margin: 0 0 12px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: linear-gradient(#f3f3f3, #e2e2e2);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+}
+
+[data-theme="Classic"] .classic-login-top .header-left {
+  display: flex;
+  align-items: center;
+}
+
+[data-theme="Classic"] .classic-login-top .spinner-top {
+  height: 56px;
+  padding: 8px;
+}
+
+[data-theme="Classic"] .classic-login-top .logo {
+  font-size: 42px;
+}
+
+[data-theme="Classic"] .classic-login-panel {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+  padding: 24px 28px 20px 28px;
+}
+
+[data-theme="Classic"] .classic-login-panel h1 {
+  color: var(--text-primary);
+  font-size: 32px;
+  margin: 0 0 18px 0;
+  text-align: left;
+}
+
+[data-theme="Classic"] .classic-login-panel label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+[data-theme="Classic"] .classic-login-panel input[type=password] {
+  border: 1px solid var(--border-color);
+  background-color: white;
+  color: var(--text-primary);
+  width: 100%;
+  max-width: 100%;
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 2px;
+}
+
+[data-theme="Classic"] .classic-forgot-link {
+  display: block;
+  width: 100%;
+  text-align: right;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+[data-theme="Classic"] .classic-demo-note {
+  margin-top: 10px;
+  color: #555;
+  font-size: 13px;
+}
+
+[data-theme="Classic"] .classic-login-footer-panel {
+  margin-top: 12px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+[data-theme="Classic"] .classic-login-footer-panel .right {
+  margin-bottom: 0;
+  text-align: right;
+}
+
+[data-theme="Classic"] .login,
+[data-theme="Classic"] .login * {
+  animation: none !important;
+}
+
+[data-theme="Classic"] .modal {
+  z-index: 220;
+}
+
+[data-theme="Classic"] .modal-inner {
+  z-index: 221;
+}
+
+[data-theme="Classic"] .loading {
+  display: none !important;
+}
+
+[data-theme="Classic"] .login input[type=password],
+[data-theme="Classic"] .login input[type=password]:focus,
+[data-theme="Classic"] .classic-forgot-link,
+[data-theme="Classic"] .classic-forgot-link:after {
+  transition: none !important;
+}
+
+.loading {
+  background-color: var(--bg-primary);
+}
+
+/* Header / nav / footer */
+header,
+nav,
+footer,
+header.black,
+footer.black,
+nav.black {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+nav.black a,
+footer.black a,
+nav a,
+footer a {
+  color: var(--accent);
+}
+
+nav li:hover {
+  background-color: #ededed;
+}
+
+/* Accordion-free layout for Classic */
+.my-effects .accordion > input {
+  display: none;
+}
+
+.my-effects .accordion > label:before,
+.my-effects .accordion > input:checked ~ label:before {
+  content: "";
+}
+
+.my-effects .accordion > *:not(label),
+.my-effects .accordion > input:checked ~ *:not(label) {
+  max-height: none !important;
+  overflow: visible !important;
+  padding-top: 10px;
+}
+
+.my-effects .accordion > label {
+  cursor: default;
+}
+
+/* Classic Main Layout (70/30 split) */
+[data-theme="Classic"] .classic-main-layout {
+  display: grid !important;
+  grid-template-columns: 70% 30%;
+  gap: 20px;
+  margin: 20px;
+  min-height: calc(100vh - 180px);
+}
+
+[data-theme="Classic"] .classic-left-panel {
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 3px;
+  height: 100%;
+}
+
+[data-theme="Classic"] .classic-left-panel h2 {
+  margin-top: 0;
+  padding: 0;
+  background: none;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+  font-size: 1.4em;
+}
+
+[data-theme="Classic"] .classic-apps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+[data-theme="Classic"] .classic-apps-actions {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+[data-theme="Classic"] .classic-apps-header h2 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+[data-theme="Classic"] .btn-create-upload,
+[data-theme="Classic"] .btn-reload {
+  font-size: 12px;
+  padding: 4px 10px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  margin-bottom: 0;
+  gap: 6px;
+}
+
+[data-theme="Classic"] .apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 255px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+}
+
+[data-theme="Classic"] .app-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+}
+
+[data-theme="Classic"] .app-row.app-row-error {
+  background: #fdeaea;
+  border-color: #efb3b3;
+}
+
+[data-theme="Classic"] .app-name {
+  font-weight: bold;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+[data-theme="Classic"] .app-name-text {
+  white-space: nowrap;
+}
+
+[data-theme="Classic"] .app-status-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="Classic"] .app-status-running {
+  background-color: #7ccf7c;
+}
+
+[data-theme="Classic"] .app-status-stopped {
+  background-color: #ff4d4d;
+  animation: app-status-blink 1s infinite;
+  box-shadow: 0 0 6px rgba(255, 77, 77, 0.9);
+}
+
+@keyframes app-status-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+[data-theme="Classic"] .app-buttons {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+[data-theme="Classic"] .btn-small {
+  padding: 4px 12px;
+  font-size: 11px;
+  height: auto;
+  line-height: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+[data-theme="Classic"] .btn-delete {
+  background: #f5f5f5;
+  border-color: #b5b5b5;
+}
+
+[data-theme="Classic"] .btn-delete:hover {
+  background: #ffe0e0;
+  border-color: #d9534f;
+}
+
+[data-theme="Classic"] .classic-right-panel {
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 3px;
+  height: 100%;
+}
+
+[data-theme="Classic"] .classic-right-panel h2 {
+  margin-top: 0;
+  padding: 0;
+  background: none;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+  font-size: 1.4em;
+}
+
+[data-theme="Classic"] .info-section {
+  margin: 20px 0;
+}
+
+[data-theme="Classic"] .info-section h3 {
+  font-size: 0.9em;
+  color: var(--text-primary);
+  margin: 10px 0 5px 0;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .info-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+[data-theme="Classic"] .info-table td {
+  padding: 4px 8px;
+}
+
+[data-theme="Classic"] .info-table tr:hover {
+  background-color: transparent;
+}
+
+[data-theme="Classic"] .btn-details {
+  width: 100%;
+  margin-top: 20px;
+}
+
+[data-theme="Classic"] .recent-tickets-section {
+  margin: 20px 0 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+[data-theme="Classic"] .recent-tickets-section h3 {
+  font-size: 0.9em;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .btn-show-all {
+  width: 100%;
+}
+
+[data-theme="Classic"] .classic-tickets-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+[data-theme="Classic"] .classic-tickets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+[data-theme="Classic"] .classic-tickets-header h2 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+[data-theme="Classic"] .classic-tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+[data-theme="Classic"] .classic-tickets-table th {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .classic-tickets-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+[data-theme="Classic"] .classic-tickets-table td {
+  border: 1px solid var(--border-color);
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+[data-theme="Classic"] .password-section {
+  margin: 30px 0 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+[data-theme="Classic"] .password-section h3 {
+  font-size: 0.9em;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .btn-password {
+  width: 100%;
+}
+
+[data-theme="Classic"] .classic-system-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+[data-theme="Classic"] .classic-system-info-header h2 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+[data-theme="Classic"] .system-info-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-top: 0;
+}
+
+[data-theme="Classic"] .system-info-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  gap: 6px;
+}
+
+[data-theme="Classic"] .btn-ok {
+  flex: 1;
+}
+
+[data-theme="Classic"] .btn-copy {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+[data-theme="Classic"] .btn-save-details {
+  flex: 0 0 auto;
+}
+
+[data-theme="Classic"] .btn-back {
+  flex: 0 0 auto;
+}
+
+[data-theme="Classic"] .os-info {
+  background-color: #f0f8f0;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 15px;
+  margin: 15px 0 20px 0;
+}
+
+[data-theme="Classic"] .os-info h3 {
+  font-size: 0.9em;
+  color: var(--accent);
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+[data-theme="Classic"] .os-info p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+[data-theme="Classic"] .modules-table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+[data-theme="Classic"] .modules-table th {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  text-align: left;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .modules-table td {
+  border: 1px solid var(--border-color);
+  padding: 6px 8px;
+}
+
+[data-theme="Classic"] .modules-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Classic Edit Layout (single-column, focused on selected app) */
+[data-theme="Classic"].classic-edit-mode .classic-main-layout,
+[data-theme="Classic"] .classic-main-layout.classic-edit-mode {
+  grid-template-columns: 1fr;
+  height: var(--classic-edit-height, calc(100vh - 140px));
+  min-height: 0;
+  max-height: var(--classic-edit-height, calc(100vh - 140px));
+  overflow: hidden;
+}
+
+[data-theme="Classic"].classic-edit-mode .classic-right-panel,
+[data-theme="Classic"] .classic-main-layout.classic-edit-mode .classic-right-panel {
+  display: none;
+}
+
+[data-theme="Classic"].classic-edit-mode .classic-left-panel,
+[data-theme="Classic"] .classic-main-layout.classic-edit-mode .classic-left-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+[data-theme="Classic"] .classic-edit-panel {
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+[data-theme="Classic"] .classic-edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+[data-theme="Classic"] .classic-edit-title {
+  margin: 0;
+  font-size: 1.3em;
+  color: var(--text-primary);
+}
+
+[data-theme="Classic"] .classic-edit-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+[data-theme="Classic"] .classic-edit-action-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  line-height: 16px;
+}
+
+[data-theme="Classic"] .classic-edit-action-btn i {
+  font-size: 13px;
+}
+
+[data-theme="Classic"] .classic-edit-action-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent-dark);
+}
+
+[data-theme="Classic"] [data-classic-edit-back] {
+  padding: 6px 12px;
+  font-size: 11px;
+  height: 28px;
+  line-height: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[data-theme="Classic"] .classic-edit-content {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+}
+
+/* Non-files views should use full width */
+[data-theme="Classic"] .classic-edit-content[data-edit-view="routes"],
+[data-theme="Classic"] .classic-edit-content[data-edit-view="databases"],
+[data-theme="Classic"] .classic-edit-content[data-edit-view="tickets"] {
+  display: block;
+  min-height: 0;
+  height: 100%;
+}
+
+[data-theme="Classic"] .classic-edit-content[data-edit-view="routes"] > div,
+[data-theme="Classic"] .classic-edit-content[data-edit-view="databases"] > div,
+[data-theme="Classic"] .classic-edit-content[data-edit-view="tickets"] > div {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+[data-theme="Classic"] .classic-edit-files {
+  border: 1px solid var(--border-color);
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 3px;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+[data-theme="Classic"] .classic-edit-files h3 {
+  margin: 8px 0 6px 0;
+  font-size: 0.9em;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .classic-edit-files ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+[data-theme="Classic"] .classic-edit-files li {
+  margin: 4px 0;
+}
+
+[data-theme="Classic"] .classic-edit-files button {
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+[data-theme="Classic"] .classic-edit-editor {
+  border: 1px solid var(--border-color);
+  background: #fff;
+  padding: 10px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+[data-theme="Classic"] .classic-edit-editor textarea {
+  width: 100%;
+  min-height: 320px;
+  resize: vertical;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+[data-theme="Classic"] .classic-edit-status {
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+[data-theme="Classic"] .classic-folder {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+[data-theme="Classic"] .classic-folder-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8e8e8;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="Classic"] .classic-folder-toggle:hover {
+  background: #d3d3d3;
+}
+
+[data-theme="Classic"] .classic-folder-toggle i {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .classic-folder-toggle.collapsed i {
+  transform: rotate(-90deg);
+}
+
+[data-theme="Classic"] .classic-folder-toggle::before {
+  content: "▼";
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 12px;
+  color: var(--accent);
+  transition: transform 0.2s;
+  min-width: 12px;
+}
+
+[data-theme="Classic"] .classic-folder-toggle.collapsed::before {
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+
+/* Tree structure with connector lines - Windows Explorer style */
+[data-theme="Classic"] .classic-folder-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+[data-theme="Classic"] .classic-folder-list.collapsed {
+  display: none;
+}
+
+[data-theme="Classic"] .classic-folder-list li {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  line-height: 20px;
+}
+
+/* Vertical line from root folder button down through all items */
+[data-theme="Classic"] .classic-folder-files-root::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 40px;
+  bottom: 10px;
+  width: 1px;
+  background: #999;
+  z-index: 0;
+}
+
+/* Root folder container */
+[data-theme="Classic"] .classic-folder-files-root {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+/* Root folder button styling with app name inside */
+[data-theme="Classic"] .classic-folder-root-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ff8c00;
+  border: 1px solid #d97000;
+  cursor: pointer;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="Classic"] .classic-folder-root-toggle:hover {
+  background: #ff9a1a;
+  border-color: #d97000;
+}
+
+[data-theme="Classic"] .classic-folder-root-toggle i {
+  font-size: 18px;
+  color: #000;
+  font-weight: bold;
+}
+
+[data-theme="Classic"] .classic-folder-root-toggle span {
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* ROOT CONNECTORS - High specificity to override any conflicting rules */
+/* Vertical line for root list */
+[data-theme="Classic"] .classic-folder.classic-folder-files-root > .classic-folder-list.classic-folder-root-list::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #999 !important;
+  display: block !important;
+}
+
+/* Horizontal connectors for ALL root list items */
+[data-theme="Classic"] .classic-folder.classic-folder-files-root > .classic-folder-list.classic-folder-root-list > li::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  width: 11px;
+  height: 1px;
+  background: #999 !important;
+  display: block !important;
+}
+
+/* L-connector stopper for last root item */
+[data-theme="Classic"] .classic-folder.classic-folder-files-root > .classic-folder-list.classic-folder-root-list > li:last-child::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  bottom: 0;
+  width: 1px;
+  background: #f9f9f9 !important;
+  display: block !important;
+}
+
+/* Indent root items for connectors */
+[data-theme="Classic"] .classic-folder.classic-folder-files-root > .classic-folder-list.classic-folder-root-list > li {
+  padding-left: 20px !important;
+}
+
+/* Hide vertical line below last child (└─) */
+[data-theme="Classic"] .classic-subfolder > .classic-folder-list > li:last-child::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  bottom: 0;
+  width: 1px;
+  background: #f9f9f9;
+}
+
+/* No connectors for top-level non-nested folders outside root */
+[data-theme="Classic"] .classic-folder > .classic-folder-list:not(.classic-subfolder .classic-folder-list)::before,
+[data-theme="Classic"] .classic-folder > .classic-folder-list:not(.classic-subfolder .classic-folder-list) > li::before,
+[data-theme="Classic"] .classic-folder > .classic-folder-list:not(.classic-subfolder .classic-folder-list) > li::after {
+  display: none;
+}
+
+[data-theme="Classic"] .classic-folder > .classic-folder-list:not(.classic-subfolder .classic-folder-list) > li {
+  padding-left: 0 !important;
+}
+
+[data-theme="Classic"] .classic-folder-list li button {
+  width: auto;
+  display: inline-block;
+  margin: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  box-shadow: none;
+  font-weight: normal;
+}
+
+[data-theme="Classic"] .classic-folder-list li button:hover {
+  background: #e0f0e0;
+  border: none;
+  color: #000;
+}
+
+/* Selected file/folder highlighting */
+[data-theme="Classic"] .classic-folder-list li button.selected-file,
+[data-theme="Classic"] .classic-folder-toggle.selected-folder {
+  background: #c8e6c8 !important;
+  border: 1px solid var(--accent) !important;
+  font-weight: bold;
+  box-shadow: none !important;
+  color: #000 !important;
+}
+
+[data-theme="Classic"] .classic-folder-toggle.selected-folder {
+  background: #c8e6c8 !important;
+}
+
+/* Hide accordion panels for Classic theme */
+[data-theme="Classic"] .panel.accordion {
+  display: none;
+}
+
+/* Hide classic layout for other themes */
+[data-theme="AlienDark"] .classic-main-layout,
+[data-theme="AlienLight"] .classic-main-layout {
+  display: none;
+}
+
+[data-theme="Classic"] .classic-ace-editor {
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 auto;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: #fff;
+}
+
+/* Routes table scroll container */
+[data-theme="Classic"] .classic-routes-scroll {
+  display: block;
+  max-height: none;
+  min-height: 0;
+  height: 100%;
+  width: calc(100% - 10px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+[data-theme="Classic"] .classic-routes-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+[data-theme="Classic"] .classic-ace-editor .ace_scroller,
+[data-theme="Classic"] .classic-ace-editor .ace_content {
+  background: #fff;
+  color: #222;
+}
+
+[data-theme="Classic"] .classic-ace-editor .ace_gutter {
+  background: #f0f0f0;
+  color: #666;
+  border-right: 1px solid var(--border-color);
+}
+
+[data-theme="Classic"] .classic-folder-empty {
+  color: #999;
+  font-style: italic;
+  font-size: 11px;
+  padding: 2px 8px;
+}
+
+[data-theme="Classic"] .classic-folder-delete-btn {
+  padding: 2px 6px;
+  font-size: 10px;
+  margin-left: 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  cursor: pointer;
+  color: #d9534f;
+}
+
+[data-theme="Classic"] .classic-folder-delete-btn:hover {
+  background: #ffe0e0;
+  border-color: #d9534f;
+}
+
+[data-theme="Classic"] .classic-subfolder {
+  position: relative;
+}
+
+[data-theme="Classic"] .classic-subfolder-toggle {
+  background: #e0e0e0;
+  font-size: 11px;
+  padding: 3px 6px;
+}
+
+[data-theme="Classic"] .classic-subfolder-toggle:hover {
+  background: #d0d0d0;
+}
+
+[data-theme="Classic"] .classic-folder-files-root {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+/* Root list alignment + connectors */
+[data-theme="Classic"] .classic-folder-files-root > .classic-folder-list {
+  padding-left: 0;
+}
+
+[data-theme="Classic"] .classic-folder-files-root > .classic-folder-list > li {
+  padding-left: 22px;
+}
+
+[data-theme="Classic"] .classic-folder-files-root > .classic-folder-list::before {
+  left: 16px;
+}
+
+[data-theme="Classic"] .classic-folder-files-root > .classic-folder-list > li::before,
+[data-theme="Classic"] .classic-folder-files-root > .classic-folder-list > li:last-child::after {
+  left: 16px;
+}
+
+/* ===== Tree connector geometry (override) ===== */
+[data-theme="Classic"] .classic-edit-files {
+  /* keep gutter/arm as-is, but make indent > gutter+arm to avoid overlap */
+  --classic-tree-gutter: 16px;
+  --classic-tree-arm: 12px;
+  --classic-tree-indent: 34px; /* 16 + 12 + 6px gap */
+  --classic-tree-line: #999;
+  --classic-tree-bg: #f9f9f9;
+}
+
+/* Ensure the LI padding actually wins everywhere in the Classic tree */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list > li {
+  padding-left: var(--classic-tree-indent) !important;
+}
+
+/* Root list: same geometry, explicitly (helps when older rules w/ !important exist) */
+[data-theme="Classic"] .classic-edit-files .classic-folder-files-root > .classic-folder-list > li {
+  padding-left: var(--classic-tree-indent) !important;
+}
+
+/* Tree file buttons: override .btn-small padding so text aligns consistently */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list li > button.btn-small {
+  padding: 2px 6px !important;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+/* --- Nested lists (subfolders) --- */
+[data-theme="Classic"] .classic-subfolder > .classic-folder-list::before {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--classic-tree-line);
+}
+
+[data-theme="Classic"] .classic-subfolder > .classic-folder-list > li::before {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: 10px;
+  width: var(--classic-tree-arm);
+  height: 1px;
+  background: var(--classic-tree-line);
+}
+
+[data-theme="Classic"] .classic-subfolder > .classic-folder-list > li:last-child::after {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: 10px;
+  bottom: 0;
+  width: 1px;
+  background: var(--classic-tree-bg);
+}
+
+/* --- FINAL override: root UL rules with old "!important" must be neutralized --- */
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder.classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list::before {
+  left: var(--classic-tree-gutter) !important;
+  background: var(--classic-tree-line) !important;
+}
+
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder.classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list
+  > li::before {
+  left: var(--classic-tree-gutter) !important;
+  width: var(--classic-tree-arm) !important;
+  background: var(--classic-tree-line) !important;
+}
+
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder.classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list
+  > li:last-child::after {
+  left: var(--classic-tree-gutter) !important;
+  background: var(--classic-tree-bg) !important;
+}
+
+/* Root files/folders indentation (beats the earlier 20px !important) */
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder.classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list
+  > li {
+  padding-left: var(--classic-tree-indent) !important;
+}
+
+/* Keep the root-button-to-tree vertical line aligned with the same gutter */
+[data-theme="Classic"] .classic-edit-files .classic-folder-files-root::before {
+  left: var(--classic-tree-gutter) !important;
+  background: var(--classic-tree-line) !important;
+}
+
+/* --- Fix: remove stray vertical bar below last root file (container connector) --- */
+[data-theme="Classic"] .classic-edit-files .classic-folder-files-root::before {
+  content: none !important; /* kills the extra line that can extend past the root list */
+}
+
+/* Extend the root UL connector slightly upward to meet the root button gap */
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list::before {
+  top: -6px; /* matches .classic-folder-root-toggle { margin-bottom: 6px } */
+}
+
+/* Reduce vertical gap in ROOT list (even tighter) */
+[data-theme="Classic"] .classic-edit-files .classic-folder-root-list > li {
+  margin: 0 !important;
+  line-height: 18px; /* slightly tighter than 20px */
+}
+
+/* Root files: make the clickable row a bit shorter */
+[data-theme="Classic"] .classic-edit-files .classic-folder-root-list > li > button.btn-small {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  line-height: 16px;
+}
+
+/* Root folders: tighten the folder toggle row so it matches file rows better */
+[data-theme="Classic"] .classic-edit-files .classic-folder-root-list > li.classic-subfolder > button.classic-folder-toggle {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 0 !important; /* avoid extra space before its child <ul> when expanded */
+  line-height: 16px;
+}
+
+/* Root-files block: remove bottom spacing so next top-level folder starts immediately */
+[data-theme="Classic"] .classic-edit-files .classic-folder.classic-folder-files-root {
+  margin-bottom: 0 !important;  /* overrides .classic-folder { margin-bottom: 10px; } */
+  padding-bottom: 0 !important; /* overrides .classic-folder-files-root { padding-bottom: 10px; } */
+}
+
+/* Root UL: remove the generic bottom margin applied by .classic-edit-files ul */
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder.classic-folder-files-root
+  > .classic-folder-list.classic-folder-root-list {
+  margin-bottom: 0 !important; /* overrides .classic-edit-files ul { margin: 0 0 10px 0; } */
+}
+
+/* === Classic edit file tree: normalized spacing + connectors (final override) === */
+[data-theme="Classic"] .classic-edit-files {
+  --classic-tree-bg: #f9f9f9;
+  --classic-tree-line: #999;
+
+  --classic-tree-gutter: 16px;
+  --classic-tree-arm: 12px;
+  --classic-tree-indent: 34px; /* gutter + arm + small gap */
+
+  --classic-tree-row-height: 20px;
+  --classic-tree-row-mid: 10px; /* must match row-height/2 */
+}
+
+/* Remove “mystery gaps” coming from generic list spacing and folder blocks */
+[data-theme="Classic"] .classic-edit-files ul {
+  margin: 0 !important;
+}
+
+[data-theme="Classic"] .classic-edit-files .classic-folder {
+  margin-bottom: 0 !important; /* overrides .classic-folder { margin-bottom: 10px; } */
+}
+
+[data-theme="Classic"] .classic-edit-files .classic-folder-files-root {
+  padding-bottom: 0 !important; /* avoid extra space after root block */
+}
+
+/* Make every tree row consistent */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list > li {
+  margin: 0 !important;
+  padding-left: var(--classic-tree-indent) !important;
+  line-height: var(--classic-tree-row-height);
+  position: relative;
+}
+
+/* File rows + folder rows: same height, same vertical padding */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list li > button.btn-small,
+[data-theme="Classic"] .classic-edit-files .classic-folder-toggle {
+  display: block;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  min-height: var(--classic-tree-row-height);
+  line-height: var(--classic-tree-row-height);
+}
+
+/* Folder toggles sometimes add bottom margin -> kill it for uniform spacing */
+[data-theme="Classic"] .classic-edit-files .classic-folder-toggle {
+  margin-bottom: 0 !important;
+}
+
+/* One connector model for ALL lists in the tree */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list::before {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--classic-tree-line);
+}
+
+[data-theme="Classic"] .classic-edit-files .classic-folder-list > li::before {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: var(--classic-tree-row-mid);
+  width: var(--classic-tree-arm);
+  height: 1px;
+  background: var(--classic-tree-line);
+}
+
+/* Stop the vertical line after last child (works for root + nested) */
+[data-theme="Classic"] .classic-edit-files .classic-folder-list > li:last-child::after {
+  content: "";
+  position: absolute;
+  left: var(--classic-tree-gutter);
+  top: var(--classic-tree-row-mid);
+  bottom: 0;
+  width: 1px;
+  background: var(--classic-tree-bg);
+}
+
+/* Root button -> tree: do NOT draw the extra container line */
+[data-theme="Classic"] .classic-edit-files .classic-folder-files-root::before {
+  content: none !important;
+}
+
+/* Root list vertical line should reach up into the button gap */
+[data-theme="Classic"] .classic-edit-files
+  .classic-folder-files-root
+  > .classic-folder-root-list::before {
+  top: -6px; /* matches .classic-folder-root-toggle { margin-bottom: 6px } */
+}
+
+/* Save button highlight when editor has unsaved changes */
+[data-theme="Classic"] .classic-edit-panel [data-classic-save].classic-save-dirty {
+  background: linear-gradient(#fff7e6, #ffd9a6);
+  border-color: var(--accent-warn);
+  box-shadow: 0 0 0 2px rgba(224, 139, 44, 0.25);
+  color: #222;
+}
+
+/* Confirmation Dialog - Unsaved Changes Warning */
+.classic-confirm-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.classic-confirm-dialog {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 450px;
+  overflow: hidden;
+}
+
+.classic-confirm-dialog-header {
+  background: linear-gradient(#f0f0f0, #e5e5e5);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.classic-confirm-dialog-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.classic-confirm-dialog-content {
+  padding: 16px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.classic-confirm-dialog-content p {
+  margin: 0 0 8px 0;
+}
+
+.classic-confirm-dialog-content p:last-child {
+  margin-bottom: 0;
+}
+
+.classic-confirm-dialog-actions {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  background: #fafafa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.classic-confirm-dialog-actions button {
+  cursor: pointer;
+  padding: 6px 14px;
+  font-size: 13px;
+  min-width: 80px;
+}
+
+.classic-confirm-dialog-actions .btn-primary {
+  background: linear-gradient(var(--accent), var(--accent-dark));
+  color: white;
+  border-color: var(--accent-dark);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 2px var(--shadow);
+}
+
+.classic-confirm-dialog-actions .btn-primary:hover {
+  background: linear-gradient(var(--accent-dark), #1f5a1f);
+  border-color: #1f5a1f;
+  color: white;
+}
+
+/* Database Views */
+[data-theme="Classic"] .classic-db-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+[data-theme="Classic"] .classic-db-back-link {
+  color: var(--accent);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+[data-theme="Classic"] .classic-db-back-link:hover {
+  text-decoration: underline;
+}
+
+[data-theme="Classic"] .classic-db-breadcrumb-sep {
+  color: #999;
+  font-size: 16px;
+}
+
+[data-theme="Classic"] .classic-db-tables-list {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+[data-theme="Classic"] .classic-db-table-row {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.15s;
+  background: white;
+}
+
+[data-theme="Classic"] .classic-db-table-row:last-child {
+  border-bottom: none;
+}
+
+[data-theme="Classic"] .classic-db-table-row:hover {
+  background: #f5f9f5;
+}
+
+[data-theme="Classic"] .classic-db-table-name {
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="Classic"] .classic-db-table-name i {
+  color: var(--accent);
+}
+
+[data-theme="Classic"] .classic-db-table-fields {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme="Classic"] .classic-table-content {
+  padding: 8px 0;
+}
+
+[data-theme="Classic"] .classic-table-info {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f9f9f9;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+[data-theme="Classic"] .classic-table-info h4 {
+  margin: 0 0 12px 0;
+  color: var(--text);
+}
+
+[data-theme="Classic"] .classic-table-info p {
+  margin: 8px 0;
+  color: #666;
+}
+
+[data-theme="Classic"] .classic-table-preview {
+  padding: 16px;
+  background: #fffef5;
+  border: 1px solid #e0dfc0;
+  border-radius: 4px;
+}
+
+[data-theme="Classic"] .classic-table-note {
+  margin: 0;
+  color: #666;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+[data-theme="Classic"] .classic-table-note i {
+  color: #6b9b37;
+  margin-top: 2px;
+}
+
+/* DBAdmin Page Redesign */
+[data-theme="Classic"] .dbadmin {
+  max-width: 100%;
+  padding: 20px;
+}
+
+[data-theme="Classic"] .dbadmin-page .dbadmin-header {
+  padding: 10px 20px 6px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+}
+
+[data-theme="Classic"] .dbadmin-page .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+[data-theme="Classic"] .dbadmin-page .spinner-top {
+  height: 48px;
+  width: 48px;
+  padding: 0;
+}
+
+[data-theme="Classic"] .dbadmin-page .logo {
+  font-size: 28px;
+  line-height: 1.1;
+  padding: 0;
+}
+
+[data-theme="Classic"] .dbadmin-page .header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  justify-self: end;
+  gap: 10px;
+  max-width: 100%;
+}
+
+/* DBAdmin Navigation Buttons in Header */
+[data-theme="Classic"] .dbadmin-nav-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+[data-theme="Classic"] .dbadmin-page .header-theme {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="Classic"] .dbadmin-page .header-theme label {
+  font-size: 12px;
+}
+
+[data-theme="Classic"] .dbadmin-page .header-theme select {
+  width: 140px;
+}
+
+[data-theme="Classic"] .dbadmin-nav-buttons .header-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  height: 28px;
+  line-height: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #9c9c9c;
+  background: linear-gradient(#f8f8f8, #dedede);
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px var(--shadow);
+}
+
+[data-theme="Classic"] .dbadmin-nav-buttons .header-btn:hover {
+  background: linear-gradient(#f2fff2, #d7f0d7);
+  border-color: var(--accent);
+  color: #1e1e1e;
+}
+
+[data-theme="Classic"] .dbadmin-nav-buttons .header-btn.active {
+  background: linear-gradient(var(--accent), var(--accent-dark));
+  color: white;
+  border-color: var(--accent-dark);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="Classic"] .dbadmin-nav-buttons .header-btn.active:hover {
+  background: linear-gradient(#49a049, #2f6f2f);
+  border-color: #2f6f2f;
+  color: white;
+}
+
+[data-theme="Classic"] .dbadmin-nav-buttons .header-btn i {
+  font-size: 13px;
+}
+
+/* DBAdmin Content Area */
+[data-theme="Classic"] .dbadmin-content {
+  padding: 0;
+  background: var(--bg-primary);
+}
+
+[data-theme="Classic"] .dbadmin-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+[data-theme="Classic"] .dbadmin-content h2::before {
+  content: '\f1c0';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: var(--accent);
+  font-size: 18px;
+}
+
+/* DBAdmin Grid Wrapper */
+[data-theme="Classic"] .dbadmin-content > div,
+[data-theme="Classic"] .dbadmin-content .grid-wrapper {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Grid Table Styling */
+[data-theme="Classic"] .dbadmin table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+[data-theme="Classic"] .dbadmin thead {
+  background: linear-gradient(#f8f8f8, #ececec);
+  border-bottom: 2px solid var(--border-color);
+}
+
+[data-theme="Classic"] .dbadmin thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  color: #444;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+[data-theme="Classic"] .dbadmin thead th:last-child {
+  border-right: none;
+}
+
+[data-theme="Classic"] .dbadmin thead th a {
+  color: #444;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[data-theme="Classic"] .dbadmin thead th a:hover {
+  color: var(--accent);
+}
+
+[data-theme="Classic"] .dbadmin tbody tr {
+  border-bottom: 1px solid #e8e8e8;
+  transition: background-color 0.15s ease;
+}
+
+[data-theme="Classic"] .dbadmin tbody tr:last-child {
+  border-bottom: none;
+}
+
+[data-theme="Classic"] .dbadmin tbody tr:hover {
+  background: #f5f9f5;
+}
+
+[data-theme="Classic"] .dbadmin tbody td {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #333;
+  border-right: 1px solid #f0f0f0;
+}
+
+[data-theme="Classic"] .dbadmin tbody td:last-child {
+  border-right: none;
+}
+
+/* Grid Action Links */
+[data-theme="Classic"] .dbadmin tbody td a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+[data-theme="Classic"] .dbadmin tbody td a:hover {
+  text-decoration: underline;
+  color: var(--accent-dark);
+}
+
+/* Grid Action Buttons */
+[data-theme="Classic"] .dbadmin .grid-action-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+[data-theme="Classic"] .dbadmin .grid-action-buttons a,
+[data-theme="Classic"] .dbadmin .grid-action-buttons button {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 3px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+[data-theme="Classic"] .dbadmin .grid-action-buttons a:hover,
+[data-theme="Classic"] .dbadmin .grid-action-buttons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid Search/Filter Area */
+[data-theme="Classic"] .dbadmin .grid-header {
+  padding: 16px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+[data-theme="Classic"] .dbadmin .grid-search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+[data-theme="Classic"] .dbadmin .grid-search input[type="text"] {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+[data-theme="Classic"] .dbadmin .grid-search input[type="text"]:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(58, 141, 58, 0.1);
+}
+
+[data-theme="Classic"] .dbadmin .grid-search button {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* Grid Pagination */
+[data-theme="Classic"] .dbadmin .grid-footer {
+  padding: 12px 20px;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+[data-theme="Classic"] .dbadmin .grid-pagination {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+[data-theme="Classic"] .dbadmin .grid-pagination a,
+[data-theme="Classic"] .dbadmin .grid-pagination span,
+[data-theme="Classic"] .dbadmin .grid-pagination .grid-pagination-button,
+[data-theme="Classic"] .dbadmin .grid-pagination .grid-pagination-button-current {
+  min-width: 38px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 28px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  text-decoration: none;
+  background: white;
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+  box-shadow: none;
+}
+
+[data-theme="Classic"] .dbadmin .grid-pagination a:hover,
+[data-theme="Classic"] .dbadmin .grid-pagination .grid-pagination-button:hover {
+  background: linear-gradient(#f2fff2, #d7f0d7);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+[data-theme="Classic"] .dbadmin .grid-pagination span.active,
+[data-theme="Classic"] .dbadmin .grid-pagination .grid-pagination-button-current {
+  background: linear-gradient(var(--accent), var(--accent-dark));
+  color: white;
+  border-color: var(--accent-dark);
+  font-weight: 600;
+}
+
+[data-theme="Classic"] .dbadmin .grid-pagination span:not(.active):not(.grid-pagination-button-current) {
+  min-width: 0;
+  height: auto;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: #666;
+  line-height: 1;
+}
+
+[data-theme="Classic"] .dbadmin .grid-info {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Empty State */
+[data-theme="Classic"] .dbadmin .grid-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+[data-theme="Classic"] .dbadmin .grid-empty i {
+  font-size: 48px;
+  color: #ddd;
+  margin-bottom: 16px;
+  display: block;
+}

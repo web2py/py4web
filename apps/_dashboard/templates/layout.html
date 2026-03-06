@@ -3,9 +3,8 @@
   <head>
     <base href="[[=URL('static')]]/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
-    <link rel="stylesheet" href="css/no.css">
-    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
+    <link rel="shortcut icon" href="themes/AlienDark/favicon.ico" />    <link rel="stylesheet" href="css/base.css">    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'AlienDark' ]]/theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <script src="js/theme-selector.js"></script>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
@@ -23,7 +22,7 @@
         <div style="display: flex; align-items: center; gap: 10px; line-height: 28px;">
           <label for="dashboard-theme-select" style="font-size: 14px; color: inherit; margin: 0; white-space: nowrap; display: inline-flex; align-items: center; height: 28px; line-height: 28px;">Theme:</label>
           <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 130px; height: 28px; padding: 0 8px; background-color: #333; color: white; border: 1px solid #666; border-radius: 3px; line-height: 28px; margin: 0;">
-            [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
+            [[for theme in __vars__.get('themes', []):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
           </select>
         </div>
       </nav>

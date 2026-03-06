@@ -1,17 +1,28 @@
 <html>
   <head>
     <base href="[[=URL('static')]]/">
+    [[if selected_theme == "Classic":]]
+    <link rel="stylesheet" type="text/css" href="themes/Classic/theme.css" />
+    [[pass]]
     <style>
       * {margin: 0;}
-      html {background: white; color: black; font-family: "Courier"; font-size: 10px}
-      a { color: orange; font-weight: bold}
-      td {padding: 5px 10px; color: orange}
-      td.linelength { padding: 5px 10px; color: #f1f1f1; font-weight: bold}
-      #branch_text {  color: #21aadb; font-weight: bold}
-      button.clicked {background: #00d1b2;}
+      html {
+        background: [[="#f8f8f8" if selected_theme == "Classic" else "white"]];
+        color: [[="#222" if selected_theme == "Classic" else "black"]];
+        font-family: [[='"Tahoma", "Verdana", "Arial", sans-serif' if selected_theme == "Classic" else '"Courier"']];
+        font-size: 10px
+      }
+      a { color: [[="#3a8d3a" if selected_theme == "Classic" else "orange"]]; font-weight: bold}
+      td {padding: 5px 10px; color: [[="#3a8d3a" if selected_theme == "Classic" else "orange"]]}
+      td.linelength { padding: 5px 10px; color: [[="#444" if selected_theme == "Classic" else "#f1f1f1"]]; font-weight: bold}
+      #branch_text {  color: [[="#2f6f2f" if selected_theme == "Classic" else "#21aadb"]]; font-weight: bold}
+      button.clicked {background: [[="#d7f0d7" if selected_theme == "Classic" else "#00d1b2"]];}
       .commits {
         position:fixed; top:0; bottom: 0; left:0; z-index:100;
-        width:10px; background: #111111; color: orange; overflow: hidden
+        width:10px;
+        background: [[="#efefef" if selected_theme == "Classic" else "#111111"]];
+        color: [[="#3a8d3a" if selected_theme == "Classic" else "orange"]];
+        overflow: hidden
       }
       .commits:hover { width: 500px; overflow: auto; }
       .kryten {margin:3%; width:94%; height:94vh; border:0}
