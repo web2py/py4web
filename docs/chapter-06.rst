@@ -338,14 +338,87 @@ The Flash helper handles the server side of them. Here is an example:
    @action('index')
    @action.uses(flash)
    def index():
-       flash.set("Hello World", _class="info", sanitize=True)
+       flash.set("Hello World", _class="solid-flash", sanitize=True)
        return dict()
 
-and in the template:
+
+Example with Bulma CSS classes for notifications.
+
+.. code:: python
+   @action('index2')
+   @action.uses(flash)
+   def index():
+       flash.set("Hello World", _class="notification is-success", sanitize=True)
+       return dict()
+
+
+To make the flash messages smooth and visually appealing, we need some CSS. This piece of CSS is included in ``no.css`` when using the default template.
 
 .. code:: html
 
+   flash-alerts {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    /* Prevent clicks from passing through the container if it is empty */
+    pointer-events: none;
+   }
+   /* Allows clicking on child toasts */
+   flash-alerts > * {
+      pointer-events: auto;
+   }
+
+   /* 2. Generic animation logic.
+      This will work for ANY element you place inside flash-alerts. */
+
+   /* Initial state (hidden) of any notification */
+   flash-alerts > * {
+      opacity: 0;
+      transform: translateX(100%);
+      /* Defines the transition that will be applied when properties change */
+      transition: all 0.4s ease-in-out;
+   }
+
+   /* Final state (visible) when adding the .toast-show class */
+   flash-alerts > *.toast-show {
+      opacity: 1;
+      transform: translateX(0);
+   }
+
+   /* 3. (Optional) Style for the generic close button, in case you don't use Bulma. */
+   .toast-close-btn {
+      float: right;
+      cursor: pointer;
+      font-size: 1.5rem;
+      font-weight: bold;
+      line-height: 1;
+      margin-left: 15px;
+      opacity: 0.5;
+   }
+   .toast-close-btn:hover {
+      opacity: 1;
+
+   }
+   //Default backround
+   .solid-flash {
+   background-color: #d1d1d1; /* Light gray */
+   padding: 5px;
+   padding-left: 10px;
+   border-radius: 10px;
+   }
+
+
+And in the template:
+.. code:: html
+
    <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
+
+
 
 By setting the value of the message in the flash helper, a flash
 variable is returned by the action and this triggers the JS in the
@@ -363,14 +436,17 @@ The client can also set/add flash messages by calling:
 
 ::
 
-   Q.flash({'message': 'hello world', 'class': 'info'});
+   Q.flash({'message': 'hello world', 'class': 'solid-flash'});
 
-py4web defaults to an alert class called ``info`` and most CSS
-frameworks define classes for alerts called ``success``, ``error``,
-``warning``, ``default``, and ``info``. Yet, there is nothing in py4web
-that hardcodes those names. You can use your own class names.
 
-You can see the basic usage of flash messages in the **examples** app.
+Remember to include ``utils.js`` in your ``layout.html``. This file is located in every new app in /static/js/utils.js, contains the logic to properly show and manage flash messages.
+
+Py4web defaults to an alert class called ``solid-flash`` which is the default. Yet, there is nothing in py4web
+that hardcodes those names. You can use your own class names, or use any class you have available.
+
+
+
+
 
 The Session fixture
 -------------------
