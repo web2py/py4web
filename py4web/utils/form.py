@@ -76,7 +76,11 @@ class Widget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         """converts the widget to an HTML helper"""
         return INPUT(
-            _value=field.formatter("" if value is None else value),
+            _value=""
+            if value is None
+            else value
+            if isinstance(value, str)
+            else field.formatter(value),
             _type=self.type_map.get(field.type, "text"),
             _id=to_id(field),
             _name=field.name,
@@ -91,8 +95,13 @@ class DateTimeWidget:
         self.input_type = input_type
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
+        print("value=", value)
         return INPUT(
-            _value=field.formatter("" if value is None else value),
+            _value=""
+            if value is None
+            else value
+            if isinstance(value, str)
+            else field.formatter(value),
             _type=self.input_type,
             _id=to_id(field),
             _name=field.name,
