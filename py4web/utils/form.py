@@ -162,7 +162,7 @@ class ListWidget:
 class PasswordWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return INPUT(
-            _value=field.formatter("" if value is None else value),
+            _value="",
             _type="password",
             _id=to_id(field),
             _name=field.name,
