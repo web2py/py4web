@@ -95,7 +95,6 @@ class DateTimeWidget:
         self.input_type = input_type
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
-        print("value=", value)
         return INPUT(
             _value=""
             if value is None
