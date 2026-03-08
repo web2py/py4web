@@ -1998,8 +1998,8 @@ class DefaultAuthForms:
         if token:
             query = self.auth._query_from_token(token)
             user = self.auth.db(query).select().first()
-            if not user:
-                raise HTTP(404)
+        if not user:
+            raise HTTP(404)
         form = Form(
             fields,
             formstyle=self.formstyle,
