@@ -69,7 +69,7 @@ textarea {
   color: var(--accent);
 }
 
-input[type=text],
+/* input[type=text],
 input[type=password], 
 input[type=number],
 input[type=date], 
@@ -78,7 +78,7 @@ input[type=datetime-local],
 select,
 textarea {
   border-bottom: 2px solid var(--accent);
-}
+} */
 
 /* ============================================================================
    4. CONTENT - Links, Panels, Modals, and Interactive Elements
@@ -167,3 +167,4 @@ select option {
   background-color: var(--bg-secondary);
   color: white;
 }
+
