@@ -899,7 +899,7 @@ requires-dist = [
     { name = "pluralize", specifier = ">=20250901.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20260216.1" },
+    { name = "pydal", specifier = ">=20260313.1" },
     { name = "pyjwt", specifier = ">=2.0.1" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
     { name = "pytest", marker = "extra == 'test'" },
@@ -914,7 +914,7 @@ requires-dist = [
     { name = "sphinx-tabs", marker = "extra == 'docs'" },
     { name = "sphinxcontrib-spelling", marker = "extra == 'docs'" },
     { name = "threadsafevariable", specifier = ">=20250716.1" },
-    { name = "tornado" },
+    { name = "tornado", specifier = ">=6.5.5" },
     { name = "twine", marker = "extra == 'manage'" },
     { name = "watchgod", specifier = ">=0.6" },
     { name = "wheel" },
@@ -973,11 +973,11 @@ wheels = [
 
 [[package]]
 name = "pydal"
-version = "20260216.1"
+version = "20260313.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7c/23/bfdccf27a0919108f37183616c04ffb08e305f0e235f514cf7da8292914b/pydal-20260216.1.tar.gz", hash = "sha256:3788599332164e753cf37e9911cb39fd159d766ac2a868f17a3abc21523663ce", size = 635936, upload-time = "2026-02-16T22:29:57.451Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/68/51/c6ae7cfa615718812f974560b24001aff542ee6739232fd689e87ba75b1f/pydal-20260313.1.tar.gz", hash = "sha256:2df8de415dda8821f0a291cd66459fb889b28458ee6501778f682e55530847e9", size = 635919, upload-time = "2026-03-14T00:26:58.599Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/ff/9c146a37f407d8309d919d074a73290909b48a675207ba73b0b60ff12447/pydal-20260216.1-py2.py3-none-any.whl", hash = "sha256:78e9f886821a3114beb9188d6dd5c145b942a44711b197d47fe7ffa1996725a6", size = 253951, upload-time = "2026-02-16T22:29:55.344Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/0a/1d4dab75bfcd68694cfa88599df1c364db301731165e32d32259fb609004/pydal-20260313.1-py2.py3-none-any.whl", hash = "sha256:501c91f02dad9e2bc1abed2e9276b9aa6d205875a1eff42fc3da2d24ee1b9c3e", size = 253951, upload-time = "2026-03-14T00:26:56.159Z" },
 ]
 
 [[package]]
