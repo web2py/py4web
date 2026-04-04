@@ -44,26 +44,35 @@ def index():
     return dict(message="Hello")
 
 # With URL parameters
-@action("item/<id:int>")
+@action("api/item/<id:int>")
 @action.uses(db, auth.user)
-def item(id):
-    record = db.thing[id] or abort(404)
+def item(item_id):
+    record = db.thing[item_id] or abort(404)
     return dict(record=record)
 
 # API endpoint returning JSON (no template)
-@action("api/data", method="GET")
+@action("api/items", method="GET")
 @action.uses(db, auth.user)
-def api_data():
-    rows = db(db.thing).select()
-    return dict(data=rows.as_list())
+def api_items():
+    items = db(db.thing).select()
+    return dict(data=itemas.as_list())
 
 # POST action
-@action("api/create", method="POST")
+@action("api/item", method="POST")
 @action.uses(db, auth.user)
-def api_create():
-    db.thing.insert(**request.json)
-    return dict(ok=True)
+def api_new_item():
+    res = db.thing.validate_and_insert(**request.json)
+    return dict(ok=record_id=res.get("id"), errors=res.get("errors"), ok=not res.get("errors"))
+
+# PUT action
+@action("api/item/<id:int>", method="PUT")
+@action.uses(db, auth.user)
+def api_new_item(item_id):
+    res = db.thing.validate_and_update(item_id, **request.json)
+    return dict(record_id=res.get("id"), errors=res.get("errors"), ok=bool(res.get("updated")))
+
 ```
+
 
 **Rules:**
 - `@action("path")` defines the route. The URL is `/{app_name}/{path}`.
@@ -144,12 +153,33 @@ rows = db(query).select()
 ### Forms
 
 ```python
-form = Form(db.thing, csrf_session=session)
-if form.accepted:
-    redirect(URL("index"))
-return dict(form=form)
+from py4web import action, URL, redirect, request, abort
+from .common import db, session, auth, T, flash, cache
+from utils.form import Form
+
+# create form
+@action("create_item")
+@action.uses(db, auth.user, "create_template.html")
+def create_item():
+    form = Form(db.thing)  # does postback
+    if form.accepted:
+        # on success
+        item_id = form.vars.get("id")
+        redirect(URL("other_action", item_id))
+    return dict(form=form)
+
+# create form
+@action("edit_item")
+@action.uses(db, auth.user, "edit_template.html")
+def edit_item(item_id):
+    form = Form(db.thing, item_id)  # does postback
+    if form.accepted:
+        # on success
+        redirect(URL("other_action", item_id))
+    return dict(form=form)
 ```
 
+- template but contain [[=form]] to embed the form
 - `Form(db.table)` for create, `Form(db.table, record_id)` for edit.
 - Check `form.accepted`, `form.deleted`, `form.errors`.
 
@@ -178,23 +208,6 @@ URL("action", 1, 2)                   # /{app}/action/1/2
 URL("action", vars=dict(x=1))         # /{app}/action?x=1
 URL("static", "js/index.js")          # /{app}/static/js/index.js
 URL("action", scheme=True)            # https://host/{app}/action
-```
-
-### Custom Fixtures
-
-```python
-from py4web.core import Fixture
-
-class MyFixture(Fixture):
-    def on_request(self, context):
-        # Called before action
-        pass
-    def on_success(self, context):
-        # Called after successful action
-        pass
-    def on_error(self, context):
-        # Called on error
-        pass
 ```
 
 ### URL Signing (CSRF/tamper protection for callbacks)
