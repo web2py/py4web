@@ -62,7 +62,7 @@ Then you can apply all of them at once with:
 
 Usually, it's not important the order you use to specify the fixtures, because py4web
 knows well how to manage them if they have explicit dependencies. For example auth
-depends explicitly on db and session and flash, so you do not even needs to list them.
+depends explicitly on db and session and flash, so you do not even need to list them.
 
 But there is an important exception: the Template fixture must always be the
 **first one**. Otherwise, it will not have access to various things it should
@@ -281,7 +281,7 @@ Now try create a file called ``translations/it.json`` which contains:
 Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.
 
-Notice there is an UI in the Dashboard for creating, updating, and updating translation files. 
+Notice there is a UI in the Dashboard for creating, updating, and managing translation files. 
 It can be easily reached via the button ``i18n+p11n``:
 
 .. image:: images/dashboard_i18n_btn.png
@@ -480,8 +480,8 @@ Opening the page in a new browser tab will give you the updated
 counter value. Closing and reopening the browser, or opening a
 new *private window*, will instead restart the counter from 0.
 
-Usually the information is saved in the session object are related
-to the user - like its username, preferences, last pages visited,
+Usually the information saved in the session object is related
+to the user - like their username, preferences, last pages visited,
 shopping cart and so on. The session object has the same interface
 as a Python dictionary but in py4web sessions are always stored using
 JSON (**JWT** specifically, i.e. 
@@ -507,7 +507,7 @@ set. Other parameters can be specified as well:
                      algorithm='HS256',
                      storage=None,
                      same_site='Lax',
-                     name="{app_name}_sesson")
+                     name="{app_name}_session")
 
 Here:
 
@@ -946,16 +946,16 @@ Under normal circumstances above methods are executed in this order:
 
 i.e. the first fixture (A) is the first one to call ``on_request``
 and the last one to call ``on_success``. You can think of them as layers of
-an onion with the action (user code) at the center. ``on_success`` is called
+an onion with the action (user code) at the center. ``on_request`` is called
 when entering a layer from the outside and ``on_success`` is called when
 exiting a layer from the inside (like WSGI middleware).
 
-If any point an exception is raised inner layers are not called
+If at any point an exception is raised inner layers are not called
 and outer layers will call ``on_error`` instead of ``on_success``.
 
 Context is a shared object which contains:
 
-- content['fixtures']: the list of all the fixtures for the action.
+- context['fixtures']: the list of all the fixtures for the action.
 - context['processed']: the list of fixtures that called ``on_request`` previously within the request.
 - context['exception']: the exception raised by the action or any previous fixture logic (usually None)
 - context['output']: the action output.
@@ -1107,7 +1107,7 @@ Notably, the initializer should contain the line:
 
 in order to initialize the thread-local storage.
 Once this is done, the thread-local storage can be used to store and retrieve data
-using the the ``self.local`` object. 
+using the ``self.local`` object. 
 
 
 Multiple fixtures

@@ -1,5 +1,5 @@
 
-py4web: the reference Manual
+py4web: The Reference Manual
 ============================
 
 .. toctree::

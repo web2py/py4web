@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>De web2py para py4web &mdash; Documentação py4web 20251212</title>
+  <title>De web2py para py4web &mdash; Documentação py4web 20260403</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bfa5345e"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=4ebba005"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -109,7 +109,7 @@
              
   <section id="from-web2py-to-py4web">
 <h1>De web2py para py4web<a class="headerlink" href="#from-web2py-to-py4web" title="Link to this heading"></a></h1>
-<p>Este capítulo é dedicado a ajudar os usuários para portar aplicativos web2py antigos para py4web.</p>
+<p>This chapter is dedicated to helping users port old web2py applications to py4web.</p>
 <p>Web2py and py4web share many similarities and some differences. For example they share the same
 database abstraction layer (pyDAL) which means pydal table definitions and queries are identical
 between the two frameworks. They also share the same template language with the minor caveat that
@@ -126,7 +126,7 @@ profile forms. Both web2py and py4web track and log all errors.</p>
 <li><p>web2py works with both Python 2.6+ and 3.6+, while py4web runs on Python 3.7+ only. So, if your
 old web2py application is still using Python 2, your first step involves migrating it to at
 least Python 3.7, better if the latest 3.9.</p></li>
-<li><p>web2py apps consist of collection of files which are executed at every HTTP request (using a
+<li><p>web2py apps consist of a collection of files which are executed at every HTTP request (using a
 custom importer, in a predetermined order). In py4web apps are regular python modules that are
 imported automatically by the frameworks. By the way, this makes possible the use of standard
 python debuggers (even inside the most used IDEs).</p></li>
@@ -134,7 +134,7 @@ python debuggers (even inside the most used IDEs).</p></li>
 defined in a <code class="docutils literal notranslate"><span class="pre">controllers/*.py</span></code> file. py4web is much less constraining. In py4web an app must
 have an entry point <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> and a <code class="docutils literal notranslate"><span class="pre">static</span></code> folder. Every other convention such as the
 location of templates, uploaded files, translation files, sessions, etc. is user specified.</p></li>
-<li><p>In web2py the scaffolding app (the blue print for creating new apps) is called “welcome”. In
+<li><p>In web2py the scaffolding app (the blueprint for creating new apps) is called “welcome”. In
 py4web it is called “_scaffold”. _scaffold contains a “settings.py” file and a “common.py”.
 The latter provides an example of how to enable Auth and configure all the options for the
 specific app. _scaffold has also a “model.py” file and a “controller.py” file but, unlike
@@ -178,8 +178,8 @@ only variables that can be changed at will are the following field attributes: r
 writable, requires, update, default. All the others are for practical purposes to be
 considered global and non thread safe. This is also the reason that makes using
 <a class="reference internal" href="chapter-07.html#lazy-tables"><span class="std std-ref">Tabelas preguiçosos</span></a> with py4web useless and even dangerous.</p></li>
-<li><p>Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
-ability to generate forms pretty much in the same manner. The py4web ones is defined to be more
+<li><p>Both web2py and py4web have an Auth object which serves the same purpose. Both objects have the
+ability to generate forms pretty much in the same manner. The py4web one is defined to be more
 modular and extensible and support both Forms and APIs, but it lacks the <cite>auth.requires_*</cite>
 decorators and group membership/permissions. This does not mean that the feature is not
 available. In fact py4web is even more powerful and that is why the syntax is different. While
@@ -485,7 +485,7 @@ its session and its flash objects.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

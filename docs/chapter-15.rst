@@ -2,7 +2,7 @@
 From web2py to py4web
 =====================
 
-This chapter is dedicated to help users for porting old web2py applications to py4web.
+This chapter is dedicated to helping users port old web2py applications to py4web.
 
 Web2py and py4web share many similarities and some differences. For example they share the same
 database abstraction layer (pyDAL) which means pydal table definitions and queries are identical
@@ -22,7 +22,7 @@ Some of the main differences are the following:
   old web2py application is still using Python 2, your first step involves migrating it to at
   least Python 3.7, better if the latest 3.9.
 
-- web2py apps consist of collection of files which are executed at every HTTP request (using a
+- web2py apps consist of a collection of files which are executed at every HTTP request (using a
   custom importer, in a predetermined order). In py4web apps are regular python modules that are
   imported automatically by the frameworks. By the way, this makes possible the use of standard
   python debuggers (even inside the most used IDEs).
@@ -32,7 +32,7 @@ Some of the main differences are the following:
   have an entry point ``__init__.py`` and a ``static`` folder. Every other convention such as the
   location of templates, uploaded files, translation files, sessions, etc. is user specified.
 
-- In web2py the scaffolding app (the blue print for creating new apps) is called “welcome”. In
+- In web2py the scaffolding app (the blueprint for creating new apps) is called “welcome”. In
   py4web it is called “_scaffold”. _scaffold contains a “settings.py” file and a “common.py”.
   The latter provides an example of how to enable Auth and configure all the options for the
   specific app. _scaffold has also a “model.py” file and a “controller.py” file but, unlike
@@ -83,8 +83,8 @@ Some of the main differences are the following:
   considered global and non thread safe. This is also the reason that makes using
   :ref:`Lazy Tables` with py4web useless and even dangerous.
 
-- Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
-  ability to generate forms pretty much in the same manner. The py4web ones is defined to be more
+- Both web2py and py4web have an Auth object which serves the same purpose. Both objects have the
+  ability to generate forms pretty much in the same manner. The py4web one is defined to be more
   modular and extensible and support both Forms and APIs, but it lacks the `auth.requires_*`
   decorators and group membership/permissions. This does not mean that the feature is not
   available. In fact py4web is even more powerful and that is why the syntax is different. While

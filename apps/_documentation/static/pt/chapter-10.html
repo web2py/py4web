@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Helpers YATL &mdash; Documentação py4web 20251212</title>
+  <title>Helpers YATL &mdash; Documentação py4web 20260403</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bfa5345e"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=4ebba005"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -256,7 +256,7 @@ of (key:value) pairs into a set of keyword arguments:</p>
 <h2>Built-in helpers<a class="headerlink" href="#built-in-helpers" title="Link to this heading"></a></h2>
 <section id="xml">
 <span id="id1"></span><h3>`` XML``<a class="headerlink" href="#xml" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">XML</span></code> is an helper object used to encapsulate text that should <strong>not</strong> be
+<p><code class="docutils literal notranslate"><span class="pre">XML</span></code> is a helper object used to encapsulate text that should <strong>not</strong> be
 escaped. The text may or may not contain valid XML; for example it
 could contain JavaScript.</p>
 <p>O texto neste exemplo é escapado:</p>
@@ -471,7 +471,7 @@ in detail in the dedicated <a class="reference internal" href="chapter-12.html#f
 </section>
 <section id="script">
 <h3>`` SCRIPT``<a class="headerlink" href="#script" title="Link to this heading"></a></h3>
-<p>This is for include or link a script, such as JavaScript.</p>
+<p>This is for including or linking a script, such as JavaScript.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">SCRIPT</span><span class="p">(</span><span class="s1">&#39;console.log(&quot;hello world&quot;);&#39;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="s1">&#39;text/javascript&#39;</span><span class="p">))</span>
 <span class="go">&lt;script type=&quot;text/javascript&quot;&gt;console.log(&quot;hello world&quot;);&lt;/script&gt;</span>
 </pre></div>
@@ -596,7 +596,7 @@ helper.</p>
 <h2>Helpers personalizados<a class="headerlink" href="#custom-helpers" title="Link to this heading"></a></h2>
 <section id="tag">
 <span id="id2"></span><h3>`` TAG``<a class="headerlink" href="#tag" title="Link to this heading"></a></h3>
-<p>Sometimes you need to generate <strong>custom XML tags*</strong>. For this purpose py4web
+<p>Sometimes you need to generate <strong>custom XML tags</strong>. For this purpose py4web
 provides <code class="docutils literal notranslate"><span class="pre">TAG</span></code>, a universal tag generator.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=TAG.name(&#39;a&#39;, &#39;b&#39;, _c=&#39;d&#39;)]]
 </pre></div>
@@ -837,7 +837,7 @@ and it’s inside the libs/helpers.py module of your app, you could use this in 
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -2,7 +2,7 @@
 Help, resources and hints
 =========================
 
-We've made our best to make PY4WEB simple and clean. But you know, modern web programming is a daunting task. It requires an open mind, able to
+We've done our best to make PY4WEB simple and clean. But you know, modern web programming is a daunting task. It requires an open mind, able to
 jump frequently (without being lost!) from python to HTML to javascript to css and even database management. 
 But don't be scared, in this manual we'll assist you side by side in this journey. And there are many other valuable resources that we're going to show
 you.
@@ -15,7 +15,7 @@ This manual
 -----------
 
 This manual is the Reference Manual for py4web. It's available online at https://py4web.com/_documentation/static/index.html, where you'll also find the 
-PDF and EBOOK version, in multiple languages. It written in RestructuredText and generated using Sphinx.
+PDF and EBOOK version, in multiple languages. It is written in RestructuredText and generated using Sphinx.
 
 
 The Google group
@@ -45,7 +45,7 @@ There are many tutorials and videos available. Here are some of them:
 - the `South Breeze Enterprises demo app <https://github.com/jpsteil/southbreeze>`__ by `Jim Steil <https://github.com/jpsteil>`__.  It is built around
   the structure of the Microsoft Northwind database,
   but converted to SQLite. You can view the final result online `here <https://southbreeze.pythonbench.com>`__
-- the `py4web blog in spanish <https://py4web-tutoriales.blogspot.com>`__ by Alan Etkin, wich covers the basics to start with the framework plus examples. It is thought as a resource for sudents and aims to provide a full web development course
+- the `py4web blog in spanish <https://py4web-tutoriales.blogspot.com>`__ by Alan Etkin, which covers the basics to start with the framework plus examples. It is intended as a resource for students and aims to provide a full web development course
 
 The sources on GitHub
 ---------------------
@@ -83,7 +83,7 @@ we also suggest to:
   introduction). In a complex workplace this will avoid to be messed up
   with other python programs and modules
 - use **git** to keep track of your program's changes and save
-  your changes in a safe place online (GitHub, GitLat, or Bitbucket).
+  your changes in a safe place online (GitHub, GitLab, or Bitbucket).
 - use an editor with Syntax Highlighting. We highly recommend
   Visual Studio Code (VScode) or PyCharm.
 
@@ -132,7 +132,7 @@ In PyCharm, if you should get gevent errors you need to enable Settings | Build,
 How to contribute
 =================
 
-We need help from everyone: support our efforts! You can just participate in the Google group trying to answer other's questions, submit bugs using or
+We need help from everyone: support our efforts! You can just participate in the Google group trying to answer others' questions, submit bugs or
 create pull requests on the GitHub repository.
 
 If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on

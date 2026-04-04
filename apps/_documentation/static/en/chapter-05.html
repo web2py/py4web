@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating an app &mdash; py4web 20251212 documentation</title>
+  <title>Creating an app &mdash; py4web 20260403 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f6b33611"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=07ada24a"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -274,7 +274,7 @@ in errors:</p>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Color name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
 </pre></div>
 </div>
-<p>Instead, to accomplish a simmilar result, one needs to handle all the
+<p>Instead, to accomplish a similar result, one needs to handle all the
 logic in one action:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;color_identifier:path&gt;&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="n">color_identifier</span><span class="p">):</span>
@@ -388,7 +388,29 @@ on which you can rely to build your real project.</p>
 <p>You will normally find the scaffold app under apps, but you can easily
 create a new clone of it manually or using the Dashboard.</p>
 <p>Here is the tree structure of the <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app:</p>
-<img alt="_images/scaffold_tree.png" src="_images/scaffold_tree.png" />
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
+├── common.py            # defines useful objects
+├── controllers.py       # your actions
+├── databases            # your sqlite databases and metadata
+├── models.py            # your pyDAL table model
+├── settings.py          # any settings used by the app
+├── settings_private.py  # (optional) settings that you want to keep private
+├── static               # static files
+│   ├── css              # CSS files, we ship bulma because it is JS agnostic
+│   │   └── no.css       # we used bulma.css in the past
+│   ├── favicon.ico
+│   └── js               # JS files, we ship with these but you can replace them
+│       └── utils.js
+├── tasks.py
+├── templates            # your templates go here
+│   ├── auth.html        # the auth page for register/logic/etc (uses vue)
+│   ├── generic.html     # a general purpose template
+│   ├── index.html
+│   └── layout.html      # a bulma layout example
+└── translations         # internationalization/pluralization files go here
+    └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
+</pre></div>
+</div>
 <p>The scaffold app contains an example of a more complex action:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web</span><span class="w"> </span><span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">yatl.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">A</span>
@@ -445,13 +467,13 @@ along with the new app.</p>
 <section id="watch-for-files-change">
 <h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Link to this heading"></a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
-development server’s setup by automatically reloads an app when its
+development server’s setup by automatically reloading an app when its
 Python source files change (by default).
 But in fact any other files inside an app can be watched by setting a
 handler function using the <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Two examples of this usage are reported now. Do not worry if you don’t
 fully understand them: the key point here is that even non-python code
-could be reloaded automatically if you explicit it with the
+could be reloaded automatically if you explicitly declare it with the
 <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Watch SASS files and compile them when edited:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py4web.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">app_watch_handler</span>
@@ -495,7 +517,7 @@ exceptions inside handlers are printed in terminal.</p>
 <p>In production environments it is often required to have several apps being
 served by a single py4web server, where different apps are mapped to
 different domains.</p>
-<p>py4web can easily handle running multiple apps, but there is no build-in
+<p>py4web can easily handle running multiple apps, but there is no built-in
 mechanism for mapping domains to specific applications. Such mapping needs
 to be done externally to py4web – for instance using a web reverse-proxy,
 such as nginx.</p>
@@ -607,7 +629,7 @@ apps</strong>.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

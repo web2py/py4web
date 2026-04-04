@@ -14,7 +14,7 @@ are separate processes:
 Authentication using Auth
 -------------------------
 
-py4web comes with a an object ``Auth`` and a system of plugins for user
+py4web comes with an object ``Auth`` and a system of plugins for user
 authentication. It has the same name as the
 corresponding web2py one and serves the same purpose but the API and
 internal design is very different.
@@ -154,7 +154,7 @@ Custom actions after Auth events
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After every Auth event, like: password_reset, login, register, verify_email, etc, it is possible to trigger an action.
-For exmaple, to redirect a user to specific page after sign up and successfully email verification, we can do the following:
+For example, to redirect a user to specific page after sign up and successfully email verification, we can do the following:
 
 in ``common.py``
 .. code:: python
@@ -167,7 +167,7 @@ in ``common.py``
       redirect(URL('success_verification'))
 
 
-In ``Auth `` section before auth.definetables() or auth.fix_actions(), add:
+In the ``Auth`` section before auth.define_tables() or auth.fix_actions(), add:
 
 .. code:: python
    # custom action after email verification
@@ -349,7 +349,7 @@ In ``common.py`` add:
    auth = Auth(session, db, define_tables=False)
 
    # Add this line at the end of auth declaration to enable recaptcha on login, register and request_reset_password forms.
-   # or enable it on the action that you want by especifying the action name
+   # or enable it on the action that you want by specifying the action name
    
    #Example:
 
@@ -398,7 +398,7 @@ In ``common.py`` add:
    auth = Auth(session, db, define_tables=False)
 
    # Add this line at the end of auth declaration to enable hcaptcha on login, register and request_reset_password forms.
-   # or enable it on the action that you want by especifying the action name
+   # or enable it on the action that you want by specifying the action name
    
    #Example:
    auth.extra_form_fields = {"login": [hcaptcha.field], "register": [hcaptcha.field], "request_reset_password": [hcaptcha.field], }
@@ -485,7 +485,7 @@ This example shows how to send an email with the two factor code:
            auth.sender.send(
                to=[user.email],
                subject=f"Two factor login verification code",
-               body=f"You're verification code is {code}",
+               body=f"Your verification code is {code}",
                sender="from_address@youremail.com",
            )
        except Exception as e:
@@ -710,12 +710,12 @@ Auth API Plugins
 ~~~~~~~~~~~~~~~~
 
 There are two types of web APIs, those called by the browser for example by a single page web app,
-and those designed to be called by a different kind of program. Both of them may need tosupport
-authentication. The distintion is important because, in the case of the browser, there is no need
+and those designed to be called by a different kind of program. Both of them may need to support
+authentication. The distinction is important because, in the case of the browser, there is no need
 to manage any authentication token as the browser already provides cookies and py4web uses
-cookies to handle seesions. If the user operating the browser is logged-in, when an API is called,
+cookies to handle sessions. If the user operating the browser is logged-in, when an API is called,
 the corresponding action already knows who the user is. No additional logic is necessary.
-In this case there there is no need for any kind of additional API token which would only diminuish
+In this case there there is no need for any kind of additional API token which would only diminish
 the security provided by the cookie based session token.
 
 When the API is to be accessed by a different program (for example a script) the story is different.
@@ -745,12 +745,12 @@ Unique features of SimpleTokenPlugin:
 
 - A token is a UUID.
 - Tokens can be managed serverside (created, deleted, expired, change expiration).
-- Current tokens are stored in a adatabase table.
+- Current tokens are stored in a database table.
 - The default table associates token with the owner and a textual description.
   Users can nevertheless provide their own table and add any desired metadata to tokens
   which the app can retrieve to distinguish different tokens from the same user.
   This is done by adding fields to the table.
-- Under the hood veryfing a token requires a database query.
+- Under the hood verifying a token requires a database query.
 
 Unique features of JwtTokenPlugin:
 
@@ -759,7 +759,7 @@ Unique features of JwtTokenPlugin:
 - The token is not stored anywhere serverside and there is no database table.
 - Tokens can be created (and there is a function to do so) but they cannot be managed.
   The server cannot expire tokens or change expiration. This would require the tokens
-  to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.
+  to validated against a database and that is exactly what the JwtTokenPlugin tries to avoid.
 - The only way to expire a token is by changing the serverside secret using for validation
   so when a token is expired, all tokens are expired.
 
@@ -955,7 +955,7 @@ tag(s):
        users = db(groups.find([group_name])).select(orderby=db.auth_user.first_name | db.auth_user.last_name)
        return {'users': users}
 
-We've already seen a simple ``requires_membership`` fixture on :ref:``The Condition fixture``. It
+We've already seen a simple ``requires_membership`` fixture on :ref:`The Condition fixture`. It
 enables the following syntax:
 
 .. code:: python

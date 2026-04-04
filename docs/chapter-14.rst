@@ -204,7 +204,7 @@ The Grid object
          search_button_text="Filter",
          formstyle=FormStyleDefault,
          grid_class_style=GridClassStyle,
-         icon_style=IconStyleFontawsome,
+         icon_style=IconStyleFontawesome,
          T=lambda text: text,
       ):
 
@@ -231,7 +231,7 @@ The Grid object
 -  search_button_text: text to appear on the submit button on your search form
 -  formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms
 -  grid_class_style: GridClassStyle class used to override defaults for styling your rendered grid. Allows you to specify classes or styles to apply at certain points in the grid
--  icon_style: default: IconStyleFontawsome. used to get icon css classes. Other options: IconStyle, IconStyleBootstrapIcons
+-  icon_style: default: IconStyleFontawesome. used to get icon css classes. Other options: IconStyle, IconStyleBootstrapIcons
 -  T: optional pluralize object
 
 (*) The parameters ``details``, ``editable`` and ``deletable`` can also take a **callable** that will 
@@ -458,7 +458,7 @@ Notice that a button can be represented by a dict with the following keys:
 - kind: optional kind of button used to retrieve style infro from the GridStyle. Defaults to "grid-button"
 - _{name}: optional attributes to be passed to the ``A(..., _{name}=...)`` helper building the button.
 
-A button can also be built explicitely using helpers for added flexibility and less magic:
+A button can also be built explicitly using helpers for added flexibility and less magic:
 
 .. code:: python
 
@@ -499,7 +499,7 @@ Example usage:
          lambda row: GridActionButton(
                URL("test", row.id),
                text="Click me",
-               icon=IconStyleFontawsome.add_button, # same as "fa-plus"
+               icon=IconStyleFontawesome.add_button, # same as "fa-plus"
                additional_classes=row.id,
                additional_styles=["height: 10px" if row.bar else None],
          )

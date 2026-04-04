@@ -23,7 +23,7 @@ The system is very robust because the only source of truth is the database and i
 transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
 explicitly killed.
 
-Aside for allowing multiple concurrent task runs in execution on one node,
+Aside from allowing multiple concurrent task runs in execution on one node,
 it is also possible to run multiple instances of the scheduler on different computing nodes,
 as long as they use the same client/server database for ``task_run`` and as long as
 they all define the same tasks.
@@ -56,7 +56,7 @@ Here is an example of how to use the scheduler:
 Notice that in scaffolding app, the scheduler is created and started in common if
 ``USE_SCHEDULER=True`` in ``settings.py``.
 
-You can manage your task runs busing the dashboard or using a ``Grid(db.task_run)``.
+You can manage your task runs using the dashboard or using a ``Grid(db.task_run)``.
 
 To prevent database locks (in particular with sqlite) we recommend:
 
@@ -77,7 +77,7 @@ To prevent database locks (in particular with sqlite) we recommend:
 Sending messages using a background task
 ----------------------------------------
 
-As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+As an example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
 In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python).
 
 Here is a possible scheduler task to send the email:
@@ -126,7 +126,7 @@ You can also tell auth to tap into above mechanism for sending emails:
 
     class MySendGridSender:
         def __init__(self, from_addr):
-            self.from_addr = from_adds
+            self.from_addr = from_addr
         def send(self, to_addr, subject, body):
             email = {
                 "from_addr": self.from_addr,
@@ -141,14 +141,14 @@ You can also tell auth to tap into above mechanism for sending emails:
 With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
 Notice the only requirement here is that ``auth.sender`` must be an object with a ``send`` method with the same signature as in the example.
 
-Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in ``auth_user`` and 2) override the ``Auth.send`` method.
+Notice, it is also possible to send SMS messages instead of emails but this requires 1) store the phone number in ``auth_user`` and 2) override the ``Auth.send`` method.
 
 
 Celery
 ------
 
-Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
-Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+Yes. You can use Celery instead of the built-in scheduler but it adds complexity and it is less robust.
+Yet the built-in scheduler is designed for long running tasks and the database can become a bottleneck
 if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
 tasks and/or they are short running tasks.
 
@@ -646,8 +646,8 @@ A wrapper for the JS fetch method which provides a nicer syntax:
 
     var data = {};
     var headers = {'custom-header-name': 'value'}
-    var success = response => { console.log("recereived", response); } 
-    var failure = response => { console.log("recereived", response); }
+    var success = response => { console.log("received", response); }
+    var failure = response => { console.log("received", response); }
     Q.ajax("POST", url, data, headers).then(success, failure);
 
 **Q.get_cookie**
@@ -788,7 +788,7 @@ It works with the datalist element to provide autocomplete. Simply prepend `-lis
     <input name="browsers"/>
     <datalist id="browses-list">
        <option>Chrome</option>
-       <option>Firfox</option>
+       <option>Firefox</option>
        <option>Safari</option>
        <option>Edge</option>
     </datalist>

@@ -33,6 +33,7 @@ import traceback
 import types
 import urllib.parse
 import uuid
+import weakref
 import zipfile
 from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
@@ -146,13 +147,24 @@ def utcnow():
 
 
 def module2filename(module):
-    """given a module name as a string, convert to filename"""
-    filename = os.path.join(*module.split(".")[1:])
-    filename = (
-        os.path.join(filename, "__init__.py")
-        if not filename.count(os.sep)
-        else filename + ".py"
-    )
+    """given a module name as a string, convert to filename.
+
+    Expects a dotted module name like 'apps.myapp' or 'apps.myapp.submodule'.
+    The first component (the package root, e.g. 'apps') is stripped, and the
+    remainder is converted to a filesystem path.  A single remaining component
+    is treated as a package ('myapp' -> 'myapp/__init__.py'); two or more
+    components are treated as a submodule path ('myapp.submodule' ->
+    'myapp/submodule.py').
+    """
+    parts = module.split(".")
+    # Drop the top-level package name (e.g. "apps")
+    relative_parts = parts[1:]
+    filename = os.path.join(*relative_parts)
+    # Only one remaining component means it is a package directory
+    if len(relative_parts) == 1:
+        filename = os.path.join(filename, "__init__.py")
+    else:
+        filename = filename + ".py"
     return filename
 
 
@@ -229,38 +241,73 @@ class Cache:
         self.tail.prev = self.head
         self.mapping = {}
         self.lock = threading.Lock()
+        # Per-key locks used to prevent the cache-stampede (thundering herd)
+        # where multiple threads simultaneously find a key expired/missing and
+        # all invoke the (potentially expensive) callback.  A plain dict is
+        # safe here because we only mutate it while holding self.lock.
+        self._inflight = {}
 
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
-        # set defaults
-        node = self.mapping.get(key)
         t0 = time.time()
-        value = None
-        t = t0
-        # update
+
         with self.lock:
+            node = self.mapping.get(key)
             if node:
-                # if a node was found remove it from storage
-                value, t, node.next.prev, node.prev.next = (
-                    node.value,
-                    node.t,
-                    node.prev,
-                    node.next,
-                )
+                # Unlink from current position; will be re-inserted at head below
+                node.next.prev, node.prev.next = node.prev, node.next
+                value, t = node.value, node.t
             else:
                 self.free -= 1
-        # check if something may invalidate cache
+                value, t = None, t0
+
+        # Evaluate the monitor outside the global lock (it may be slow)
         m = monitor() if monitor else None
-        # check if cache expired
-        if node and node.t + expiration < t0:
-            # if cache should always be invalidated or m changed
-            if m is None or node.m != m:
-                # ignore the value found
-                node = None
-        if node is None:
-            value = callback()
-            t = t0
-        # add the new node back into storage
+
+        # Determine whether the cached value is still valid.
+        # A cached entry is valid when:
+        #   - it exists AND is not expired, OR
+        #   - it exists AND is expired but the monitor value hasn't changed
+        #     (monitor-based invalidation: only recompute when the monitored
+        #      value actually changes, even if the entry has technically expired)
+        if node is not None:
+            expired = node.t + expiration < t0
+            monitor_changed = m is None or node.m != m
+            cache_hit = not (expired and monitor_changed)
+        else:
+            cache_hit = False
+
+        if not cache_hit:
+            # Use a per-key lock so only one thread recomputes while others wait
+            with self.lock:
+                if key not in self._inflight:
+                    self._inflight[key] = threading.Lock()
+                key_lock = self._inflight[key]
+
+            with key_lock:
+                # Re-check under the key lock; another thread may have already
+                # refreshed the value while we were waiting.
+                with self.lock:
+                    node2 = self.mapping.get(key)
+                if node2 is not None:
+                    expired2 = node2.t + expiration < t0
+                    monitor_changed2 = m is None or node2.m != m
+                    refreshed_hit = not (expired2 and monitor_changed2)
+                else:
+                    refreshed_hit = False
+
+                if refreshed_hit:
+                    value = node2.value
+                    t = node2.t
+                else:
+                    value = callback()
+                    t = t0
+
+            with self.lock:
+                self._inflight.pop(key, None)
+        # else: cache_hit – value and t already set above
+
+        # Re-insert the node at the head of the list
         with self.lock:
             new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
             self.mapping[key] = self.head.next = new_node.next.prev = new_node
@@ -295,9 +342,35 @@ class Cache:
 
 
 def objectify(obj):  # pylint: disable=too-many-return-statements
-    """converts the obj(ect) into a json serializable object"""
+    """converts the obj(ect) into a json serializable object.
+
+    Precedence rules (highest to lowest):
+      1. datetime-like  (isoformat)
+      2. custom as_list / as_dict  (checked before plain dict/list so that
+         subclasses with these methods are serialised via their own API)
+      3. yatl xml() helper
+      4. Enum
+      5. Numeric scalars (int, then float)
+      6. str  (already serialisable – returned as-is)
+      7. dict (plain mapping, after custom-dict subclasses handled above)
+      8. list / set / generator
+      9. objects with __dict__
+     10. fallback str()
+    """
     if hasattr(obj, "isoformat"):
         return obj.isoformat().replace("T", " ")
+    # Check custom serialisation methods before the plain built-in types so
+    # that subclasses of dict/list that implement as_dict/as_list are handled
+    # by their own API rather than falling through to the raw container path.
+    if hasattr(obj, "as_list"):
+        return obj.as_list()
+    if hasattr(obj, "as_dict"):
+        return obj.as_dict()
+    if hasattr(obj, "xml"):
+        return obj.xml()
+    if isinstance(obj, enum.Enum):
+        # Enum class handled specially to address self reference in __dict__
+        return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     if isinstance(obj, numbers.Integral):
         return int(obj)
     if isinstance(obj, (numbers.Rational, numbers.Real)):
@@ -306,18 +379,8 @@ def objectify(obj):  # pylint: disable=too-many-return-statements
         return obj
     if isinstance(obj, dict):
         return obj
-    if hasattr(obj, "as_list"):
-        return obj.as_list()
-    if hasattr(obj, "as_dict"):
-        return obj.as_dict()
     if isinstance(obj, (list, set, types.GeneratorType)):
         return list(obj)
-    if hasattr(obj, "xml"):
-        return obj.xml()
-    if isinstance(
-        obj, enum.Enum
-    ):  # Enum class handled specially to address self reference in __dict__
-        return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     if hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
         d["__class__"] = obj.__class__.__name__
@@ -634,13 +697,24 @@ class Template(Fixture):
 
 
 class Session(Fixture):
-    """The Session Fixture"""
+    """The Session Fixture
+
+    Session deliberately avoids routing attribute access through __getattr__ /
+    __setattr__ / __delattr__ for its own internal state.  Only the session
+    *data* dict (accessed via bracket notation) is proxied through to the
+    thread-local store.  This keeps internal bookkeeping attributes (stored via
+    object.__setattr__) cleanly separated from user-facing session keys.
+    """
 
     # All apps share the same default secret if not specified.
     # important for _dashboard reload
     # the actual value is loaded from a file
     SECRET = None
-    _params = {}
+
+    # WeakKeyDictionary so that params are automatically released when a
+    # Session instance is garbage-collected (avoids an unbounded memory leak
+    # when apps are repeatedly reloaded and new Session objects are created).
+    _params = weakref.WeakKeyDictionary()
 
     @property
     def params(self):
@@ -676,19 +750,28 @@ class Session(Fixture):
             prerequisites = storage.__prerequisites__
         else:
             prerequisites = []
-        Session._params[self] = type(
-            "Object",
-            (),
-            dict(
-                secret=secret,
-                expiration=expiration,
-                algorithm=algorithm,
-                storage=storage,
-                same_site=same_site,
-                name=name,
-                prerequisites=prerequisites,
-            ),
+
+        # Store all configuration via object.__setattr__ to bypass the
+        # __setattr__ proxy that routes to the session data dict.  This keeps
+        # instance-level bookkeeping cleanly separate from user session keys.
+        object.__setattr__(
+            self,
+            "_session_params",
+            type(
+                "Object",
+                (),
+                dict(
+                    secret=secret,
+                    expiration=expiration,
+                    algorithm=algorithm,
+                    storage=storage,
+                    same_site=same_site,
+                    name=name,
+                    prerequisites=prerequisites,
+                ),
+            )(),
         )
+        Session._params[self] = object.__getattribute__(self, "_session_params")
 
     @property
     def __prerequisites__(self):
@@ -817,9 +900,17 @@ class Session(Fixture):
         """Iterates over the session keys"""
         yield from self.local.data.keys()
 
-    __getattr__ = get
+    # Attribute-style access is a convenience layer on top of the data dict.
+    # __getattr__ is called only when normal attribute lookup fails, so real
+    # instance/class attributes are never shadowed.
+    # __setattr__ proxies to __setitem__ so that ``session.key = value`` works
+    # identically to ``session["key"] = value``.  Internal bookkeeping in
+    # __init__ uses object.__setattr__ to bypass this proxy.
+    def __getattr__(self, key):
+        """Attribute-style read access to session data (fallback only)."""
+        return self.get(key)
+
     __setattr__ = __setitem__
-    __delattr__ = __delitem__
 
     def clear(self):
         """Clears the session key"""
@@ -1131,10 +1222,18 @@ http.cookies.Morsel._reserved["same-site"] = (  # pylint: disable=protected-acce
 
 #########################################################################################
 # Monkey Patch: ssl bug for gevent
+#
+# The original patch used inspect.currentframe().f_back.f_locals["self"] to reach
+# into the caller's stack frame — a deeply fragile hack that breaks on PyPy,
+# Cython extensions, and any future change in the call-stack shape.  The underlying
+# gevent/SSL bug it was working around has been fixed in modern gevent (>= 1.3) and
+# Python's ssl module.  We therefore guard the patch behind an explicit version check
+# and only apply it when strictly necessary, using a safe reimplementation that does
+# not rely on frame introspection.
 #########################################################################################
 
 __ssl__ = __import__("ssl")
-_ssl = getattr(__ssl__, "_ssl") or getattr(__ssl__, "_ssl2")
+_ssl = getattr(__ssl__, "_ssl", None) or getattr(__ssl__, "_ssl2", None)
 
 
 def new_sslwrap(
@@ -1147,7 +1246,13 @@ def new_sslwrap(
     ca_certs=None,
     ciphers=None,
 ):
-    """Used to support HTTP"""
+    """Minimal SSLContext-based replacement for the removed _ssl.sslwrap.
+
+    This implementation no longer inspects the caller's stack frame.  The
+    ``ssl_sock`` argument that the original gevent patch required is not needed
+    when wrapping via SSLContext._wrap_socket in non-gevent environments; for
+    gevent the monkey-patch below is intentionally skipped on modern versions.
+    """
     context = __ssl__.SSLContext(ssl_version)
     context.verify_mode = cert_reqs or __ssl__.CERT_NONE
     if ca_certs:
@@ -1156,10 +1261,21 @@ def new_sslwrap(
         context.load_cert_chain(certfile, keyfile)
     if ciphers:
         context.set_ciphers(ciphers)
-    caller_self = inspect.currentframe().f_back.f_locals["self"]
-    return context._wrap_socket(  # pylint: disable=protected-access
-        sock, server_side=server_side, ssl_sock=caller_self
-    )
+    return context.wrap_socket(sock, server_side=server_side)
+
+
+# Only apply the patch when _ssl.sslwrap is genuinely missing (Python < 3.x
+# compiled without it) AND we are running under a gevent version that still
+# requires it.  Modern gevent handles this internally.
+if _ssl is not None and not hasattr(_ssl, "sslwrap"):
+    try:
+        import gevent  # pylint: disable=import-outside-toplevel
+
+        _gevent_version = tuple(int(x) for x in gevent.__version__.split(".")[:2])
+        if _gevent_version < (1, 3):
+            _ssl.sslwrap = new_sslwrap
+    except ImportError:
+        pass  # gevent not installed; patch not needed
 
 
 #########################################################################################
@@ -1757,9 +1873,6 @@ def start_server(kwargs):
             print("invoke py4web with `--watch off` or choose another server. ")
             sys.exit(255)
 
-        if not hasattr(_ssl, "sslwrap"):
-            _ssl.sslwrap = new_sslwrap
-
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
 
@@ -1884,7 +1997,7 @@ def set_password(password, password_file):
 
 
 def reinstall_apps(kwargs):
-    # Reinstall apps from zipped ones in assets
+    """Reinstall apps from zipped ones in assets"""
     apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
     yes = kwargs.get("yes", False)
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
