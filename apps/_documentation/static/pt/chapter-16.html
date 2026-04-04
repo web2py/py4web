@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 20251212</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 20260403</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bfa5345e"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=4ebba005"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -135,7 +135,7 @@ responsible for executing that one task in isolation. The main loop is responsib
 <p>The system is very robust because the only source of truth is the database and its integrity is guaranteed by
 transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
 explicitly killed.</p>
-<p>Aside for allowing multiple concurrent task runs in execution on one node,
+<p>Aside from allowing multiple concurrent task runs in execution on one node,
 it is also possible to run multiple instances of the scheduler on different computing nodes,
 as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
 they all define the same tasks.</p>
@@ -164,7 +164,7 @@ they all define the same tasks.</p>
 </div>
 <p>Notice that in scaffolding app, the scheduler is created and started in common if
 <code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
-<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(db.task_run)</span></code>.</p>
+<p>You can manage your task runs using the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(db.task_run)</span></code>.</p>
 <p>To prevent database locks (in particular with sqlite) we recommend:</p>
 <ul class="simple">
 <li><p>Use a different database for the scheduler and everything else</p></li>
@@ -182,7 +182,7 @@ they all define the same tasks.</p>
 </section>
 <section id="sending-messages-using-a-background-task">
 <h2>Sending messages using a background task<a class="headerlink" href="#sending-messages-using-a-background-task" title="Link to this heading"></a></h2>
-<p>As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+<p>As an example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
 In this example we send them using SendGrid from Twilio (<a class="reference external" href="https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python">https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python</a>).</p>
 <p>Here is a possible scheduler task to send the email:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sendgrid</span>
@@ -221,7 +221,7 @@ You can use the Dashboard to see the status of your <code class="docutils litera
 <p>You can also tell auth to tap into above mechanism for sending emails:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MySendGridSender</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_adds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_addr</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
         <span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span><span class="p">,</span>
@@ -236,12 +236,12 @@ You can use the Dashboard to see the status of your <code class="docutils litera
 </div>
 <p>With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
 Notice the only requirement here is that <code class="docutils literal notranslate"><span class="pre">auth.sender</span></code> must be an object with a <code class="docutils literal notranslate"><span class="pre">send</span></code> method with the same signature as in the example.</p>
-<p>Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> and 2) override the <code class="docutils literal notranslate"><span class="pre">Auth.send</span></code> method.</p>
+<p>Notice, it is also possible to send SMS messages instead of emails but this requires 1) store the phone number in <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> and 2) override the <code class="docutils literal notranslate"><span class="pre">Auth.send</span></code> method.</p>
 </section>
 <section id="celery">
 <h2>Celery<a class="headerlink" href="#celery" title="Link to this heading"></a></h2>
-<p>Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
-Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+<p>Yes. You can use Celery instead of the built-in scheduler but it adds complexity and it is less robust.
+Yet the built-in scheduler is designed for long running tasks and the database can become a bottleneck
 if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
 tasks and/or they are short running tasks.</p>
 </section>
@@ -677,8 +677,8 @@ It is stateless.</p>
 <p>A wrapper for the JS fetch method which provides a nicer syntax:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
 <span class="kd">var</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;custom-header-name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;value&#39;</span><span class="p">}</span>
-<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-<span class="kd">var</span><span class="w"> </span><span class="nx">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;received&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;received&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
 <span class="nx">Q</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">success</span><span class="p">,</span><span class="w"> </span><span class="nx">failure</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -781,7 +781,7 @@ For example:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;browsers&quot;</span><span class="p">/&gt;</span>
 <span class="p">&lt;</span><span class="nt">datalist</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;browses-list&quot;</span><span class="p">&gt;</span>
    <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Chrome<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
-   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Firfox<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Firefox<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
    <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Safari<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
    <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Edge<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">datalist</span><span class="p">&gt;</span>
@@ -1076,7 +1076,7 @@ More information in <a class="reference external" href="https://altcha.org">http
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

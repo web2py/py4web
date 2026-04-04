@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; Documentação py4web 20251212</title>
+  <title>Authentication and authorization &mdash; Documentação py4web 20260403</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bfa5345e"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=4ebba005"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/translations.js?v=beaedd51"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
@@ -65,6 +65,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#authentication-using-auth">Authentication using Auth</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auth-ui">Interface de autenticação</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-auth-inside-actions">Using Auth inside actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-actions-after-auth-events">Custom actions after Auth events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authentication-with-captcha">Authentication with CAPTCHA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#enabling-google-recaptcha">Enabling Google reCAPTCHA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enabling-hcaptcha">Enabling hCAPTCHA</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#two-factor-authentication">Two Factor Authentication</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-required">two_factor_required</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#two-factor-send">two_factor_send</a></li>
@@ -137,7 +143,7 @@ are separate processes:</p>
 </ul>
 <section id="authentication-using-auth">
 <h2>Authentication using Auth<a class="headerlink" href="#authentication-using-auth" title="Link to this heading"></a></h2>
-<p>py4web comes with a an object <code class="docutils literal notranslate"><span class="pre">Auth</span></code> and a system of plugins for user
+<p>py4web comes with an object <code class="docutils literal notranslate"><span class="pre">Auth</span></code> and a system of plugins for user
 authentication. It has the same name as the
 corresponding web2py one and serves the same purpose but the API and
 internal design is very different.</p>
@@ -249,6 +255,89 @@ trying to parse the session for a user session.</p>
 </div>
 <p>Aqui `` &#64; action.uses (auth.user) `` diz py4web que essa ação requer um usuário conectado e deve redirecionar para login se nenhum usuário está logado.</p>
 </section>
+<section id="custom-actions-after-auth-events">
+<h3>Custom actions after Auth events<a class="headerlink" href="#custom-actions-after-auth-events" title="Link to this heading"></a></h3>
+<p>After every Auth event, like: password_reset, login, register, verify_email, etc, it is possible to trigger an action.
+For example, to redirect a user to specific page after sign up and successfully email verification, we can do the following:</p>
+<p>in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>
+.. code:: python</p>
+<blockquote>
+<div><p>#function triggered after a sign up with email verification sign up.
+def after_register_callback(_, user_row):</p>
+<blockquote>
+<div><p>redirect(URL(“pending_registration”))</p>
+</div></blockquote>
+<p>#function triggered after a successfull email verification.
+def after_verify_email_callback(_, user_row):</p>
+<blockquote>
+<div><p>redirect(URL(“success_verification”))</p>
+</div></blockquote>
+</div></blockquote>
+<p>In the <code class="docutils literal notranslate"><span class="pre">Auth</span></code> section before auth.define_tables() or auth.fix_actions(), add:</p>
+<p>Example:</p>
+</section>
+<section id="authentication-with-captcha">
+<h3>Authentication with CAPTCHA<a class="headerlink" href="#authentication-with-captcha" title="Link to this heading"></a></h3>
+<p>CAPTCHAs are essential security measures that prevent automated bot abuse on public forms.
+To implement Google reCAPTCHA or hCAPTCHA in your authentication form, follow these steps:</p>
+<section id="enabling-google-recaptcha">
+<h4>Enabling Google reCAPTCHA<a class="headerlink" href="#enabling-google-recaptcha" title="Link to this heading"></a></h4>
+<p>In <code class="docutils literal notranslate"><span class="pre">settings.py</span></code> add your keys:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RECAPTCHA_API_SECRET_V3</span> <span class="o">=</span> <span class="s2">&quot;your_recaptcha_secret_key_v3&quot;</span>
+<span class="n">RECAPTCHA_API_KEY_V3</span> <span class="o">=</span> <span class="s2">&quot;your_recaptcha_site_key_v3&quot;</span>
+
+<span class="n">RECAPTCHA_API_KEY_V2</span> <span class="o">=</span> <span class="s2">&quot;your_recaptcha_site_key_v2&quot;</span>
+<span class="n">RECAPTCHA_API_SECRET_V2</span> <span class="o">=</span> <span class="s2">&quot;your_recaptcha_secret_key_v2&quot;</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">common.py</span></code> add:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#import the functionality</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py4web.utils.recaptcha</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReCaptcha</span>
+
+<span class="c1"># To use recaptcha v3</span>
+<span class="n">recaptcha</span> <span class="o">=</span> <span class="n">ReCaptcha</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">RECAPTCHA_API_KEY_V3</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">RECAPTCHA_API_SECRET_V3</span><span class="p">,</span> <span class="s2">&quot;v3&quot;</span><span class="p">)</span>
+<span class="ow">or</span>
+<span class="c1"># To use  recaptcha v2</span>
+<span class="n">recaptcha</span> <span class="o">=</span> <span class="n">ReCaptcha</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">RECAPTCHA_API_KEY_V2</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">RECAPTCHA_API_SECRET_V2</span><span class="p">,</span> <span class="s2">&quot;v2&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># in the section that auth is defined</span>
+<span class="c1"># Example:</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">define_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add this line at the end of auth declaration to enable recaptcha on login, register and request_reset_password forms.</span>
+<span class="c1"># or enable it on the action that you want by specifying the action name</span>
+
+<span class="c1">#Example:</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">extra_form_fields</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;login&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">recaptcha</span><span class="o">.</span><span class="n">field</span><span class="p">],</span> <span class="s2">&quot;register&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">recaptcha</span><span class="o">.</span><span class="n">field</span><span class="p">],</span> <span class="s2">&quot;request_reset_password&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">recaptcha</span><span class="o">.</span><span class="n">field</span><span class="p">],</span> <span class="p">}</span>
+
+
+<span class="c1">#In section where auth is enabled, add the recaptcha fixture</span>
+<span class="c1"># Example:</span>
+
+<span class="c1"># #######################################################</span>
+<span class="c1"># Enable authentication line</span>
+<span class="c1"># #######################################################</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">recaptcha</span><span class="o">.</span><span class="n">fixture</span><span class="p">),</span><span class="n">env</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Finally in <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> add:</p>
+<p>After completing these steps, the reCAPTCHA field will be added to the login, register, and request_reset_password forms.</p>
+</section>
+<section id="enabling-hcaptcha">
+<h4>Enabling hCAPTCHA<a class="headerlink" href="#enabling-hcaptcha" title="Link to this heading"></a></h4>
+<p>in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code> add your HCAPTCHA_SITE_KEY and HCAPTCHA_SECRET_KEY:</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">common.py</span></code> add:</p>
+<p>Finally in <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> add:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="o">=</span><span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;form&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)]]</span>
+<span class="p">[[</span><span class="o">=</span><span class="n">hcaptcha</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>After completing these steps, the hCAPTCHA field will be added to the login, register, and request_reset_password forms.</p>
+</section>
+</section>
 <section id="two-factor-authentication">
 <h3>Two Factor Authentication<a class="headerlink" href="#two-factor-authentication" title="Link to this heading"></a></h3>
 <p>Two factor authentication (or Two-step verification) is a way of improving authentication security.
@@ -299,7 +388,7 @@ argument to the Auth class allows you to specify the method that sends the two f
         <span class="n">auth</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
             <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
             <span class="n">subject</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Two factor login verification code&quot;</span><span class="p">,</span>
-            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;You&#39;re verification code is </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Your verification code is </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;from_address@youremail.com&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -501,12 +590,12 @@ Discord username as the first name and discriminator as the last name.</p>
 <section id="auth-api-plugins">
 <h3>Auth API Plugins<a class="headerlink" href="#auth-api-plugins" title="Link to this heading"></a></h3>
 <p>There are two types of web APIs, those called by the browser for example by a single page web app,
-and those designed to be called by a different kind of program. Both of them may need tosupport
-authentication. The distintion is important because, in the case of the browser, there is no need
+and those designed to be called by a different kind of program. Both of them may need to support
+authentication. The distinction is important because, in the case of the browser, there is no need
 to manage any authentication token as the browser already provides cookies and py4web uses
-cookies to handle seesions. If the user operating the browser is logged-in, when an API is called,
+cookies to handle sessions. If the user operating the browser is logged-in, when an API is called,
 the corresponding action already knows who the user is. No additional logic is necessary.
-In this case there there is no need for any kind of additional API token which would only diminuish
+In this case there there is no need for any kind of additional API token which would only diminish
 the security provided by the cookie based session token.</p>
 <p>When the API is to be accessed by a different program (for example a script) the story is different.
 There is no session and we do not want to ask the user for the password every time.
@@ -533,12 +622,12 @@ You will need to create your own plugin if you want to pass it in some other man
 <ul class="simple">
 <li><p>A token is a UUID.</p></li>
 <li><p>Tokens can be managed serverside (created, deleted, expired, change expiration).</p></li>
-<li><p>Current tokens are stored in a adatabase table.</p></li>
+<li><p>Current tokens are stored in a database table.</p></li>
 <li><p>The default table associates token with the owner and a textual description.
 Users can nevertheless provide their own table and add any desired metadata to tokens
 which the app can retrieve to distinguish different tokens from the same user.
 This is done by adding fields to the table.</p></li>
-<li><p>Under the hood veryfing a token requires a database query.</p></li>
+<li><p>Under the hood verifying a token requires a database query.</p></li>
 </ul>
 <p>Unique features of JwtTokenPlugin:</p>
 <ul class="simple">
@@ -547,7 +636,7 @@ This is done by adding fields to the table.</p></li>
 <li><p>The token is not stored anywhere serverside and there is no database table.</p></li>
 <li><p>Tokens can be created (and there is a function to do so) but they cannot be managed.
 The server cannot expire tokens or change expiration. This would require the tokens
-to validated against a database and that is exactely when the JwtTokenPlugin tries to avoid.</p></li>
+to validated against a database and that is exactly what the JwtTokenPlugin tries to avoid.</p></li>
 <li><p>The only way to expire a token is by changing the serverside secret using for validation
 so when a token is expired, all tokens are expired.</p></li>
 </ul>
@@ -700,7 +789,7 @@ py4web displays ‘hello manager’:</p>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">users</span><span class="p">}</span>
 </pre></div>
 </div>
-<p>We’ve already seen a simple <code class="docutils literal notranslate"><span class="pre">requires_membership</span></code> fixture on :ref:<code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">Condition</span> <span class="pre">fixture</span></code>. It
+<p>We’ve already seen a simple <code class="docutils literal notranslate"><span class="pre">requires_membership</span></code> fixture on <a class="reference internal" href="chapter-06.html#the-condition-fixture"><span class="std std-ref">The Condition fixture</span></a>. It
 enables the following syntax:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 
@@ -839,7 +928,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

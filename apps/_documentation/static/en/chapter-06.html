@@ -6,18 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 20251212 documentation</title>
+  <title>Fixtures &mdash; py4web 20260403 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
 
   
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f6b33611"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=07ada24a"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -169,7 +169,7 @@ def index():
 </div>
 <p>Usually, it’s not important the order you use to specify the fixtures, because py4web
 knows well how to manage them if they have explicit dependencies. For example auth
-depends explicitly on db and session and flash, so you do not even needs to list them.</p>
+depends explicitly on db and session and flash, so you do not even need to list them.</p>
 <p>But there is an important exception: the Template fixture must always be the
 <strong>first one</strong>. Otherwise, it will not have access to various things it should
 need from the other fixtures, especially Inject() and Flash() that we’ll see later.</p>
@@ -342,7 +342,7 @@ You have been here more than 5 times
 </div>
 <p>Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.</p>
-<p>Notice there is an UI in the Dashboard for creating, updating, and updating translation files.
+<p>Notice there is a UI in the Dashboard for creating, updating, and managing translation files.
 It can be easily reached via the button <code class="docutils literal notranslate"><span class="pre">i18n+p11n</span></code>:</p>
 <img alt="_images/dashboard_i18n_btn.png" src="_images/dashboard_i18n_btn.png" />
 <p>that leads to the following interface:</p>
@@ -436,8 +436,8 @@ increased every time you reload the page.</p>
 <p>Opening the page in a new browser tab will give you the updated
 counter value. Closing and reopening the browser, or opening a
 new <em>private window</em>, will instead restart the counter from 0.</p>
-<p>Usually the information is saved in the session object are related
-to the user - like its username, preferences, last pages visited,
+<p>Usually the information saved in the session object is related
+to the user - like their username, preferences, last pages visited,
 shopping cart and so on. The session object has the same interface
 as a Python dictionary but in py4web sessions are always stored using
 JSON (<strong>JWT</strong> specifically, i.e.
@@ -459,7 +459,7 @@ set. Other parameters can be specified as well:</p>
                   algorithm=&#39;HS256&#39;,
                   storage=None,
                   same_site=&#39;Lax&#39;,
-                  name=&quot;{app_name}_sesson&quot;)
+                  name=&quot;{app_name}_session&quot;)
 </pre></div>
 </div>
 <p>Here:</p>
@@ -833,14 +833,14 @@ response &lt;- A.on_success &lt;- B.on_success &lt;- C.on_success &lt;-
 </div>
 <p>i.e. the first fixture (A) is the first one to call <code class="docutils literal notranslate"><span class="pre">on_request</span></code>
 and the last one to call <code class="docutils literal notranslate"><span class="pre">on_success</span></code>. You can think of them as layers of
-an onion with the action (user code) at the center. <code class="docutils literal notranslate"><span class="pre">on_success</span></code> is called
+an onion with the action (user code) at the center. <code class="docutils literal notranslate"><span class="pre">on_request</span></code> is called
 when entering a layer from the outside and <code class="docutils literal notranslate"><span class="pre">on_success</span></code> is called when
 exiting a layer from the inside (like WSGI middleware).</p>
-<p>If any point an exception is raised inner layers are not called
+<p>If at any point an exception is raised inner layers are not called
 and outer layers will call <code class="docutils literal notranslate"><span class="pre">on_error</span></code> instead of <code class="docutils literal notranslate"><span class="pre">on_success</span></code>.</p>
 <p>Context is a shared object which contains:</p>
 <ul class="simple">
-<li><p>content[‘fixtures’]: the list of all the fixtures for the action.</p></li>
+<li><p>context[‘fixtures’]: the list of all the fixtures for the action.</p></li>
 <li><p>context[‘processed’]: the list of fixtures that called <code class="docutils literal notranslate"><span class="pre">on_request</span></code> previously within the request.</p></li>
 <li><p>context[‘exception’]: the exception raised by the action or any previous fixture logic (usually None)</p></li>
 <li><p>context[‘output’]: the action output.</p></li>
@@ -968,7 +968,7 @@ Here is an example:</p>
 </div>
 <p>in order to initialize the thread-local storage.
 Once this is done, the thread-local storage can be used to store and retrieve data
-using the the <code class="docutils literal notranslate"><span class="pre">self.local</span></code> object.</p>
+using the <code class="docutils literal notranslate"><span class="pre">self.local</span></code> object.</p>
 </section>
 </section>
 <section id="multiple-fixtures">
@@ -1132,7 +1132,7 @@ See: <a class="reference internal" href="#fixtures-with-dependencies"><span clas
      <label for="switch"></label>
      </span>
       
-      v: 20251212
+      v: 20260403
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
