@@ -161,7 +161,7 @@ Built-in helpers
 ``XML``
 ~~~~~~~
 
-``XML`` is an helper object used to encapsulate text that should **not** be
+``XML`` is a helper object used to encapsulate text that should **not** be
 escaped. The text may or may not contain valid XML; for example it
 could contain JavaScript.
 
@@ -442,7 +442,7 @@ The ``CODE`` helper is generally preferable for code listings.
 ``SCRIPT``
 ~~~~~~~~~~
 
-This is for include or link a script, such as JavaScript.
+This is for including or linking a script, such as JavaScript.
 
 .. code:: python
 
@@ -609,7 +609,7 @@ Custom helpers
 ``TAG``
 ~~~~~~~
 
-Sometimes you need to generate **custom XML tags***. For this purpose py4web
+Sometimes you need to generate **custom XML tags**. For this purpose py4web
 provides ``TAG``, a universal tag generator.
 
 ::

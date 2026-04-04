@@ -1073,7 +1073,7 @@ OUTPUT:
 The RestAPI response
 --------------------
 
-All RestAPI response have the fields:
+All RestAPI responses have the fields:
 
 :api_version: RestAPI version.
 :timestamp: Datetime in ISO 8601 format.

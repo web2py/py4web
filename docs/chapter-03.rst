@@ -6,7 +6,7 @@ Understanding the design
 ------------------------
 
 Before everything else it is important to understand that unlike other web frameworks,
-is not only a python module that can be imported by apps. It is also a program that
+py4web is not only a python module that can be imported by apps. It is also a program that
 is in charge of starting some apps. For this reason you need two things:
 
 -  The py4web module (which you download from our web site, from pypi or from github)
@@ -142,7 +142,7 @@ Also notice that when installing in this way the content of
 ``py4web/assets`` folder is missing at first but it is manually created
 later with the ``make assets`` command.
 
-Notice that you also (and should) install py4web from source inside a virtual environment.
+Notice that you can also (and should) install py4web from source inside a virtual environment.
 
 Running from source without installing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -215,14 +215,14 @@ Unzip it on a local folder and open a command line there. Finally run
 
 (omit './' if you're using Windows).
 
-Notice: the binaries many not correspond to the latest master
+Notice: the binaries may not correspond to the latest master
 or the latest stable branch of py4web although we do our best to
 keep them up to date.      
 
 Upgrading
 ---------
 
-If you installed py4web from pip you can simple upgrade it with
+If you installed py4web from pip you can simply upgrade it with
 
 ::
 
@@ -271,7 +271,7 @@ output like this:
    :class: with-shadow
 
 Generally ``apps`` is the name of the folder where you keep all your
-apps, and can be explicitly set wit the ``run`` command.
+apps, and can be explicitly set with the ``run`` command.
 (Yet nothing prevents you from grouping apps in multiple folders with
 different names.) If that
 folder does not exist, it is created. PY4WEB expects to find at least
@@ -437,7 +437,7 @@ By default py4web will automatically reload an application upon any changes to t
 The reloading will occur on any first incoming request to the application that has
 been changed (lazy-mode). If you prefer an immediate reloading (sync-mode), use
 ``py4web run --watch sync``. For production servers, it's better to use ``py4web run --watch off`` in order
-to avoid unneded checks (but you will need to restart py4web for activating any change).
+to avoid unneeded checks (but you will need to restart py4web for activating any change).
 
 
 .. note::
@@ -523,7 +523,7 @@ Finally you can manually create the file yourself with:
      -Y, --yes          No prompt, assume yes to questions  [default: False]
      -help, -h, --help  Show this message and exit.
 
-This option create a new apps folder (or reinstall it). If needed, it
+This option creates a new apps folder (or reinstall it). If needed, it
 will ask for the confirmation of the new folder’s creation and then for
 copying every standard py4web apps from the assets folder. It currently
 does nothing on binaries installations and from source installation
@@ -592,7 +592,7 @@ HTTPS
 
 To use https with the build-in web server (Rocket3) these are the steps:
 
-- Generate the localhost certificates. For example followed the instructions here:
+- Generate the localhost certificates. For example follow the instructions here:
    
    https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/.
 
@@ -625,7 +625,7 @@ Notice that /path_to/ should be the absolute path to the location of your certif
 WSGI
 ~~~~
 
-py4web is a standard WSGI application. So, if a full program installation it's not
+py4web is a standard WSGI application. So, if a full program installation is not
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
 create a python file:
 
@@ -719,7 +719,7 @@ On ``deployment_tools/docker`` there is a simple Dockerfile for quickly running 
 a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL. 
 A ready docker example based on the Scaffold application can be cloned from this repository <https://github.com/macneiln/docker-py4web-scaffold>
 
-Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
+Note that you can use them also with Podman, which has the advantage of not requiring sudo and does not
 running any background daemon.
 
 

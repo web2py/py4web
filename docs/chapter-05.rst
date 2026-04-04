@@ -206,7 +206,7 @@ in errors:
    def color(name):
        return f'Color name: {name}'
 
-Instead, to accomplish a simmilar result, one needs to handle all the 
+Instead, to accomplish a similar result, one needs to handle all the 
 logic in one action:
 
 .. code:: python
@@ -438,14 +438,14 @@ Watch for files change
 ----------------------
 
 As described in the :ref:`run command option`, Py4web facilitates a
-development server’s setup by automatically reloads an app when its
+development server’s setup by automatically reloading an app when its
 Python source files change (by default).
 But in fact any other files inside an app can be watched by setting a
 handler function using the ``@app_watch_handler`` decorator.
 
 Two examples of this usage are reported now. Do not worry if you don’t
 fully understand them: the key point here is that even non-python code
-could be reloaded automatically if you explicit it with the
+could be reloaded automatically if you explicitly declare it with the
 ``@app_watch_handler`` decorator.
 
 Watch SASS files and compile them when edited:
@@ -496,7 +496,7 @@ In production environments it is often required to have several apps being
 served by a single py4web server, where different apps are mapped to
 different domains. 
 
-py4web can easily handle running multiple apps, but there is no build-in
+py4web can easily handle running multiple apps, but there is no built-in
 mechanism for mapping domains to specific applications. Such mapping needs
 to be done externally to py4web -- for instance using a web reverse-proxy, 
 such as nginx. 

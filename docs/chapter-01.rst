@@ -94,7 +94,7 @@ details if you come from web2py):
 -  PY4WEB leverages PyDAL's new tags functionality
    to tag users with groups, search users by groups, and
    apply permissions based on membership.
--  PY4WEB comes with with some custom Vue.js components designed to
+-  PY4WEB comes with some custom Vue.js components designed to
    interact with the PyDAL RESTAPI, and with PY4WEB in general. These
    APIs are designed to allow the server to set policies about which
    operations a client is allowed to perform, but give the client

@@ -128,7 +128,7 @@ Create a new minimal app called ``form_minimal`` :
 .. code:: python
 
     # in controllers.py
-    from py4web impot action, redirect, URL, Field
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form
     from pydal.validators import *
 
@@ -429,7 +429,7 @@ must be preceded by an underscore.
 Custom forms
 ~~~~~~~~~~~~
 
-Custom forms allow you to granulary control how the form is processed. In the template file, you can execute specific
+Custom forms allow you to granularly control how the form is processed. In the template file, you can execute specific
 instructions before the form is displayed or after its data submission by inserting code among the following statements:
 
 .. code:: html
