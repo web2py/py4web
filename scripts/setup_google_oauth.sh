@@ -3,10 +3,11 @@
 # setup_google_oauth.sh
 #
 # Automates the creation of Google OAuth 2.0 credentials for py4web Google SSO.
+# Works for both organization and personal Google accounts.
 #
 # Prerequisites:
 #   - gcloud CLI installed and authenticated (run: gcloud auth login)
-#   - A Google Cloud billing account (required to enable APIs)
+#   - A Google Cloud billing account (may be required to enable APIs)
 #
 # Usage:
 #   ./scripts/setup_google_oauth.sh [OPTIONS]
@@ -66,13 +67,24 @@ gcp_api() {
     local token
     token=$(gcloud auth print-access-token 2>/dev/null) || fail "Not authenticated. Run: gcloud auth login"
     if [[ -n "$body" ]]; then
-        curl -sf -X "$method" "$url" \
+        curl -s --connect-timeout 10 --max-time 30 -X "$method" "$url" \
             -H "Authorization: Bearer $token" \
             -H "Content-Type: application/json" \
             -d "$body"
     else
-        curl -sf -X "$method" "$url" \
+        curl -s --connect-timeout 10 --max-time 30 -X "$method" "$url" \
             -H "Authorization: Bearer $token"
+    fi
+}
+
+open_url() {
+    local url="$1"
+    if command -v xdg-open &>/dev/null; then
+        xdg-open "$url" 2>/dev/null || true
+    elif command -v open &>/dev/null; then
+        open "$url" 2>/dev/null || true
+    else
+        echo "  Open in your browser: $url"
     fi
 }
 
@@ -113,81 +125,36 @@ gcloud config set project "$PROJECT_ID" --quiet
 PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
 info "Project number: $PROJECT_NUMBER"
 
+# Check if project belongs to an organization
+ORG_ID=$(gcloud projects describe "$PROJECT_ID" --format='value(parent.id)' 2>/dev/null) || true
+PARENT_TYPE=$(gcloud projects describe "$PROJECT_ID" --format='value(parent.type)' 2>/dev/null) || true
+HAS_ORG=false
+if [[ "$PARENT_TYPE" == "organization" && -n "$ORG_ID" ]]; then
+    HAS_ORG=true
+    info "Project belongs to organization: $ORG_ID"
+else
+    info "Project is a personal project (no organization)."
+fi
+
 # ---------- step 2: enable required APIs ----------
 info "Enabling required APIs (this may take a moment)..."
-gcloud services enable \
-    iap.googleapis.com \
-    people.googleapis.com \
-    oauth2.googleapis.com \
-    --quiet 2>/dev/null || {
-    warn "Some APIs may require billing. Checking..."
-    # Try enabling one at a time for clearer errors
-    for api in iap.googleapis.com people.googleapis.com; do
-        if ! gcloud services enable "$api" --quiet 2>/dev/null; then
-            warn "Could not enable $api — billing may be required."
-            echo "  Enable billing: https://console.cloud.google.com/billing/linkedaccount?project=$PROJECT_ID"
-            echo "  Then re-run this script with: --project-id $PROJECT_ID"
-            fail "Billing required to enable APIs."
-        fi
-    done
-}
+
+REQUIRED_APIS=(people.googleapis.com)
+if $HAS_ORG; then
+    REQUIRED_APIS+=(iap.googleapis.com)
+fi
+
+for api in "${REQUIRED_APIS[@]}"; do
+    if ! gcloud services enable "$api" --quiet 2>/dev/null; then
+        warn "Could not enable $api — billing may be required."
+        echo "  Enable billing: https://console.cloud.google.com/billing/linkedaccount?project=$PROJECT_ID"
+        echo "  Then re-run this script with: --project-id $PROJECT_ID"
+        fail "Billing required to enable APIs."
+    fi
+done
 ok "APIs enabled."
 
-# ---------- step 3: create OAuth consent screen (brand) ----------
-info "Configuring OAuth consent screen..."
-
-# Check if brand already exists
-EXISTING_BRAND=$(gcp_api GET \
-    "https://iap.googleapis.com/v1/projects/$PROJECT_NUMBER/brands" \
-    | jq -r '.brands[0].name // empty' 2>/dev/null) || true
-
-if [[ -n "$EXISTING_BRAND" ]]; then
-    ok "OAuth consent screen already configured."
-    BRAND_NAME="$EXISTING_BRAND"
-else
-    BRAND_BODY=$(jq -n \
-        --arg title "$PROJECT_NAME" \
-        --arg email "$SUPPORT_EMAIL" \
-        '{applicationTitle: $title, supportEmail: $email}')
-
-    BRAND_RESP=$(gcp_api POST \
-        "https://iap.googleapis.com/v1/projects/$PROJECT_NUMBER/brands" \
-        "$BRAND_BODY")
-
-    BRAND_NAME=$(echo "$BRAND_RESP" | jq -r '.name // empty')
-    if [[ -z "$BRAND_NAME" ]]; then
-        warn "Could not create brand via API. Response:"
-        echo "$BRAND_RESP"
-        fail "OAuth consent screen creation failed."
-    fi
-    ok "OAuth consent screen created."
-fi
-
-# ---------- step 4: create OAuth client ----------
-info "Creating OAuth 2.0 client credentials..."
-
-CLIENT_BODY=$(jq -n --arg name "py4web SSO Client" '{displayName: $name}')
-
-CLIENT_RESP=$(gcp_api POST \
-    "https://iap.googleapis.com/v1/${BRAND_NAME}/identityAwareProxyClients" \
-    "$CLIENT_BODY")
-
-CLIENT_ID=$(echo "$CLIENT_RESP" | jq -r '.name // empty' | awk -F/ '{print $NF}')
-CLIENT_SECRET=$(echo "$CLIENT_RESP" | jq -r '.secret // empty')
-
-if [[ -z "$CLIENT_ID" || -z "$CLIENT_SECRET" ]]; then
-    warn "IAP client creation response:"
-    echo "$CLIENT_RESP"
-    fail "Could not create OAuth client credentials."
-fi
-
-ok "OAuth client created."
-
-# ---------- step 5: configure redirect URIs ----------
-# The IAP API creates clients but redirect URIs must be set via the Cloud Console
-# or the OAuth2 config API. We'll try the newer endpoint.
-
-# Determine the redirect URI
+# ---------- compute redirect URIs ----------
 if [[ "$HOST" == localhost* || "$HOST" == 127.0.0.1* ]]; then
     SCHEME="http"
 else
@@ -196,42 +163,144 @@ fi
 REDIRECT_URI="${SCHEME}://${HOST}/${APP_NAME}/auth/plugin/oauth2google/callback"
 SCOPED_REDIRECT_URI="${SCHEME}://${HOST}/${APP_NAME}/auth/plugin/oauth2googlescoped/callback"
 
-info "Configuring redirect URIs..."
+# ==========================================================================
+#  Two paths: organization projects use the IAP API (fully automated),
+#  personal projects use interactive browser-assisted flow.
+# ==========================================================================
 
-# Try to set redirect URIs via the Cloud Console REST API
-OAUTH_CLIENT_FULL_ID="projects/$PROJECT_NUMBER/brands/$PROJECT_NUMBER/identityAwareProxyClients/$CLIENT_ID"
+if $HAS_ORG; then
+    # ---- ORGANIZATION PATH: fully automated via IAP API ----
 
-# The redirect URI configuration often requires manual steps.
-# We'll attempt to use the newer Google Auth Platform API if available.
-REDIRECT_SET=false
+    # step 3: create OAuth consent screen (brand)
+    info "Configuring OAuth consent screen via IAP API..."
 
-# Try the googleapis.com credentials API
-CRED_BODY=$(jq -n \
-    --arg redirect "$REDIRECT_URI" \
-    --arg scoped_redirect "$SCOPED_REDIRECT_URI" \
-    --arg origin "${SCHEME}://${HOST}" \
-    '{
-        web: {
-            redirect_uris: [$redirect, $scoped_redirect],
-            javascript_origins: [$origin]
-        }
-    }')
+    BRAND_LIST_RESP=$(gcp_api GET \
+        "https://iap.googleapis.com/v1/projects/$PROJECT_NUMBER/brands") || true
 
-# This endpoint may not be publicly available; we try and fall back gracefully
-if gcp_api PUT \
-    "https://oauth2.googleapis.com/v1/projects/$PROJECT_NUMBER/oauthClients/$CLIENT_ID" \
-    "$CRED_BODY" &>/dev/null; then
-    REDIRECT_SET=true
-    ok "Redirect URIs configured automatically."
+    if [[ -z "$BRAND_LIST_RESP" ]]; then
+        fail "Cannot query OAuth brands. Check that iap.googleapis.com is enabled and you have Owner/Editor role."
+    fi
+
+    EXISTING_BRAND=$(echo "$BRAND_LIST_RESP" | jq -r '.brands[0].name // empty' 2>/dev/null) || true
+
+    if [[ -n "$EXISTING_BRAND" ]]; then
+        ok "OAuth consent screen already configured."
+        BRAND_NAME="$EXISTING_BRAND"
+    else
+        BRAND_BODY=$(jq -n \
+            --arg title "$PROJECT_NAME" \
+            --arg email "$SUPPORT_EMAIL" \
+            '{applicationTitle: $title, supportEmail: $email}')
+
+        BRAND_RESP=$(gcp_api POST \
+            "https://iap.googleapis.com/v1/projects/$PROJECT_NUMBER/brands" \
+            "$BRAND_BODY")
+
+        if [[ -z "$BRAND_RESP" ]]; then
+            fail "OAuth consent screen creation failed (empty response)."
+        fi
+
+        BRAND_NAME=$(echo "$BRAND_RESP" | jq -r '.name // empty')
+        if [[ -z "$BRAND_NAME" ]]; then
+            warn "Response: $BRAND_RESP"
+            fail "OAuth consent screen creation failed."
+        fi
+        ok "OAuth consent screen created."
+    fi
+
+    # step 4: create OAuth client
+    info "Creating OAuth 2.0 client credentials..."
+
+    CLIENT_BODY=$(jq -n --arg name "py4web SSO Client" '{displayName: $name}')
+
+    CLIENT_RESP=$(gcp_api POST \
+        "https://iap.googleapis.com/v1/${BRAND_NAME}/identityAwareProxyClients" \
+        "$CLIENT_BODY")
+
+    CLIENT_ID=$(echo "$CLIENT_RESP" | jq -r '.name // empty' | awk -F/ '{print $NF}')
+    CLIENT_SECRET=$(echo "$CLIENT_RESP" | jq -r '.secret // empty')
+
+    if [[ -z "$CLIENT_ID" || -z "$CLIENT_SECRET" ]]; then
+        warn "Response: $CLIENT_RESP"
+        fail "Could not create OAuth client credentials."
+    fi
+
+    ok "OAuth client created via IAP API."
+
+    # Try to set redirect URIs (may not work via public API)
+    REDIRECT_SET=false
+    info "Attempting to configure redirect URIs..."
+    # The IAP-created clients need redirect URIs set via Console
+    warn "Redirect URIs must be configured in the Cloud Console (see instructions below)."
+
+else
+    # ---- PERSONAL ACCOUNT PATH: browser-assisted ----
+
+    info "Personal account detected. Using browser-assisted setup."
+    echo ""
+
+    # step 3: consent screen — must be done in browser
+    CONSENT_URL="https://console.cloud.google.com/apis/credentials/consent?project=$PROJECT_ID"
+    echo "  Step 1: Configure the OAuth consent screen"
+    echo ""
+    echo "  Opening the OAuth consent screen configuration page..."
+    echo "  If it doesn't open automatically, visit:"
+    echo "    $CONSENT_URL"
+    echo ""
+    echo "  In the consent screen form:"
+    echo "    - User Type: External (select and click Create)"
+    echo "    - App name: $PROJECT_NAME"
+    echo "    - User support email: $SUPPORT_EMAIL"
+    echo "    - Developer contact email: $SUPPORT_EMAIL"
+    echo "    - Click 'Save and Continue' through Scopes and Test Users"
+    echo ""
+    open_url "$CONSENT_URL"
+
+    read -rp "  Press Enter once you've saved the consent screen... "
+    echo ""
+
+    # step 4: create credentials — must be done in browser
+    # Pre-fill as much as possible via URL parameters
+    CRED_URL="https://console.cloud.google.com/apis/credentials/oauthclient?project=$PROJECT_ID"
+    echo "  Step 2: Create OAuth 2.0 Client ID"
+    echo ""
+    echo "  Opening the credential creation page..."
+    echo "  If it doesn't open automatically, visit:"
+    echo "    $CRED_URL"
+    echo ""
+    echo "  In the form:"
+    echo "    - Application type: Web application"
+    echo "    - Name: py4web SSO Client"
+    echo "    - Authorized JavaScript origins: ${SCHEME}://${HOST}"
+    echo "    - Authorized redirect URIs:"
+    echo "        $REDIRECT_URI"
+    if $SCOPED; then
+        echo "        $SCOPED_REDIRECT_URI"
+    fi
+    echo "    - Click Create"
+    echo ""
+    echo "  After creation, Google will show the Client ID and Secret."
+    echo ""
+    open_url "$CRED_URL"
+
+    read -rp "  Paste Client ID: " CLIENT_ID
+    read -rp "  Paste Client Secret: " CLIENT_SECRET
+
+    if [[ -z "$CLIENT_ID" || -z "$CLIENT_SECRET" ]]; then
+        fail "Client ID and Secret are required."
+    fi
+
+    ok "Credentials received."
+    REDIRECT_SET=true   # User configured redirect URIs manually
 fi
 
-# ---------- step 6: output results ----------
+# ---------- output results ----------
 echo ""
 echo "=============================================="
 echo "  Google OAuth Credentials for py4web"
 echo "=============================================="
 echo ""
-echo "  Client ID:     $CLIENT_ID"
+echo "  Client ID:      $CLIENT_ID"
 echo "  Client Secret:  $CLIENT_SECRET"
 echo ""
 echo "  Redirect URI:   $REDIRECT_URI"
@@ -240,7 +309,7 @@ if $SCOPED; then
 fi
 echo ""
 
-if ! $REDIRECT_SET; then
+if [[ "${REDIRECT_SET:-false}" != "true" ]]; then
     warn "Redirect URIs must be configured manually:"
     echo "  1. Go to: https://console.cloud.google.com/apis/credentials?project=$PROJECT_ID"
     echo "  2. Click on the OAuth 2.0 Client ID just created"
@@ -256,13 +325,12 @@ if ! $REDIRECT_SET; then
 fi
 
 if [[ "$USER_TYPE" == "EXTERNAL" ]]; then
-    warn "You selected EXTERNAL user type."
+    warn "External consent screen: until the app is verified, only test users can log in."
     echo "  Add test users at: https://console.cloud.google.com/apis/credentials/consent?project=$PROJECT_ID"
-    echo "  Until the app is verified, only test users can log in."
     echo ""
 fi
 
-# ---------- step 7: write py4web settings ----------
+# ---------- write py4web settings ----------
 echo "----------------------------------------------"
 echo "  py4web Configuration"
 echo "----------------------------------------------"
@@ -274,7 +342,6 @@ echo "    OAUTH2GOOGLE_CLIENT_SECRET = \"$CLIENT_SECRET\""
 echo ""
 
 if $SCOPED; then
-    # Write the scoped credentials JSON file
     SECRETS_FILE="apps/${APP_NAME}/private/google_client_secrets.json"
     SECRETS_DIR="$(dirname "$SECRETS_FILE")"
 
@@ -301,7 +368,7 @@ if $SCOPED; then
             }
         }' > "$SECRETS_FILE"
 
-    echo "  Add to apps/${APP_NAME}/settings.py:"
+    echo "  Also add to apps/${APP_NAME}/settings.py:"
     echo ""
     echo "    OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE = \"private/google_client_secrets.json\""
     echo ""
