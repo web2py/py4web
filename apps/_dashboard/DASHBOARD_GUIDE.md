@@ -149,14 +149,15 @@ export PY4WEB_PASSWORD_FILE=password.txt
 
 ## Theming
 
-The dashboard supports multiple built-in themes (AlienDark, AlienLight, Classic) with a fully extensible theming system. Users can switch themes dynamically without page reload, with preferences persisted to the backend.
+The dashboard supports multiple built-in themes (AlienDark, AlienLight, Classic, Modern) with a fully extensible theming system. Users can switch themes dynamically without page reload, with preferences persisted to the backend.
 
 **For comprehensive theming documentation**, see [THEMES_GUIDE.md](THEMES_GUIDE.md).
 
 ### Quick Overview
 
 **Currently Available Themes:**
-- **AlienDark** - Modern dark theme with cyan accents (default)
+- **Modern** - Light activity-bar layout with green and orange accents (default)
+- **AlienDark** - Modern dark theme with cyan accents
 - **AlienLight** - Professional light theme with blue accents
 - **Classic** - Legacy-inspired dashboard appearance
 
@@ -221,14 +222,14 @@ static/themes/{ThemeName}/
 4. **Optional - Add assets:** `favicon.ico`, `widget.gif`, `templates/partials/` hook overrides
 5. **Optional - Add behavior:** `theme.js` for theme-specific JavaScript
 
-**That's it!** The theme automatically appears in the dropdown.
+**That's it!** The theme automatically appears in the settings dropdown.
 
 ### Theme Selector UI
 
-Dropdowns appear on all dashboard pages:
+Theme selector dropdown is rendered in the settings page (`templates/settings.html`) and synchronized through `data-theme-selector`:
 
 ```html
-<select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
+<select id="theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
   [[for theme in themes:]]
     <option value="[[=theme]]">[[=theme]]</option>
   [[pass]]
@@ -277,7 +278,7 @@ Theme selection is saved in two places:
 
 1. **Backend** - `apps/_dashboard/user_settings.toml`
    ```toml
-   selected_theme = "AlienDark"
+  selected_theme = "Modern"
    ```
    Survives browser cache clear / private browsing
 
@@ -287,7 +288,9 @@ Theme selection is saved in two places:
 **Selection Priority:**
 1. Backend setting (from `user_settings.toml`)
 2. Browser storage (from localStorage)
-3. Default theme (AlienDark if available, else first alphabetically)
+3. Default theme (Modern if available, else first alphabetically)
+
+Backend persistence is attempted only for authenticated sessions (`USER_ID` available). Without login, selection remains in localStorage only.
 
 Themes should not ship full-page replacements for the dashboard main pages; keep the main `index.html` in `apps/_dashboard/templates/` and use `templates/partials/` hooks for small structural overrides.
 

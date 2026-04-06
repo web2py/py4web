@@ -57,10 +57,12 @@ const app = Vue.createApp({
       selected_file_link: null,
       files: {},
       tickets:[],
+      total_ticket_count: 0,
       modal: null,
       editor: null,
       modelist: null,
       last_error: "",
+      initializing: false,
       show_system_info: false,
       show_classic_tickets: false,
       classic_tickets_loading: false,
@@ -68,43 +70,188 @@ const app = Vue.createApp({
       classic_tickets_sort_key: 'timestamp',
       classic_tickets_sort_dir: 'desc',
       routes_sort_key: 'rule',
-      routes_sort_dir: 'asc'
+      routes_sort_dir: 'asc',
+      modern_active_section: 'files'
     };
   },
   
   mounted() {
-    if (this.user) this.init();
+    if (this.user) {
+      this.init();
+    } else {
+      this.loading = false;
+    }
   },
   
   methods: {
+    get_theme_utils() {
+      return window.DashboardThemeUtils || null;
+    },
+
+    get_active_theme_name() {
+      const utils = this.get_theme_utils();
+      if (utils && typeof utils.getActiveThemeName === 'function') {
+        return utils.getActiveThemeName();
+      }
+      return document.documentElement.getAttribute('data-theme') || SELECTED_THEME || '';
+    },
+
+    is_theme(themeName) {
+      return this.get_active_theme_name() === themeName;
+    },
+
     go_to_main_dashboard() {
       window.location.href = '../index?_=' + Date.now();
     },
 
-    is_classic_theme() {
-      const htmlTheme = document.documentElement.getAttribute('data-theme');
-      return (htmlTheme || SELECTED_THEME || '') === 'Classic';
+    get_dashboard_index_url(appName, view) {
+      const utils = this.get_theme_utils();
+      if (utils && typeof utils.getDashboardViewUrl === 'function') {
+        return utils.getDashboardViewUrl(appName, view);
+      }
+      const target = new URL(window.location.origin + '/_dashboard/index');
+      if (appName) {
+        target.searchParams.set('app', appName);
+      }
+      if (view) {
+        target.searchParams.set('view', view);
+      }
+      return target.toString();
     },
 
-    select(appobj) {
+    get_dashboard_base_url() {
+      const utils = this.get_theme_utils();
+      if (utils && typeof utils.getDashboardBaseUrl === 'function') {
+        return utils.getDashboardBaseUrl();
+      }
+      return window.location.origin + '/_dashboard';
+    },
+
+    open_modern_system_info() {
+      window.location.href = this.get_dashboard_base_url() + '/system_info';
+    },
+
+    open_modern_tickets_view() {
+      const appName = window.currentAppName || localStorage.getItem('modernTheme_lastApp') || null;
+      const target = new URL(this.get_dashboard_base_url() + '/tickets/search');
+      if (appName) {
+        target.searchParams.set('app_name', appName);
+      }
+      window.location.href = target.toString();
+    },
+
+    open_modern_change_password() {
+      this.open_change_password_modal();
+    },
+
+    get_dashboard_deep_link() {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get('view');
+      const appName = params.get('app');
+      const allowedViews = ['files', 'routes', 'databases'];
+      if (this.is_modern_theme()) {
+        allowedViews.push('tickets');
+      }
+      return {
+        appName: appName || null,
+        view: allowedViews.includes(view) ? view : null,
+      };
+    },
+
+    open_dashboard_panel(view) {
+      if (!view) {
+        return;
+      }
+
+      if (this.is_modern_theme()) {
+        this.modern_active_section = view;
+        if (view === 'tickets') {
+          this.reload_tickets();
+        }
+        return;
+      }
+
+      this.$nextTick(() => {
+        const panelIds = ['routes', 'files', 'databases'];
+        panelIds.forEach((panelId) => {
+          const panel = document.getElementById(panelId);
+          if (panel) {
+            panel.checked = panelId === view;
+          }
+        });
+        const target = document.querySelector(`label[for="${view}"]`);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    },
+
+    apply_dashboard_deep_link() {
+      const deepLink = this.get_dashboard_deep_link();
+      if (!deepLink.view) {
+        return;
+      }
+      if (deepLink.appName && this.apps.length) {
+        const targetApp = this.apps.filter((appItem) => appItem.name === deepLink.appName)[0] || null;
+        if (targetApp && (!this.selected_app || this.selected_app.name !== targetApp.name)) {
+          this.select(targetApp);
+          return;
+        }
+      }
+      if (this.selected_app) {
+        this.open_dashboard_panel(deepLink.view);
+      }
+    },
+
+    is_classic_theme() {
+      return this.is_theme('Classic');
+    },
+
+    is_modern_theme() {
+      return this.is_theme('Modern');
+    },
+
+    select(appobj, openModernSection = 'files') {
       this.selected_app = appobj;
+      window.currentAppName = appobj && appobj.name ? appobj.name : null;
+      if (window.currentAppName) {
+        localStorage.setItem('modernTheme_lastApp', window.currentAppName);
+      }
+      if (this.is_modern_theme()) {
+        this.modern_active_section = openModernSection;
+        this.$nextTick(() => {
+          if (window.ModernTheme && typeof window.ModernTheme.initializeActivityBar === 'function') {
+            window.ModernTheme.initializeActivityBar();
+          }
+          if (window.ModernTheme && typeof window.ModernTheme.updateActiveButton === 'function') {
+            window.ModernTheme.updateActiveButton();
+          }
+        });
+      }
       this.selected_folder = null;
       this.reload_files();
+      this.apply_dashboard_deep_link();
     },
 
     select_folder(path) {
       this.selected_folder = path || null;
     },
-    to_json(r) {
+    to_json(r, options) {
+      const config = options || {};
+      const silent = !!config.silent;
       let json = {};
       try {
         json = r.json();
       } catch (e) {
-        app.vue.last_error = "Invalid JSON:\n" + r.data;
+        if (!silent) {
+          app.vue.last_error = "Invalid JSON:\n" + r.data;
+        }
         return {};
       }      
       if (json.status === "error") { 
-        app.vue.last_error = json.traceback || json.message || "Unknown error"; 
+        if (!silent) {
+          app.vue.last_error = json.traceback || json.message || "Unknown error";
+        }
         return json;  // Return json to preserve message field
       }
       return json;
@@ -568,34 +715,48 @@ const app = Vue.createApp({
       });
     },
 
+    delete_app(appobj) {
+      if (!appobj || !appobj.name) {
+        return;
+      }
+      const name = appobj.name;
+      this.confirm("Delete App","blue","Do you really want to delete "+name+"?",()=>{
+        this.modal_dismiss();
+        Q.post('../delete_app/'+name).then((r)=>{this.to_json(r); this.init();});
+      });
+    },
+
     reload_info() {
       Q.get('../info').then(r=>{
-        this.info=this.to_json(r).payload || [];
+        this.info=this.to_json(r, { silent: this.initializing }).payload || [];
       });
     },
 
     reload_apps() {
       Q.get('../apps').then(r=>{
-        this.apps=this.to_json(r).payload || [];
+        this.apps=this.to_json(r, { silent: this.initializing }).payload || [];
         // Update selected_app if it exists
         if(this.selected_app) {
           this.selected_app = this.apps.filter((a) => {
             return a.name == this.selected_app.name;
           })[0] || null;
         }
+        this.apply_dashboard_deep_link();
       });
     },
 
     reload_routes() {
       Q.get('../routes').then(r=>{
-        this.routes=this.to_json(r).payload || [];
+        this.routes=this.to_json(r, { silent: this.initializing }).payload || [];
       });
     },
 
     reload_tickets() {
       this.tickets = [];
       Q.get('../tickets').then(r=>{
-        this.tickets = this.to_json(r).payload || [];
+        const response = this.to_json(r, { silent: this.initializing });
+        this.tickets = response.payload || [];
+        this.total_ticket_count = Number(response.total_count) || 0;
       });
     },
 
@@ -608,19 +769,20 @@ const app = Vue.createApp({
       let name = this.selected_app.name;
       const walkUrl = '../walk/' + name + '?_=' + Date.now();
       Q.get(walkUrl).then(r => {
-        const payload = this.to_json(r).payload;
+        const payload = this.to_json(r, { silent: this.initializing }).payload;
         if (payload && Array.isArray(payload.files) && Array.isArray(payload.dirs)) {
           this.walk = payload;
         } else {
           this.walk = { files: [], dirs: [] };
         }
       });
-      Q.get('../rest/' + name).then(r => { this.databases = this.to_json(r).databases || []; });
+      Q.get('../rest/' + name).then(r => { this.databases = this.to_json(r, { silent: this.initializing }).databases || []; });
       this.selected_filename = null;
     },
 
     clear_tickets() {
       this.tickets = [];
+      this.total_ticket_count = 0;
       Q.get('../clear').then(()=>this.reload_tickets());
     },
 
@@ -675,6 +837,14 @@ const app = Vue.createApp({
       });
     },
 
+    get_total_site_ticket_count() {
+      return Number(this.total_ticket_count) || 0;
+    },
+
+    get_recent_week_ticket_count() {
+      return (this.tickets || []).reduce((sum, ticket) => sum + (Number(ticket && ticket.count) || 0), 0);
+    },
+
     open_classic_tickets_view() {
       this.show_system_info = false;
       this.show_classic_tickets = true;
@@ -688,6 +858,7 @@ const app = Vue.createApp({
     },
     
     login() {
+      this.loading = true;
       Q.post('../login', { password: this.password })
         .then (r => {
           if (this.to_json(r).user) {
@@ -696,8 +867,13 @@ const app = Vue.createApp({
             this.init();
             location.reload();
           } else {
+            this.loading = false;
             alert("Login failed! Please try again.");
           }
+        })
+        .catch(() => {
+          this.loading = false;
+          alert("Login failed! Please try again.");
         });
     },
 
@@ -706,12 +882,17 @@ const app = Vue.createApp({
     },
     
     init() {
+      this.initializing = true;
+      this.last_error = "";
       this.reload_info();
       this.reload_apps();
       this.reload_routes();
       this.reload_tickets();
       this.reload_files();
-      setTimeout(()=>{this.loading=false;}, 1000);
+      setTimeout(() => {
+        this.initializing = false;
+        this.loading = false;
+      }, 1000);
     },
 
     handleEdit(appName) {
@@ -722,6 +903,10 @@ const app = Vue.createApp({
       }
       const selected = this.apps.filter((appItem) => appItem.name === appName)[0] || null;
       if (!selected) {
+        return;
+      }
+      if (this.is_modern_theme()) {
+        window.location.href = this.get_dashboard_index_url(selected.name, 'files');
         return;
       }
       this.select(selected);

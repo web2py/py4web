@@ -129,6 +129,51 @@ body > main {
   overflow-y: auto;
 }
 
+/* Shared header/footer utility classes for dashboard templates. */
+.dashboard-top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  min-height: 48px;
+  line-height: 28px;
+}
+
+.dashboard-top-nav-list {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  line-height: 28px;
+}
+
+.dashboard-top-nav-item {
+  padding: 0;
+  margin: 0;
+  line-height: 28px;
+}
+
+.dashboard-top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 28px;
+}
+
+.dashboard-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-button-link {
+  text-decoration: none;
+}
+
+.dashboard-button-link-spaced {
+  margin-right: 20px;
+}
+
 /******* Flexbox Grid Utilities *******/
 .columns {
   display: flex;
@@ -231,6 +276,66 @@ button.btn-app {
   width: 200px;
   padding: 4px 20px 6px 10px;
   text-align: left;
+}
+
+/* Shared dashboard tree/list spacing across themes. */
+.my-effects .files li,
+.my-effects .dirs li,
+.my-effects .accordion .files li,
+.my-effects .accordion .dirs li,
+.my-effects .accordion li {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.my-effects .files ul,
+.my-effects .dirs ul {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.my-effects .dirs .accordion > * {
+  margin-bottom: 2px !important;
+}
+
+.my-effects .dirs .accordion > label {
+  padding: 2px 0 !important;
+}
+
+.my-effects .subfolder {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Shared alignment for db table action buttons. */
+.my-effects .panel.accordion input#databases ~ div button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2 !important;
+  padding: 4px 10px !important;
+  height: auto !important;
+}
+
+.my-effects .panel.accordion input#databases ~ div td {
+  vertical-align: middle !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Shared app button label alignment. */
+button.btn-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: auto !important;
+  line-height: 1.2 !important;
+  padding: 4px 10px !important;
+}
+
+button.btn-app i {
+  align-self: center;
 }
 
 /******* Form Styles *******/

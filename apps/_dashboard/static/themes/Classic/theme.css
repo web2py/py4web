@@ -147,7 +147,16 @@ thead th {
 
 [data-theme="Classic"] .classic-login-shell {
   width: min(760px, 100%);
+  margin: 0;
+}
+
+[data-theme="Classic"] .classic-login-main {
+  max-width: 1300px;
   margin: 14vh auto 0 auto;
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) 360px;
+  align-items: start;
+  gap: 20px;
 }
 
 [data-theme="Classic"] .classic-login-top {
@@ -469,7 +478,14 @@ nav li:hover {
   border: 1px solid var(--border-color);
   padding: 20px;
   border-radius: 3px;
-  height: 100%;
+  height: auto;
+}
+
+@media (max-width: 1120px) {
+  [data-theme="Classic"] .classic-login-main {
+    grid-template-columns: 1fr;
+    margin-top: 30px;
+  }
 }
 
 [data-theme="Classic"] .classic-right-panel h2 {

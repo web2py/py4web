@@ -6,7 +6,8 @@ The `_dashboard` app supports dynamic theme switching with persisted user prefer
 Themes are discovered from `static/themes/` and can be switched without a page reload.
 
 Current built-in themes:
-- **AlienDark** (default dark UI)
+- **Modern** (default light activity-bar UI with green primary and orange highlight accents)
+- **AlienDark** (dark UI)
 - **AlienLight** (light UI)
 - **Classic** (legacy-inspired dashboard style)
 
@@ -110,9 +111,14 @@ Key responsibilities:
 - load optional `theme.js`
 - persist selection via `POST ../save_theme`
 - keep all selectors (`[data-theme-selector]`) synchronized
+- expose shared helpers through `window.DashboardThemeUtils`
 
 Public API:
 - `window.setDashboardTheme(theme)`
+- `window.DashboardThemeUtils.getDashboardBaseUrl()`
+- `window.DashboardThemeUtils.getDashboardRelativeBase()`
+- `window.DashboardThemeUtils.getDashboardViewUrl(appName, view)`
+- `window.DashboardThemeUtils.getActiveThemeName()`
 
 ---
 
@@ -130,9 +136,9 @@ Key functions:
 
 Backend normalization guarantees that stale values (for example removed themes) do not break rendering.
 If a stored theme is unavailable:
-1. use `AlienDark` if present
-2. otherwise use the first available theme
-3. otherwise fall back to `AlienDark`
+1. use `Modern` if present
+2. otherwise use the first theme alphabetically
+3. otherwise fall back to `Modern`
 
 `save_theme` also validates that the requested theme exists.
 
@@ -167,12 +173,20 @@ In dashboard templates, keep these elements:
 
 ```html
 <script>
-  var SELECTED_THEME = '[[= selected_theme or "AlienDark" ]]';
+  var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
 </script>
 
-<link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'AlienDark' ]]/theme.css">
+<link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+```
 
-<select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)">
+Theme selector dropdowns are optional and are currently rendered in:
+
+- `apps/_dashboard/templates/settings.html`
+
+Selector example used in settings:
+
+```html
+<select id="theme-select" name="theme" data-theme-selector onchange="setDashboardTheme(this.value)">
   [[for theme in themes:]]
     <option value="[[=theme]]" [[='selected' if theme == selected_theme else '']]>[[=theme]]</option>
   [[pass]]
@@ -211,6 +225,8 @@ No backend code changes are required.
 - verify `POST ../save_theme` succeeds
 - check `apps/_dashboard/user_settings.toml` is writable
 
+If the user is not logged in, theme changes still apply in the browser and are stored in localStorage, but backend persistence is skipped.
+
 ### Theme script not running
 - verify `theme.js` exists and has valid JavaScript
 - check browser console for syntax/runtime errors
@@ -221,3 +237,4 @@ No backend code changes are required.
 
 - The dashboard uses canonical page templates plus optional hook partials.
 - Theme-specific customization should stay primarily in `theme.css` and optional `theme.js`; use hook partials only for small structural differences.
+- Keep shared behavior helpers in `apps/_dashboard/static/js/theme-selector.js` and shared dashboard JS files, not duplicated in individual themes.

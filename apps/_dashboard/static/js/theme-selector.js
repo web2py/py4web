@@ -9,7 +9,7 @@
  * - Dynamic theme detection from DOM select element
  * - localStorage persistence across sessions
  * - Automatic synchronization of multiple theme selectors
- * - Intelligent default theme selection (AlienDark if available, else first alphabetically)
+ * - Intelligent default theme selection (Modern if available, else first alphabetically)
  * - Graceful fallback handling for storage errors
  */
 (function () {
@@ -20,8 +20,8 @@
   var ACTIVE_THEME = null;
   var ACTIVE_THEME_CONFIG = null;
   var DEFAULT_THEME_CONFIG = {
-    favicon: "themes/AlienDark/favicon.ico",
-    widget: "themes/AlienDark/widget.gif",
+    favicon: "themes/Modern/favicon.ico",
+    widget: "themes/Modern/widget.gif",
     appFavicon: "",
     description: "",
     version: "",
@@ -29,6 +29,48 @@
     homepage: "",
     screenshot: ""
   };
+
+  function getDashboardBaseUrl() {
+    var marker = "/_dashboard";
+    var pathname = window.location.pathname || "";
+    var idx = pathname.indexOf(marker);
+    if (idx !== -1) {
+      return window.location.origin + pathname.slice(0, idx + marker.length);
+    }
+    return window.location.origin + marker;
+  }
+
+  function getDashboardRelativeBase() {
+    var marker = "/_dashboard";
+    var pathname = window.location.pathname || "";
+    var idx = pathname.indexOf(marker);
+    if (idx !== -1) {
+      return pathname.slice(0, idx + marker.length);
+    }
+    return marker;
+  }
+
+  function getDashboardViewUrl(appName, view) {
+    var target = new URL(getDashboardBaseUrl() + "/index");
+    if (appName) {
+      target.searchParams.set("app", appName);
+    }
+    if (view) {
+      target.searchParams.set("view", view);
+    }
+    return target.toString();
+  }
+
+  function getActiveThemeName() {
+    var htmlTheme = document.documentElement.getAttribute("data-theme");
+    if (htmlTheme) {
+      return htmlTheme;
+    }
+    if (typeof SELECTED_THEME !== "undefined" && SELECTED_THEME) {
+      return SELECTED_THEME;
+    }
+    return "";
+  }
 
   function resolveAssetUrl(path) {
     try {
@@ -115,31 +157,42 @@
    * This method dynamically discovers themes without requiring hardcoded lists.
    * 
    * @returns {Array<string>} Array of theme names (e.g., ["AlienDark", "AlienLight"])
-   *                          Returns ["AlienDark"] as fallback if selector not found
+  *                          Returns ["Modern"] as fallback if selector not found
    */
   function getAvailableThemes() {
-    var selector = document.getElementById("dashboard-theme-select");
-    if (selector) {
+    var selectors = document.querySelectorAll("[data-theme-selector]");
+    if (selectors && selectors.length > 0) {
       var themes = [];
-      for (var i = 0; i < selector.options.length; i += 1) {
-        themes.push(selector.options[i].value);
+      var seen = {};
+      for (var s = 0; s < selectors.length; s += 1) {
+        var selector = selectors[s];
+        for (var i = 0; i < selector.options.length; i += 1) {
+          var value = selector.options[i].value;
+          if (!seen[value]) {
+            seen[value] = true;
+            themes.push(value);
+          }
+        }
       }
-      return themes.length > 0 ? themes : ["AlienDark", "AlienLight", "Classic"];
+      if (themes.length > 0) {
+        return themes;
+      }
+      return ["Modern", "AlienDark", "AlienLight", "Classic"];
     }
     if (typeof SELECTED_THEME !== "undefined" && SELECTED_THEME) {
-      return [SELECTED_THEME, "AlienDark", "AlienLight", "Classic"];
+      return [SELECTED_THEME, "Modern", "AlienDark", "AlienLight", "Classic"];
     }
     // Fallback to known themes if selector not found (useful during page load)
-    return ["AlienDark", "AlienLight", "Classic"];
+    return ["Modern", "AlienDark", "AlienLight", "Classic"];
   }
 
   /**
    * Determines the default theme to use when no theme is stored or invalid theme is requested.
    * 
    * Selection logic:
-   * 1. If "AlienDark" is available, use it (preferred default)
+  * 1. If "Modern" is available, use it (preferred default)
    * 2. Otherwise use the first available theme (alphabetically sorted)
-   * 3. Fallback to "AlienDark" if no themes available
+  * 3. Fallback to "Modern" if no themes available
    * 
    * @returns {string} The default theme name
    */
@@ -148,11 +201,11 @@
     if (themes.length === 0) {
       return null;
     }
-    // Prefer AlienDark if available, otherwise use first alphabetically
-    if (themes.indexOf("AlienDark") !== -1) {
-      return "AlienDark";
+    // Prefer Modern if available, otherwise use first alphabetically
+    if (themes.indexOf("Modern") !== -1) {
+      return "Modern";
     }
-    var fallback = themes.length > 0 ? themes[0] : "AlienDark";
+    var fallback = themes.length > 0 ? themes[0] : "Modern";
     return fallback;
   }
 
@@ -421,6 +474,12 @@
    * Usage: setDashboardTheme("AlienDark")
    */
   window.setDashboardTheme = applyTheme;
+  window.DashboardThemeUtils = {
+    getDashboardBaseUrl: getDashboardBaseUrl,
+    getDashboardRelativeBase: getDashboardRelativeBase,
+    getDashboardViewUrl: getDashboardViewUrl,
+    getActiveThemeName: getActiveThemeName
+  };
 
   // Initialize theme on page load
   if (document.readyState === "loading") {

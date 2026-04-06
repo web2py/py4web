@@ -115,13 +115,13 @@ def change_password_handler(old_password, new_password):
 def load_user_settings():
     """Load user settings from user_settings.toml"""
     settings_file = os.path.join(settings.APP_FOLDER, "user_settings.toml")
-    default_settings = {"selected_theme": "AlienDark"}
+    default_settings = {"selected_theme": "Modern"}
     
     if not os.path.exists(settings_file):
         # Create default settings file
         try:
             with open(settings_file, "w") as fp:
-                fp.write('selected_theme = "AlienDark"\n')
+                fp.write('selected_theme = "Modern"\n')
             return default_settings
         except Exception:
             return default_settings
@@ -179,11 +179,11 @@ def normalize_selected_theme(selected_theme, available_themes=None):
     themes = available_themes if available_themes is not None else get_available_themes()
     if selected_theme and selected_theme in themes:
         return selected_theme
-    if "AlienDark" in themes:
-        return "AlienDark"
+    if "Modern" in themes:
+        return "Modern"
     if themes:
         return themes[0]
-    return "AlienDark"
+    return "Modern"
 
 
 def _safe_name(value):
@@ -233,6 +233,26 @@ def build_theme_partials(selected_theme, partial_names):
     }
 
 
+def get_system_info_payload():
+    """Collect system and loaded module version information."""
+    os_info = f"{platform.system()} {platform.release()}"
+    items = [
+        {"name": "os", "version": os_info},
+        {"name": "py4web", "version": __version__},
+        {"name": "python", "version": sys.version},
+    ]
+    for module in sorted(sys.modules):
+        if "." in module:
+            continue
+        try:
+            imported = __import__(module)
+            if "__version__" in dir(imported):
+                items.append({"name": module, "version": imported.__version__})
+        except ImportError:
+            pass
+    return items
+
+
 session = Session()
 T = Translator(settings.T_FOLDER)
 authenticated = ActionFactory(Logged(session))
@@ -252,7 +272,7 @@ if MODE in ("demo", "readonly", "full"):
         themes = get_available_themes()
         user_settings = load_user_settings()
         selected_theme = normalize_selected_theme(
-            user_settings.get("selected_theme", "AlienDark"), themes
+            user_settings.get("selected_theme", "Modern"), themes
         )
         theme_partials = build_theme_partials(selected_theme, ["index_header_actions"])
         
@@ -315,6 +335,22 @@ if MODE in ("demo", "readonly", "full"):
         user_settings["selected_theme"] = theme
         return save_user_settings(user_settings)
 
+    @action("settings")
+    @action.uses(Logged(session), "settings.html")
+    @catch_errors
+    def settings_page():
+        themes = get_available_themes()
+        user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "Modern"), themes
+        )
+        return dict(
+            themes=themes,
+            selected_theme=selected_theme,
+            message="",
+            message_type="",
+        )
+
     @action("tickets/search")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
@@ -322,19 +358,23 @@ if MODE in ("demo", "readonly", "full"):
         themes = get_available_themes()
         user_settings = load_user_settings()
         selected_theme = normalize_selected_theme(
-            user_settings.get("selected_theme", "AlienDark"), themes
+            user_settings.get("selected_theme", "Modern"), themes
         )
         theme_partials = build_theme_partials(
             selected_theme, ["dbadmin_nav", "dbadmin_footer_back"]
         )
+        filter_app = request.query.get("app_name", "").strip()
 
         def make_grid():
             make_safe(db)
             table = db.py4web_error
+            query = (table.app_name == filter_app) if filter_app else table
             columns = [field for field in table if not field.name == "snapshot"]
             return Grid(
-                table,
+                query,
                 columns=columns,
+                search_queries=None,
+                create=False,
                 details=False,
                 editable=False,
                 pre_action_buttons=[
@@ -348,7 +388,7 @@ if MODE in ("demo", "readonly", "full"):
 
         grid = action.uses(db)(make_grid)()
         return dict(
-            app_name="",
+            app_name=filter_app,
             table_name="py4web_error",
             grid=grid,
             themes=themes,
@@ -362,7 +402,7 @@ if MODE in ("demo", "readonly", "full"):
         themes = get_available_themes()
         user_settings = load_user_settings()
         selected_theme = normalize_selected_theme(
-            user_settings.get("selected_theme", "AlienDark"), themes
+            user_settings.get("selected_theme", "Modern"), themes
         )
         theme_partials = build_theme_partials(
             selected_theme, ["dbadmin_nav", "dbadmin_footer_back"]
@@ -415,22 +455,21 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     @catch_errors
     def info():
-        # Start with OS information
-        os_info = f"{platform.system()} {platform.release()}"
-        vars = [
-            {"name": "os", "version": os_info},
-            {"name": "py4web", "version": __version__},
-            {"name": "python", "version": sys.version}
-        ]
-        for module in sorted(sys.modules):
-            if not "." in module:
-                try:
-                    m = __import__(module)
-                    if "__version__" in dir(m):
-                        vars.append({"name": module, "version": m.__version__})
-                except ImportError:
-                    pass
-        return {"status": "success", "payload": vars}
+        return {"status": "success", "payload": get_system_info_payload()}
+
+    @action("system_info")
+    @action.uses(Logged(session), "system_info.html")
+    def system_info_page():
+        themes = get_available_themes()
+        user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "Modern"), themes
+        )
+        return dict(
+            info_items=get_system_info_payload(),
+            themes=themes,
+            selected_theme=selected_theme,
+        )
 
     @action("routes")
     @session_secured
@@ -703,7 +742,21 @@ if MODE in ("demo", "readonly", "full"):
     def tickets():
         """Returns most recent tickets grouped by path+error"""
         tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
-        return {"payload": tickets or [], "status": "success"}
+        total_count = 0
+        if MODE != "DEMO":
+            total_count = safely(
+                lambda: error_logger.database_logger.db(
+                    error_logger.database_logger.db.py4web_error
+                ).count()
+            ) or 0
+        return {"payload": tickets or [], "total_count": total_count, "status": "success"}
+
+    @action("tickets/delete_all", method=["POST"])
+    @action.uses(Logged(session))
+    def delete_all_tickets():
+        if MODE != "demo":
+            safely(error_logger.database_logger.clear)
+        redirect(URL("tickets/search"))
 
     @action("clear")
     @session_secured
@@ -718,17 +771,21 @@ if MODE in ("demo", "readonly", "full"):
         themes = get_available_themes()
         user_settings = load_user_settings()
         selected_theme = normalize_selected_theme(
-            user_settings.get("selected_theme", "AlienDark"), themes
+            user_settings.get("selected_theme", "Modern"), themes
+        )
+        theme_partials = build_theme_partials(
+            selected_theme, ["dbadmin_nav", "dbadmin_footer_back"]
         )
         if MODE != "demo":
             return dict(
                 ticket=safely(
                     lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
                 ),
-                selected_theme=selected_theme
+                selected_theme=selected_theme,
+                theme_partials=theme_partials,
             )
         else:
-            return dict(ticket=None, selected_theme=selected_theme)
+            return dict(ticket=None, selected_theme=selected_theme, theme_partials=theme_partials)
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
@@ -921,8 +978,16 @@ if MODE == "full":
     def gitlog(project):
         themes = get_available_themes()
         user_settings = load_user_settings()
+        selected_theme = normalize_selected_theme(
+            user_settings.get("selected_theme", "Modern"), themes
+        )
         if not is_git_repo(os.path.join(FOLDER, project)):
-            return "Project is not a GIT repo"
+            return dict(
+                status="error",
+                error="Project is not a GIT repo",
+                project=project,
+                selected_theme=selected_theme,
+            )
         branches = get_branches(cwd=os.path.join(FOLDER, project))
         commits = get_commits(cwd=os.path.join(FOLDER, project))
         return dict(
@@ -931,9 +996,7 @@ if MODE == "full":
             checkout=checkout,
             project=project,
             branches=branches,
-            selected_theme=normalize_selected_theme(
-                user_settings.get("selected_theme", "AlienDark"), themes
-            ),
+            selected_theme=selected_theme,
         )
 
     @authenticated.callback()
@@ -987,7 +1050,7 @@ def translations(name):
     return dict(
         languages=t.languages,
         selected_theme=normalize_selected_theme(
-            user_settings.get("selected_theme", "AlienDark"), themes
+            user_settings.get("selected_theme", "Modern"), themes
         ),
     )
 

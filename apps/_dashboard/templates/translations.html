@@ -1,31 +1,73 @@
-<html>
-
+<!DOCTYPE html>
+<html data-theme="[[= selected_theme or 'Modern' ]]">
 <head>
     <base href="[[=URL('static')]]/">
-    [[if selected_theme == "Classic":]]
-    <link rel="stylesheet" type="text/css" href="themes/Classic/theme.css" />
-    [[else:]]
-    <link rel="stylesheet" type="text/css" href="css/future.css" />
-    [[pass]]
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="themes/Modern/favicon.ico" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script>
+    var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
+    </script>
+    <script src="js/theme-selector.js"></script>
     <style>
         .unverified {
-            color: #33BFFF;
+            color: [[='var(--accent-primary)' if selected_theme == 'Modern' else '#33BFFF']];
         }
         
         button {
             min-width: 160px;
         }
+
+        .translation-sidebar {
+            position: fixed;
+            left: var(--activity-bar-width);
+            top: var(--modern-header-height);
+            width: 300px;
+            height: calc(100vh - var(--modern-header-height));
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .translation-content {
+            position: fixed;
+            left: calc(var(--activity-bar-width) + 300px);
+            top: var(--modern-header-height);
+            right: 0;
+            bottom: 0;
+            box-sizing: border-box;
+            padding: 20px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
-<body>
-    <!-- 
-        Translation Manager Interface
-        Vue 3 compatible version preserving all original functionality
-    -->
-    <div id="vue" class="my-effects">
-        <div style="position: absolute; width: 300px;  box-sizing: border-box; padding: 10px; left:0; top:0; z-index:2">
+<body class="dbadmin-page">
+    <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0; z-index:9999;" src="../static/images/forkme.png" /></a>
+
+    <div id="activity-bar"></div>
+    <div class="my-effects">
+        <div class="header dbadmin-header">
+            <div class="header-left">
+                <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+                <span class="modern-logo-text">py4web</span>
+                <span class="logo">Dashboard</span>
+            </div>
+            <div class="header-right">
+                <a class="button" href="[[=URL('settings')]]">Settings</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Translation Manager Interface -->
+    <div id="vue">
+        <div class="translation-sidebar">
             <h3>Languages</h3>
             <div>
                 <button @click="save_languages">Save Languages</button>
@@ -37,10 +79,11 @@
                 <button @click="select_language(name)">{{name}}</button>
             </div>
         </div>
-        <div style="position: absolute;  box-sizing: border-box; width: 100%; padding: 10px 10px 10px 200px; left:0; top:0;">
+
+        <div class="translation-content">
             <h1>Internationalization (i18n) and Pluralization (p11n) Interface</h1>
             <p>
-                Select or add the language you want to support. Click on "update languages" to find all strings that may need translation. Each string may have multiple translations such as "0 dogs, 1 dog, 2 dogs". Read more <a href="https://github.com/web2py/pluralize">here</a>                Untranslated strings will be marked in blue.
+                Select or add the language you want to support. Click on "update languages" to find all strings that may need translation. Each string may have multiple translations such as "0 dogs, 1 dog, 2 dogs". Read more <a href="https://github.com/web2py/pluralize">here</a>. Untranslated strings will be marked in blue.
             </p>
             <h2 v-if="selected_language">Selected Language: {{selected_language}}</h2>
             <table v-if="selected_language">

@@ -3,14 +3,14 @@
 
 <head>
     <base href="[[=URL('static')]]/">
-    <link rel="shortcut icon" href="themes/AlienDark/favicon.ico" />
+    <link rel="shortcut icon" href="themes/Modern/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" type="text/css" href="css/future.css" />
     <!-- Theme CSS is swapped at runtime by theme-selector.js based on the selected theme. -->
-    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'AlienDark' ]]/theme.css" />
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <script>
-      var SELECTED_THEME = '[[= selected_theme or "AlienDark" ]]';
+    var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
     </script>
     <script src="js/theme-selector.js"></script>
 </head>
@@ -28,6 +28,7 @@
                     <span class="logo">py4web Dashboard</span>
                 </div>
             </div>
+            <div class="classic-login-main">
             <div class="classic-login-shell">
                 <div class="classic-login-panel">
                     <form @submit.prevent="login">
@@ -51,8 +52,41 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
-        <div class="login" v-if="!user && !is_classic_theme()">
+        <div class="login modern-login" v-if="!user && is_modern_theme()">
+            <div class="modern-login-shell">
+                <div class="modern-login-top">
+                    <div class="header-left" @click="go_to_main_dashboard()">
+                        <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+                        <span class="modern-logo-text">py4web</span>
+                        <span class="logo">Dashboard</span>
+                    </div>
+                </div>
+                <div class="modern-login-panel">
+                    <form @submit.prevent="login">
+                        <input
+                            v-model="password"
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Administrator password"
+                            autocomplete="current-password"
+                        />
+                    </form>
+                    <a class="classic-forgot-link" href="#" @click.prevent="open_forgotten_password_modal()">Forgotten Administrator password?</a>
+                    [[if mode=='demo':]]
+                    <div class="classic-demo-note">Demo mode: any password will get you in</div>[[pass]]
+                </div>
+                <div class="modern-login-footer-panel">
+                    <button @click="login()">Login</button>
+                    <div class="right">
+                        Created by Massimo Di Pierro @ BSDv3 License
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="login" v-if="!user && !is_classic_theme() && !is_modern_theme()">
             <h1>PY4WEB</h1>
             <h2><i class="fa fa-lock fa-2x"></i></h2>
             <form @submit.prevent="login">
@@ -68,25 +102,25 @@
             <div style="margin-top:10px">Demo mode: any password will get you in</div>[[pass]]
         </div>
         <div class="loading" v-if="loading"></div>
-        <div v-if="user">
+        <div v-if="user" class="dashboard-shell">
+            <div id="activity-bar"></div>
             <div class="header">
                 <div class="header-left" @click="go_to_main_dashboard()">
-                    <img src="themes/AlienDark/widget.gif" class="spinner-top" />
-                    <span class="logo">py4web Dashboard</span>
+                    <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+                    <span class="modern-logo-text">py4web</span>
+                    <span class="logo">Dashboard</span>
                 </div>
                 <div class="header-right">
                     [[=theme_partials.get("index_header_actions", "")]]
-                    <label for="dashboard-theme-select" style="font-size: 12px;">Theme</label>
-                    <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 200px;">
-                        [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
-                    </select>
+                    <a class="button" href="[[=URL('settings')]]">Settings</a>
                 </div>
             </div>
-        <div v-if="last_error" class="dialog-error">
+        <div v-if="last_error && !loading" class="dialog-error">
             <h2>API error</h2>
             <pre v-text="last_error"></pre>
             <button v-on:click="close_dialog_error">Ignore and Dismiss</button>
         </div>
+        [[ if selected_theme != "Modern": ]]
         <div class="classic-main-layout" v-if="user">
             <div class="classic-left-panel">
                 <div v-if="show_classic_tickets" class="classic-tickets-view">
@@ -201,7 +235,7 @@
                 </div>
                 <button class="btn-details" @click="show_classic_tickets = false; show_system_info = !show_system_info"><i class="fas fa-info-circle"></i> More Details</button>
                 <div class="recent-tickets-section">
-                    <h3>Recent Tickets</h3>
+                    <h3>Recent tickets ({{ get_recent_week_ticket_count() }} in the last week)</h3>
                     <button class="btn-show-all" @click="open_classic_tickets_view()"><i class="fas fa-ticket-alt"></i> Show all</button>
                 </div>
                 <div class="password-section">
@@ -210,6 +244,68 @@
                 </div>
             </div>
         </div>
+        [[ pass ]]
+        [[ if selected_theme == "Modern": ]]
+        <div class="modern-main-layout" id="modern-main-layout">
+            <div class="panel modern-applications-panel" id="applications-panel">
+                <div class="modern-applications-header">
+                    <h3>Installed Applications</h3>
+                    <div class="right">
+                        <button @click="upload_new_app()"><i class="fas fa-magic"></i> Create/Upload App</button>
+                        <button @click="reload()"><i class="fas fa-sync-alt"></i> Reload Apps</button>
+                    </div>
+                </div>
+                <div class="modern-applications-list">
+                    <div class="modern-app-row" v-for="app in apps" :key="app.name" @click="handleEdit(app.name)">
+                        <div class="modern-app-main">
+                            <span class="app-status-dot" :class="app.running ? 'running' : 'stopped'" :title="app.running ? 'Running' : 'Stopped'"></span>
+                            <span class="modern-app-name">{{app.name}}</span>
+                        </div>
+                        <div class="modern-app-actions">
+                            <button @click.stop="handleEdit(app.name)"><i class="fas fa-pen"></i> Edit</button>
+                            <button class="danger" @click.stop="delete_app(app)"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modern-right-panel">
+                <h2>This site</h2>
+                <div class="info-section">
+                    <h3>System Information</h3>
+                    <table class="info-table">
+                        <tr>
+                            <td><strong>OS</strong></td>
+                            <td v-if="info.length">{{info[0].version}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>py4web</strong></td>
+                            <td v-if="info.length">{{info[1].version}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Python</strong></td>
+                            <td v-if="info.length">{{info[2].version}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn-details" @click="open_modern_system_info()"><i class="fas fa-info-circle"></i> More Details</button>
+                <div class="recent-tickets-section">
+                    <h3>Recent tickets ({{ get_recent_week_ticket_count() }} in the last week)</h3>
+                    <button class="btn-show-all modern-show-all-button" @click="open_modern_tickets_view()">
+                        <span class="modern-show-all-label">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Show all</span>
+                        </span>
+                        <span class="modern-site-ticket-indicator" :title="get_total_site_ticket_count() + ' total tickets on this site'">{{ get_total_site_ticket_count() }}</span>
+                    </button>
+                </div>
+                <div class="password-section">
+                    <h3>Security</h3>
+                    <button class="btn-password" @click="open_change_password_modal()"><i class="fas fa-key"></i> Change Password</button>
+                </div>
+            </div>
+        </div>
+        <div id="modern-file-browser" class="modern-file-browser panel" style="display:none"></div>
+        [[ else: ]]
         <div class="panel accordion" id="applications-panel">
             <input type="checkbox" id="applications">
             <label for="applications">Installed Applications</label>
@@ -223,19 +319,20 @@
               <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
               <i v-else class="fa fa-cog red blink"></i>
               {{app.name}}
-                            <img align="right" alt=" " src="themes/[[= selected_theme or 'AlienDark' ]]/favicon.ico" :data-original-src="'/'+app.name+'/static/favicon.ico'" height="18"/>
+                            <img align="right" alt=" " src="themes/[[= selected_theme or 'Modern' ]]/favicon.ico" :data-original-src="'/'+app.name+'/static/favicon.ico'" height="18"/>
             </button>
                 </div>
             </div>
         </div>
-        <div class="panel accordion" v-if="selected_app && selected_app.error">
+        [[ pass ]]
+        <div class="panel accordion" v-if="selected_app && selected_app.error && !is_modern_theme()">
             <input type="checkbox" id="traceback" checked>
             <label for="traceback">Cause of failure for {{selected_app.name}}</label>
             <div>
                 <pre style="background:red;color:black;padding:5px">{{selected_app.error}}</pre>
             </div>
         </div>
-        <div class="panel accordion" v-if="selected_app && !selected_app.error">
+        <div class="panel accordion" v-if="selected_app && !selected_app.error && !is_modern_theme()">
             <input type="checkbox" id="routes">
             <label for="routes">Routes for {{selected_app.name}}</label>
             <div>
@@ -271,7 +368,7 @@
             </div>
         </div>
 
-        <div class="panel accordion" v-if="selected_app">
+        <div class="panel accordion" v-if="selected_app && !is_modern_theme()">
             <input type="checkbox" id="files" checked>
             <label for="files">Files in {{selected_app.name}}</label>
 
@@ -286,7 +383,7 @@
                 <tree-files v-if="walk" :f="walk" :p="selected_app.name"></tree-files>
             </div>
         </div>
-        <div v-show="selected_filename" class="panel accordion">
+        <div v-show="selected_filename && !is_modern_theme()" class="panel accordion">
             <input type="checkbox" id="editor_container" checked>
             <label for="editor_container">File: {{selected_filename}}</label>
             <div>
@@ -301,7 +398,7 @@
                 <div v-if="selected_type=='audio'"><audio :src="selected_file_link" class="preview"></audio></div>
             </div>
         </div>
-        <div class="panel accordion" v-if="selected_app">
+        <div class="panel accordion" v-if="selected_app && !is_modern_theme()">
             <input type="checkbox" id="databases" checked>
             <label for="databases">Databases in {{selected_app.name}}</label>
             <div style="max-width:100vw">
@@ -321,6 +418,45 @@
                 </div>
             </div>
         </div>
+        <div class="panel modern-tickets-panel" v-if="selected_app && is_modern_theme() && modern_active_section === 'tickets'">
+            <div class="modern-tickets-header">
+                <h3>Recent tickets ({{ get_recent_week_ticket_count() }} in the last week)</h3>
+                <div class="right">
+                    <button @click="reload_tickets()"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
+                    <button @click="clear_tickets()"><i class="fas fa-trash"></i> Clear Tickets</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto">
+                <table v-if="tickets.length>0">
+                    <thead>
+                        <tr>
+                            <th>Occurrences</th>
+                            <th>Most Recent</th>
+                            <th>Client IP</th>
+                            <th>App</th>
+                            <th>Method</th>
+                            <th>Path</th>
+                            <th>Error</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="ticket in tickets" :key="ticket.uuid">
+                            <td>{{ticket.count}}</td>
+                            <td>{{ticket.timestamp}}</td>
+                            <td>{{ticket.client_ip}}</td>
+                            <td>{{ticket.app_name}}</td>
+                            <td>{{ticket.method}}</td>
+                            <td>{{ticket.path}}</td>
+                            <td><a target="blank" :href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
+                            <td><a class="button" target="blank" :href="'[[=URL('tickets/search')]]?search_string=path is '+ticket.path+' and error is &quot;'+ticket.error+'&quot;'">Search</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-else>No tickets found.</div>
+            </div>
+        </div>
+        [[ if selected_theme != "Modern": ]]
         <div class="panel accordion">
             <input type="checkbox" id="tickets">
             <label for="tickets">Recent Tickets</label>
@@ -379,6 +515,7 @@
                 </table>
             </div>
         </div>
+        [[ pass ]]
         <div class="panel">
             <button @click="logout()">Logout</button>
             <div class="right">
