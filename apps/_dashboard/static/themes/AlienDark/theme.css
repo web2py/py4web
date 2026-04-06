@@ -117,10 +117,6 @@ textarea {
   color: var(--accent);
 }
 
-tbody {
-  border-bottom: 1px solid var(--accent);
-}
-
 /* ============================================================================
    5. TABLES & DATABASE GRID - Grid and DBAdmin styling
    ========================================================================== */
@@ -130,8 +126,6 @@ tbody {
 
 thead>tr {
   background: var(--bg-primary);
-  border-top: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
 }
 
 /* ============================================================================

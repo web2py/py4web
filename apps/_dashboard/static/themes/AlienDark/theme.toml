@@ -1,0 +1,6 @@
+name = "AlienDark"
+description = "Sleek dark theme with cyan accents for the py4web dashboard."
+version = "1.0.0"
+author = "py4web team"
+homepage = "https://py4web.com"
+screenshot = "widget.gif"

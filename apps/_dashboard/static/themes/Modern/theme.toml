@@ -1,0 +1,7 @@
+name = "Modern"
+description = "Modern light dashboard with activity bar navigation, green primary accents, and orange highlights"
+version = "1.0.0"
+author = "py4web team"
+homepage = "https://py4web.com"
+screenshot = "widget.gif"
+widget = "themes/Modern/logo.png"

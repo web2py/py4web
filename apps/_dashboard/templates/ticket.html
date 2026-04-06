@@ -1,64 +1,129 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<html data-theme="[[= selected_theme or 'Modern' ]]">
+<head>
     <base href="[[=URL('static')]]/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/future.css">
-    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
+    <link rel="shortcut icon" href="themes/Modern/favicon.ico" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script>
+      var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
+    </script>
     <script src="js/theme-selector.js"></script>
     <style>
-  * {
+  .ticket-content {
     font-family: courier;
     font-size: 12px;
-  }
-  body {
-    margin: 0;
-    border: 0;
     padding: 9px;
-    background-color: var(--bg-primary, #111111);
-    color: var(--text-primary, #e1e1e1);
   }
-  h2.page-title { font-size: 2em }
-  .ticket {
-    overflow-x: auto;    
+  .ticket-content .ticket {
+    overflow-x: auto;
   }
-  .ticket table {
+  .ticket-content .ticket table {
     margin-top: -1px;
   }
-  .ticket tr {
-    border-top: 1px solid var(--border-color, #e1e1e1);        
+  .ticket-content .ticket tr {
+    border-top: 1px solid var(--border-color, #e1e1e1);
     padding-left: 5px;
   }
-  .ticket th:after {
+  .ticket-content .ticket th:after {
     content: ':'
   }
-  .ticket th {
+  .ticket-content .ticket th {
     font-weight: bold;
     text-align: left;
     vertical-align: top;
     padding-right: 10px;
     border-right: 5px solid var(--border-color, #d2d2d2);
   }
-  .ticket td {
+  .ticket-content .ticket td {
     white-space: pre;
     padding-left: 5px;
-  }  
+  }
   .ticket-traceback {
     background-color: red;
     color: white;
     padding: 5px 20px;
     overflow-x: auto;
+    font-family: courier;
+    font-size: 12px;
   }
   .ticket-traceback pre {
     font-family: courier;
     font-size: 12px;
   }
+  .ticket-error-title {
+    font-family: courier;
+    font-size: 0.95em;
+    color: var(--text-primary, #e1e1e1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
     </style>
-  </head>
-  <body>
-    <h2 class="page-title">Error Ticket: [[=ticket.get('error')]]</h2>    
-    <div class="ticket-traceback">
-      <pre>[[=ticket.get('snapshot',{}).get('traceback')]]</pre>
+</head>
+<body class="dbadmin-page">
+    <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0; z-index:9999;" src="../static/images/forkme.png" /></a>
+
+    <div id="activity-bar"></div>
+    <div class="my-effects">
+        <div class="header dbadmin-header">
+            <div class="header-left">
+          <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+                <span class="modern-logo-text">py4web</span>
+                <span class="logo">Dashboard</span>
+            </div>
+            <div class="header-right">
+                [[=theme_partials.get("dbadmin_nav", "")]]
+                <a class="button" href="[[=URL('settings')]]">Settings</a>
+            </div>
+        </div>
+        
+        [[if ticket:]]
+        [[
+timestamp = ticket.get('timestamp')
+ts_str = timestamp.strftime('%d/%m/%Y, %H:%M:%S') if timestamp else 'unknown'
+description = f"Application \"{ticket.get('app_name', '')}\" - Error Ticket at {ts_str} = '{ticket.get('error', '')}'"
+        ]]
+        <div class="ticket-subtitle-bar">
+            <span class="ticket-error-title">[[=description]]</span>
+            <a class="button" href="javascript:window.history.back()">&#8592; Back</a>
+        </div>
+        [[pass]]
+
+        <div class="dbadmin">
+            <div class="dbadmin-content">
+                [[if ticket:]]
+                <div class="ticket-traceback">
+                    <pre>[[=ticket.get('snapshot', {}).get('traceback')]]</pre>
+                </div>
+                <div class="ticket-content">
+                    <div class="ticket">[[=BEAUTIFY(ticket)]]</div>
+                </div>
+                [[else:]]
+                <p>Ticket not found.</p>
+                [[pass]]
+            </div>
+        </div>
+
+        <footer class="black padded" style="display: flex; justify-content: flex-start; align-items: center;">
+            [[=theme_partials.get("dbadmin_footer_back", "")]]
+        </footer>
     </div>
-    <div class="ticket">[[=BEAUTIFY(ticket)]]</div>
-  </body>
+
+    <script src="js/utils.js"></script>
+    <script>
+      function goBackFromTable() {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = '[[=URL("index")]]';
+        }
+      }
+    </script>
+</body>
 </html>

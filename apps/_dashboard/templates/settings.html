@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="themes/Modern/favicon.ico" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script>
+      var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
+    </script>
+    <script src="js/theme-selector.js"></script>
+    <style>
+      .settings-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      .settings-section {
+        margin-bottom: 30px;
+      }
+      .settings-toggle-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        font-size: 20px;
+        font-weight: 600;
+        border: 1px solid #0074d9;
+        border-radius: 4px;
+        background: #eef7ff;
+        color: #0a3d66;
+        cursor: pointer;
+      }
+      .settings-toggle-btn:hover {
+        background: #dceeff;
+      }
+      .settings-toggle-icon {
+        font-size: 22px;
+        line-height: 1;
+      }
+      .settings-collapsible {
+        margin-top: 14px;
+      }
+      .settings-collapsible[hidden] {
+        display: none;
+      }
+      .settings-section h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #0074d9;
+        padding-bottom: 10px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+        background: transparent !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        margin-top: 0 !important;
+      }
+      .form-group select,
+      .form-group input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      .form-group select:focus,
+      .form-group input[type="password"]:focus {
+        outline: none;
+        border-color: #0074d9;
+        box-shadow: 0 0 5px rgba(0, 116, 217, 0.3);
+      }
+      .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #0074d9;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1.2;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+      }
+      .settings-action-btn,
+      .settings-container .button-group button {
+        background: #0074d9 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border: 1px solid #0052a3 !important;
+        text-shadow: none !important;
+      }
+      .settings-action-btn:hover,
+      .settings-container .button-group button:hover {
+        background: #0052a3 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+      }
+      .settings-action-btn:disabled,
+      .settings-action-btn[disabled],
+      .settings-action-btn.disabled,
+      .settings-action-btn[aria-disabled="true"],
+      .settings-container .button-group button:disabled,
+      .settings-container .button-group button[disabled],
+      .settings-container .button-group button.disabled,
+      .settings-container .button-group button[aria-disabled="true"] {
+        background-color: #d5dbe3 !important;
+        background-image: none !important;
+        color: #2f3947 !important;
+        -webkit-text-fill-color: #2f3947 !important;
+        border-color: #b6c0cc !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+      }
+      button:hover {
+        background-color: #0052a3;
+      }
+      button.btn-secondary {
+        background-color: #666;
+      }
+      button.btn-secondary:hover {
+        background-color: #555;
+      }
+      .alert {
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border-left: 4px solid;
+      }
+      .alert-success {
+        background-color: #dff0d8;
+        border-color: #5cb85c;
+        color: #3c763d;
+      }
+      .alert-error {
+        background-color: #f2dede;
+        border-color: #d9534f;
+        color: #a94442;
+      }
+      .back-link {
+        margin-top: 20px;
+        text-align: center;
+      }
+      .back-link a {
+        color: #0074d9;
+        text-decoration: none;
+      }
+      .back-link a:hover {
+        text-decoration: underline;
+      }
+      .settings-page .modern-settings-header {
+        display: none;
+      }
+      .settings-page .classic-settings-header {
+        display: block;
+      }
+      body.settings-page.modern-theme .modern-settings-header {
+        display: flex;
+      }
+      body.settings-page.modern-theme .classic-settings-header {
+        display: none;
+      }
+      body.settings-page.modern-theme {
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        grid-template-rows: auto 1fr auto;
+        min-height: 100vh;
+        background: var(--bg-primary);
+      }
+      body.settings-page.modern-theme > header,
+      body.settings-page.modern-theme > footer {
+        grid-column: 2;
+      }
+      body.settings-page.modern-theme > header {
+        grid-column: 1 / -1;
+      }
+      body.settings-page.modern-theme > header nav {
+        min-height: 56px !important;
+        padding: 16px 24px !important;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-secondary) !important;
+      }
+      body.settings-page.modern-theme .page-mod-header {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        min-height: 120px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 1200;
+      }
+      body.settings-page.modern-theme .page-mod-header .spinner-top {
+        height: var(--modern-logo-height) !important;
+        width: auto;
+      }
+      body.settings-page.modern-theme .page-mod-header .logo {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      body.settings-page.modern-theme #activity-bar {
+        top: 120px;
+        height: calc(100vh - 120px);
+      }
+      body.settings-page.modern-theme > main {
+        grid-column: 2;
+        grid-row: 2;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 24px 40px;
+        background: linear-gradient(180deg, #f8fbf6 0%, #f1f7eb 100%);
+      }
+      body.settings-page.modern-theme .settings-container {
+        width: min(760px, 100%);
+        margin: 0;
+        padding: 24px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--bg-secondary);
+        box-shadow: 0 18px 40px rgba(31, 44, 31, 0.14);
+      }
+      body.settings-page.modern-theme .settings-container h1 {
+        margin: 0 0 20px;
+        font-size: 42px;
+        line-height: 1;
+        color: var(--text-primary);
+      }
+      body.settings-page.modern-theme .settings-section h3 {
+        color: var(--text-primary);
+        border-bottom-color: var(--accent-primary);
+      }
+      body.settings-page.modern-theme .form-group label {
+        color: var(--text-primary);
+      }
+      body.settings-page.modern-theme .form-group select,
+      body.settings-page.modern-theme .form-group input[type="password"] {
+        background: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-color);
+      }
+      body.settings-page.modern-theme .form-group select option {
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+      }
+      body.settings-page.modern-theme .form-group select option:checked {
+        background: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+      }
+      body.settings-page.modern-theme .settings-toggle-btn {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border-color: var(--accent-primary);
+      }
+      body.settings-page.modern-theme .settings-toggle-btn:hover {
+        background: var(--hover-bg);
+      }
+      body.settings-page.modern-theme .settings-action-btn,
+      body.settings-page.modern-theme .settings-container .button-group button {
+        background: var(--accent-primary) !important;
+        color: #ffffff !important;
+        border-color: var(--accent-secondary) !important;
+      }
+      body.settings-page.modern-theme .settings-action-btn:hover,
+      body.settings-page.modern-theme .settings-container .button-group button:hover {
+        background: var(--accent-secondary) !important;
+      }
+      body.settings-page.modern-theme .back-link a {
+        color: var(--accent-primary);
+      }
+      body.settings-page.modern-theme footer {
+        margin-top: 0 !important;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-secondary) !important;
+      }
+      body.non-modern-theme #activity-bar {
+        display: none;
+      }
+    </style>
+</head>
+<body class="settings-page [[='modern-theme' if selected_theme == 'Modern' else 'non-modern-theme' ]]">
+    <a href="https://github.com/web2py/py4web" style="position:absolute; top:0; right:0; z-index:9999;"><img style="width:100px; border:0;" src="../static/images/forkme.png" /></a>
+    <div id="activity-bar"></div>
+    <div class="page-mod-header modern-settings-header">
+      <a class="header-left" href="[[=URL('index')]]">
+        <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+        <span class="modern-logo-text">py4web</span>
+        <span class="logo">Dashboard</span>
+      </a>
+      <div class="header-right">
+        <span>Settings</span>
+      </div>
+    </div>
+    <header class="classic-settings-header">
+      <!-- Navigation bar -->
+      <nav class="black dashboard-top-nav">
+        <ul class="dashboard-top-nav-list">
+          <li class="dashboard-top-nav-item">
+            <a href="[[=URL('index')]]">Dashboard</a> / Settings
+          </li>
+        </ul>
+      </nav>
+    </header>
+    
+    <main class="padded">
+      <div class="settings-container">
+        <h1>Dashboard Settings</h1>
+        
+        [[if message:]]
+        <div class="alert [[='alert-success' if message_type == 'success' else 'alert-error' ]]">
+          [[=message]]
+        </div>
+        [[pass]]
+
+        <!-- Theme Selection -->
+        <div class="settings-section">
+          <h3>Theme</h3>
+          <form id="theme-form" method="POST">
+            <div class="form-group">
+              <label for="theme-select">Select Theme:</label>
+              <select id="theme-select" name="theme" data-theme-selector onchange="setDashboardTheme(this.value)">
+                [[for theme in themes:]]<option value="[[=theme]]" [[='selected' if theme == selected_theme else '']]>[[=theme]]</option>[[pass]]
+              </select>
+            </div>
+            <div class="button-group">
+              <button class="settings-action-btn" type="button" onclick="saveTheme()">Save Theme</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Password Change -->
+        <div class="settings-section">
+          <button
+            type="button"
+            id="password-toggle"
+            class="settings-toggle-btn"
+            aria-expanded="false"
+            aria-controls="password-panel"
+            onclick="togglePasswordSection()"
+          >
+            <span>Change Administrator Password</span>
+            <span class="settings-toggle-icon" id="password-toggle-icon">+</span>
+          </button>
+          <div id="password-panel" class="settings-collapsible" hidden>
+            <form id="password-form" method="POST">
+              <div class="form-group">
+                <label for="old-password">Current Password:</label>
+                <input type="password" id="old-password" name="old_password" required>
+              </div>
+              <div class="form-group">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="password" required>
+              </div>
+              <div class="form-group">
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password" required>
+              </div>
+              <div class="button-group">
+                <button class="settings-action-btn" type="button" onclick="changePassword()">Change Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="back-link">
+          <a href="[[=URL('index')]]">← Back to Dashboard</a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="black padded" style="text-align: center; margin-top: 40px;">
+      <p>Part of <a href="https://py4web.com">py4web</a></p>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script>
+      function saveTheme() {
+        const theme = document.getElementById('theme-select').value;
+        fetch('[[=URL("save_theme")]]', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ theme: theme })
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'success') {
+            window.location.href = '[[=URL("index")]]';
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(e => alert('Error saving theme: ' + e));
+      }
+
+      function changePassword() {
+        const oldPwd = document.getElementById('old-password').value;
+        const newPwd = document.getElementById('new-password').value;
+        const confirmPwd = document.getElementById('confirm-password').value;
+
+        if (!oldPwd) {
+          alert('Please enter your current password');
+          return;
+        }
+        if (!newPwd) {
+          alert('Please enter a new password');
+          return;
+        }
+        if (newPwd !== confirmPwd) {
+          alert('Passwords do not match');
+          return;
+        }
+        if (newPwd.length < 6) {
+          alert('Password must be at least 6 characters');
+          return;
+        }
+
+        fetch('[[=URL("change_password")]]', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ old_password: oldPwd, password: newPwd })
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'success') {
+            alert('Password changed successfully');
+            document.getElementById('password-form').reset();
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(e => alert('Error changing password: ' + e));
+      }
+
+      function togglePasswordSection() {
+        const panel = document.getElementById('password-panel');
+        const toggle = document.getElementById('password-toggle');
+        const icon = document.getElementById('password-toggle-icon');
+        if (!panel || !toggle || !icon) {
+          return;
+        }
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        if (isExpanded) {
+          panel.hidden = true;
+          toggle.setAttribute('aria-expanded', 'false');
+          icon.textContent = '+';
+        } else {
+          panel.hidden = false;
+          toggle.setAttribute('aria-expanded', 'true');
+          icon.textContent = '-';
+        }
+      }
+
+      function setSettingsActivityBarVisibility(themeName) {
+        const bar = document.getElementById('activity-bar');
+        if (!bar) {
+          return;
+        }
+        if (themeName !== 'Modern') {
+          bar.innerHTML = '';
+          bar.style.display = 'none';
+        } else {
+          bar.style.display = '';
+        }
+      }
+
+      function applySettingsPreview(themeName) {
+        const body = document.body;
+        if (!body) {
+          return;
+        }
+        const isModern = themeName === 'Modern';
+        body.classList.toggle('modern-theme', isModern);
+        body.classList.toggle('non-modern-theme', !isModern);
+        setSettingsActivityBarVisibility(themeName);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const themeSelect = document.getElementById('theme-select');
+
+        function getActiveTheme() {
+          return document.documentElement.getAttribute('data-theme') || (typeof SELECTED_THEME !== 'undefined' ? SELECTED_THEME : '');
+        }
+
+        function syncActivityBarVisibility() {
+          applySettingsPreview(getActiveTheme());
+        }
+
+        syncActivityBarVisibility();
+
+        if (themeSelect) {
+          themeSelect.addEventListener('change', function () {
+            applySettingsPreview(themeSelect.value);
+          });
+        }
+
+        setTimeout(syncActivityBarVisibility, 250);
+        setTimeout(syncActivityBarVisibility, 1000);
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="themes/[[= selected_theme or 'Modern' ]]/favicon.ico" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/no.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+    <script>
+      var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
+    </script>
+    <script src="js/theme-selector.js"></script>
+    <style>
+      .system-info-page {
+        padding: 24px;
+      }
+      .system-info-shell {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .system-info-card {
+        border: 1px solid var(--border-color, #ccc);
+        border-radius: 8px;
+        background: var(--bg-secondary, #fff);
+        padding: 24px;
+      }
+      .system-info-title {
+        margin: 0 0 16px;
+        font-size: 34px;
+        line-height: 1.05;
+      }
+      .system-info-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .system-info-table th,
+      .system-info-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border-color, #ddd);
+        text-align: left;
+        vertical-align: top;
+      }
+      .system-info-table th {
+        width: 180px;
+        font-weight: 700;
+      }
+      .system-info-table td {
+        word-break: break-word;
+      }
+      .system-info-actions {
+        margin-top: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .system-info-actions a {
+        text-decoration: none;
+      }
+      .system-info-actions button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      body.non-modern-theme #activity-bar {
+        display: none;
+      }
+      body.system-info-page.modern-theme {
+        min-height: 100vh;
+        background: var(--bg-primary);
+      }
+      body.system-info-page.modern-theme .page-mod-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        min-height: 120px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-color);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1200;
+      }
+      body.system-info-page.modern-theme .page-mod-header .spinner-top {
+        height: var(--modern-logo-height) !important;
+        width: auto;
+      }
+      body.system-info-page.modern-theme .page-mod-header .logo {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      body.system-info-page.modern-theme #activity-bar {
+        top: 120px;
+        height: calc(100vh - 120px);
+      }
+      body.system-info-page.modern-theme > main {
+        margin-left: 50px;
+        margin-top: 120px;
+        width: calc(100% - 50px);
+        padding: 32px 24px 40px;
+        background: linear-gradient(180deg, #f8fbf6 0%, #f1f7eb 100%);
+        min-height: calc(100vh - 120px);
+      }
+      body.system-info-page.modern-theme .system-info-card {
+        background: var(--bg-secondary);
+        border-color: var(--border-color);
+        box-shadow: 0 18px 40px rgba(31, 44, 31, 0.14);
+      }
+      body.system-info-page.modern-theme .system-info-title {
+        color: var(--text-primary);
+      }
+      body.system-info-page.modern-theme .system-info-actions {
+        justify-content: flex-start;
+      }
+      body.system-info-page.modern-theme .system-info-table th,
+      body.system-info-page.modern-theme .system-info-table td {
+        border-bottom-color: var(--border-color);
+      }
+    </style>
+</head>
+<body class="system-info-page [[='modern-theme' if selected_theme == 'Modern' else 'non-modern-theme' ]]">
+    <a href="https://github.com/web2py/py4web" style="position:absolute; top:0; right:0; z-index:9999;"><img style="width:100px; border:0;" src="../static/images/forkme.png" /></a>
+    <div id="activity-bar"></div>
+    [[if selected_theme == 'Modern':]]
+    <div class="page-mod-header">
+      <a class="header-left" href="[[=URL('index')]]">
+        <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+        <span class="modern-logo-text">py4web</span>
+        <span class="logo">Dashboard</span>
+      </a>
+      <div class="header-right">
+        <span>System Info</span>
+      </div>
+    </div>
+    [[else:]]
+    <header>
+      <nav class="black dashboard-top-nav">
+        <ul class="dashboard-top-nav-list">
+          <li class="dashboard-top-nav-item">
+            <a href="[[=URL('index')]]">Dashboard</a> / System Info
+          </li>
+        </ul>
+      </nav>
+    </header>
+    [[pass]]
+    <main class="system-info-page">
+      <div class="system-info-shell">
+        <div class="system-info-card">
+          <h1 class="system-info-title">System Information</h1>
+          <div class="system-info-actions">
+              <button id="sysinfo-copy" type="button"><i class="fas fa-copy"></i> Copy to Clipboard</button>
+              <button id="sysinfo-save" type="button"><i class="fas fa-save"></i> Save</button>
+              <a href="[[=URL('index')]]"><button type="button"><i class="fas fa-arrow-left"></i> Back</button></a>
+          </div>
+          <table class="system-info-table">
+            <tbody>
+              [[for item in info_items:]]
+              <tr>
+                <th>[[=item.get('name')]]</th>
+                <td>[[=item.get('version')]]</td>
+              </tr>
+              [[pass]]
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <footer class="black padded dashboard-footer-bar">
+      <p>Part of <a href="https://py4web.com">py4web</a></p>
+    </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const copyBtn = document.getElementById('sysinfo-copy');
+        const saveBtn = document.getElementById('sysinfo-save');
+
+        function buildSystemInfoText() {
+          const rows = document.querySelectorAll('.system-info-table tbody tr');
+          let text = 'System Information\n';
+          text += '==================\n\n';
+          rows.forEach((row) => {
+            const key = row.querySelector('th')?.textContent?.trim() || '';
+            const value = row.querySelector('td')?.textContent?.trim() || '';
+            if (key) {
+              text += key + ': ' + value + '\n';
+            }
+          });
+          return text;
+        }
+
+        copyBtn?.addEventListener('click', async function () {
+          const text = buildSystemInfoText();
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch (_) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+        });
+
+        saveBtn?.addEventListener('click', function () {
+          const text = buildSystemInfoText();
+          const now = new Date();
+          const pad = (v) => String(v).padStart(2, '0');
+          const filename = 'py4web-system-details-' +
+            now.getFullYear() +
+            pad(now.getMonth() + 1) +
+            pad(now.getDate()) + '-' +
+            pad(now.getHours()) +
+            pad(now.getMinutes()) +
+            pad(now.getSeconds()) + '.txt';
+          const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+        });
+
+        function syncActivityBarVisibility() {
+          var activeTheme = document.documentElement.getAttribute('data-theme') || '[[=selected_theme]]';
+          var bar = document.getElementById('activity-bar');
+          if (!bar) return;
+          if (activeTheme !== 'Modern') {
+            bar.innerHTML = '';
+            bar.style.display = 'none';
+          } else {
+            bar.style.display = '';
+          }
+        }
+        syncActivityBarVisibility();
+        setTimeout(syncActivityBarVisibility, 250);
+        setTimeout(syncActivityBarVisibility, 1000);
+      });
+    </script>
+</body>
+</html>

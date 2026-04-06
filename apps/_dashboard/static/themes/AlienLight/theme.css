@@ -138,10 +138,7 @@ textarea:focus {
 
 .loading {
   background-color: var(--bg-primary);
-}
-
-tbody {
-  border-bottom: 1px solid var(--border-color);
+  background-image: url(widget.gif);
 }
 
 tbody tr:hover {
@@ -157,14 +154,11 @@ tbody tr:hover {
 
 thead tr {
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
 }
 
 thead th {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-color);
 }
 
 button, a[role=button], input[type=submit], input[type=button] {
@@ -329,7 +323,3 @@ p, span, div {
   color: var(--text-primary);
 }
 
-/* Style favicon icons to green */
-img[src*="favicon.ico"] {
-  filter: hue-rotate(110deg) saturate(1.5) brightness(0.8);
-}

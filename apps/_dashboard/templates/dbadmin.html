@@ -1,6 +1,106 @@
-[[extend "layout.html"]]
+<!DOCTYPE html>
+<html data-theme="[[= selected_theme or 'Modern' ]]">
+<head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="themes/Modern/favicon.ico" />    <link rel="stylesheet" href="css/base.css">    <link rel="stylesheet" href="css/no.css">
+    <link id="dashboard-theme" rel="stylesheet" href="themes/[[= selected_theme or 'Modern' ]]/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <script>
+    var SELECTED_THEME = '[[= selected_theme or "Modern" ]]';
+    </script>
+    <script src="js/theme-selector.js"></script>
+</head>
+<body class="dbadmin-page">
+    <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0; z-index:9999;" src="../static/images/forkme.png" /></a>
+    
+    <div id="activity-bar"></div>
+    <div class="my-effects">
+        <!-- Main Header with py4web branding and navigation -->
+        <div class="header dbadmin-header">
+            <div class="header-left">
+                <img src="themes/[[= selected_theme or 'Modern' ]]/widget.gif" class="spinner-top" />
+                <span class="modern-logo-text">py4web</span>
+                <span class="logo">Dashboard</span>
+            </div>
+            <div class="header-right">
+                [[=theme_partials.get("dbadmin_nav", "")]]
+                <a class="button" href="[[=URL('settings')]]">Settings</a>
+            </div>
+        </div>
 
-<div class="dbadmin">
-<h2>Application "[[=app_name]]" - Table "[[=table_name]]"</h2>
-[[=grid]]
-</div>
+        <!-- DBAdmin Content -->
+        <div class="dbadmin">
+            <div class="dbadmin-content">
+                <div>
+                    [[if table_name == 'py4web_error':]]
+                    <h2 style="margin:0;">All Tickets for this site - Table "[[=table_name]]"</h2>
+                    [[else:]]
+                    <h2 style="margin:0;">Application "[[=app_name]]" - Table "[[=table_name]]"</h2>
+                    [[pass]]
+                </div>
+                [[if table_name == 'py4web_error':]]
+                <div style="margin-top: 10px; margin-bottom: 10px; display:flex; justify-content:flex-end; gap:8px;">
+                    <form method="post" action="[[=URL('tickets/delete_all')]]" style="margin:0;" onsubmit="return confirmDeleteAllTickets();">
+                        <button type="submit" class="dbadmin-delete-all-btn"><i class="fas fa-trash-alt"></i> Delete All Tickets</button>
+                    </form>
+                    <button type="button" class="dbadmin-back-btn" onclick="goBackFromTable()"><i class="fas fa-arrow-left"></i> Go back</button>
+                </div>
+                [[pass]]
+                [[=grid]]
+                [[if table_name == 'py4web_error':]]
+                <div style="margin-top: 12px; display:flex; justify-content:flex-start;">
+                    <button type="button" class="dbadmin-back-btn" onclick="goBackFromTable()"><i class="fas fa-arrow-left"></i> Go back</button>
+                </div>
+                [[pass]]
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="black padded" style="display: flex; justify-content: flex-start; align-items: center;">
+            [[=theme_partials.get("dbadmin_footer_back", "")]]
+        </footer>
+    </div>
+
+    <script src="js/utils.js"></script>
+        <style>
+            .dbadmin-back-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                line-height: 1.15;
+            }
+            .dbadmin-delete-all-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                line-height: 1.15;
+            }
+            .dbadmin-back-btn i {
+                line-height: 1;
+            }
+        </style>
+    <script>
+      const dbAdminAppName = '[[=app_name]]';
+      
+            function goBackFromTable() {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '[[=URL("index")]]';
+                }
+            }
+
+            function goToAppView(view) {
+        // Navigate back to index with the app edit view
+        window.location.href = '[[=URL("index")]]?app=' + encodeURIComponent(dbAdminAppName) + '&view=' + view;
+      }
+
+            function confirmDeleteAllTickets() {
+                return window.confirm('Delete all tickets for this site? This action cannot be undone.');
+            }
+    </script>
+</body>
+</html>

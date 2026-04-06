@@ -1,0 +1,1723 @@
+/* Modern Theme - Light Activity Bar Layout */
+
+:root {
+  /* Color Palette - Light Modern */
+  --bg-primary: #f5f8f1;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eaf1e4;
+  --text-primary: #1f2c1f;
+  --text-secondary: #5a6859;
+  --accent-primary: #2f9e44;
+  --accent-secondary: #237a35;
+  --accent-accent: #ff6b35;
+  --accent-accent-dark: #d85a2d;
+  --accent-accent-soft: #fff1ea;
+  --border-color: #d4e0d0;
+  --hover-bg: #edf6ea;
+  --activity-bar-width: 50px;
+  --activity-bar-bg: #f3f5f1;
+  --activity-button-size: 48px;
+  --activity-button-icon-size: 24px;
+  --modern-logo-height: 96px;
+  --modern-header-height: 120px;
+}
+
+/* Global Resets & Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+}
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-secondary);
+  text-decoration: underline;
+}
+
+button {
+  background-color: var(--accent-primary);
+  color: white;
+  border: 1px solid var(--accent-secondary);
+  padding: 6px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(47, 158, 68, 0.18);
+}
+
+button:hover {
+  background-color: var(--accent-secondary);
+  box-shadow: 0 4px 10px rgba(47, 158, 68, 0.25);
+}
+
+button.btn-secondary {
+  background-color: var(--accent-accent);
+  border-color: var(--accent-accent-dark);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(216, 90, 45, 0.22);
+}
+
+button.btn-secondary:hover {
+  background-color: var(--accent-accent-dark);
+  box-shadow: 0 4px 10px rgba(216, 90, 45, 0.28);
+}
+
+/* GitHub "Fork me" ribbon - must be above sticky header */
+a[href*="github.com/web2py/py4web"] > img[src*="forkme"] {
+  z-index: 1300;
+}
+
+/* Activity Bar Styling */
+#activity-bar {
+  position: fixed;
+  left: 0;
+  top: var(--modern-header-height);
+  width: var(--activity-bar-width);
+  height: calc(100vh - var(--modern-header-height));
+  background-color: var(--activity-bar-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  gap: 5px;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: none;
+}
+
+.activity-spacer {
+  margin-top: auto;
+  min-height: 12px;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.activity-button {
+  width: var(--activity-button-size);
+  height: var(--activity-button-size);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5d665d;
+  font-size: var(--activity-button-icon-size);
+  border-left: 3px solid transparent;
+  border-radius: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  padding: 0;
+  filter: grayscale(100%);
+}
+
+.activity-button i {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.activity-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background-color: #303630;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+}
+
+.activity-badge.empty {
+  min-width: 10px;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  line-height: 10px;
+  top: 8px;
+  right: 8px;
+}
+
+.activity-button:hover {
+  color: #333a33;
+  background-color: #ecefea;
+  border-left-color: #b4bbb2;
+}
+
+.activity-button.active {
+  color: #1f2c1f;
+  background-color: #e7ebe6;
+  border-left-color: #616a61;
+  filter: grayscale(100%);
+}
+
+.activity-button-bottom {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.activity-button.disabled {
+  color: #9aa89a;
+  opacity: 0.45;
+}
+
+.activity-button.disabled:hover {
+  color: #9aa89a;
+  background-color: transparent;
+}
+
+/* Activity Bar Separator */
+.activity-separator {
+  width: 30px;
+  height: 1px;
+  background-color: #cfd6cc;
+  margin: 10px 0;
+}
+
+/* Main Layout - Offset for Activity Bar */
+body.dbadmin-page {
+  display: grid !important;
+  grid-template-columns: var(--activity-bar-width) 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Override no.css dbadmin-page header specificity so Tickets header matches main dashboard */
+body.dbadmin-page .header .spinner-top {
+  height: var(--modern-logo-height) !important;
+  width: auto !important;
+}
+
+body.dbadmin-page .header .logo {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  padding: 0 !important;
+}
+
+/* Header Styling */
+.header {
+  grid-column: 1 / -1;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 20px;
+  min-height: var(--modern-header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.header-left:hover {
+  opacity: 0.9;
+}
+
+.header-left .spinner-top {
+  width: auto;
+  height: var(--modern-logo-height);
+  max-width: none;
+  padding: 0;
+  border-radius: 0;
+  object-fit: contain;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.page-mod-header .spinner-top {
+  width: auto !important;
+  height: var(--modern-logo-height) !important;
+  max-width: none;
+  padding: 0;
+  border-radius: 0;
+  object-fit: contain;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.modern-logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: -1px;
+}
+
+.header-left .logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Ticket Subtitle Bar - positioned below main header */
+.ticket-subtitle-bar {
+  position: fixed;
+  top: var(--modern-header-height);
+  left: var(--activity-bar-width);
+  right: 0;
+  height: 40px;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+  z-index: 1100;
+}
+
+.ticket-subtitle-bar .ticket-error-title {
+  flex: 1;
+  margin: 0;
+  padding-right: 20px;
+}
+
+.ticket-subtitle-bar .button {
+  flex-shrink: 0;
+  background-color: var(--accent-accent);
+  border-color: var(--accent-accent-dark);
+  color: #ffffff;
+}
+
+.ticket-subtitle-bar .button:hover {
+  background-color: var(--accent-accent-dark);
+}
+
+/* Login Styles */
+.login {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(145deg, #f8fbf5 0%, var(--bg-tertiary) 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login h1 {
+  font-size: 48px;
+  color: var(--accent-primary);
+  margin: 0 0 20px 0;
+}
+
+.login h2 {
+  color: var(--text-secondary);
+  margin: 0 0 30px 0;
+}
+
+
+/* Index.html Layout with Sidebar */
+#target {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-left: 0;
+}
+
+.dashboard-shell {
+  min-width: 0;
+  padding-top: var(--modern-header-height);
+}
+
+.dashboard-shell > .classic-main-layout,
+.dashboard-shell > .modern-main-layout,
+.dashboard-shell > .panel {
+  margin-left: var(--activity-bar-width);
+  width: calc(100% - var(--activity-bar-width));
+  max-width: calc(100% - var(--activity-bar-width));
+}
+
+.dashboard-shell > .dialog-error {
+  left: calc(20px + var(--activity-bar-width));
+}
+
+.select-app-first-page {
+  margin-left: var(--activity-bar-width);
+  width: calc(100% - var(--activity-bar-width));
+  min-height: calc(100vh - var(--modern-header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(180deg, #f8fbf6 0%, #f1f7eb 100%);
+}
+
+.select-app-first-page h2 {
+  margin: 0;
+  padding: 16px 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 28px;
+}
+
+/* Activity Bar Icon Styling */
+#activity-bar .activity-button {
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  width: 100%;
+}
+
+.login input[type="password"] {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 3px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.login input[type="password"]:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(47, 158, 68, 0.18);
+}
+
+.modern-login {
+  justify-content: flex-start;
+  background: linear-gradient(145deg, #f8fbf5 0%, var(--bg-tertiary) 100%);
+}
+
+.modern-login-shell {
+  width: min(760px, 100%);
+  margin: 14vh auto 0 auto;
+}
+
+.modern-login-top {
+  width: 100%;
+  margin: 0 0 12px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  box-shadow: 0 8px 20px rgba(31, 44, 31, 0.08);
+  padding: 12px 18px;
+}
+
+.modern-login-top .header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modern-login-top .spinner-top {
+  height: 72px;
+  width: auto;
+  padding: 0;
+}
+
+.modern-login-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(31, 44, 31, 0.08);
+  padding: 24px 28px 20px 28px;
+}
+
+.modern-login-footer-panel {
+  margin-top: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(31, 44, 31, 0.08);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modern-login-footer-panel button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+  min-height: 32px;
+}
+
+.modern-login-footer-panel .right {
+  margin-bottom: 0;
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Main Content Area */
+main {
+  grid-column: 2;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+}
+
+/* DBAdmin Page Styles */
+.dbadmin-page {
+  display: grid;
+  grid-template-columns: var(--activity-bar-width) 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+.dbadmin-header {
+  grid-column: 1 / -1;
+}
+
+/* Push content below fixed header and right of fixed activity bar */
+body.dbadmin-page .my-effects {
+  padding-top: var(--modern-header-height);
+  margin-left: var(--activity-bar-width);
+}
+
+/* Adjust content padding when ticket subtitle bar is present */
+.ticket-subtitle-bar + .dbadmin {
+  padding-top: 40px;
+}
+
+.dbadmin {
+  padding: 20px;
+  overflow: auto;
+}
+
+.dbadmin-content {
+  min-width: 100%;
+}
+
+.dbadmin-content h2 {
+  color: var(--text-primary);
+  margin-top: 0;
+  border-bottom: 2px solid var(--accent-primary);
+  padding-bottom: 10px;
+}
+
+/* Override no.css dark dbadmin hover/selection styles for Modern readability. */
+body.dbadmin-page .dbadmin tbody tr:hover,
+body.dbadmin-page .dbadmin tbody tr:focus-within {
+  background-color: var(--hover-bg) !important;
+}
+
+body.dbadmin-page .dbadmin tbody tr:hover td,
+body.dbadmin-page .dbadmin tbody tr:hover a,
+body.dbadmin-page .dbadmin tbody tr:focus-within td,
+body.dbadmin-page .dbadmin tbody tr:focus-within a {
+  color: var(--text-primary) !important;
+}
+
+/* Keep dbadmin details/edit field containers readable in Modern.
+   no.css applies a dark label~div block that can hide text contrast here. */
+body.dbadmin-page .dbadmin label ~ div {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+body.dbadmin-page .dbadmin label ~ div,
+body.dbadmin-page .dbadmin label ~ div * {
+  color: var(--text-primary) !important;
+}
+
+/* Footer */
+footer {
+  grid-column: 2;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+table thead {
+  background-color: var(--bg-tertiary);
+}
+
+table th {
+  padding: 12px;
+  text-align: left;
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+}
+
+table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+table tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Form Styles */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(47, 158, 68, 0.18);
+}
+
+/* Classic Layout Support (for backward compatibility) */
+.classic-main-layout {
+  display: grid;
+  grid-column: 2;
+  grid-row: 2;
+  padding: 0;
+  min-width: 0;
+}
+
+.classic-left-panel {
+  padding: 20px;
+  min-width: 0;
+}
+
+.classic-right-panel {
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+}
+
+.panel > label {
+  width: calc(100% - 2px);
+}
+
+/* Modern manage applications flat list */
+.modern-main-layout {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: 20px;
+  margin: 20px 0;
+  min-height: calc(100vh - 180px);
+  align-items: start;
+}
+
+.modern-applications-panel {
+  padding: 12px;
+}
+
+.modern-right-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.modern-right-panel h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-primary);
+  font-size: 1.3em;
+}
+
+.modern-right-panel .info-section {
+  margin: 16px 0;
+}
+
+.modern-right-panel .info-section h3,
+.modern-right-panel .recent-tickets-section h3,
+.modern-right-panel .password-section h3 {
+  font-size: 0.92em;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.modern-right-panel .info-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.modern-right-panel .info-table td {
+  padding: 4px 8px;
+}
+
+.modern-right-panel .btn-details,
+.modern-right-panel .btn-show-all,
+.modern-right-panel .btn-password {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.15;
+  min-height: 42px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: 14px;
+}
+
+.modern-right-panel .btn-details i,
+.modern-right-panel .btn-show-all i,
+.modern-right-panel .btn-password i {
+  line-height: 1;
+}
+
+.modern-show-all-button {
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+.modern-show-all-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  text-align: left;
+}
+
+.modern-site-ticket-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #d9534f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(217, 83, 79, 0.28);
+  flex: 0 0 auto;
+}
+
+.modern-right-panel .recent-tickets-section,
+.modern-right-panel .password-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.modern-applications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background-color: var(--bg-primary);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modern-applications-header h3 {
+  margin: 0;
+}
+
+.modern-applications-header .right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.modern-applications-header .right button,
+.modern-app-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.modern-applications-header .right button {
+  background-color: #b7d8f1;
+  border-color: #84b3d3;
+  color: #18435f;
+  box-shadow: 0 2px 6px rgba(76, 128, 166, 0.24);
+}
+
+.modern-applications-header .right button:hover {
+  background-color: #a8cfee;
+  border-color: #75a6c8;
+  box-shadow: 0 4px 10px rgba(76, 128, 166, 0.3);
+}
+
+.modern-applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modern-app-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+}
+
+.modern-app-row:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.modern-app-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.modern-app-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.app-status-dot.running {
+  background-color: #2ecc40;
+  box-shadow: 0 0 6px rgba(46, 204, 64, 0.7);
+}
+
+.app-status-dot.stopped {
+  background-color: #ff4136;
+  box-shadow: 0 0 6px rgba(255, 65, 54, 0.7);
+}
+
+.modern-app-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: 8px;
+}
+
+.modern-app-actions button {
+  min-width: 78px;
+}
+
+.modern-app-actions button.danger {
+  background-color: #d9534f;
+}
+
+.modern-app-actions button.danger:hover {
+  background-color: #e76f6b;
+}
+
+.dashboard-shell > .panel > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.modern-tickets-panel {
+  padding: 12px;
+}
+
+.modern-tickets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.modern-tickets-header h3 {
+  margin: 0;
+}
+
+.modern-tickets-header .right button:last-child {
+  background-color: var(--accent-accent);
+  border-color: var(--accent-accent-dark);
+}
+
+.modern-tickets-header .right button:last-child:hover {
+  background-color: var(--accent-accent-dark);
+}
+
+/* Hide accordion controls in Modern for app detail sections. */
+input#traceback,
+input#routes,
+input#files,
+input#editor_container,
+input#databases {
+  display: none;
+}
+
+label[for="traceback"],
+label[for="routes"],
+label[for="files"],
+label[for="editor_container"],
+label[for="databases"] {
+  display: none;
+}
+
+/* Keep app-detail content visible in Modern even though accordion toggles are hidden. */
+input#routes ~ div,
+input#files ~ div,
+input#editor_container ~ div,
+input#databases ~ div {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+@media (max-width: 768px) {
+  .modern-applications-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modern-applications-header .right {
+    justify-content: flex-start;
+  }
+
+  .modern-app-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modern-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-app-actions {
+    justify-content: flex-end;
+  }
+
+}
+
+/* Settings Container */
+.settings-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.settings-section h3 {
+  color: var(--accent-primary);
+  border-bottom: 2px solid var(--accent-primary);
+  padding-bottom: 10px;
+}
+
+.form-group label {
+  color: var(--text-primary);
+}
+
+.alert {
+  border-radius: 3px;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background-color: #e9f8eb;
+  border-color: #2f9e44;
+  color: #1f6f2f;
+}
+
+.alert-error {
+  background-color: #fdeceb;
+  border-color: #d9534f;
+  color: #962d2a;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --activity-bar-width: 60px;
+    --activity-button-size: 56px;
+  }
+  
+  main {
+    padding: 15px 10px;
+  }
+  
+  .settings-container {
+    margin: 0 10px;
+    padding: 20px;
+  }
+}
+
+/* Flash Alerts Styling */
+flash-alerts {
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.alert-box {
+  padding: 12px 15px;
+  border-radius: 3px;
+  max-width: 500px;
+}
+
+/* Utility Classes */
+.padded {
+  padding: 20px;
+}
+
+.black {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.my-effects {
+  transition: all 0.3s ease;
+}
+
+/* Center Content */
+center {
+  grid-column: 2;
+}
+
+/* Classic Theme Compatibility */
+
+.classic-login-top {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+}
+
+.classic-forgot-link {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.classic-forgot-link:hover {
+  color: var(--text-primary);
+}
+
+.classic-demo-note {
+  background-color: rgba(255, 107, 53, 0.12);
+  border: 1px solid var(--accent-accent);
+  color: #ba5a0f;
+  padding: 10px;
+  border-radius: 3px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+/* Grid Adjustments for Modern Theme */
+.grid-container {
+  display: grid;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Loading Spinner */
+.loading {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(245, 248, 241, 0.65);
+  background-image: none;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+/* Modern modal overrides for shared dashboard dialogs. */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(31, 44, 31, 0.28);
+  backdrop-filter: blur(3px);
+  z-index: 2400;
+}
+
+.modal-inner {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: min(760px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 0;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: 0 24px 60px rgba(31, 44, 31, 0.24);
+  z-index: 2410;
+}
+
+.modal-inner > div {
+  padding: 24px;
+}
+
+.modal-inner h2 {
+  margin: 0 0 10px 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.modal-inner p {
+  margin: 0 0 18px 0;
+  color: var(--text-secondary);
+}
+
+.modal-inner table {
+  background: transparent;
+  border: 0;
+}
+
+.modal-inner tr:hover {
+  background: transparent;
+}
+
+.modal-inner td,
+.modal-inner th {
+  padding: 10px 12px;
+  vertical-align: middle;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-inner tr:last-child td,
+.modal-inner tr:last-child th {
+  border-bottom: 0;
+}
+
+.modal-inner label {
+  background: transparent;
+  color: var(--text-primary);
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+}
+
+.modal-inner input[type="text"],
+.modal-inner input[type="password"] {
+  width: 100%;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: none;
+  text-align: left;
+}
+
+.modal-inner input[type="text"]:focus,
+.modal-inner input[type="password"]:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(47, 158, 68, 0.18);
+}
+
+.modal-inner input::placeholder {
+  color: #738073;
+}
+
+.modal-inner > div > div[style*="text-align: right"] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px !important;
+}
+
+.modal-inner > div > div[style*="text-align: right"] button {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+  min-height: 32px;
+}
+
+.spinner {
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Icon Styling for Activity Bar */
+.icon {
+  display: inline-block;
+  width: var(--activity-button-icon-size);
+  height: var(--activity-button-icon-size);
+  line-height: var(--activity-button-icon-size);
+  text-align: center;
+}
+
+/* Ensure proper text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================================
+   Modern App Browser — tabbed panel (Files / Databases / Routes)
+   ============================================================ */
+
+.modern-file-browser {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--modern-header-height));
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  padding: 0;
+}
+
+/* ---- Header: title row + tabs ---- */
+.modern-fb-header {
+  flex-shrink: 0;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modern-fb-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px 4px;
+}
+
+.modern-fb-app-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.modern-fb-back-btn {
+  flex-shrink: 0;
+  background-color: var(--accent-accent-soft);
+  border: 1px solid #f3c5b3;
+  color: #a14a23;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.modern-fb-back-btn:hover {
+  background-color: #ffe6da;
+  color: #7e381b;
+  border-color: var(--accent-accent);
+}
+
+.modern-fb-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 10px;
+}
+
+.mfb-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.mfb-tab:hover {
+  color: var(--text-primary);
+  background-color: var(--hover-bg);
+}
+
+.mfb-tab.active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+  background-color: transparent;
+}
+
+/* ---- Body: switches layout per view ---- */
+.modern-fb-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.modern-fb-body.view-files {
+  flex-direction: row;
+}
+
+.modern-fb-body.view-databases,
+.modern-fb-body.view-routes {
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* ---- Full-width content (Databases / Routes) ---- */
+.modern-fb-full-content {
+  width: 100%;
+}
+
+.modern-fb-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modern-fb-section-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Database table list */
+.modern-fb-db-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modern-fb-db-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.modern-fb-db-row:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-primary);
+}
+
+.modern-fb-db-name {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.modern-fb-db-fields {
+  font-size: 11px;
+  color: var(--text-secondary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modern-fb-db-arrow {
+  flex-shrink: 0;
+  color: var(--accent-primary);
+  font-size: 14px;
+}
+
+/* Routes scroll container */
+.modern-fb-routes-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* ---- Left panel — folder tree (Files view) ---- */
+.modern-fb-left {
+  width: 260px;
+  min-width: 200px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.modern-fb-tree {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 6px 0;
+}
+
+ul.modern-fb-folder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 16px;
+}
+
+ul.modern-fb-folder-list.modern-fb-root-list {
+  padding-left: 4px;
+}
+
+li.modern-fb-subfolder {
+  list-style: none;
+}
+
+.modern-fb-folder-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 6px;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modern-fb-folder-toggle:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.modern-fb-folder-toggle.selected-folder {
+  background-color: rgba(47, 158, 68, 0.18);
+  color: var(--accent-secondary);
+  border-left: 2px solid var(--accent-primary);
+  padding-left: 4px;
+}
+
+.modern-fb-folder-toggle .modern-fb-folder-arrow {
+  font-size: 10px;
+  transition: transform 0.15s;
+  display: inline-block;
+  width: 10px;
+}
+
+.modern-fb-folder-toggle.open .modern-fb-folder-arrow {
+  transform: rotate(90deg);
+}
+
+.modern-fb-file-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 6px 3px 22px;
+  text-align: left;
+  width: 100%;
+  display: block;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modern-fb-file-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.modern-fb-file-btn.selected-file {
+  background-color: rgba(47, 158, 68, 0.18);
+  color: var(--accent-secondary);
+  border-left: 2px solid var(--accent-primary);
+  padding-left: 20px;
+}
+
+.modern-fb-folder-children {
+  display: none;
+}
+
+.modern-fb-folder-children.open {
+  display: block;
+}
+
+/* Right panel — editor */
+.modern-fb-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  min-width: 0;
+}
+
+.modern-fb-editor-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+#modern-ace-editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modern-fb-status {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+  border-top: 1px solid var(--border-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.modern-fb-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.modern-fb-actions button {
+  font-size: 12px;
+  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.modern-fb-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.modern-fb-actions .btn-danger {
+  background-color: #c0392b;
+}
+
+.modern-fb-actions .btn-danger:hover:not(:disabled) {
+  background-color: #e74c3c;
+}
+
+.modern-fb-dirty-indicator {
+  background-color: var(--accent-accent);
+}
+
+/* Loading state */
+.modern-fb-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 40px;
+}
+
+/* Confirm dialog (reuse classic style adapted) */
+.modern-fb-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 44, 31, 0.24);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modern-fb-dialog {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0;
+  min-width: 320px;
+  max-width: 480px;
+  box-shadow: 0 10px 30px rgba(31, 44, 31, 0.2);
+}
+
+.modern-fb-dialog-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modern-fb-dialog-header h3 {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.modern-fb-dialog-body {
+  padding: 16px 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.modern-fb-dialog-body input[type="text"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.modern-fb-dialog-footer {
+  padding: 10px 18px 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--border-color);
+}
+
+.modern-fb-dialog-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 14px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .modern-fb-left {
+    width: 180px;
+    min-width: 120px;
+  }
+}
+
