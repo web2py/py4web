@@ -924,7 +924,7 @@ class Form(object):
                             validated_vars[field.name] = self.record.get(field.name)
                         else:
                             validated_vars[field.name] = value = None
-                    if isinstance(field.uploadfield, str):
+                    if isinstance(field.uploadfield, str) and value is not None:
                         validated_vars[field.uploadfield] = value.file.read()
                 elif field.type == 'blob':
                     pass
