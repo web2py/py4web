@@ -199,6 +199,116 @@ Example:
    auth.fix_actions()
 
 
+Customize Auth messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Every form and action message has a standard text for labels, buttons, and emails; however, these can be customized by overriding the values.
+
+For example in ``settings.py`` you can add:
+
+.. code:: python
+   MESSAGES = {
+        
+    "verify_email": {
+        "subject": "Please confirm your email address",
+        "body": "Hi {first_name},\n\nThank you for joining us! To activate your account, simply click the link below:\n\n{link}\n\nIf you didn’t create an account, please ignore this email.\n\nBest regards,\nThe Team"
+    },
+
+    "reset_password": {
+        "subject": "Reset your password",
+        "body": "Hello {first_name},\n\nWe received a request to reset your password. Click the link below to choose a new one:\n\n{link}\n\nIf you didn’t request this, please ignore the email or contact support.\n\nThanks,\nSupport Team"
+    },
+
+    "unsubscribe": {
+        "subject": "You’re unsubscribed",
+        "body": "Hi {first_name},\n\nWe’re sorry to see you go. You’ve been removed from our mailing list and will no longer receive emails.\n\nIf you change your mind, feel free to re‑subscribe anytime by visiting our website.\n\nThank you for having been with us.\n\nBest,\nThe Team"
+    },
+        "flash": {
+            "user-registered": "User registered",
+            "password-reset-link-sent": "Password reset link sent",
+            "password-changed": "Password changed",
+            "profile-saved": "Profile saved",
+            "user-logout": "User logout",
+            "email-verified": "Email verified",
+            "link-expired": "Link invalid or expired",
+            "login-required": "Login required",
+        },
+        "labels": {
+            "username": "Username",
+            "email": "Email",
+            "first_name": "First Name",
+            "last_name": "Last Name",
+            "phone_number": "Phone Number",
+            "username_or_email": "Username or Email",
+            "password": "Password",
+            "new_password": "New Password",
+            "old_password": "Old Password",
+            "login_password": "Password",
+            "password_again": "Password (again)",
+            "created_on": "Created On",
+            "created_by": "Created By",
+            "modified on": "Modified On",
+            "modified by": "Modified By",
+            "two_factor": "Authentication Code",
+        },
+        "buttons": {
+            "lost-password": "Lost Password",
+            "register": "Register",
+            "request": "Request",
+            "sign-in": "Sign In",
+            "sign-up": "Sign Up",
+            "submit": "Submit",
+        },
+        "errors": {
+            "registration_is_pending": "Registration is pending",
+            "account_is_blocked": "Account is blocked",
+            "account_needs_to_be_approved": "Account needs to be approved",
+            "invalid_credentials": "Invalid Credentials",
+            "invalid_token": "invalid token",
+            "password_doesnt_match": "Password doesn't match",
+            "invalid_current_password": "invalid current password",
+            "new_password_is_the_same_as_previous_password": "new password is the same as previous password",
+            "new_password_was_already_used": "new password was already used",
+            "invalid": "invalid",
+            "no_post_payload": "no post payload",
+            "two_factor": "Verification code does not match",
+            "two_factor_max_tries": "Two factor max tries exceeded",
+        },
+    }
+
+    BUTTON_CLASSES = {
+        "lost-password": "white",
+        "register": "white",
+        "request": "white",
+        "sign-in": "white",
+        "sign-up": "white",
+        "submit": "white",
+    }
+
+
+In ``common.py`` in Auth section you need to add: **auth.param.messages = settings.AUTH_MESSAGES**
+   
+.. code:: python
+   auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
+   auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL
+   auth.param.login_after_registration = settings.LOGIN_AFTER_REGISTRATION
+   auth.param.allowed_actions = settings.ALLOWED_ACTIONS
+   auth.param.login_expiration_time = 3600
+   auth.param.password_complexity = {"entropy": settings.PASSWORD_ENTROPY}
+   auth.param.block_previous_password_num = 3
+   auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
+
+   #Auth messages
+   auth.param.messages = settings.AUTH_MESSAGES
+
+   auth.define_tables()
+   auth.fix_actions()
+   auth.logger = logger
+
+   flash = auth.flash
+
+
+
 Authentication with CAPTCHA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -263,7 +373,7 @@ Finally in ``auth.html`` add:
 
 After completing these steps, the reCAPTCHA field will be added to the login, register, and request_reset_password forms.
 
-Enabling hCAPTCHA
+Enabling HCAPTCHA
 ^^^^^^^^^^^^^^^^^
 
 in ``settings.py`` add your HCAPTCHA_SITE_KEY and HCAPTCHA_SECRET_KEY:
