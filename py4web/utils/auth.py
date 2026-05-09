@@ -245,6 +245,7 @@ class Auth(Fixture):
         two_factor_validate=None,
         template_args=None,
         logger=None,
+        T=None,
     ):
         # configuration parameters
         self.param = Param(
@@ -277,6 +278,12 @@ class Auth(Fixture):
 
         # callbacks for forms
         self.on_accept = {}
+
+        # translator: if provided, translate user-facing messages immediately
+        self.T = T if T is not None else (lambda s: s)
+        self._messages_translated = False
+        if T is not None:
+            self._translate_messages(T)
 
         self.__prerequisites__ = []
         self.inject = inject
@@ -981,6 +988,23 @@ class Auth(Fixture):
     def _success(self, message, code=200):
         return {"status": "success", "message": message, "code": code}
 
+    def _translate_messages(self, T):
+        """Wrap every string value in self.param.messages with T()."""
+        for group in self.param.messages.values():
+            for key, value in group.items():
+                if isinstance(value, str):
+                    group[key] = T(value)
+                elif (
+                    key == "body"
+                    and isinstance(value, (list, tuple))
+                    and len(value) == 2
+                ):
+                    group[key] = (T(value[0]), T(value[1]))
+                else:
+                    raise RuntimeError(f"Invalid message type {key}:{value}")
+        self.T = T
+        self._messages_translated = True
+
     # Other service methods (that can be overwritten)
 
     def send(self, name, user, **attrs):
@@ -1064,20 +1088,8 @@ class Auth(Fixture):
         auth = self
 
         translators = [fixture for fixture in uses if isinstance(fixture, Translator)]
-        if translators:
-            T = translators[0]
-            for group in self.param.messages.values():
-                for key, value in group.items():
-                    if isinstance(value, str):
-                        group[key] = T(value)
-                    elif (
-                        key == "body"
-                        and isinstance(value, (list, tuple))
-                        and len(value) == 2
-                    ):
-                        group[key] = (T(value[0]), T(value[1]))
-                    else:
-                        raise RuntimeError(f"Invalid message type {key}:{value}")
+        if translators and not self._messages_translated:
+            self._translate_messages(translators[0])
 
         methods = ["GET", "POST", "OPTIONS"]
 
@@ -1602,7 +1614,7 @@ class DefaultAuthForms:
                 self.auth.get_or_delete_existing_unverified_account(email)
         extra_form_fields = self.auth.extra_form_fields.get("register", [])
         fields += extra_form_fields
-        form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
+        form = Form(fields, submit_value=button_name, formstyle=self.formstyle, T=self.auth.T)
         user = None
         if form.accepted:
             # notice that here the form is already validated
@@ -1740,6 +1752,7 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
+            T=self.auth.T,
         )
         user = None
         next_url = prevent_open_redirect(request.query.get("next"))
@@ -1863,6 +1876,7 @@ class DefaultAuthForms:
             form_name="auth_2fa",
             keep_values=True,
             hidden=dict(next_url=next_url),
+            T=self.auth.T,
         )
 
         if form.accepted:
@@ -1936,6 +1950,7 @@ class DefaultAuthForms:
             fields,
             submit_value=button_name,
             formstyle=self.formstyle,
+            T=self.auth.T,
         )
         if form.accepted:
             email = form.vars.get("email", "")
@@ -2004,6 +2019,7 @@ class DefaultAuthForms:
             fields,
             formstyle=self.formstyle,
             submit_value=button_name,
+            T=self.auth.T,
         )
         self._process_change_password_form(form, user, False)
         if form.accepted:
@@ -2049,6 +2065,7 @@ class DefaultAuthForms:
             fields,
             formstyle=self.formstyle,
             submit_value=button_name,
+            T=self.auth.T,
         )
         user = self.auth.db.auth_user(self.auth.user_id)
         self._process_change_password_form(form, user, True)

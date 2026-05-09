@@ -223,7 +223,8 @@ class RadioWidget:
 
 
 class FileUploadWidget:
-    def make(self, field, value, error, title, placeholder="", readonly=False):
+    def make(self, field, value, error, title, placeholder="", readonly=False, T=None):
+        T = T or (lambda s: s)
         field_id = to_id(field)
         control = DIV()
         if value and not error:
@@ -232,11 +233,11 @@ class FileUploadWidget:
             if not readonly:
                 download_div.append(
                     LABEL(
-                        "Currently:  ",
+                        T("Currently:  "),
                     )
                 )
             url = getattr(field, "download_url", lambda value: "#")(value)
-            download_div.append(A(" download ", _href=url))
+            download_div.append(A(T(" download "), _href=url))
 
             if not readonly:
                 download_div.append(
@@ -247,13 +248,13 @@ class FileUploadWidget:
                         _title=title,
                     )
                 )
-                download_div.append(" (check to remove)")
+                download_div.append(T(" (check to remove)"))
 
             control.append(download_div)
 
-            control.append(LABEL("Change: "))
+            control.append(LABEL(T("Change: ")))
         else:
-            control.append(LABEL("Upload: "))
+            control.append(LABEL(T("Upload: ")))
         control.append(INPUT(_type="file", _id=field_id, _name=field.name))
         return control
 
@@ -300,8 +301,10 @@ class FormStyleFactory:
         showreadonly,
         show_id,
         kwargs=None,
+        T=None,
     ):
         kwargs = kwargs if kwargs else {}
+        T = T or (lambda s: s)
 
         kwargs["_accept-charset"] = "utf8"
         form_method = "POST"
@@ -388,8 +391,8 @@ class FormStyleFactory:
             field_value = None
 
             field_name = field.name
-            field_comment = field.comment if field.comment else ""
-            field_label = field.label
+            field_comment = T(field.comment) if isinstance(field.comment, str) and field.comment else (field.comment or "")
+            field_label = T(field.label) if isinstance(field.label, str) else field.label
             input_id = to_id(field)
             if is_virtual:
                 value = None
@@ -451,7 +454,7 @@ class FormStyleFactory:
                     )
                     # do we need the variables below?
                     delete_field_attributes = dict()
-                    delete_field_attributes["_label"] = "Remove"
+                    delete_field_attributes["_label"] = T("Remove")
                     delete_field_attributes["_value"] = "ON"
                     delete_field_attributes["_type"] = "checkbox"
                     delete_field_attributes["_name"] = "_delete_" + field.name
@@ -466,7 +469,10 @@ class FormStyleFactory:
                 else:
                     widget = Widget()
 
-                control = widget.make(field, value, error, title, placeholder)
+                if isinstance(widget, FileUploadWidget):
+                    control = widget.make(field, value, error, title, placeholder, T=T)
+                else:
+                    control = widget.make(field, value, error, title, placeholder)
 
             key = control.name.rstrip("/")
 
@@ -515,13 +521,13 @@ class FormStyleFactory:
                         wrapped,
                         LABEL(
                             " ",
-                            field.label,
+                            field_label,
                             _for=input_id,
                             _class=class_label,
                             _style="display: inline !important",
                         ),
                         P(error, _class=class_error) if error else "",
-                        P(field.comment or "", _class=class_info),
+                        P(field_comment, _class=class_info),
                         _class=class_outer,
                     )
                 )
@@ -533,10 +539,10 @@ class FormStyleFactory:
 
                 form.append(
                     DIV(
-                        LABEL(field.label, _for=input_id, _class=class_label),
+                        LABEL(field_label, _for=input_id, _class=class_label),
                         wrapped,
                         P(error, _class=class_error) if error else "",
-                        P(field.comment or "", _class=class_info),
+                        P(field_comment, _class=class_info),
                         _class=class_outer,
                     )
                 )
@@ -551,7 +557,7 @@ class FormStyleFactory:
             deletable_field_type = "checkbox"
 
             # Set the deletable json field attributes.
-            deletable_record_attributes["_label"] = " check to delete"
+            deletable_record_attributes["_label"] = T(" check to delete")
             deletable_record_attributes["_name"] = deletable_field_name
             deletable_record_attributes["_type"] = deletable_field_type
             deletable_record_attributes["_class"] = self.classes["input[type=checkbox]"]
@@ -590,7 +596,7 @@ class FormStyleFactory:
         submit_button_field_type = "submit"
 
         # Set the deletable json field attributes.
-        submit_button_attributes["_label"] = "Submit"
+        submit_button_attributes["_label"] = T("Submit")
         submit_button_attributes["_type"] = submit_button_field_type
         submit_button_attributes["_class"] = self.classes["input[type=submit]"]
 
@@ -599,7 +605,7 @@ class FormStyleFactory:
 
         controls["submit"] = INPUT(
             _type=submit_button_field_type,
-            _value="Submit",
+            _value=T("Submit"),
             _class=self.classes["input[type=submit]"],
         )
 
@@ -769,11 +775,17 @@ class Form(object):
         csrf_protection=True,
         lifespan=None,
         signing_info=None,
-        submit_value="Submit",
+        submit_value=None,
         show_id=False,
         auto_process=True,
+        T=None,
         **kwargs,
     ):
+        self.T = T if T is not None else (lambda s: s)
+        if submit_value is None:
+            submit_value = self.T("Submit")
+        elif isinstance(submit_value, str):
+            submit_value = self.T(submit_value)
         self.param = Param(
             formstyle=formstyle,
             hidden=hidden,
@@ -1027,6 +1039,7 @@ class Form(object):
                 self.showreadonly,
                 show_id=self.show_id,
                 kwargs=self.kwargs,
+                T=self.T,
             )
             for item in self.param.sidecar:
                 helper["form"][-1][-1].append(item)

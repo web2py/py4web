@@ -656,7 +656,7 @@ class Grid:
         if not self.is_creatable():
             raise HTTP(
                 403,
-                f"You do not have access to create a record in the {self.tablename} table.",
+                str(self.T("You do not have access to create a record in the %s table.")) % self.tablename,
             )
         self.form = self._make_form(readonly=False)
         if self.param.new_sidecar:
@@ -669,7 +669,7 @@ class Grid:
         if not self.is_readable(self.record):
             raise HTTP(
                 403,
-                f"You do not have access to read a record from the {self.tablename} table.",
+                str(self.T("You do not have access to read a record from the %s table.")) % self.tablename,
             )
         self.form = self._make_form(readonly=True)
         if self.param.details_sidecar:
@@ -682,7 +682,7 @@ class Grid:
         if not self.is_editable(self.record):
             raise HTTP(
                 403,
-                f"You do not have access to edit a record in the {self.tablename} table.",
+                str(self.T("You do not have access to edit a record in the %s table.")) % self.tablename,
             )
         self.form = self._make_form(readonly=False)
         if self.param.edit_sidecar:
@@ -910,6 +910,7 @@ class Grid:
             formstyle=self.param.formstyle,
             validation=self.param.validation,
             show_id=self.param.show_id,
+            T=self.T,
         )
 
     def _iter_pages(
