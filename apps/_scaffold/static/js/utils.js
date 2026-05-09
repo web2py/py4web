@@ -534,69 +534,90 @@ Q.flash = function (detail) {
 // Displays flash messages
 Q.handle_flash = function () {
     const elem = Q("flash-alerts")[0];
-    /** @type {(arg0: HTMLElement) => (event: CustomEvent) => void} */
-    let make_handler;
-    if ("bootstrap" in window) {
-        make_handler = function (elem) {
-            return function (event) {
-                let node = document.createElement("div");
-                const color = event.detail.class || "info";
-                node.innerHTML = `<div
-                    class="toast fade ${color} border-${color} bg-${color}-subtle"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                >
-                    <div class="toast-header">
-                        <strong class="me-auto">${
-                            event.detail.title || "Alert"
-                        }</strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class=" toast-body">
-                        ${event.detail.message}
-                    </div>
-                </div>`;
-                // @ts-ignore
-                node = node.firstElementChild;
-                elem.appendChild(node);
-                bootstrap.Toast.getOrCreateInstance(node).show();
-                node.addEventListener("hidden.bs.toast", () => {
-                    node.parentNode.removeChild(node);
-                });
-            };
-        };
-    } else {
-        const make_delete_handler = function (node) {
-            return function () {
-                node.parentNode.removeChild(node);
-            };
-        };
 
-        make_handler = function (elem) {
-            return function (event) {
-                let node = document.createElement("div");
-                node.innerHTML = `<div role="alert"><span class="close"></span>${event.detail.message}</div>`;
-                // @ts-ignore
-                node = Q('[role="alert"]', node)[0];
-                node.classList.add(event.detail.class || "info");
-                elem.appendChild(node);
-                Q('[role="alert"] .close', node)[0].onclick =
-                    make_delete_handler(node);
-            };
-        };
+    // Si no hay un elemento <flash-alerts> en la página, no hacemos nada.
+    if (!elem) {
+        return;
     }
 
-    if (elem) {
-        elem.addEventListener("flash", make_handler(elem), false);
-        /**
-         *
-         * @param {FlashDetails} detail
-         */
-        Q.flash = function (detail) {
-            elem.dispatchEvent(new CustomEvent("flash", { detail: detail }));
+    const make_custom_toast_handler = function (container) {
+        return function (event) {
+            const detail = event.detail;
+
+            // Validar que tengamos los datos mínimos
+            if (!detail.message) {
+                detail.message = ""
+            }
+            if ( !detail.class) {
+                detail.class = "solid-flash"
+            }
+            
+            // 1. Crear el elemento principal y aplicar TODAS las clases del backend.
+            const toast = document.createElement("div");
+            toast.className = detail.class; // Clave: Asigna el string completo de clases.
+
+            // 2. Crear el botón de cierre basado en una convención (Bulma o genérico)
+            let closeButton;
+            if (detail.class.includes('notification')) {
+                // Si es una notificación de Bulma, usa su estructura.
+                closeButton = document.createElement('button');
+                closeButton.className = 'delete';
+            } else {
+                // Fallback para un sistema genérico o personalizado.
+                closeButton = document.createElement('span');
+                closeButton.className = 'toast-close-btn'; // Una clase genérica para darle estilo
+                closeButton.innerHTML = '&times;'; // El símbolo 'x'
+            }
+
+            // 3. Ensamblar el toast
+            toast.appendChild(closeButton);
+            // Añadir el mensaje como texto para evitar problemas de XSS.
+            // El espacio inicial es para separarlo del botón.
+            toast.appendChild(document.createTextNode(" " + detail.message));
+
+            // 4. Añadir el toast al contenedor
+            container.appendChild(toast);
+
+            // 5. Lógica para cerrar y eliminar el toast
+            const closeToast = () => {
+                // Quitamos la clase de estado para iniciar la animación de salida
+                toast.classList.remove('toast-show');
+                
+                // Cuando la transición termine, eliminamos el elemento del DOM
+                toast.addEventListener('transitionend', () => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, { once: true });
+            };
+
+            // 6. Asignar eventos
+            closeButton.onclick = closeToast;
+            setTimeout(closeToast, 5000); // Auto-cierre
+
+            // 7. Iniciar la animación de entrada añadiendo la clase de estado
+            setTimeout(() => {
+                toast.classList.add('toast-show');
+            }, 10);
         };
-        if (elem.dataset.alert) Q.flash(Q.eval(elem.dataset.alert));
+    };
+
+    elem.addEventListener("flash", make_custom_toast_handler(elem), false);
+
+    Q.flash = function (detail) {
+        elem.dispatchEvent(new CustomEvent("flash", { detail: detail }));
+    };
+
+    if (elem.dataset.alert) {
+        try {
+            const alertDataStr = elem.dataset.alert.replace(/'/g, '"');
+            const initialAlert = JSON.parse(alertDataStr);
+            if (initialAlert && initialAlert.message) {
+                Q.flash(initialAlert);
+            }
+        } catch (e) {
+            console.error("Failed to parse initial flash data:", elem.dataset.alert, e);
+        }
     }
 };
 

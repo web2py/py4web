@@ -540,3 +540,52 @@ ul.tags-list li {
 ul.tags-list li[data-selected=true] {
   opacity: 1.0;
 }
+
+
+flash-alerts {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    /* Evita que los clics pasen a través del contenedor si está vacío */
+    pointer-events: none;
+}
+/* Permite hacer clic en los toasts hijos */
+flash-alerts > * {
+    pointer-events: auto;
+}
+
+/* 2. Lógica de animación genérica.
+   Esto funcionará para CUALQUIER elemento que coloques dentro de flash-alerts. */
+
+/* Estado inicial (oculto) de cualquier notificación */
+flash-alerts > * {
+    opacity: 0;
+    transform: translateX(100%);
+    /* Define la transición que se aplicará cuando cambien las propiedades */
+    transition: all 0.4s ease-in-out;
+}
+
+/* Estado final (visible) cuando se añade la clase .toast-show */
+flash-alerts > *.toast-show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* 3. (Opcional) Estilo para el botón de cierre genérico, por si no usas Bulma. */
+.toast-close-btn {
+    float: right;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-left: 15px;
+    opacity: 0.5;
+}
+.toast-close-btn:hover {
+    opacity: 1;
+}

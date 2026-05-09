@@ -70,18 +70,14 @@ class Hcaptcha:
         return Field("h_captcha_response", "hidden", requires=self.validator)
 
     def validator(self, value, _):
-        print(value)
-        print(self.secret_key)
         # Build payload with secret key and token.
         data = {"secret": self.secret_key, "response": value}
 
         # Make POST request with data payload to hCaptcha API endpoint.
         res = requests.post(url="https://hcaptcha.com/siteverify", data=data)
-        print(res.text)
         try:
             if res.json()["success"]:
                 return (True, None)
             return (False, "Invalid Hcaptcha value")
         except Exception as exc:
-            print(exc)
             return (False, str(exc))
