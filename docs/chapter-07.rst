@@ -5,23 +5,24 @@ The Database Abstraction Layer (DAL)
 DAL introduction
 ----------------
 
-py4web rely on a database abstraction layer (**DAL**), an API that maps
-Python objects into database objects such as queries, tables, and
-records. The DAL dynamically generates the SQL in real time using the
-specified dialect for the database back end, so that you do not have to
-write SQL code or learn different SQL dialects (the term SQL is used
-generically), and the application will be portable among different types
-of databases.
-The DAL choosen is a pure Python one called `pyDAL <https://github.com/web2py/pydal>`__.
-It was conceived in the web2py project but it's a standard python module:
-you can use it in any Python context.
+py4web relies on a Database Abstraction Layer (**DAL**) — an API
+that maps Python objects to database objects (tables, records,
+queries). The DAL generates SQL in real time using the dialect
+appropriate for the configured back-end, so you do not have to write
+SQL by hand or learn each vendor's variant; the same application
+runs unchanged against several different databases.
+
+The DAL py4web uses is `pyDAL <https://github.com/web2py/pydal>`__,
+a pure-Python library originally developed for web2py. It is a
+standard Python module and can be imported from any Python context.
 
 .. note::
-   What makes pyDAL different from most of the other DALs is the syntax: it maps
-   records to python dictionaries, which is simpler and closer to SQL.
-   Other famous frameworks instead strictly rely on an Object Relational Mapping (**ORM**)
-   like the Django ORM or the SQL Alchemy ORM, that maps tables to Python classes
-   and rows to Objects. 
+   What sets pyDAL apart from most other database libraries is its
+   syntax: rows are returned as Python dictionaries, which keeps the
+   API close to SQL. Most popular frameworks rely instead on an
+   Object Relational Mapping (**ORM**) — Django ORM or
+   SQLAlchemy, for example — that maps tables to Python classes and
+   rows to objects.
 
 A little taste of pyDAL features:
 
