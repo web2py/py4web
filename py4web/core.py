@@ -768,10 +768,11 @@ class Session(Fixture):
         session is stored signed and encrypted in the cookie
         """
         secret = secret or Session.SECRET
-        assert (
-            isinstance(secret, str)
-            and not pydal.validators.IS_STRONG(entropy=50)(secret)[1]
-        ), "Not a good secret"
+        # Validate via real exception, not assert: assert is stripped under
+        # ``python -O`` and silently leaves the framework running with a
+        # weak / missing session secret.
+        if not isinstance(secret, str) or pydal.validators.IS_STRONG(entropy=50)(secret)[1]:
+            raise ValueError("Session secret missing or too weak (entropy < 50)")
 
         if isinstance(storage, Session):
             prerequisites = [storage]
