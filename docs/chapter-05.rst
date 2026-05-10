@@ -5,55 +5,53 @@ Creating an app
 From scratch
 ------------
 
-Apps can be created using the dashboard or directly from the filesystem.
-Here, we are going to do it manually, as the Dashboard is already described in
-its own chapter.
+Apps can be created from the dashboard or directly on the filesystem.
+We will do it manually here; the dashboard is covered in its own
+chapter.
 
-Keep in mind that an app is a Python module; therefore it needs only a
-folder and a ``__init__.py`` file in that folder. 
+An app is a Python package, so all you need is a folder containing
+an ``__init__.py`` file.
 
 .. note::
-   An empty *__init__.py* file is not strictly needed since
-   Python 3.3, but it will be useful later on.
-   
-Open a command prompt and go to your main py4web folder. Enter the following
-simple commands in order to create a new empty **myapp** app:
+   Strictly speaking, ``__init__.py`` is not required since Python
+   3.3 (which supports namespace packages), but creating one keeps
+   things simple and lets you add code there later.
+
+Open a command prompt and ``cd`` into your apps folder. Run these
+two commands to create an empty **myapp** app:
 
 .. code:: bash
 
    mkdir apps/myapp
-   echo '' > apps/myapp/__init__.py
+   touch apps/myapp/__init__.py
 
 .. tip::
-   for Windows, you must use backslashes (i.e. ``\``) instead of
-   slashes.
-   
+   On Windows, use backslashes (``\``) in paths instead of slashes.
 
-   
-If you now restart py4web or
-press the “Reload Apps” in the Dashboard, py4web will find this module,
-import it, and recognize it as an app, simply because of its location.
-By default py4web runs in *lazy watch* mode (see the :ref:`run command option`)
-for automatic reloading of the apps whenever it changes, which is very useful
-in a development environment.
-In production or debugging environment, it's better to run py4web with a command like this:
+If you now restart py4web (or press “Reload Apps” in the Dashboard),
+py4web finds this folder, imports it, and recognises it as an app —
+purely from its location.
 
+By default py4web runs in *lazy watch* mode (see
+:ref:`run command option`), which automatically reloads an app the
+first time it is requested after a change. That is very useful during
+development. In production or while debugging an unrelated issue, you
+may want to disable the watcher:
 
 .. code:: bash
 
     py4web run apps --watch off
 
- 
-A py4web app is not required to do anything. It could just be a container for
-static files or arbitrary code that other apps may want to import and
-access. Yet typically most apps are designed to expose static or dynamic
-web pages.
+A py4web app does not have to *do* anything. It can be a container
+for static files or for utility code that other apps import. Most
+apps, however, exist to serve static or dynamic web pages, which is
+what we will look at next.
 
 Static web pages
 ----------------
 
-To expose static web pages you simply need to create a ``static``
-subfolder, and any file in there will be automatically published:
+To serve static files, create a ``static`` subfolder. Anything you
+place inside it is automatically published:
 
 .. code:: bash
 
@@ -66,8 +64,8 @@ The newly created file will be accessible at
 
    http://localhost:8000/myapp/static/hello.txt
 
-Notice that ``static`` is a special path for py4web and only files under
-the ``static`` folder are served.
+``static`` is a reserved path: only files inside the ``static``
+folder are served.
 
 .. important::
 
@@ -78,11 +76,11 @@ the ``static`` folder are served.
    and if-modified-since. This is all
    handled automatically based on the HTTP request headers.
 
-Dynamic Web Pages
+Dynamic web pages
 -----------------
 
-To create a dynamic page, you must create a function that returns the
-page content. For example edit the ``myapp/__init__.py`` as follows:
+A dynamic page is a Python function that returns the page content.
+For example, edit ``myapp/__init__.py`` as follows:
 
 .. code:: python
 
@@ -107,25 +105,26 @@ or
 
 (notice that index is optional)
 
-Unlike other frameworks, we do not import or start the webserver within
-the ``myapp`` code. This is because py4web is already running, and it
-may be serving multiple apps. py4web imports our code and exposes
-functions decorated with ``@action()``. Also notice that py4web prepends
-``/myapp`` (i.e. the name of the app) to the url path declared in the
-action. This is because there are multiple apps, and they may define
-conflicting routes. Prepending the name of the app removes the
-ambiguity. But there is one exception: if you call your app
-``_default``, or if you create a symlink from ``_default`` to ``myapp``,
-then py4web will not prepend any prefix to the routes defined inside the
-app.
+Unlike many other frameworks, you do not import or start a web server
+inside ``myapp``: py4web is already running, possibly serving several
+apps at once. py4web imports your module and exposes any function
+decorated with ``@action()``.
+
+Notice that py4web automatically prepends ``/myapp`` (the app name) to
+the path declared in ``@action``. Multiple apps could otherwise
+declare colliding routes; prefixing each route with the app name
+keeps them separate. The one exception is the app called
+``_default`` (or a symlink from ``_default`` to ``myapp``): its
+routes are exposed without a prefix.
 
 On return values
 ~~~~~~~~~~~~~~~~
 
-py4web actions should return a string or a dictionary. If they return a
-dictionary you must tell py4web what to do with it. By default py4web
-will serialize it into json. For example edit ``__init__.py`` again and
-add at the end
+A py4web action should return either a string or a dictionary. If
+the action returns a string, py4web sends it to the client as-is. If
+it returns a dictionary, py4web needs to know how to render it; by
+default it serialises the dictionary as JSON. As an example, edit
+``__init__.py`` and add at the end:
 
 .. code:: python
 
@@ -144,14 +143,14 @@ Notice we chose to name the function the same as the route. This is not
 required, but it is a convention that we will often follow.
 
 You can use any template language to turn your data into a string.
-PY4WEB comes with yatl, a full chapter will be dedicated later and we
-will provide an example shortly.
+PY4WEB ships with YATL; the full chapter on YATL comes later, and a
+short example follows below.
 
 Routes
 ~~~~~~
 
-It is possible to map patterns in the URL into arguments of the
-function. For example:
+Parts of the URL can be captured and passed to the function as
+arguments. For example:
 
 .. code:: python
 
@@ -167,34 +166,34 @@ This page will be visible at
 
    http://localhost:8000/myapp/color/red
 
-The syntax of the patterns is the same as the `Bottle
-routes <https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__.
-A route wildcard can be defined as
+The pattern syntax is the same as
+`Bottle's <https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__.
+A wildcard takes one of these forms:
 
--  ``<name>`` or
--  ``<name:filter>`` or
+-  ``<name>``
+-  ``<name:filter>``
 -  ``<name:filter:config>``
 
-And these are possible filters (only ``:re`` has a config):
+The available filters are (only ``:re`` accepts a config):
 
--  ``:int`` matches (signed) digits and converts the value to integer.
--  ``:float`` similar to :int but for decimal numbers.
--  ``:path`` matches all characters including the slash character in a
-   non-greedy way, and may be used to match more than one path segment.
--  ``:re[:exp]`` allows you to specify a custom regular expression in
-   the config field. The matched value is not modified.
+-  ``:int`` — matches (signed) digits and converts the captured value
+   to an ``int``.
+-  ``:float`` — same as ``:int`` but for decimal numbers.
+-  ``:path`` — matches any characters, including ``/``, in a
+   non-greedy way; useful for capturing more than one URL segment.
+-  ``:re[:exp]`` — match a custom regular expression supplied in the
+   config field. The captured string is left as-is.
 
-The pattern matching the wildcard is passed to the function under the
-specified variable ``name``.
+The captured value is passed to your function via the parameter
+``name``.
 
-Note that the routing is implemented in ombott as radix-tree hybrid 
-router. It is declaration-order-independent and it prioritizes static 
-route-fragment over dynamic one, since this is most expected behavior.
+Note that ombott implements routing as a hybrid radix-tree router. It
+is independent of declaration order and prefers static route segments
+over dynamic ones, which is the behaviour most users expect.
 
-This results in some constraints, such as one cannot have more than one 
-route that has dynamic fragment of different types (int, path) in the 
-same place.. Hence **something like this is incorrect** and will result 
-in errors: 
+One consequence is that you cannot register two routes that put
+dynamic segments of different types in the same position. So the
+following **does not work** and will raise an error at registration:
 
 .. code:: python
 
@@ -206,8 +205,7 @@ in errors:
    def color(name):
        return f'Color name: {name}'
 
-Instead, to accomplish a similar result, one needs to handle all the 
-logic in one action:
+To get a similar effect, handle both cases inside a single action:
 
 .. code:: python
    
@@ -219,15 +217,15 @@ logic in one action:
          msg = f'Color name: {color_identifier}'
       return msg
 
-Also, the action decorator takes an optional ``method`` argument that
-can be an HTTP method or a list of methods:
+``@action`` takes an optional ``method`` argument, either a single
+HTTP method or a list:
 
 ::
 
-   @action('index', method=['GET','POST','DELETE'])
+   @action('index', method=['GET', 'POST', 'DELETE'])
 
-You can use multiple decorators to expose the same function under
-multiple routes.
+To expose the same function under multiple routes, stack
+``@action`` decorators on the function.
 
 The ``request`` object
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -253,20 +251,23 @@ This action can be accessed at:
 
 
 
-Notice that the request object is equivalent to a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
+The ``request`` object is the same as a
+`Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__,
 with one additional attribute:
 
 ::
 
    request.app_name
 
-Which you can use the code to identify the name and the folder used for the app.
+You can use it to look up the name (and therefore the folder) of the
+app currently handling the request.
 
 
 Templates
 ~~~~~~~~~
 
-In order to use a yatl template you must declare it. For example create a file ``apps/myapp/templates/paint.html`` that contains:
+To render a YATL template, declare it on the action. For example,
+create the file ``apps/myapp/templates/paint.html`` containing:
 
 .. code:: html
 
@@ -293,23 +294,23 @@ then modify the paint action to use the template and default to green.
 The page will now display the color name on a background of the
 corresponding color.
 
-The key ingredient here is the decorator ``@action.uses(...)``. The
-arguments of ``action.uses`` are called **fixtures**. You can specify
-multiple fixtures in one decorator or you can have multiple decorators.
-Fixtures are objects that modify the behavior of the action, that may
-need to be initialized per request, that may filter input and output of
-the action, and that may depend on each-other (they are similar in scope
-to Bottle plugins but they are declared per-action, and they have a
-dependency tree which will be explained later).
+The key ingredient here is the ``@action.uses(...)`` decorator. Its
+arguments are called **fixtures**. You can list several fixtures in
+one decorator, or stack multiple ``@action.uses`` decorators on the
+same function. Fixtures are objects that modify the behaviour of the
+action: they may initialise per-request state, filter the action's
+input or output, and depend on one another (similar in scope to
+Bottle plugins, but declared per-action and resolved through a
+dependency tree, explained in a later chapter).
 
-The simplest type of fixture is a template. You specify it by simply
-giving the name of the file to be used as template. That file must
-follow the yatl syntax and must be located in the ``templates`` folder
-of the app. The object returned by the action will be processed by the
-template and turned into a string.
+The simplest fixture is a template — and the simplest way to declare
+one is to pass its filename. The file must use YATL syntax and live
+inside the app's ``templates`` folder. py4web feeds the dictionary
+returned by the action through the template to produce the response
+string.
 
-You can easily define fixtures for other template languages. This is
-described later.
+You can also write your own fixtures for other template languages; we
+cover that later on.
 
 Some built-in fixtures are:
 
@@ -331,15 +332,16 @@ automatically.
 The \_scaffold app
 ------------------
 
-Most of the times, you do not want to start writing code from scratch.
-You also want to follow some sane conventions outlined here, like not
-putting all your code into ``__init__.py``. PY4WEB provides a
-Scaffolding (_scaffold) app, where files are organized properly and many
-useful objects are pre-defined. Also, it shows you how to manage users and
-their registration.
-Just like a real scaffolding in a building construction site, scaffolding
-could give you some kind of a fast and simplified structure for your project,
-on which you can rely to build your real project.
+Most of the time you do not want to start from a blank folder, and
+you do want to follow a few sensible conventions — for instance, not
+putting all your code into ``__init__.py``. PY4WEB ships with a
+**scaffolding** app (``_scaffold``) where files are already organised
+properly and many useful objects are pre-defined. It also demonstrates
+user registration and login.
+
+Like real scaffolding on a construction site, the scaffold app gives
+you a quick, simplified structure to start from while you build the
+real project on top of it.
 
 .. image:: images/_scaffold.png
 
@@ -351,26 +353,26 @@ Here is the tree structure of the ``_scaffold`` app:
 ::
 
    ├── __init__.py          # imports everything else
-   ├── common.py            # defines useful objects
+   ├── common.py            # defines useful shared objects (db, session, auth, T, cache, ...)
    ├── controllers.py       # your actions
-   ├── databases            # your sqlite databases and metadata
-   ├── models.py            # your pyDAL table model
-   ├── settings.py          # any settings used by the app
-   ├── settings_private.py  # (optional) settings that you want to keep private
-   ├── static               # static files
-   │   ├── css              # CSS files, we ship bulma because it is JS agnostic
-   │   │   └── no.css       # we used bulma.css in the past
+   ├── databases/           # SQLite files and migration metadata
+   ├── models.py            # your PyDAL table definitions
+   ├── settings.py          # configuration values used by the app
+   ├── settings_private.py  # (optional) configuration you want to keep out of git
+   ├── static/              # static files served from /myapp/static/
+   │   ├── css/
+   │   │   └── no.css       # default classless CSS framework
    │   ├── favicon.ico
-   │   └── js               # JS files, we ship with these but you can replace them
-   │       └── utils.js
-   ├── tasks.py
-   ├── templates            # your templates go here
-   │   ├── auth.html        # the auth page for register/logic/etc (uses vue)
-   │   ├── generic.html     # a general purpose template
-   │   ├── index.html
-   │   └── layout.html      # a bulma layout example
-   └── translations         # internationalization/pluralization files go here
-       └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
+   │   └── js/
+   │       └── utils.js     # small JS helper library bundled with the scaffold
+   ├── tasks.py             # background tasks (Scheduler / Celery)
+   ├── templates/           # YATL templates
+   │   ├── auth.html        # registration/login/etc. (uses a Vue.js component)
+   │   ├── generic.html     # generic fallback template
+   │   ├── index.html       # home page
+   │   └── layout.html      # base layout extended by other templates
+   └── translations/        # i18n / pluralization JSON files
+       └── it.json          # an Italian translation example
 
 The scaffold app contains an example of a more complex action:
 
@@ -401,14 +403,15 @@ Notice the following:
    not the case, this action redirects to the login page (defined also
    in ``common.py`` and using the Vue.js auth.html component).
 
-When you start from scaffold, you may want to edit ``settings.py``,
-``templates``, ``models.py`` and ``controllers.py`` but probably you
-don’t need to change anything in ``common.py``.
+When you start from the scaffold you typically edit ``settings.py``,
+the templates, ``models.py`` and ``controllers.py`` — and rarely
+need to touch ``common.py``.
 
-In your html, you can use any JS library that you want because py4web is
-agnostic to your choice of JS and CSS, but with some exceptions. The
-``auth.html`` which handles registration/login/etc. uses a vue.js
-component. Hence if you want to use that, you should not remove it.
+py4web does not impose a particular JS or CSS framework, so in your
+HTML you can use whatever you like. The one exception is
+``auth.html``, which uses a Vue.js component to handle registration,
+login and the related screens. If you want to keep using that built-in
+auth UI, do not remove it.
 
 
 .. _copying-the-scaffold-app:
@@ -416,11 +419,10 @@ component. Hence if you want to use that, you should not remove it.
 Copying the \_scaffold app
 --------------------------
 
-The scaffold app is really useful, and you will surely use it a lot as
-a starting point for testing and even developing full features new apps.
+The scaffold app is very useful as a starting point for both
+experiments and full-featured production apps.
 
-It's better not to work directly on it: always create new apps copying it.
-You can do it in two ways:
+Don't edit it in place — always copy it first. You have two options:
 
 -  using the command line: copy the whole apps/_scaffold folder to another one
    (apps/my_app for example). Then reload py4web and it will be automatically loaded.
@@ -434,19 +436,19 @@ You can do it in two ways:
 
 
 
-Watch for files change
-----------------------
+Watching files for changes
+--------------------------
 
-As described in the :ref:`run command option`, Py4web facilitates a
-development server’s setup by automatically reloading an app when its
-Python source files change (by default).
-But in fact any other files inside an app can be watched by setting a
-handler function using the ``@app_watch_handler`` decorator.
+As mentioned in :ref:`run command option`, py4web makes development
+easy by automatically reloading an app when its Python source files
+change (this is the default). You can watch additional, non-Python
+files too, by registering a handler with the ``@app_watch_handler``
+decorator.
 
-Two examples of this usage are reported now. Do not worry if you don’t
-fully understand them: the key point here is that even non-python code
-could be reloaded automatically if you explicitly declare it with the
-``@app_watch_handler`` decorator.
+Two examples follow. Don't worry if the details are not yet clear —
+the key point is that any file inside an app can trigger a custom
+action when modified, simply by declaring it with
+``@app_watch_handler``.
 
 Watch SASS files and compile them when edited:
 
@@ -483,30 +485,25 @@ Validate javascript syntax when edited:
            with open(os.path.abspath(cf)) as code:
                esprima.parseModule(code.read())
 
-Filepaths passed to ``@app_watch_handler`` decorator must be
-relative to an app. Python files (i.e. "\*.py") in a list passed to the
-decorator are ignored since they are watched by default. Handler
-function’s parameter is a list of filepaths that were changed. All
-exceptions inside handlers are printed in terminal.
+File paths passed to ``@app_watch_handler`` are relative to the app.
+Python files (``*.py``) in the list are ignored because they are
+watched by default. The handler receives a list of file paths that
+were just changed. Any exception raised inside a handler is printed
+to the terminal.
 
 Domain-mapped apps
 ------------------
 
-In production environments it is often required to have several apps being
-served by a single py4web server, where different apps are mapped to
-different domains. 
+A production deployment often needs to serve several apps from a
+single py4web process, with each app reachable on its own domain.
 
-py4web can easily handle running multiple apps, but there is no built-in
-mechanism for mapping domains to specific applications. Such mapping needs
-to be done externally to py4web -- for instance using a web reverse-proxy, 
-such as nginx. 
+py4web has no built-in domain-to-app mapping; you do the mapping
+outside py4web with a reverse proxy (such as nginx). A reverse proxy
+is also useful for SSL termination and caching, but here we cover
+only the domain mapping itself.
 
-While nginx or other reverse-proxies are also useful in production 
-environments for handling SSL termination, caching and other uses, 
-we cover only the mapping of domains to py4web applications here.  
-
-An example nginx configuration for an application ``myapp`` mapped to 
-a domain ``myapp.example.com`` might look like that:
+A minimal nginx configuration mapping the app ``myapp`` to the
+domain ``myapp.example.com`` looks like this:
 
 .. code:: console
 
@@ -521,31 +518,36 @@ a domain ``myapp.example.com`` might look like that:
       }
    }
 
-This is an example ``server`` block of nginx configuration. One would have to create
-a separate such block for **each app/each domain** being served by py4web server. Note some important aspects:
+You need a separate ``server`` block for **each app / each domain**.
+The important details are:
 
-- ``server_name`` defines the domain mapped to the app ``myapp``,
-- ``proxy_http_version 1.1;`` directive is optional, but highly recommended (otherwise nginx uses HTTP 1.0 to talk
-   to the backend-server -- here py4web -- and it creates all kinds of issues with buffering and otherwise),
-- ``proxy_set_header Host $host;`` directive ensures that the correct ``Host`` is passed to py4web -- here ``myapp.example.com``
-- ``proxy_set_header X-PY4WEB-APPNAME /myapp;`` directive ensures that py4web (and ombott) knows which app to serve
-   and **also** that this application is domain-mapped -- pay specific attention to the slash (``/``) in front of the ``myapp``
-   name -- it is **required** to ensure correct parsing of URLs on ombott level,
-- finally ``proxy_pass http://127.0.0.1:8000/myapp$request_uri;`` ensures that the request is passed in its integrity (``$request_uri``)
-   to py4web server (here: ``127.0.0.1:8000``) and the correct app (``/myapp``).
+- ``server_name`` is the domain mapped to ``myapp``.
+- ``proxy_http_version 1.1;`` is optional but strongly recommended;
+  otherwise nginx talks HTTP/1.0 to the backend, which causes
+  buffering and connection-reuse issues.
+- ``proxy_set_header Host $host;`` ensures the correct ``Host`` value
+  (here ``myapp.example.com``) reaches py4web.
+- ``proxy_set_header X-PY4WEB-APPNAME /myapp;`` tells py4web (and
+  ombott) which app to serve and that the app is domain-mapped. Note
+  the leading slash on ``/myapp``: it is **required** for ombott to
+  parse URLs correctly.
+- ``proxy_pass http://127.0.0.1:8000/myapp$request_uri;`` forwards
+  the full request (``$request_uri``) to py4web at
+  ``127.0.0.1:8000`` under the ``/myapp`` prefix.
 
-Such configuration ensures that all URL manipulation inside ombott and py4web - especially in modules such as ``Auth``, ``Form``,
-and ``Grid`` are done correctly using the domain to which the app is mapped to. 
+This configuration ensures that all URL building inside ombott and
+py4web — especially in ``Auth``, ``Form`` and ``Grid`` — uses the
+domain the app is mapped to.
 
 Custom error pages
 ------------------
 
-py4web provides default error pages. For instance, if none of the routes 
-in an app matches the request, a default 404 error page will be shown. By 
-default all HTTP error codes are handled automatically by py4web. 
+py4web ships default error pages. For example, if no route matches
+the request, the user sees a default 404 page. Every HTTP error code
+is handled automatically out of the box.
 
-It is however possible to override this behaviour. It can be done either 
-per HTTP error code, or even for all errors.
+You can override this behaviour either per HTTP code or for every
+error at once.
 
 Here is an example for overriding HTTP code 404 (not found):
 
@@ -554,9 +556,8 @@ Here is an example for overriding HTTP code 404 (not found):
    from py4web.core import ERROR_PAGES
    ERROR_PAGES[404] = f"Page not found!"
 
-If one wants to replace _all_ default error pages, a special qualifier 
-``"*"`` should be used. Also, the returned value may contain HTML code as 
-well:
+To replace *all* default error pages, use the special key ``"*"``.
+The returned string may include HTML:
 
 .. code:: python
 
@@ -566,8 +567,8 @@ well:
 
    ERROR_PAGES["*"] = f"We have encountered an error! (try: {A('Main Page', _href=URL("/",scheme=True))})"
 
-Note that this setup is **global**. This means that it is defined once 
-for all apps on a given py4web instance. This is because, when an error 
-is encountered, it could be because the request has not matched any of 
-the apps. Hence, this configuration should only be done in **one of the 
-apps**. 
+``ERROR_PAGES`` is **global**: it is shared across every app served
+by the py4web process. That is intentional — when a request fails to
+match any registered route, py4web does not even know which app the
+user was aiming for, so the error pages have to be set in one place.
+Configure ``ERROR_PAGES`` in **only one** of your apps.
