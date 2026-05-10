@@ -1,0 +1,23 @@
+export const theme = {
+  bg: '#0d1b2a',
+  bgPanel: '#1b263b',
+  bgTerminal: '#0a0e14',
+  text: '#e0e1dd',
+  textDim: '#a3a8b8',
+  accent: '#00b4d8',
+  accent2: '#90e0ef',
+  green: '#80ed99',
+  yellow: '#ffd166',
+  pink: '#ef476f',
+  blue: '#48bfe3',
+  prompt: '#80ed99',
+  comment: '#7a8294',
+  string: '#a8e6cf',
+  keyword: '#f4a261',
+  number: '#ffd166',
+  builtin: '#48bfe3',
+  decorator: '#ef476f',
+  fontMono: '"JetBrains Mono", "Fira Code", "SF Mono", Menlo, monospace',
+  fontSans:
+    '"Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif',
+};
