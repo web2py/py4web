@@ -5,18 +5,19 @@ Installation and Startup
 Understanding the design
 ------------------------
 
-Before everything else it is important to understand that unlike other web frameworks,
-py4web is not only a python module that can be imported by apps. It is also a program that
-is in charge of starting some apps. For this reason you need two things:
+Before anything else, it helps to understand that py4web is not just
+a Python library you import from your app. It is also a *program* that
+runs your apps. So you need two things:
 
--  The py4web module (which you download from our web site, from pypi or from github)
--  One or more folders containing collections of apps you want to run.
+-  the **py4web** package itself (downloaded from our web site, from
+   PyPI, or from GitHub);
+-  one or more **apps folders** holding the apps you want to serve.
 
-py4web has command line options to create a folder with some example apps,
-to initialize an existing folder, and to add scaffolding apps to that folder.
-Once installed you can have multiple apps under the same folder running concurrently
-and served by the same py4web process at the same address and port.
-An apps folder is a python module, and each app is also a python module.
+py4web ships with command line options to create an apps folder, add
+some example apps to it, and add a scaffolding app you can copy. Once
+installed, a single py4web process can serve any number of apps from
+the same folder, all on one address and port. An apps folder is itself
+a Python package, and each app inside it is also a Python package.
 
 Supported platforms and prerequisites
 -------------------------------------
@@ -28,21 +29,21 @@ Python 3.7+, which must be installed in advance (except if you use binaries).
 Setup procedures
 ----------------
 
-There are four alternative ways of installing py4web, we will guide 
-you through each of them and if you get stuck, reach 
-`out to us. <https://py4web.com/_documentation/static/en/chapter-02.html>`__
+There are four alternative ways to install py4web. We will guide you
+through each of them; if you get stuck, please
+`reach out to us <https://py4web.com/_documentation/static/en/chapter-02.html>`__.
 
 
 Installing from pip, using a virtual environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A full installation of any complex python application like py4web will
-surely modify the python environment of your system. In order to prevent
-any unwanted change, it’s a good habit to use a python virtual
-environment (also called **virtualenv**, see
-`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
-introduction). This is a standard python feature; if you still don’t
-know virtualenv it’s a good time to start its discovery!
+Installing a complex Python application like py4web modifies the
+Python environment of your system. To avoid surprising side effects,
+it's a good habit to install py4web inside a Python **virtual
+environment** (also called a *virtualenv*; see
+`the tutorial <https://docs.python.org/3/tutorial/venv.html>`__
+for an introduction). This is a standard Python feature; if you have
+not used virtualenvs before, now is a good time to start.
 
 Here are the instructions for creating the virtual environment, activating it,
 and installing py4web in it:
@@ -60,25 +61,29 @@ and installing py4web in it:
          py4web set_password
          py4web run apps
 
-      Starting py4web is same with or without a virtual environment
-      python py4web run apps
+      The command for starting py4web is the same with or without a
+      virtual environment::
+
+         py4web run apps
 
    .. group-tab:: Windows
 
       ::
 
-         run cmd.exe
-         In e.g. folder c:\py4web
+         REM open cmd.exe in (for example) c:\py4web
          python3 -m venv venv
          "C:\py4web\venv\Scripts\activate.bat"
          python -m pip install --upgrade py4web --no-cache-dir
-         cd venv\scripts
+         cd venv\Scripts
          py4web.exe setup apps
          py4web.exe set_password
          py4web.exe run apps
-		 
-      You can also find power shell scripts in the same folder. Starting py4web is same with or without a virtual environment
-      python py4web run apps
+
+      PowerShell activation scripts are available in the same folder.
+      The command for starting py4web is the same with or without a
+      virtual environment::
+
+         py4web run apps
 
 Installing from pip, without virtual environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,12 +97,13 @@ From the command line
 
    python3 -m pip install --upgrade py4web --no-cache-dir --user
 
-Also, if ``python3`` does not work, try specify a full version as in ``python3.8``.
+If ``python3`` is not recognised, try specifying the full version
+(e.g. ``python3.11``).
 
-This will install py4web and all its dependencies on the system’s path
-only. The assets folder (that contains the py4web’s system apps) will
-also be created. After the installation you’ll be able to start py4web
-on any given working folder with
+This installs py4web and all its dependencies into the system Python
+environment. The assets folder (containing py4web's bundled system
+apps) is also created. After the installation, you can start py4web
+in any working directory with
 
 ::
 
@@ -105,10 +111,11 @@ on any given working folder with
    py4web set_password
    py4web run apps
 
-If the command py4web is not accepted, it means it’s not in the system’s
-path. On Windows, a special py4web.exe file (pointing to py4web.py) will
-be created by *pip* on the system’s path, but not if you type the
-*–user* option by mistake, then you can run the needed commands like this
+If the ``py4web`` command is not found, your system PATH does not
+include the directory pip installs scripts into. On Windows, pip
+normally creates a ``py4web.exe`` shim on PATH — but not if you used
+the ``--user`` flag. In that case, run the commands explicitly through
+Python:
 
 ::
 
@@ -147,13 +154,12 @@ Notice that you can also (and should) install py4web from source inside a virtua
 Running from source without installing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this way all the requirements will be installed or upgraded on the
-system’s path, but py4web itself will only be copied
-on a local folder. This is especially useful if you already have a
-working py4web installation but you want to test a different
-one. Also, installing from sources (locally or globally) will
-install all the latest changes present on the master branch of py4web - hence
-you will gain the latest (but potentially untested) code.
+In this mode, py4web's dependencies are installed system-wide as
+usual, but py4web itself stays in the local folder. This is useful if
+you already have a working py4web installation and want to test a
+different one alongside it. Both source installs (local and global)
+pull from py4web's ``master`` branch, so you get the latest — but
+potentially untested — code.
 
 
 From the command line, go to a given working folder and then run
@@ -188,20 +194,21 @@ Once installed, you should always start it from there with:
          python3 py4web.py set_password
          python3 py4web.py run apps
 
-      On Windows, the programs on the local folder are always executed before
-      the ones in the path (hence you don’t need the **./** as on Linux).
-      But running .py files directly it’s not usual and you’ll need an explicit
-      python3/python command.
+      On Windows, programs in the current folder are searched before
+      those on PATH, so you don't need the ``./`` prefix that Linux
+      requires. Running ``.py`` files directly is uncommon though, so
+      you'll typically use an explicit ``python3``/``python`` command.
 
 Installing from binaries
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is not a real installation, because you just copy a bunch of files
-on your system without modifying it anyhow. Hence this is the simplest
-solution, especially for beginners or students, because it does not
-require Python pre-installed on your system nor administrative rights.
-On the other hand, it’s experimental, it could contain an old py4web
-release, DAL support is limited and it is quite difficult to add other functionalities to it.
+This is not a real installation: you just copy a bundle of files
+onto your system without modifying anything else. It is the simplest
+option for beginners and students, because it does not require Python
+to be installed and does not require administrator rights. The
+trade-offs are real, though: the bundle is experimental, may not
+include the latest py4web release, has limited DAL support, and is
+hard to extend with extra functionality.
 
 In order to use it you just need to download the latest Windows or MacOS
 ZIP file from
@@ -215,9 +222,8 @@ Unzip it on a local folder and open a command line there. Finally run
 
 (omit './' if you're using Windows).
 
-Notice: the binaries may not correspond to the latest master
-or the latest stable branch of py4web although we do our best to
-keep them up to date.      
+Note that the binaries may lag behind the latest ``master`` or stable
+branch of py4web, although we do our best to keep them up to date.
 
 Upgrading
 ---------
@@ -263,20 +269,20 @@ More uv command examples are in the provided Makefile
 First run
 ---------
 
-Running py4web using any of the previous procedure should produce an
-output like this:
+Running py4web with any of the procedures above produces an output
+like this:
   
 
 .. image:: images/first_run.png
    :class: with-shadow
 
-Generally ``apps`` is the name of the folder where you keep all your
-apps, and can be explicitly set with the ``run`` command.
-(Yet nothing prevents you from grouping apps in multiple folders with
-different names.) If that
-folder does not exist, it is created. PY4WEB expects to find at least
-two apps in this folder: **Dashboard** (``_dashboard``) and **Default**
-(``_default``). If it does not find them, it installs them.
+By convention ``apps`` is the name of the folder where you keep all
+your apps, and the name is set explicitly by the ``run`` command.
+(Nothing prevents you from grouping apps into multiple folders with
+different names.) If the folder does not exist, py4web creates it.
+PY4WEB expects at least two apps in that folder: **Dashboard**
+(``_dashboard``) and **Default** (``_default``). If they are missing,
+py4web installs them.
 
 **Dashboard** is a web based IDE. It will be described in the next chapter.
 
@@ -300,8 +306,10 @@ In order to stop py4web, you need to hit :kbd:`Control-C` on the window where yo
 
 .. note::
 
-   ONLY the **Default** app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
-   In general you may want to symlink ``apps/_default`` to your default app.
+   The **Default** app is special: it does not require the
+   ``{appname}/`` prefix in the URL, unlike every other app.  In
+   practice you may want to symlink ``apps/_default`` to your real
+   default app.
 
 For all apps the trailing ``/index`` is also optional.
 
@@ -352,9 +360,9 @@ For example:
 
    # py4web call apps examples.test.myfunction --args '{"x": 100}'
 
-where myfunction is the function you want to call in apps/examples/test.py. Note
-that you have to use the single and double quotes just as shown for parameters to
-work.
+where ``myfunction`` is the function to call in
+``apps/examples/test.py``. Use the single and double quotes exactly
+as shown so that the shell passes ``--args`` through correctly.
 
 .. _new_app command option:
 
@@ -422,22 +430,27 @@ This currently gives an error on binaries installations and from source installa
       -m, --mode TEXT                 default or development  [default: default]
       -help, -h, --help               Show this message and exit.
 
-The ``app_names`` option lets you filter which specific apps you want to serve (comma separated). If absent or empty
-all the apps in the APPS_FOLDER will be run.
+The ``app_names`` option lets you filter which apps to serve
+(comma-separated). If omitted or empty, every app in ``APPS_FOLDER``
+runs.
 
-By default (for security reasons) the py4web framework will listen only on 127.0.0.1, i.e. localhost.
-If you need to reach it from other machines you must specify the host option,
-like ``py4web run --host 0.0.0.0 apps``.
+For security reasons, py4web listens only on ``127.0.0.1`` (localhost)
+by default. To reach it from another machine, set the host
+explicitly: ``py4web run --host 0.0.0.0 apps``.
 
-The ``url_prefix`` option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
-running on different ports as long as the url_prefix and port match the location. For example
+The ``url_prefix`` option adds a prefix to every route py4web
+generates and accepts. It is useful when you need several py4web
+instances on different ports to coexist behind a single reverse
+proxy: each instance gets its own prefix, and the proxy forwards
+requests by matching that prefix. Example:
 ``py4web run --url_prefix=/abracadabra --port 8000 apps``.
 
-By default py4web will automatically reload an application upon any changes to the python files of that application.
-The reloading will occur on any first incoming request to the application that has
-been changed (lazy-mode). If you prefer an immediate reloading (sync-mode), use
-``py4web run --watch sync``. For production servers, it's better to use ``py4web run --watch off`` in order
-to avoid unneeded checks (but you will need to restart py4web for activating any change).
+By default py4web automatically reloads an app whenever its Python
+files change. In *lazy* mode (the default), the reload happens on the
+first incoming request after the change. For immediate reloading use
+``--watch sync``. For production, use ``--watch off`` to skip the file
+checks entirely; you will then need to restart py4web manually for
+changes to take effect.
 
 
 .. note::
@@ -445,16 +458,21 @@ to avoid unneeded checks (but you will need to restart py4web for activating any
     ``/apps`` folder only. Any modifications to the standard py4web programs will always require a full
     restart of the framework. 
 
-The default web server used is currently rocketServer, but you can change this behaviour with the ``server`` option.
-`Rocket3 <https://github.com/web2py/rocket3>`__  is the multi-threaded web server used by web2py stripped of all the
-Python2 logic and dependencies.
+The default web server is ``rocketServer``; change it with the
+``--server`` option.
+`Rocket3 <https://github.com/web2py/rocket3>`__ is the multi-threaded
+server originally used by web2py, stripped of its Python 2 logic and
+dependencies.
 
-The logging_level values are defined in the **logging** standard python module. The default value is 30 (it corresponds
-to WARNING). Other common values are 0 (NOTSET), 10 (DEBUG), 20 (INFO), 40 (ERROR) and 50 (CRITICAL).
-Using them, you’re telling the library you want to handle all events from that level on up.
+The ``--logging_level`` values come from the standard Python
+``logging`` module. The default is 30 (``WARNING``). Other common
+values are 0 (``NOTSET``), 10 (``DEBUG``), 20 (``INFO``), 40
+(``ERROR``) and 50 (``CRITICAL``). Setting a level tells the logger
+to emit every event at that level or higher.
 
-The debug parameter automatically sets logging_level to 0 and logs all calls to fixture functions. It also logs when
-a session is found, invalid, saved.
+The ``--debug`` flag forces ``logging_level`` to 0 and additionally
+logs every fixture call as well as when a session is found, considered
+invalid, or saved.
 
 
 
@@ -478,10 +496,10 @@ a session is found, invalid, saved.
 
      -h, -help, --help         Show this message and exit.
 
-If the ``--dashboard_mode`` is not ``demo`` or ``none``, every time
-py4web starts, it asks for a one-time password for you to access the
-dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed
-password in a file (by default called password.txt) with the command
+If ``--dashboard_mode`` is not ``demo`` or ``none``, py4web asks
+for a fresh dashboard password every time it starts. To avoid that
+prompt, store a PBKDF2-hashed password in a file (by default
+``password.txt``) with:
 
 ::
 
@@ -523,12 +541,11 @@ Finally you can manually create the file yourself with:
      -Y, --yes          No prompt, assume yes to questions  [default: False]
      -help, -h, --help  Show this message and exit.
 
-This option creates a new apps folder (or reinstall it). If needed, it
-will ask for the confirmation of the new folder’s creation and then for
-copying every standard py4web apps from the assets folder. It currently
-does nothing on binaries installations and from source installation
-(locally) - for them you can manually copy the existing apps folder to
-the new one.
+This command creates a new apps folder (or reinstalls one). When
+needed it asks for confirmation before creating the folder and before
+copying the standard py4web apps from the assets folder. ``setup``
+currently has no effect on binary or local-source installations — for
+those, copy the existing apps folder to the new location manually.
 
 .. _shell command option:
 
@@ -546,12 +563,11 @@ the new one.
      -Y, --yes          No prompt, assume yes to questions  [default: False]
      -h, -help, --help  Show this message and exit.
 
-Py4web’s shell is just the regular python shell with apps added to the
-search path. Notice that the shell is for all the apps, not a single
-one. You can then import the needed modules from the apps you need to
-access.
+``py4web shell`` is the regular Python interactive shell with the
+apps folder added to ``sys.path``. The shell sees every installed app,
+not just one, so you can import from any of them.
 
-For example, inside a shell you can
+For example, inside the shell you can run:
 
 .. code:: python
 
@@ -575,8 +591,8 @@ For example, inside a shell you can
      -a, --all          List version of all modules
      -h, -help, --help  Show this message and exit.
 
-With the ``-all`` option you’ll get the version of all the available python
-modules, too.
+With the ``--all`` option you also get the version of every Python
+module currently available.
 
 
 Special installations
@@ -719,12 +735,13 @@ On ``deployment_tools/docker`` there is a simple Dockerfile for quickly running 
 a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL. 
 A ready docker example based on the Scaffold application can be cloned from this repository <https://github.com/macneiln/docker-py4web-scaffold>
 
-Note that you can use them also with Podman, which has the advantage of not requiring sudo and does not
-running any background daemon.
+You can also use them with Podman, which has the advantage of not
+requiring ``sudo`` and not running a background daemon.
 
 
 Deployment on Ubuntu
 ~~~~~~~~~~~~~~~~~~~~
 
-On ``deployment_tools/ubuntu`` there is a bash script tested with Ubuntu Server 20.04.03 LTS. It uses nginx and self-signed
-certificates. It optionally manage iptables, too.
+``deployment_tools/ubuntu`` contains a bash script tested with
+Ubuntu Server 20.04.03 LTS. It uses nginx and self-signed
+certificates and can optionally configure ``iptables`` as well.
