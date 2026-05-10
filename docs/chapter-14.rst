@@ -183,19 +183,19 @@ The Grid object
          self,
          query,
          search_form=None,
-         search_queries=None,
+         search_queries="auto",
          columns=None,
          field_id=None,
-         show_id=False,
+         show_id=None,
          orderby=None,
          left=None,
-         groupby=None,
          headings=None,
          create=True,
          details=True,
          editable=True,
          deletable=True,
          validation=None,
+         required_fields=None,
          pre_action_buttons=None,
          post_action_buttons=None,
          auto_process=True,
@@ -206,33 +206,62 @@ The Grid object
          grid_class_style=GridClassStyle,
          icon_style=IconStyleFontawesome,
          T=lambda text: text,
+         groupby=None,
       ):
 
--  query: pydal query to be processed
--  search_form: py4web FORM to be included as the search form. If search_form is passed in then the developer is responsible for applying the filter to the query passed in. This differs from search_queries.
--  search_queries: list of query lists to use to build the search form. Ignored if search_form is used.
--  columns: list of fields or columns to display on the list page, see the :ref:`Custom columns` paragraph later. If blank, the table will use all readable fields of the searched table.
--  show_id: show the record id field on list page. Default is None, which enables automatic detection if any field is of type "id".
--  orderby: pydal orderby field or list of fields. Controls the default sort order of the grid.
--  left: if joining other tables, specify the pydal left expression here
--  groupby: pydal groupby expression. Used to group results in the grid.
--  headings: list of headings to be used for list page - if not provided use the field label
--  create: Controls whether the grid allows record creation. Can be True (show button), False (hide button), a URL string, or a callable for custom logic.
--  details: Controls whether the grid allows viewing record details. Can be True, False, a URL string, or a callable for custom logic.
--  editable: Controls whether the grid allows editing records. Can be True, False, a URL string, or a callable for custom logic.
--  deletable: Controls whether the grid allows deleting records. Can be True, False, a URL string, or a callable for custom logic.
--  required_fields: list of fields that must be included in the grid's queries and forms. Used to ensure certain fields are always loaded.
--  validation: optional validation function to pass to create and edit forms
--  pre_action_buttons: list of action_button instances to include before the standard action buttons
--  post_action_buttons: list of action_button instances to include after the standard action buttons
--  auto_process: Boolean - whether or not the grid should be processed immediately. If False, developer must call grid.process() once all params are setup.
--  rows_per_page: number of rows to display per page. Default 15
--  include_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid
--  search_button_text: text to appear on the submit button on your search form
--  formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms
--  grid_class_style: GridClassStyle class used to override defaults for styling your rendered grid. Allows you to specify classes or styles to apply at certain points in the grid
--  icon_style: default: IconStyleFontawesome. used to get icon css classes. Other options: IconStyle, IconStyleBootstrapIcons
--  T: optional pluralize object
+-  ``query`` — PyDAL query to be processed.
+-  ``search_form`` — py4web ``Form`` to be embedded as the search form.
+   If you pass one, you are responsible for applying its filters to
+   ``query``. Mutually exclusive with ``search_queries``.
+-  ``search_queries`` — list of ``[label, query_factory]`` entries used
+   to build the search form automatically. Ignored when
+   ``search_form`` is provided. Defaults to ``"auto"``.
+-  ``columns`` — list of fields or ``Column`` objects to show on the
+   list page (see :ref:`Custom columns`). If blank, all readable
+   fields of the queried table are used.
+-  ``field_id`` — the id field of the primary table; needed when the
+   grid joins multiple tables, to tell the grid which table backs the
+   edit/details/delete actions.
+-  ``show_id`` — show the primary-key field on the list page.
+   Default is ``None`` (auto-detect: shown if a column has type
+   ``"id"``).
+-  ``orderby`` — PyDAL orderby field or list of fields. Sets the
+   default sort order.
+-  ``left`` — PyDAL ``left`` expression used when joining tables.
+-  ``groupby`` — PyDAL ``groupby`` expression. Used to group rows.
+-  ``headings`` — list of column headings; field labels are used when
+   missing.
+-  ``create`` / ``details`` / ``editable`` / ``deletable`` — control
+   the standard action buttons. Each accepts ``True`` (show), ``False``
+   (hide), a URL string (use as the redirect target), or a callable
+   that receives the current row and returns one of the above.
+-  ``validation`` — optional validation callable forwarded to the
+   create/edit ``Form``; same contract as ``Form(validation=...)``.
+-  ``required_fields`` — list of fields that must always be loaded by
+   the underlying query, even if not visible.
+-  ``pre_action_buttons`` / ``post_action_buttons`` — lists of action
+   buttons rendered before/after the standard action buttons (see
+   :ref:`Custom buttons`).
+-  ``auto_process`` — when ``True`` (the default) the grid processes
+   the request on construction. Set to ``False`` to defer until you
+   call ``grid.process()`` yourself.
+-  ``rows_per_page`` — number of rows shown per page. Default 15.
+-  ``include_action_button_text`` — whether action buttons render
+   their text label next to the icon.
+-  ``search_button_text`` — text of the submit button on the auto-built
+   search form.
+-  ``formstyle`` — ``Form`` style class used for the auto-built CRUD
+   forms (e.g. ``FormStyleDefault``, ``FormStyleBulma``,
+   ``FormStyleBootstrap4``, ``FormStyleBootstrap5``,
+   ``FormStyleTailwind``).
+-  ``grid_class_style`` — ``GridClassStyle`` subclass used to skin the
+   grid (defaults to ``GridClassStyle``; see also
+   ``GridClassStyleBulma``, ``GridClassStyleBootstrap5``,
+   ``GridClassStyleTailwind``).
+-  ``icon_style`` — class used to look up icon CSS classes; built-in
+   options are ``IconStyle`` (no icons),
+   ``IconStyleFontawesome`` (default) and ``IconStyleBootstrapIcons``.
+-  ``T`` — optional translator (typically the ``T`` fixture).
 
 (*) The parameters ``details``, ``editable`` and ``deletable`` can also take a **callable** that will 
 be passed the current row of the grid. This is useful because you can then turn a button on or off
@@ -253,15 +282,14 @@ Searching and filtering
 
 There are two ways to build a search form:
 
--  Provide a search_queries list
--  Build your own custom search form
-
--  build a search form. If more than one search query in the list, it
-   will also generate a dropdown to select which search field to search
-   against
-
-However, if this doesn’t give you enough flexibility you can provide
-by yourself.
+-  Pass a ``search_queries`` list. Each entry is
+   ``[label, query_factory]`` where ``query_factory`` takes the
+   submitted search value and returns a PyDAL query. The grid renders
+   a search input automatically; if more than one entry is supplied,
+   a drop-down lets the user pick which field to search.
+-  Build a custom ``search_form`` and pass it to ``Grid``. In this
+   case it is your responsibility to apply the form's values back to
+   ``query`` before the grid runs.
 
 CRUD settings
 ~~~~~~~~~~~~~
@@ -415,114 +443,94 @@ to use other class_style, in particular ``GridClassStyleBulma`` or ``GridClassSt
 You can even build your own class_style to be used with the css framework of
 your choice.
 
-With icon_style, you can customize the icon font used. Currently, the following exist:
+``icon_style`` selects the icon font used for the action buttons.
+The classes shipped with py4web are:
 
-  to add `fontawesome <https://fontawesome.com/>`__ icon font CSS to use this.
-  css classes like ``icon-edit-button`` which you can write your own css for.
+- ``IconStyleFontawesome`` (the default) — uses
+  `Font Awesome <https://fontawesome.com/>`__ classes such as
+  ``fas fa-edit``. You must include the Font Awesome CSS in your
+  layout.
+- ``IconStyleBootstrapIcons`` — uses
   `Bootstrap Icons <https://icons.getbootstrap.com/#install>`__
-  to your html templates to use this.
+  classes such as ``bi bi-pencil-square``. Include the Bootstrap
+  Icons CSS in your layout.
+- ``IconStyle`` — emits class names like ``icon-edit-button`` so you
+  can ship your own icon CSS.
 
-Custom Action Buttons
+.. _Custom buttons:
+
+Custom action buttons
 ---------------------
 
-As with web2py, you can add additional buttons to each row in your grid.
-You do this by providing ``pre_action_buttons`` or ``post_action_buttons`` to
-the Grid **init** method.
+You can add extra buttons to each row in your grid by passing a list
+of *button factories* via ``pre_action_buttons`` or
+``post_action_buttons``.
 
-   before the standard action buttons
-   after the standard action buttons
+A button factory is a callable that receives the current row and
+returns either a dictionary or a yatl helper.
 
-You can build your own Action Button class to pass to pre/post action
-buttons based on the template below (this is not provided with py4web).
-
-Here is an example:
+The simplest form returns a dictionary:
 
 .. code:: python
 
    pre_action_buttons = [
        lambda row: dict(
-           url = f"https://www.google.com/search?q={row.superhero}", 
-           text = f"Google for {row.superhero}",
-           _style = "font-weight: 200"
+           url=f"https://www.google.com/search?q={row.superhero}",
+           text=f"Google for {row.superhero}",
+           _style="font-weight: 200",
        )
    ]
 
-   grid = Grid(... pre_action_buttons = pre_action_buttons  ...) 
+   grid = Grid(..., pre_action_buttons=pre_action_buttons)
 
-Notice that a button can be represented by a dict with the following keys:
+The dictionary may contain:
 
-- url: the url the button points to (required)
-- text: the text of the button (required)
-- icon: the optional name of the icon in the button, for example ``fa-gear``
-- classes: optional classes to be added to the button tag
-- kind: optional kind of button used to retrieve style infro from the GridStyle. Defaults to "grid-button"
-- _{name}: optional attributes to be passed to the ``A(..., _{name}=...)`` helper building the button.
+- ``url`` — destination URL (required).
+- ``text`` — label text (required).
+- ``icon`` — optional icon name (e.g. ``"fa-gear"``).
+- ``classes`` — extra CSS classes for the button.
+- ``kind`` — key used to look up style info in ``GridClassStyle``.
+  Defaults to ``"grid-button"``.
+- ``_{name}`` — any additional HTML attributes; forwarded to the
+  ``A(..., _{name}=...)`` helper that builds the anchor.
 
-A button can also be built explicitly using helpers for added flexibility and less magic:
+For full control, return a yatl helper directly. The helper is
+rendered as-is, which avoids the dictionary indirection:
 
 .. code:: python
+
+   from yatl.helpers import A
 
    pre_action_buttons = [
        lambda row: A(
            f"Google for {row.superhero}",
-           _href = f"https://www.google.com/search?q={row.superhero}",
-           _style = "font-weight: 200",
+           _href=f"https://www.google.com/search?q={row.superhero}",
+           _style="font-weight: 200",
        )
    ]
 
-   grid = Grid(... pre_action_buttons = pre_action_buttons  ...) 
+   grid = Grid(..., pre_action_buttons=pre_action_buttons)
 
+
+.. _Using callable parameters:
 
 Using callable parameters
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A recent improvement to py4web allows you to pass a **callable** instead of a GridActionButton. This allow you to more easily change the behaviour of standard and custom Actions.
-
-Callable can be used with:
-
-- details
-- editable
-- deletable
-- additional_classes
-- additional_styles
-- override_classes
-- override_styles
-
-Example usage:
+The ``create``, ``details``, ``editable`` and ``deletable``
+parameters of ``Grid`` accept a callable in addition to ``True`` /
+``False`` / a URL string. The callable receives the current row and
+returns one of those values, so a button can be turned on or off — or
+redirected — based on the row's data:
 
 .. code:: python
 
-   @action("example/<path:path>")
-   def example(path=None):
-
-      pre_action_buttons = [
-         lambda row: GridActionButton(
-               URL("test", row.id),
-               text="Click me",
-               icon=IconStyleFontawesome.add_button, # same as "fa-plus"
-               additional_classes=row.id,
-               additional_styles=["height: 10px" if row.bar else None],
-         )
-      ]
-
-      post_action_buttons = [
-         lambda row: GridActionButton(
-               URL("test", row.id),
-               text="Click me!!!",
-               icon="fa-plus",
-               additional_classes=row.id,
-               additional_styles=["height: 10px" if row.bar else None],
-         )
-      ]
-
-      grid = Grid(
-         path=path,
-         query=db.foo,
-         pre_action_buttons=pre_action_buttons,
-         post_action_buttons=post_action_buttons,
-      )
-
-      return dict(grid=grid.render())
+   grid = Grid(
+       db.employee,
+       deletable=lambda row: row.job != "CEO",
+       editable=lambda row: URL("custom_edit", row.id) if row.locked
+                            else True,
+   )
 
 
 Reference Fields
@@ -549,29 +557,36 @@ The downfall of using this method is that sorting and filtering are
 based on the company field in the employee table and not the name of the
 company
 
-``left join`` and specify fields from joined table - specified on the left
-parameter of Grid instantiation
+``left join`` — specify fields from a joined table by passing a
+``left`` expression to ``Grid``:
 
 .. code:: python
 
-   db.company.on(db.employee.company == db.company.id)
+   grid = Grid(
+       db.employee,
+       left=db.company.on(db.employee.company == db.company.id),
+       columns=[db.employee.first_name,
+                db.employee.last_name,
+                db.company.name],
+   )
 
-You can specify a standard PyDAL left join, including a list of joins to
-consider.
-Now the company name field can be included in your fields list can be
-clicked on and sorted.
+You can pass any standard PyDAL ``left`` expression, including a list
+of joins. The joined column can then be included in ``columns`` and
+the user can click the heading to sort by it.
 
-Also you can specify a query such as:
+Search queries can also span the join:
 
 .. code:: python
 
-   queries.append((db.employee.last_name.contains(search_text)) | (db.employee.first_name.contains(search_text)) | db.company.name.contains(search_text))
+   queries.append(
+       db.employee.last_name.contains(search_text)
+       | db.employee.first_name.contains(search_text)
+       | db.company.name.contains(search_text)
+   )
 
-This method allows you to sort and filter, but doesn’t allow you to
-combine fields to be displayed together as the filter_out method would
-
-You need to determine which method is best for your use case
-behave differently.
+This approach lets you sort and filter, but does not let you combine
+fields into one display value the way ``filter_out`` does. Choose the
+method that best fits your use case.
 
 
 Grids with checkboxes
