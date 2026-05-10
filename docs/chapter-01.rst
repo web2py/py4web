@@ -21,13 +21,14 @@ successful. Web2py succeeded in providing a low barrier of entry for new
 developers, a very secure development platform, and remains backwards
 compatible until today.
 
-Web2py always suffered from one problem: its monolithic design. The most
-experienced Python developers did not understand how to use its
-components outside of the framework and how to use third party
-components within the framework. We thought of web2py as a perfect tool that
-did not have to be broken into pieces because that would compromise its
-security. It turned out that we were wrong, and playing well with others
-is important. Hence, since 2015 we worked on three fronts:
+Web2py always suffered from one problem: its monolithic design.
+Experienced Python developers found it hard to use web2py's components
+outside the framework, or to bring in third-party components. We
+originally treated web2py as a self-contained tool that should not be
+broken apart, because we believed that splitting it would weaken its
+security guarantees. That turned out to be the wrong call: playing well
+with others is important. So, starting in 2015, we worked on three
+fronts:
 
 -  We ported web2py to Python 3.
 -  We broke web2py into modules that can be used independently.
@@ -35,10 +36,10 @@ is important. Hence, since 2015 we worked on three fronts:
    framework … PY4WEB.
 
 PY4WEB is more than a repackaging. It is a complete redesign.
-It uses some of the web2py modules, but not all of them. In
-some cases, it uses other and better modules. Some functionality was
-removed and some was added. We tried to preserve most of the syntax and
-features that experienced web2py users loved. 
+It uses some of the web2py modules, but not all of them; in some cases
+it switches to other, better modules. Some functionality was removed
+and some was added. We tried to preserve most of the syntax and
+features that experienced web2py users loved.
 
 
 Here is a more explicit list (see :ref:`From web2py to py4web` for more
@@ -52,19 +53,20 @@ details if you come from web2py):
    now exclusively on the regular Python import mechanism.
 -  PY4WEB, like web2py, can serve multiple applications concurrently, as
    long as the apps are submodules of the apps module.
--  PY4WEB, unlike web2py, is based on ombott 
-   (a reduced and faster spin-off of Bottle) and in particular uses
-   a Bottle-compatible request object and routing mechanism. 
-   
+-  PY4WEB, unlike web2py, is based on ombott (a reduced and faster
+   spin-off of Bottle) and in particular uses a Bottle-compatible
+   request object and routing mechanism.
+
 -  PY4WEB, unlike web2py, does not create a new environment at every
-   request. It introduces the concept of fixtures to explicitly declare
-   which objects need to be (re)initialized when a new http request arrives
-   or needs cleanup when completed. This makes it much faster than web2py.
--  PY4WEB, has a new session object which, like web2py’s, provides strong
+   request. It introduces the concept of *fixtures* to explicitly
+   declare which objects need to be (re)initialized when a new HTTP
+   request arrives, or cleaned up when the request finishes. This makes
+   it much faster than web2py.
+-  PY4WEB has a new session object which, like web2py’s, provides strong
    security and encryption of the session data, but sessions are no
-   longer stored in the file system - which created performance issues.
-   It provides sessions in cookies, in redis, in memcache, or optionally  in
-   database. We also limited session data to objects that are json
+   longer stored in the file system — which created performance issues.
+   It provides sessions in cookies, redis, memcache, or optionally
+   in a database. We also limited session data to objects that are JSON
    serializable.
 -  PY4WEB, like web2py, has a built-in ticketing system but, unlike
    web2py, this system is global and not per app. Tickets are no longer
@@ -72,10 +74,10 @@ details if you come from web2py):
    a single database.
 -  PY4WEB, like web2py, is based on pydal but leverages some new features of
    pydal (RESTAPI).
--  PY4WEB, like web2py, uses the yatl template language but defaults to
-   square brackets delimiters to avoid conflicts with model JS
-   frameworks, such as Vue.js and angular.js. Yatl includes a subset of
-   the web2py helpers.
+-  PY4WEB, like web2py, uses the YATL template language but defaults
+   to square-bracket delimiters (``[[ ... ]]``) to avoid conflicts with
+   modern JS frameworks such as Vue.js and Angular. YATL includes a
+   subset of the web2py helpers.
 -  PY4WEB, unlike web2py, uses the pluralization library for
    internationalization. In practice, this exposes an object T very
    similar to web2py’s T but it provides better caching and more
