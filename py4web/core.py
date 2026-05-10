@@ -1557,6 +1557,11 @@ class Reloader:
     ROUTES = collections.defaultdict(list)
     MODULES = {}
     ERRORS = {}
+    # Guards Reloader.import_app against concurrent re-entry from multiple
+    # request threads in lazy-watch mode. Without it, two simultaneous
+    # requests can both observe DIRTY_APPS[name] == True and race-import the
+    # same app, corrupting sys.modules and Reloader.MODULES.
+    _import_lock = threading.Lock()
 
     @staticmethod
     def install_reloader_hook():
@@ -1567,9 +1572,13 @@ class Reloader:
             app_name = request.path.split("/")[1]
             if app_name not in Reloader.ROUTES:
                 app_name = "_default"
-            if DIRTY_APPS.get(app_name):
-                Reloader.import_app(app_name)
-                DIRTY_APPS[app_name] = False
+            with Reloader._import_lock:
+                # Re-check inside the lock so only the first thread
+                # actually triggers the reimport; subsequent threads see
+                # DIRTY_APPS[app_name] is False and skip.
+                if DIRTY_APPS.get(app_name):
+                    DIRTY_APPS[app_name] = False
+                    Reloader.import_app(app_name)
             ## APP_WATCH tasks, if used by any app
             try_app_watch_tasks()
 
