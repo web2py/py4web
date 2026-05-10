@@ -26,8 +26,8 @@ approve new users (by visiting the link logged on the console or
 by directly editing the database).
 
 
-To use the Auth object, first of all you need to import it, instantiate it, configure
-it, and enable it.
+To use the Auth object, import it, instantiate it, configure it, and
+enable it:
 
 .. code:: python
 
@@ -36,37 +36,111 @@ it, and enable it.
    # (configure here)
    auth.enable()
 
-The import step is obvious. The second step does not perform any
-operation other than telling the Auth object which session object to use
-and which database to use. Auth data is stored in ``session['user']``
-and, if a user is logged in, the user id is stored in
-session[‘user’][‘id’]. The db object is used to store persistent info
-about the user in a table ``auth_user`` which is created if missing.
-The ``auth_user`` table has the following fields:
+The constructor only stores the session and database it should work
+with — it does not perform any side effect. Auth data is kept in
+``session['user']``; if a user is logged in, their id is stored in
+``session['user']['id']``. The database is used for the
+``auth_user`` table, which Auth creates automatically if it does not
+already exist.
 
--  username
--  email
--  password
--  first_name
--  last_name
--  sso_id (used for single sign on, see later)
--  action_token (used to verify email, block users, and other tasks,
-   also see later).
+The default ``auth_user`` table has these fields:
+
+-  ``username``
+-  ``email``
+-  ``password``
+-  ``first_name``
+-  ``last_name``
+-  ``sso_id`` — used for single sign-on (see later).
+-  ``action_token`` — used to verify email, block users, etc.
+-  ``last_password_change`` — timestamp of the last password change.
+
+Auth also adds these fields conditionally:
+
+-  ``phone_number`` — added when ``Auth(use_phone_number=True)``.
+-  ``past_passwords_hash`` — added when ``block_previous_password_num``
+   is set, so old hashes can be checked at password change time.
+
+The full ``Auth`` constructor accepts these keyword arguments
+(defaults shown when notable):
+
+-  ``session``, ``db`` — required.
+-  ``define_tables=True`` — set to ``False`` to define tables yourself
+   later via ``auth.define_tables()``.
+-  ``sender=None`` — a ``Mailer`` (or any object with a ``.send``
+   method) used for verification and password-reset emails.
+-  ``use_username=True``, ``use_phone_number=False`` — toggle
+   alternative login identifiers.
+-  ``registration_requires_confirmation=True`` — require email
+   verification before a registered user can log in.
+-  ``registration_requires_approval=False`` — require manual approval
+   (an admin flips ``action_token``) before a user can log in.
+-  ``inject=True`` — inject ``user``, ``session`` and the path of
+   common Auth actions into every template via the ``inject`` fixture.
+-  ``extra_fields=[]``, ``extra_form_fields=[]`` — extra DB fields and
+   extra fields that show up only in the registration/profile forms.
+-  ``login_expiration_time=3600`` — seconds before the session is
+   considered stale and the user is silently logged out.
+-  ``password_complexity={"entropy": 50}`` — passed straight to PyDAL's
+   ``IS_STRONG`` validator.
+-  ``block_previous_password_num=None`` — refuse a new password if it
+   matches one of the last *N* passwords (uses
+   ``past_passwords_hash``).
+-  ``allowed_actions=["all"]`` — restrict which auth flows are
+   exposed; see below.
+-  ``use_appname_in_redirects=None`` — when truthy, generated redirects
+   include the app prefix.
+-  ``password_in_db=True`` — store hashed passwords in
+   ``auth_user.password``. Setting this to ``False`` makes Auth
+   delegate authentication to plugins only.
+-  ``two_factor_required=None``, ``two_factor_send=None``,
+   ``two_factor_validate=None`` — callables that wire up custom
+   two-factor flows.
+-  ``template_args=None``, ``logger=None``, ``T=None`` — optional
+   template extras, logger, and translator.
+
+Most behavioural knobs not in the constructor live on
+``auth.param``. The most useful ones are:
+
+-  ``auth.param.formstyle`` — the style class used to render Auth
+   forms (e.g. ``FormStyleBulma``, ``FormStyleBootstrap5``,
+   ``FormStyleTailwind``).
+-  ``auth.param.button_classes`` — CSS classes to apply to each Auth
+   button (``sign-in``, ``sign-up``, ``submit``, …).
+-  ``auth.param.messages`` — localisable strings shown in Auth pages.
+-  ``auth.param.default_login_enabled`` — whether the username/password
+   login flow is shown alongside any registered SSO plugins.
+-  ``auth.param.exclude_extra_fields_in_register`` /
+   ``auth.param.exclude_extra_fields_in_profile`` — names of extra
+   fields that should not appear in the corresponding form.
+-  ``auth.param.expose_all_models`` — expose the table-introspection
+   ``all_models`` API endpoint.
+-  ``auth.param.two_factor_tries`` — how many attempts the user gets
+   before the two-factor challenge fails.
+-  ``auth.param.login_after_registration`` — automatically log a user
+   in once their registration is fully complete.
 
 The ``auth.enable()`` step creates and exposes the following RESTful
-APIs:
+APIs (all under ``{appname}/auth/api/...``):
 
--  {appname}/auth/api/register (POST)
--  {appname}/auth/api/login (POST)
--  {appname}/auth/api/request_reset_password (POST)
--  {appname}/auth/api/reset_password (POST)
--  {appname}/auth/api/verify_email (GET, POST)
--  {appname}/auth/api/logout (GET, POST) (+)
--  {appname}/auth/api/profile (GET, POST) (+)
--  {appname}/auth/api/change_password (POST) (+)
--  {appname}/auth/api/change_email (POST) (+)
+Public endpoints:
 
-Those marked with a (+) require a logged in user.
+-  ``register`` (POST)
+-  ``login`` (POST)
+-  ``request_reset_password`` (POST)
+-  ``reset_password`` (POST)
+-  ``verify_email`` (GET, POST)
+-  ``all_models`` (GET) — table introspection, only when
+   ``auth.param.expose_all_models`` is true.
+-  ``config`` (GET) — public configuration consumed by the bundled
+   ``auth.html`` Vue component.
+
+Endpoints that require a logged-in user:
+
+-  ``logout`` (GET, POST)
+-  ``profile`` (GET, POST)
+-  ``change_password`` (POST)
+-  ``change_email`` (POST)
+-  ``unsubscribe`` (POST)
 
 Auth UI
 ~~~~~~~
@@ -156,15 +230,19 @@ Custom actions after Auth events
 After every Auth event, like: password_reset, login, register, verify_email, etc, it is possible to trigger an action.
 For example, to redirect a user to specific page after sign up and successfully email verification, we can do the following:
 
-in ``common.py``
-.. code:: python
-   #function triggered after a sign up with email verification sign up.
-   def after_register_callback(_, user_row):
-    redirect(URL('pending_registration'))
+In ``common.py``:
 
-   #function triggered after a successfull email verification.
-   def after_verify_email_callback(_, user_row):
-      redirect(URL('success_verification'))
+.. code:: python
+
+   # function triggered after a sign-up that requires email verification.
+   # The first argument is the Form (or None for verify_email);
+   # the second is the user row dict.
+   def after_register_callback(form, user):
+       redirect(URL('pending_registration'))
+
+   # function triggered after a successful email verification.
+   def after_verify_email_callback(form, user):
+       redirect(URL('success_verification'))
 
 
 In the ``Auth`` section before auth.define_tables() or auth.fix_actions(), add:
@@ -620,13 +698,15 @@ SimpleTokenPlugin and JwtTokenPlugin. The first one of the two is recommended in
 
 What all plugins have in common:
 
-- They have a way for a user to create a token which is a string.
-- When an HTTP(S) request is made to an action that @actiion.uses(auth) or @action.uses(auth.user)
-  py4web will identify the user if the token is present, as if the user was logged-in.
+- They have a way for a user to create a token (a string).
+- When an HTTP(S) request reaches an action decorated with
+  ``@action.uses(auth)`` or ``@action.uses(auth.user)``, py4web
+  identifies the user from the token if it is present, as if the user
+  were logged in.
 
 What SimpleTokenPlugin and JwtTokenPlugin have in common:
 
-- When an HTTP(S) request is made, the token must be put in the "Authentication" header.
+- When an HTTP(S) request is made, the token must be put in the ``Authorization`` header (``Authorization: Bearer <token>``).
   You will need to create your own plugin if you want to pass it in some other manner.
 - Each user can create as many tokens as desired.
 - Users can create tokens for other users if the application logic requires/allows it.
@@ -670,8 +750,9 @@ In common.py:
     simple_token_plugin = SimpleTokenPlugin(auth)
     auth.token_plugins.append(simple_token_plugin)
 
-You can optionally a ``table=db.mytable`` to a custom table. Otherwise it will create and use
-one called "auth_simple_token".
+You can optionally pass ``table=db.mytable`` to use a custom table.
+Otherwise the plugin creates and uses a table named
+``auth_simple_token``.
 
 In controllers.py
 
@@ -706,7 +787,7 @@ In common.py:
 
 .. code:: python
 
-    from py4web.utils.auth import SimpleTokenPlugin
+    from py4web.utils.auth import JwtTokenPlugin
     jwt_token_plugin = JwtTokenPlugin(auth)
     auth.token_plugins.append(jwt_token_plugin)
 
@@ -742,19 +823,19 @@ Example of custom Token Plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A token plugin is just a class that, given a request, returns an associated user.
-For example here is a dumb and UNSAFE plugin that authorizes everybody as user 1 as long as
-the "Authentication" header is provided.
-
-from py4web import request
+For example, here is a dumb and UNSAFE plugin that authorises everyone as
+user 1 as long as the ``Authorization`` header is set:
 
 .. code:: python
 
+    from py4web import request
+
     class MyCustomTokenPlugin:
         def get_user(self):
-            authorization = request.headers.get("Authentication")
+            authorization = request.headers.get("Authorization")
             if authorization:
                 return db.auth_user(1)
-            return None 
+            return None
 
     auth.token_plugins.append(MyCustomTokenPlugin())
 
