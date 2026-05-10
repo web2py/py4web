@@ -946,7 +946,15 @@ class Session(Fixture):
     # identically to ``session["key"] = value``.  Internal bookkeeping in
     # __init__ uses object.__setattr__ to bypass this proxy.
     def __getattr__(self, key):
-        """Attribute-style read access to session data (fallback only)."""
+        """Attribute-style read access to session data (fallback only).
+
+        Underscore-prefixed names raise AttributeError so that hasattr(),
+        copy.copy(), pickle, weakref support, and other introspection
+        machinery see a clean "not present" signal instead of silently
+        receiving None.
+        """
+        if key.startswith("_"):
+            raise AttributeError(key)
         return self.get(key)
 
     __setattr__ = __setitem__
