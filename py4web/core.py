@@ -817,9 +817,11 @@ class Session(Fixture):
         self_local.data = {}
         self_local.cookie_name = params.name.format(app_name=app_name)
         self_local.secure = request.url.startswith("https")
-        raw_token = request.get_cookie(self_local.cookie_name) or request.query.get(
-            "_session_token"
-        )
+        # The session token is read from the cookie only.  It used to also be
+        # accepted from the query string and request body; query-string
+        # tokens leak via Referer headers, browser history, and access logs,
+        # so that fallback was a session-stealing footgun.
+        raw_token = request.get_cookie(self_local.cookie_name)
         if not raw_token and request.method in {"POST", "PUT", "DELETE", "PATCH"}:
             raw_token = (
                 request.forms
