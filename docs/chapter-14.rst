@@ -512,8 +512,6 @@ rendered as-is, which avoids the dictionary indirection:
    grid = Grid(..., pre_action_buttons=pre_action_buttons)
 
 
-.. _Using callable parameters:
-
 Using callable parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

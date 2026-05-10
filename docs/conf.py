@@ -64,9 +64,10 @@ today_fmt = "%B %d, %Y"
 # Default Pygments lexer used for unlabeled literal blocks (``::`` and
 # ``.. code::`` without an explicit language).  Explicitly tagged blocks
 # (``.. code:: bash``, ``.. code:: html`` etc.) still use their own lexer.
-# 'python3' falls back gracefully to plain text for snippets that aren't
-# valid Python, so it's a safe default for this manual.
-highlight_language = "python3"
+# 'default' is Sphinx's Python lexer that silently falls back to plain
+# text for snippets that aren't valid Python, so it's a safe default for
+# this manual.
+highlight_language = "default"
 
 # Pygments style used by both HTML and PDF builds. Friendly contrasts well
 # in print and stays readable on the RTD theme on screen.

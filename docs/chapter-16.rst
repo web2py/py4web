@@ -881,8 +881,8 @@ Adding a Captcha Solution with Altcha
 This section provides a simple captcha implementation for your py4web applications using the **Altcha** library. While not exhaustively tested, it serves as a practical example for integrating a robust, client-side captcha solution.
 More information in https://altcha.org
 
-Prerequisites
-~~~~~~~~~~~~~
+Altcha prerequisites
+~~~~~~~~~~~~~~~~~~~~
 
 First, you need to install the Altcha library. You can do this using pip:
 
