@@ -1178,7 +1178,20 @@ class action:  # pylint: disable=invalid-name
                             except Exception as err:
                                 context["exception"] = context.get("exception") or err
                     for fixture in reversed(fixtures):
-                        safely(lambda: Fixture.local_delete(fixture))
+                        # KeyError is the expected outcome when a fixture's
+                        # on_request never ran (or never initialised a
+                        # thread-local); anything else is a real bug we want
+                        # to see in the logs rather than silently lose.
+                        try:
+                            Fixture.local_delete(fixture)
+                        except KeyError:
+                            pass
+                        except Exception as cleanup_err:  # pylint: disable=broad-exception-caught
+                            logging.warning(
+                                "Fixture cleanup failed for %r: %s",
+                                fixture,
+                                cleanup_err,
+                            )
                     exception = context.get("exception")
                     if isinstance(exception, Exception):
                         raise exception
