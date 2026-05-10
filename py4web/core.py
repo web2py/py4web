@@ -173,7 +173,14 @@ def load_module(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
-    spec.loader.exec_module(module)
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        # If exec fails we must remove the half-initialised module from
+        # sys.modules; otherwise subsequent ``import name`` calls return
+        # the broken stub instead of triggering a fresh load.
+        sys.modules.pop(name, None)
+        raise
     return module
 
 
