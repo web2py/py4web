@@ -2037,7 +2037,17 @@ class MetaPathRouter:
         if pkg != pkg_alias:
             self.pkg_alias = pkg_alias
             self.pkg = pkg
-            # register as path finder
+            # Register as path finder, but skip if an equivalent finder is
+            # already installed.  Repeated install_args() calls (e.g. when
+            # wsgi() is invoked multiple times) would otherwise stack
+            # duplicate finders on sys.meta_path.
+            for finder in sys.meta_path:
+                if (
+                    isinstance(finder, MetaPathRouter)
+                    and getattr(finder, "pkg", None) == pkg
+                    and getattr(finder, "pkg_alias", None) == pkg_alias
+                ):
+                    return
             sys.meta_path.append(self)
 
     def find_spec(self, fullname, path=None, target=None):
