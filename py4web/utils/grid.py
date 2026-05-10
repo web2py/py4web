@@ -273,6 +273,12 @@ class IconStyleFontawsome(IconStyle):
         return icontxt
 
 
+# Correctly-spelled alias.  ``IconStyleFontawsome`` is the original name and is
+# kept for backwards compatibility; ``IconStyleFontawesome`` is the spelling
+# used in the documentation and in any new code.
+IconStyleFontawesome = IconStyleFontawsome
+
+
 class IconStyleBootstrapIcons(IconStyle):
     sort_up = "bi bi-sort-up"
     sort_down = "bi bi-sort-down"
