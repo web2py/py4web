@@ -247,76 +247,105 @@ class Cache:
         # safe here because we only mutate it while holding self.lock.
         self._inflight = {}
 
+    def _move_to_head(self, node):
+        """Move an existing node to the head of the LRU list.
+
+        Caller must hold ``self.lock``.
+        """
+        if self.head.next is node:
+            return
+        # Unlink from current position
+        node.prev.next = node.next
+        node.next.prev = node.prev
+        # Link at head
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _insert_or_refresh(self, key, value, t, m):
+        """Insert a fresh entry or refresh an existing one in place.
+
+        Caller must hold ``self.lock``.
+        """
+        existing = self.mapping.get(key)
+        if existing is not None:
+            existing.value = value
+            existing.t = t
+            existing.m = m
+            self._move_to_head(existing)
+            return
+        new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
+        self.head.next.prev = new_node
+        self.head.next = new_node
+        self.mapping[key] = new_node
+        self.free -= 1
+        if self.free < 0:
+            last_node = self.tail.prev
+            last_node.prev.next = self.tail
+            self.tail.prev = last_node.prev
+            del self.mapping[last_node.key]
+            self.free += 1
+
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
         t0 = time.time()
 
+        # Fast path: a single locked section that decides hit-vs-miss and, on
+        # hit for an unexpired entry, atomically moves the node to the head.
+        # No mutation of the LRU list happens until we know we're returning a
+        # value or until the slow path completes — this avoids the previous
+        # bug where the node was unlinked early and then the lock released,
+        # exposing detached/duplicate state to concurrent readers.
         with self.lock:
             node = self.mapping.get(key)
-            if node:
-                # Unlink from current position; will be re-inserted at head below
-                node.next.prev, node.prev.next = node.prev, node.next
-                value, t = node.value, node.t
-            else:
-                self.free -= 1
-                value, t = None, t0
+            if node is not None and node.t + expiration >= t0:
+                self._move_to_head(node)
+                return node.value
+            cached_m = node.m if node is not None else None
 
-        # Evaluate the monitor outside the global lock (it may be slow)
-        m = monitor() if monitor else None
+        # Slow path: monitor() and callback() may be expensive, so they run
+        # outside the global lock.  A per-key lock prevents the cache stampede
+        # where several threads recompute the same key in parallel.
+        with self.lock:
+            key_lock = self._inflight.setdefault(key, threading.Lock())
 
-        # Determine whether the cached value is still valid.
-        # A cached entry is valid when:
-        #   - it exists AND is not expired, OR
-        #   - it exists AND is expired but the monitor value hasn't changed
-        #     (monitor-based invalidation: only recompute when the monitored
-        #      value actually changes, even if the entry has technically expired)
-        if node is not None:
-            expired = node.t + expiration < t0
-            monitor_changed = m is None or node.m != m
-            cache_hit = not (expired and monitor_changed)
-        else:
-            cache_hit = False
-
-        if not cache_hit:
-            # Use a per-key lock so only one thread recomputes while others wait
-            with self.lock:
-                if key not in self._inflight:
-                    self._inflight[key] = threading.Lock()
-                key_lock = self._inflight[key]
-
+        try:
             with key_lock:
-                # Re-check under the key lock; another thread may have already
-                # refreshed the value while we were waiting.
+                # Re-check under the key lock: another thread may have
+                # already refreshed the entry while we were waiting.
                 with self.lock:
-                    node2 = self.mapping.get(key)
-                if node2 is not None:
-                    expired2 = node2.t + expiration < t0
-                    monitor_changed2 = m is None or node2.m != m
-                    refreshed_hit = not (expired2 and monitor_changed2)
-                else:
-                    refreshed_hit = False
+                    node = self.mapping.get(key)
+                    if node is not None and node.t + expiration >= t0:
+                        self._move_to_head(node)
+                        return node.value
 
-                if refreshed_hit:
-                    value = node2.value
-                    t = node2.t
-                else:
-                    value = callback()
-                    t = t0
+                m = monitor() if monitor else None
 
+                if node is not None and monitor is not None and cached_m == m:
+                    # Expired but monitor says "no change": keep the cached
+                    # value and reset its timestamp.
+                    with self.lock:
+                        node = self.mapping.get(key)
+                        if node is not None:
+                            node.t = t0
+                            node.m = m
+                            self._move_to_head(node)
+                            return node.value
+                    # Fall through if the entry was evicted between checks.
+
+                value = callback()
+
+                with self.lock:
+                    self._insert_or_refresh(key, value, t0, m)
+                return value
+        finally:
+            # Best-effort cleanup of the per-key lock.  A late-arriving
+            # thread will simply create a new lock; that does not corrupt
+            # state because both threads still go through the locked
+            # mapping re-check before computing.
             with self.lock:
                 self._inflight.pop(key, None)
-        # else: cache_hit – value and t already set above
-
-        # Re-insert the node at the head of the list
-        with self.lock:
-            new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
-            self.mapping[key] = self.head.next = new_node.next.prev = new_node
-            if self.free < 0:
-                last_node = self.tail.prev
-                self.tail.prev, last_node.prev.next = last_node.prev, self.tail
-                del self.mapping[last_node.key]
-                self.free += 1
-        return value
 
     def memoize(self, expiration=3600):
         """Decorator to memorize the output of any fuction"""
