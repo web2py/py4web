@@ -1,7 +1,8 @@
 # check compatibility
 import py4web
 
-assert py4web.check_compatible("1.20250328.1")
+if not py4web.check_compatible("1.20250328.1"):
+    raise RuntimeError("py4web 1.20250328.1+ required")
 
 # by importing controllers you expose the actions defined in it
 from . import controllers

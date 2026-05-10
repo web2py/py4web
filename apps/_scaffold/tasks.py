@@ -12,7 +12,7 @@ def my_task(**inputs):
     try:
         # do something here
         db.commit()
-    except:
+    except Exception:
         # rollback on failure
         db.rollback()
     return {}
@@ -45,21 +45,19 @@ elif settings.USE_CELERY:
 
     from celery import Celery
 
-    # to use "from .common import scheduler" and then use it according
-    # to celery docs, examples in tasks.py
     celery_scheduler = Celery(
         "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
     )
 
     # register your tasks
-    @scheduler.task
+    @celery_scheduler.task
     def my_task():
         # reconnect to database
         db._adapter.reconnect()
         try:
             # do something here
             db.commit()
-        except:
+        except Exception:
             # rollback on failure
             db.rollback()
 

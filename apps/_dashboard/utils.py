@@ -9,9 +9,7 @@ File operations
 ---------------
 """
 
-import glob
 import gzip
-import logging
 import os
 import re
 import shutil
@@ -155,6 +153,9 @@ def create_app(path, model="scaffold.w3p"):
 
 
 def make_safe(db):
+    """Wrap callable Field.default / Field.update so the dashboard can render
+    rows even if the app's own callbacks raise."""
+
     def make_safe_field(func):
         def wrapper():
             try:
@@ -163,6 +164,8 @@ def make_safe(db):
                 print(exp)
                 print("Warning: _dashboard trying to access a forbidden method of app")
                 return None
+
+        return wrapper
 
     for table in db:
         for field in table:
@@ -177,14 +180,18 @@ def run(command, cwd="."):
     return subprocess.check_output(command.split(), cwd=cwd).decode(errors="ignore")
 
 
-def get_commits(project, cwd="."):
-    """List of git commits for the project"""
+def get_commits(cwd="."):
+    """List of git commits for the repository at ``cwd``."""
     output = run("git log", cwd=cwd)
     commits = []
+    commit = None
     for line in output.split("\n"):
         if line.startswith("commit "):
             commit = {"code": line[7:], "message": "", "author": "", "date": ""}
             commits.append(commit)
+        elif commit is None:
+            # Skip stray lines that appear before the first 'commit ' header.
+            continue
         elif line.startswith("Author: "):
             commit["author"] = line[8:]
         elif line.startswith("Date: "):

@@ -1,7 +1,9 @@
 # check compatibility
 import py4web
 
-assert py4web.check_compatible("1.20190709.1")
+# Use a real check (not assert) so the guard survives ``python -O``.
+if not py4web.check_compatible("1.20190709.1"):
+    raise RuntimeError("py4web 1.20190709.1+ required")
 
 # by importing controllers you expose the actions defined in it
 from . import controllers

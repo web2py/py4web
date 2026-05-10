@@ -135,7 +135,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("tickets/search")
     @action.uses(Logged(session), "dbadmin.html")
-    def dbadmin():
+    def tickets_search():
         db = error_logger.database_logger.db
 
         def make_grid():
@@ -164,7 +164,13 @@ if MODE in ("demo", "readonly", "full"):
     def dbadmin(app_name, db_name, table_name):
         themes = get_available_themes()
         module = Reloader.MODULES.get(app_name)
-        db = getattr(module, db_name)
+        if module is None:
+            raise HTTP(404)
+        db = getattr(module, db_name, None)
+        # Reject any module attribute that is not a DAL instance to avoid
+        # leaking arbitrary objects exposed by the app.
+        if not isinstance(db, DAL) or table_name not in db.tables:
+            raise HTTP(404)
 
         def make_grid():
             make_safe(db)
@@ -205,14 +211,13 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def info():
         vars = [{"name": "python", "version": sys.version}]
-        for module in sorted(sys.modules):
-            if not "." in module:
-                try:
-                    m = __import__(module)
-                    if "__version__" in dir(m):
-                        vars.append({"name": module, "version": m.__version__})
-                except ImportError:
-                    pass
+        for name in sorted(sys.modules):
+            if "." in name:
+                continue
+            module = sys.modules.get(name)
+            version = getattr(module, "__version__", None)
+            if version is not None:
+                vars.append({"name": name, "version": str(version)})
         return {"status": "success", "payload": vars}
 
     @action("routes")
@@ -250,8 +255,13 @@ if MODE in ("demo", "readonly", "full"):
     def delete_app(name):
         """delete the app"""
         path = os.path.join(FOLDER, name)
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
-        archive = os.path.join(FOLDER, "%s.%s.zip" % (name, timestamp))
+        # Keep backups out of the apps folder so they don't show up in
+        # listings or get re-imported by py4web.
+        backups_dir = os.path.join(FOLDER, "_backups")
+        if not os.path.exists(backups_dir):
+            os.makedirs(backups_dir)
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H%M%S")
+        archive = os.path.join(backups_dir, "%s.%s" % (name, timestamp))
         if os.path.exists(path) and os.path.isdir(path):
             # zip the folder, just in case
             shutil.make_archive(archive, "zip", path)
@@ -264,12 +274,13 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def new_file(name, file_name):
         """creates a new file"""
-        path = os.path.join(FOLDER, name)
-        form = request.json
-        if not os.path.exists(path):
+        app_path = os.path.join(FOLDER, name)
+        if not os.path.exists(app_path):
             return {"status": "success", "payload": "App does not exist"}
-        full_path = os.path.join(path, file_name)
-        if not full_path.startswith(path + os.sep):
+        # safe_join normalises ``..`` segments and refuses anything that
+        # escapes the app directory.
+        full_path = safe_join(app_path, file_name)
+        if not full_path:
             return {"status": "success", "payload": "Invalid path"}
         if os.path.exists(full_path):
             return {"status": "success", "payload": "File already exists"}
@@ -288,7 +299,9 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def walk(path):
         """Returns a nested folder structure as a tree"""
-        top = os.path.join(FOLDER, path)
+        top = safe_join(FOLDER, path)
+        if not top or not os.path.isdir(top):
+            return {"status": "error", "message": "folder does not exist"}
         filter = None
         filter_file = os.path.join(top, PY4WEB_IGNORE)
         if os.path.exists(filter_file):
@@ -311,10 +324,10 @@ if MODE in ("demo", "readonly", "full"):
                 or os.path.basename(root) == "uploads"
             )
 
-        if not os.path.exists(top) or not os.path.isdir(top):
-            return {"status": "error", "message": "folder does not exist"}
         store = {}
-        for root, dirs, files in os.walk(top, topdown=False, followlinks=True):
+        # followlinks=False avoids cycles when an app contains symlinks
+        # back into its own tree.
+        for root, dirs, files in os.walk(top, topdown=False, followlinks=False):
             if visible(*os.path.split(root)):
                 store[root] = {
                     "dirs": list(
@@ -350,23 +363,32 @@ if MODE in ("demo", "readonly", "full"):
     @action("packed/<path:path>")
     @session_secured
     def packed(path):
-        """Packs an app"""
-        appname = path.split(".")[-2]
-        # some security
-        app_dir = os.path.join(FOLDER, appname)
-        if "/" in path or appname.startswith(".") or not os.path.exists(app_dir):
+        """Pack an app into a downloadable zip.
+
+        ``path`` is expected to be ``<appname>.zip`` — robustly take the
+        portion before the final extension as the app name.
+        """
+        if "/" in path:
             raise HTTP(400)
+        appname = os.path.splitext(os.path.basename(path))[0]
+        app_dir = os.path.join(FOLDER, appname)
+        if appname.startswith(".") or not os.path.isdir(app_dir):
+            raise HTTP(400)
+        skip_dir_names = {"__pycache__", ".git", ".hg", ".svn", "node_modules"}
         store = io.BytesIO()
         zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
-        for root, dirs, files in os.walk(app_dir, topdown=False):
-            if not root.startswith("."):
-                for name in files:
-                    if not (
-                        name.endswith("~") or name.endswith(".pyc") or name[:1] in "#."
-                    ):
-                        filename = os.path.join(root, name)
-                        short = filename[len(app_dir + os.path.sep) :]
-                        zip.write(filename, short)
+        for root, dirs, files in os.walk(app_dir, topdown=True):
+            # mutate `dirs` in place so os.walk skips them entirely
+            dirs[:] = [
+                d for d in dirs
+                if d not in skip_dir_names and not d.startswith(".")
+            ]
+            for name in files:
+                if name.endswith("~") or name.endswith(".pyc") or name[:1] in "#.":
+                    continue
+                filename = os.path.join(root, name)
+                short = filename[len(app_dir + os.path.sep):]
+                zip.write(filename, short)
         zip.close()
         data = store.getvalue()
         response.headers["Content-Type"] = "application/zip"
@@ -486,8 +508,10 @@ if MODE == "full":
         """Saves a file"""
         app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
+        body = json.load(request.body)
+        if not isinstance(body, str):
+            raise HTTP(400, body="save expects a JSON string body")
         with open(path, "wb") as myfile:
-            body = json.load(request.body)
             myfile.write(body.encode("utf8"))
         if reload_app:
             Reloader.import_app(app_name)
@@ -577,14 +601,22 @@ if MODE == "full":
     # Below here work in progress
     #
 
+    def _project_repo(project):
+        """Return the absolute path to a project's git repo, or 400."""
+        repo = safe_join(FOLDER, project)
+        if not repo or not is_git_repo(repo):
+            raise HTTP(400)
+        return repo
+
     @action("gitlog/<project>")
     @action.uses(Logged(session), "gitlog.html")
     @catch_errors
     def gitlog(project):
-        if not is_git_repo(os.path.join(FOLDER, project)):
+        repo = safe_join(FOLDER, project)
+        if not repo or not is_git_repo(repo):
             return "Project is not a GIT repo"
-        branches = get_branches(cwd=os.path.join(FOLDER, project))
-        commits = get_commits(cwd=os.path.join(FOLDER, project))
+        branches = get_branches(cwd=repo)
+        commits = get_commits(cwd=repo)
         return dict(
             status="success",
             commits=commits,
@@ -595,21 +627,16 @@ if MODE == "full":
 
     @authenticated.callback()
     def checkout(project, commit):
-        if not is_git_repo(project):
-            raise HTTP(400)
-        run("git stash", cwd=os.path.join(FOLDER, project))
-        run("git checkout " + commit, cwd=os.path.join(FOLDER, project))
+        repo = _project_repo(project)
+        run("git stash", cwd=repo)
+        run("git checkout " + commit, cwd=repo)
         Reloader.import_app(project)
 
     @action("swapbranch/<project>", method="POST")
     @action.uses(Logged(session))
     def swapbranch(project):
-        if not is_git_repo(project):
-            raise HTTP(400)
-
-        branch = (
-            request.forms.get("branches") if request.forms.get("branches") else "master"
-        )
+        _project_repo(project)
+        branch = request.forms.get("branches") or "master"
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)
         redirect(URL("gitlog", project))
@@ -617,13 +644,9 @@ if MODE == "full":
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
     def gitshow(project, commit):
-        if not is_git_repo(project):
-            raise HTTP(400)
-        flag = request.params.get("showfull")
-        opt = ""
-        if flag == "true":
-            opt = " -U9999"
-        patch = run("git show " + commit + opt, cwd=os.path.join(FOLDER, project))
+        repo = _project_repo(project)
+        opt = " -U9999" if request.params.get("showfull") == "true" else ""
+        patch = run("git show " + commit + opt, cwd=repo)
         return diff2kryten(patch)
 
 

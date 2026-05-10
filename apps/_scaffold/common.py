@@ -84,6 +84,13 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
+else:
+    raise ValueError(
+        "Unknown SESSION_TYPE %r in settings.py "
+        "(expected one of: cookies, redis, memcache, database)"
+        % (settings.SESSION_TYPE,)
+    )
+
 # #######################################################
 # Instantiate the object and actions that handle auth
 # #######################################################
@@ -116,10 +123,11 @@ if settings.SMTP_SERVER:
     )
 
 # #######################################################
-# Create a table to tag users as group members
+# Create a table to tag users as group members.  ``groups`` is always
+# defined (possibly None) so optional plugins (LDAP, etc.) can reference
+# it without risking a NameError if auth has no database.
 # #######################################################
-if auth.db:
-    groups = Tags(db.auth_user, "groups")
+groups = Tags(db.auth_user, "groups") if auth.db else None
 
 # #######################################################
 # Enable optional auth plugin
