@@ -1007,17 +1007,25 @@ def URL(  # pylint: disable=invalid-name
     if use_appname is None:
         # force use_appname on domain-unmapped apps
         use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
-    has_appname = False
-    if use_appname:
-        # app_name is not set by py4web shell
-        app_name = getattr(request, "app_name", None)
-        has_appname = use_appname and app_name
+    # app_name is not set by py4web shell; fetch unconditionally so the
+    # no-parts branch below can strip it when use_appname=False.
+    app_name = getattr(request, "app_name", None)
+    has_appname = bool(use_appname and app_name)
     script_name = (
         request.environ.get("SCRIPT_NAME", "")
         or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if not parts:
         prefix = request.path
+        # When the caller explicitly opted out of the app prefix, strip it
+        # from the current path; otherwise URL(use_appname=False) would
+        # silently retain it, contradicting its documented behaviour.
+        if not use_appname and app_name and app_name != "_default":
+            app_segment = f"/{app_name}"
+            if prefix == app_segment:
+                prefix = "/"
+            elif prefix.startswith(app_segment + "/"):
+                prefix = prefix[len(app_segment):]
     elif parts and parts[0].startswith("/"):
         prefix = ""
     elif has_appname and app_name != "_default":
