@@ -2,21 +2,21 @@
 The Dashboard
 =============
 
-The Dashboard is the standard web based IDE; you will surely use it
-extensively to manage the applications and check your databases.
-Looking at its interface is a good way to start exploring py4web and
-its components.
+The Dashboard is the bundled, web-based IDE for py4web. You will use
+it extensively to manage applications and inspect databases. Browsing
+its interface is also a good way to get a feel for py4web and its
+components.
 
 
-The main Web page
+The main web page
 -----------------
 
-When you run the standard py4web program, it starts a web server with a
-main web page listening on http://127.0.0.1:8000 (which means that it is
-listening on the TCP port 8000 on your local PC, using the HTTP protocol).
+When you start py4web, it launches a web server that listens on
+http://127.0.0.1:8000 — that is, TCP port 8000 on your local machine,
+over plain HTTP.
 
-You can connect to this main page only from your local PC, using a web
-browser like Firefox or Google Chrome:
+By default this address is reachable only from the local machine. Open
+it in a browser like Firefox or Google Chrome:
 
 .. FIXME: why do this image fit into the pdf page while the others do not?
 
@@ -37,16 +37,15 @@ The buttons are:
 Login into the Dashboard
 ------------------------
 
-Pressing the Dashboard button will forward you to the Dashboard login.
-Here you must insert the password that you've already setup (see
-:ref:`set_password command option`).
-If you don't remember the password, you have to stop the program with
-CTRL-C, setup a new one and run the py4web again.
+Click the Dashboard button to reach the Dashboard login. Enter the
+password you set up earlier (see :ref:`set_password command option`).
+If you don't remember it, stop py4web with ``Ctrl-C``, set a new
+password, and start py4web again.
 
 .. image:: images/dashboard_login.png
 
-After inserting the right Dashboard's password, it will be displayed with
-all the tabs compressed.
+After you enter the correct dashboard password, the dashboard appears
+with all of its tabs collapsed.
 
 .. FIXME: why do this image fit into the pdf page while the others do not?
 
@@ -61,19 +60,20 @@ for the selected app.
 
 .. image:: images/dashboard_main.png
 
-The “Files” tab allows you to browse the folder that contains the
-selected app and edit any file that comprises the app. If you edit a
-file by default it will be automatically reloaded at its first usage 
-(unless you've changed the *watch* option with the :ref:`run command option`; 
-in this case you must click on “Reload Apps” under the “Installed Applications”
-tab for the change to take effect).
-If an app fails to load, its corresponding button is displayed in red.
-Click on it to see the corresponding error.
+The “Files” tab lets you browse the folder that contains the selected
+app and edit any file in it. By default, edits are picked up
+automatically the next time the app is requested. If you launched
+py4web with a different ``--watch`` setting (see
+:ref:`run command option`), click “Reload Apps” under “Installed
+Applications” for changes to take effect.
+If an app fails to load, its button turns red. Click it to see the
+underlying error.
 
 .. image:: images/dashboard_edit.png
 
-The Dashboard exposes the db of all the apps using pydal RESTAPI. It
-also provides a web interface to perform search and CRUD operations.
+The Dashboard exposes every app's database through PyDAL's REST API
+and provides a web interface for searching and performing CRUD
+operations against those databases.
 
 .. image:: images/dashboard_restapi.png
 
@@ -82,7 +82,8 @@ ticket.
 
 .. image:: images/dashboard_error.png
 
-The ticket is logged in py4web database. The Dashboard displays the most
-common recent issues and allows searching tickets.
+The ticket is recorded in the py4web service database. The dashboard
+shows the most common recent issues and lets you search through
+tickets.
 
 .. image:: images/dashboard_ticket.png
