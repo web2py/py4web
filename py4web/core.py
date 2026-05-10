@@ -1311,6 +1311,44 @@ if _ssl is not None and not hasattr(_ssl, "sslwrap"):
 # Error Handling
 #########################################################################################
 
+# Substrings (case-insensitive) that mark an environment variable as sensitive
+# and cause its value to be redacted from error snapshots.  Error snapshots
+# are persisted in the tickets database and are visible to anyone with
+# dashboard access, so any credentials that happen to live in env vars must
+# not be written there in the clear.  Override via the
+# ``PY4WEB_REDACT_ENV_PATTERNS`` env var (comma-separated substrings).
+_DEFAULT_REDACT_ENV_PATTERNS = (
+    "SECRET",
+    "PASSWORD",
+    "PASSWD",
+    "TOKEN",
+    "CREDENTIAL",
+    "PRIVATE",
+    "AUTHORIZATION",
+    "APIKEY",
+    "API_KEY",
+    "ACCESS_KEY",
+    "SESSION_KEY",
+)
+_REDACTED = "***REDACTED***"
+
+
+def _redact_env(env):
+    """Return a copy of ``env`` with values of sensitive keys replaced."""
+    extra = os.environ.get("PY4WEB_REDACT_ENV_PATTERNS", "")
+    patterns = list(_DEFAULT_REDACT_ENV_PATTERNS) + [
+        p.strip() for p in extra.split(",") if p.strip()
+    ]
+    patterns_upper = [p.upper() for p in patterns]
+    redacted = {}
+    for key, value in env.items():
+        upper_key = key.upper()
+        if any(pattern in upper_key for pattern in patterns_upper):
+            redacted[key] = _REDACTED
+        else:
+            redacted[key] = str(value)
+    return redacted
+
 
 def get_error_snapshot(depth=5):
     """Return a dict describing a given traceback."""
@@ -1355,7 +1393,7 @@ def get_error_snapshot(depth=5):
     ]
 
     data["platform_info"] = {key: getattr(platform, key)() for key in platform_keys}
-    data["os_environ"] = {key: str(value) for key, value in os.environ.items()}
+    data["os_environ"] = _redact_env(os.environ)
     data["traceback"] = tb
     data["exception_type"] = str(etype)
     data["exception_value"] = str(evalue)
