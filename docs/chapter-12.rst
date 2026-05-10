@@ -76,38 +76,63 @@ The ``Form`` constructor accepts the following arguments:
 
 .. code:: python
 
-    Form(self,
-         table,
-         record=None,
-         readonly=False,
-         deletable=True,
-         formstyle=FormStyleDefault,
-         dbio=True,
-         keep_values=False,
-         form_name=False,
-         hidden=None,
-         validation=None,
-         csrf_session=None,
-         csrf_protection=True,
-         lifespan=None,
-         signing_info=None,
-         ):
+    Form(
+        table,
+        record=None,
+        readonly=False,
+        deletable=True,
+        showreadonly=True,
+        formstyle=FormStyleDefault,
+        dbio=True,
+        keep_values=False,
+        form_name=None,
+        hidden=None,
+        validation=None,
+        csrf_session=None,
+        csrf_protection=True,
+        lifespan=None,
+        signing_info=None,
+        submit_value=None,
+        show_id=False,
+        auto_process=True,
+        T=None,
+        **kwargs,
+    )
 
 Where:
 
--  ``table``: a DAL table or a list of fields
--  ``record``: a DAL record or record id
--  ``readonly``: set to True to make a readonly form
--  ``deletable``: set to False to disallow deletion of record
--  ``formstyle``: a function that renders the form using helpers.
-    Can be ``FormStyleDefault`` (default), ``FormStyleBulma``,
-    ``FormStyleBootstrap4``, or ``FormStyleBootstrap5``.
--  ``dbio``: set to False to prevent any DB writes
--  ``keep_values``: if set to true, it remembers the values of the previously submitted form
--  ``form_name``: the optional name of this form
--  ``hidden``: a dictionary of hidden fields that is added to the form
--  ``validation``: an optional validator, see :ref:`Validation functions`
--  ``csrf_session``: if None, no csrf token is added.  If a session, then a CSRF token is added and verified
+-  ``table`` — a DAL table or a list of fields.
+-  ``record`` — a DAL record or record id.
+-  ``readonly`` — set to ``True`` to make a read-only form.
+-  ``deletable`` — set to ``False`` to disallow deletion of the
+   current record on edit forms.
+-  ``showreadonly`` — show fields whose ``writable`` attribute is
+   ``False`` (the default). Set to ``False`` to hide them.
+-  ``formstyle`` — a callable that renders the form using helpers.
+   Available styles: ``FormStyleDefault`` (default), ``FormStyleBulma``,
+   ``FormStyleBootstrap4``, ``FormStyleBootstrap5`` and
+   ``FormStyleTailwind``.
+-  ``dbio`` — set to ``False`` to skip the database write on accept.
+-  ``keep_values`` — when ``True``, after a successful submit the form
+   keeps the values you just submitted instead of clearing them.
+-  ``form_name`` — an optional unique name; required if you have more
+   than one ``Form`` on the same page.
+-  ``hidden`` — a dict of extra hidden fields added to the form.
+-  ``validation`` — an optional validator callable; see
+   :ref:`Validation functions`.
+-  ``csrf_session`` — if ``None``, no CSRF token is added; pass a
+   session object to add and verify one.
+-  ``csrf_protection`` — set to ``False`` to disable CSRF protection
+   even when a session is available.
+-  ``submit_value`` — label for the submit button; defaults to a
+   translated "Submit".
+-  ``show_id`` — when ``True``, show the primary-key field on edit forms.
+-  ``auto_process`` — when ``True`` (the default), the form
+   automatically processes the request on instantiation. Set to
+   ``False`` if you want to call ``form.process()`` yourself.
+-  ``T`` — an optional translator (typically the ``T`` fixture).
+-  ``**kwargs`` — extra HTML attributes for the ``<form>`` tag, e.g.
+   ``_method="GET"`` or ``_class="my-form"``.
 -  ``lifespan``: lifespan of CSRF token in seconds, to limit form validity
 -  ``signing_info``: information that should not change between when the CSRF token is signed and verified
   
@@ -1770,13 +1795,14 @@ wishing to limit the records in the drop-down list. In this example, we use ``IS
 each time the controller is called:
 
 .. code:: python
-    
+
     def index():
         (...)
-        query = (db.table.field == 'xyz') # in practice 'xyz' would be a variable
+        query = (db.table.field == 'xyz')  # in practice 'xyz' would be a variable
         db.table.field.requires = IS_IN_DB(db(query), ...)
         form = Form(...)
-        if form.process().accepted: ...
+        if form.accepted:  # Form auto-processes the request on construction
+            ...
         (...)
 
 
@@ -1812,10 +1838,12 @@ the DAL. We strongly suggest using the jQuery multiselect plugin to render multi
 Validation functions
 ~~~~~~~~~~~~~~~~~~~~
 
-In order to explicitly define a validation function, we pass to the ``validation`` parameter a
-function that takes the form and returns a dictionary, mapping field
-names to errors. If the dictionary is non-empty, the errors will be
-displayed to the user, and no database I/O will take place.
+To run extra cross-field validation, pass a callable as the
+``validation`` argument. The callable receives the form. Its return
+value is ignored — to flag a field as invalid, mutate
+``form.errors[field_name]``. If ``form.errors`` is non-empty after
+your callback runs, py4web shows the errors to the user and does
+**not** perform any database I/O.
 
 Here is an example:
 
@@ -1826,7 +1854,7 @@ Here is an example:
    from pydal.validators import IS_INT_IN_RANGE
 
    def custom_check(form):
-       if not 'name' in form.errors and len(form.vars['name']) < 4
+       if 'name' not in form.errors and len(form.vars['name']) < 4:
            form.errors['name'] = T("too short")
 
    @action('form_example', method=['GET', 'POST'])
