@@ -227,8 +227,6 @@ Many thanks to everyone who has contributed to the project, and especially:
 …and many more contributors who have shipped code, docs, examples,
 translations and bug reports — listed here in alphabetical order:
 
-- a22375
-- A3
 - Alan Etkin
 - Alexandr Karbivnichiy
 - Alexandre Miguel de Andrade Souza
@@ -237,55 +235,54 @@ translations and bug reports — listed here in alphabetical order:
 - Andrew Gavgavian
 - Andrew Rogers
 - Andrew Zhu
-- `anonymous378 <https://github.com/anonymous378>`__
 - Anthon van der Neut
 - Aubrey Moore
 - Auden RovelleQuartz
-- `CarlosDB <https://github.com/cdb88>`__
+- CarlosDB
 - Carlos Lopez Molina
 - chbdetta
-- `ch-rigu <https://github.com/ch-rigu>`__
+- ch-rigu
 - Christian
 - d3im
-- `Daniel <https://github.com/dantoac>`__
-- `DavidiBeMe <https://github.com/DavidiBeMe>`__
+- Daniel
+- DavidiBeMe
 - dkawasaka
 - Donald McClymont
 - DRoc101
 - Eddiedigits
 - Eric Lofstad
-- `Gabriel <https://github.com/Friendly-Banana>`__
+- Gabriel
 - Giovanni Barillari
 - Hadi Zarkoob
-- `houdinihound <https://github.com/houdinihound>`__
+- houdinihound
 - hpdumm
 - Igor MSK
 - Iuri Guilherme
 - Jacinto Parga
-- `jarrodwilcox <https://github.com/jarrodwilcox>`__
+- jarrodwilcox
 - Jerry Wu
 - John Beresford
-- `jonathanclark <https://github.com/jonathanclark>`__
-- kevinkosterr
+- Jonathan Clark
+- Kevin Kosterr
 - Laurin Schmidt
 - ls1luke
 - luphord
 - Manuele Pesenti
 - marvin4ward
-- `Massimiliano Belletti <https://github.com/mbelletti>`__
+- Massimiliano Belletti
 - mau86
-- Maxim N. Kostrikin
+- Maxim Kostrikin
 - Mirko Galimberti
 - mrworm
 - Nathan MacNeil
 - Nico de Groot
-- `Olivier Fambon <https://github.com/fambon>`__
+- Olivier Fambon
 - Paolo Caruccio
-- `Paolo Pastori <https://github.com/paolopas>`__
+- Paolo Pastori
 - pepej
 - Peter Marelas
-- `Remco Boerma <https://github.com/remcoboerma>`__
-- `Sukhichev <https://github.com/Sukhichev>`__
+- Remco Boerma
+- Sukhichev
 - Tolga Konik
 - Wanderson Reis
 - Wasim Baig
