@@ -61,11 +61,16 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # How to format the current date, used as the replacement for |today|
 today_fmt = "%B %d, %Y"
 
-# The default language to highlight source code in literal blocks.
-# The value should be a valid Pygments lexer name,
-# 'default' it is similar to 'python3'; it is mostly a superset of
-# 'python' but it fallbacks to 'none' without warning if failed.
-highlight_language = "none"
+# Default Pygments lexer used for unlabeled literal blocks (``::`` and
+# ``.. code::`` without an explicit language).  Explicitly tagged blocks
+# (``.. code:: bash``, ``.. code:: html`` etc.) still use their own lexer.
+# 'python3' falls back gracefully to plain text for snippets that aren't
+# valid Python, so it's a safe default for this manual.
+highlight_language = "python3"
+
+# Pygments style used by both HTML and PDF builds. Friendly contrasts well
+# in print and stays readable on the RTD theme on screen.
+pygments_style = "friendly"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -175,6 +180,9 @@ rinoh_documents = [
         title=project + " Documentation",
         date="© " + copyright,
         logo="images/logo.png",
+        # Use the Pygments style chosen above so Python (and other) snippets
+        # in the PDF get the same syntax highlighting as the HTML build.
+        pygments_style_name=pygments_style,
     )
 ]
 

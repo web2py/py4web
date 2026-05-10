@@ -1,4 +1,4 @@
-.PHONY: clean docs clean-assets assets test setup run build deploy
+.PHONY: clean docs docs-pdf clean-assets assets test setup run build deploy
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
@@ -28,6 +28,16 @@ lock: uv
 
 docs: uv
 	docs/updateDocs.sh html
+
+# Build a single English PDF of the manual using rinohtype.
+# Pygments-based syntax highlighting (Python by default, plus the
+# explicit lexers used in `.. code:: <lang>` blocks) is enabled in
+# docs/conf.py and applies to both HTML and PDF builds.
+docs-pdf: uv
+	rm -rf docs/_build/rinoh
+	uv run --extra docs sphinx-build -b rinoh -D language=en docs/ docs/_build/rinoh
+	@mv docs/_build/rinoh/target.pdf docs/_build/py4web.pdf
+	@echo "PDF written to docs/_build/py4web.pdf"
 
 check: uv
 	uv tool run ruff check
