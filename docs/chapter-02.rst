@@ -2,10 +2,12 @@
 Help, resources and hints
 =========================
 
-We've done our best to make PY4WEB simple and clean. But you know, modern web programming is a daunting task. It requires an open mind, able to
-jump frequently (without being lost!) from python to HTML to javascript to css and even database management. 
-But don't be scared, in this manual we'll assist you side by side in this journey. And there are many other valuable resources that we're going to show
-you.
+We've done our best to make PY4WEB simple and clean. Even so, modern
+web programming is a broad topic: a single feature can pull you across
+Python, HTML, JavaScript, CSS, and the database, sometimes within the
+same screen. Don't be intimidated — this manual walks you through it
+step by step, and the rest of this chapter points to other valuable
+resources that complement it.
 
 
 Resources
@@ -60,40 +62,47 @@ Hints and tips
 This paragraph is dedicated to preliminary hints, suggestions and tips that could be helpful to know before starting to learn py4web.
 
 
-Prerequisite
+Prerequisites
 -------------
 
-In order to understand py4web you need at least a basic python knowledge. There are many books, courses and tutorials available on the web - choose
-what's best for you. The python's decorators, in particular, are a milestone of any python web framework and you have to fully understand it.
+To follow this manual you need at least a basic Python knowledge.
+There are many books, courses and tutorials freely available on the
+web — pick what works for you. One Python feature you should be
+comfortable with before going further is **decorators**: py4web uses
+them everywhere to attach behavior (routes, fixtures, authentication)
+to ordinary Python functions. If ``@something`` syntax is still
+mysterious, take a moment to read the
+`Python decorators tutorial <https://docs.python.org/3/glossary.html#term-decorator>`__
+before continuing.
 
-A modern python workplace
+A modern Python workspace
 -------------------------
 
-In the following chapters you will start coding on your computer. We suggest you to setup a modern python workplace if you plan to do it efficiently
-and safely. Even for running simple examples and experimenting a little, we strongly suggest to use an **Integrated Development Environment** (IDE). 
-This will make your programming experience much better, allowing syntax checking, linting and visual debugging.
-Nowadays there are two free and multi-platform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
-JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
+In the following chapters you'll start writing code on your own
+machine. A few small investments now will pay off many times over:
 
-When you'll start to deal with more complex programs and need reliability,
-we also suggest to:
+- **Use an IDE.** Even for simple examples, an Integrated Development
+  Environment gives you syntax checking, linting and a visual
+  debugger. The two free, multi-platform options most py4web
+  developers use are Microsoft
+  `Visual Studio Code <https://code.visualstudio.com/>`__ (VS Code)
+  and JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
+- **Use a virtual environment** (a *virtualenv*; see
+  `the official tutorial <https://docs.python.org/3/tutorial/venv.html>`__
+  for an introduction). It keeps the libraries used by your project
+  isolated from the rest of your system, so installing or upgrading
+  one project never breaks another.
+- **Use git** to track every change you make and back the history up
+  to a hosting service (GitHub, GitLab or Bitbucket). At some point
+  you *will* break something — git is how you go back.
 
-- use virtual environments (also called **virtualenv**\, see
-  `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
-  introduction). In a complex workplace this will avoid to be messed up
-  with other python programs and modules
-- use **git** to keep track of your program's changes and save
-  your changes in a safe place online (GitHub, GitLab, or Bitbucket).
-- use an editor with Syntax Highlighting. We highly recommend
-  Visual Studio Code (VScode) or PyCharm.
 
+Debugging py4web with VS Code
+-----------------------------
 
-Debugging py4web with VScode
-----------------------------
+It's quite simple to run and debug py4web within VS Code.
 
-It's quite simple to run and debug py4web within VScode.
-
-If you have **installed py4web from source**, you just need to open the main py4web folder (not the apps folder!) with VScode and add:
+If you have **installed py4web from source**, you just need to open the main py4web folder (not the apps folder!) with VS Code and add:
 
 ::
 
@@ -116,17 +125,17 @@ If you have instead **installed py4web from pip,** you need to set the launch.js
     "args": ["run", "apps", "-D", "--watch", "lazy"]
   }
 
-Adjust the `args` to match your apps folder. For example, replace `apps` with `.` if you opened the apps folder itself in VSCode.
+Adjust the `args` to match your apps folder. For example, replace `apps` with `.` if you opened the apps folder itself in VS Code.
 
 .. tip::
 
-   In both cases, if you should get gevent errors you have to also add ``"gevent": true`` on the ``launch.json`` configuration file.
+   In both cases, if you get gevent errors, also add ``"gevent": true`` to the ``launch.json`` configuration file.
 
 
 Debugging py4web with PyCharm
 -----------------------------
 
-In PyCharm, if you should get gevent errors you need to enable Settings | Build, Execution, Deployment | Python Debugger | Gevent compatible.
+In PyCharm, if you get gevent errors, enable Settings → Build, Execution, Deployment → Python Debugger → Gevent compatible.
 
 
 How to contribute
@@ -135,11 +144,15 @@ How to contribute
 We need help from everyone: support our efforts! You can just participate in the Google group trying to answer others' questions, submit bugs or
 create pull requests on the GitHub repository.
 
-If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on
-the `specific README <https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on GitHub.
+If you wish to correct and expand this manual, or even translate it
+into a new language, you can read all the information you need on the
+`specific README <https://github.com/web2py/py4web/blob/master/docs/README.md>`__
+on GitHub.
 
-It's really simple! Just change the .RST files in the /doc folder and create a Pull Request on
-the GitHub repository at https://github.com/web2py/py4web - you can even do it within your browser.
-Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at the next output
-generation on the branch. 
+It's really simple: edit the ``.rst`` files in the ``docs/`` folder
+and open a pull request against
+https://github.com/web2py/py4web — you can do it from your browser.
+Once the PR is accepted, your changes are merged to ``master`` and
+appear in the web, PDF and EPUB outputs the next time the docs are
+rebuilt.
 
