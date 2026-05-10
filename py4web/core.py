@@ -627,6 +627,10 @@ class Flash(Fixture):
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
+        # The class string is also rendered into HTML, so always escape it
+        # regardless of the sanitize flag — sanitize=False is for the
+        # message body, not for an attribute value.
+        _class = yatl.sanitizer.xmlescape(_class) if _class else _class
         self.local.flash = {"message": message, "class": _class}
 
 
