@@ -290,11 +290,36 @@ We can make a minor modification to our reference model and an upload type file:
        Field('image', 'upload', download_url=lambda image: URL('download', image)),
    )
 
-The file upload field is quite particular. The standard way to use it (as in the _scaffold app) 
-is to have the UPLOAD_FOLDER defined in the common.py file. But if you don't specify it, then the
-default value of  ``your_app/upload`` folder will be used (and the folder will also be created if needed).
-``download_url`` is a callback that given the image name, generated the URL to download. The ``download``
-url is predefined in ``common.py``.
+The upload field requires a small amount of plumbing. The
+``_scaffold`` app (and therefore most real-world apps such as
+``apps/fadebook`` and ``apps/birdwatching``) follows this convention:
+
+1. Set ``UPLOAD_FOLDER`` to an absolute path in ``settings.py``.
+2. In ``common.py``, define a ``download`` action that streams files
+   from that folder using the bundled ``downloader`` helper:
+
+   .. code:: python
+
+      from py4web.utils.downloader import downloader
+
+      if settings.UPLOAD_FOLDER:
+
+          @action("download/<filename>")
+          @action.uses(db)
+          def download(filename):
+              return downloader(db, settings.UPLOAD_FOLDER, filename)
+
+3. On every ``Field("...", "upload")``, set ``upload_path`` to the
+   same folder and set ``download_url`` to point at the action above.
+   The ``download_url`` callback is what links the displayed
+   ``<img src=...>`` to the file on disk.
+
+If you skip ``UPLOAD_FOLDER``, py4web falls back to a
+``your_app/upload`` folder which is created on demand.
+
+The downloader takes care of looking up the original filename, sending
+the right ``Content-Disposition`` and ``Content-Type`` headers, and
+serving the file with byte-range support.
 
 We can modify ``form_basic.html`` to display the uploaded images:
 

@@ -277,6 +277,36 @@ Example:
    auth.fix_actions()
 
 
+Sending email through Auth
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Several Auth flows need to send email — registration confirmation,
+password reset, two-factor codes, and so on. Auth delegates that to
+whatever object is assigned to ``auth.sender``; it must expose a
+``.send(to, subject, body, sender=None)`` method.
+
+py4web ships ``py4web.utils.mailer.Mailer``, a thin SMTP wrapper used
+by every scaffold-derived app (e.g. ``apps/fadebook/common.py``):
+
+.. code:: python
+
+   from py4web.utils.mailer import Mailer
+
+   if settings.SMTP_SERVER:
+       auth.sender = Mailer(
+           server=settings.SMTP_SERVER,    # e.g. "smtp.gmail.com:587"
+           sender=settings.SMTP_SENDER,    # default From address
+           login=settings.SMTP_LOGIN,      # "user:password"
+           tls=settings.SMTP_TLS,
+           ssl=settings.SMTP_SSL,
+       )
+
+If ``auth.sender`` is left as ``None`` (the default), the email body
+is logged to the console — useful in development. In production, set
+``auth.sender`` to a real ``Mailer``, or supply a custom object that
+forwards messages through SES, SendGrid, etc.
+
+
 Authentication with CAPTCHA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
