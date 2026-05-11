@@ -141,17 +141,17 @@ body > main {
   justify-content: space-between;
   gap: 0.5rem;
   font-size: 0.9rem;
-  background-color: #4ade80;
-  border: 1px solid #16a34a;
-  color: #000;
+  background-color: var(--pico-secondary-background);
+  border: 1px solid var(--pico-secondary-border);
+  color: var(--pico-secondary-inverse);
 }
 
 .app-grid button.btn-app:hover,
 .app-grid button.btn-app:focus,
 .app-grid button.btn-app:active {
-  background-color: #22c55e;
-  border-color: #15803d;
-  color: #000;
+  background-color: var(--pico-secondary-hover-background);
+  border-color: var(--pico-secondary-hover-border);
+  color: var(--pico-secondary-inverse);
 }
 
 .app-grid button.btn-app.has-error,
