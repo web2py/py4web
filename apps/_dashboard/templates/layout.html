@@ -1,53 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <base href="[[=URL('static')]]/">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
-    <link rel="stylesheet" href="css/no.css">
-    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
+    <link rel="stylesheet" href="css/pico.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <script src="js/theme-selector.js"></script>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <header>
-      <!-- Navigation bar -->
-      <nav class="black" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: auto; min-height: 48px; line-height: 28px;">
-        <ul style="margin: 0; display: flex; align-items: center; height: 100%; line-height: 28px;">
-          <li style="padding: 0; margin: 0; line-height: 28px;">
-            <a href="[[=URL('index')]]">Dashboard</a> / dbadmin
-          </li>
-        </ul>
-        <!-- Theme Selector for DBAdmin Pages - Positioned Right -->
-        <div style="display: flex; align-items: center; gap: 10px; line-height: 28px;">
-          <label for="dashboard-theme-select" style="font-size: 14px; color: inherit; margin: 0; white-space: nowrap; display: inline-flex; align-items: center; height: 28px; line-height: 28px;">Theme:</label>
-          <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 130px; height: 28px; padding: 0 8px; background-color: #333; color: white; border: 1px solid #666; border-radius: 3px; line-height: 28px; margin: 0;">
-            [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
-          </select>
-        </div>
+    <header class="dash-header">
+      <nav>
+        <a href="[[=URL('index')]]" style="font-weight:600">py4web Dashboard</a>
+        <span style="color:var(--pico-muted-color); margin:0 0.5rem">/</span>
+        <span>dbadmin</span>
       </nav>
+      <button type="button" class="theme-toggle" data-theme-toggle onclick="toggleDashboardTheme()">
+        <span data-theme-label>☾ Dark</span>
+      </button>
     </header>
-    <!-- beginning of HTML inserted by extending template -->
-    <center>
-      <div>
-        <!-- Flash alert messages, first optional one in data-alert -->
-        <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
-      </div>
-      <main class="padded">
-        <!-- contect injected by extending page -->
-        [[include]]
-      </main>
-    </center>
-    <!-- end of HTML inserted by extending template -->
-    <footer class="black padded" style="display: flex; justify-content: space-between; align-items: center;">
-      <p>
-        Part of <a href="https://py4web.com">py4web</a>
-      </p>
-      <a href="[[=URL('index')]]" style="text-decoration: none; margin-right: 20px;"><button>Back</button></a>
+
+    <main class="container">
+      <flash-alerts data-alert="[[=globals().get('flash','')]]"></flash-alerts>
+      [[include]]
+    </main>
+
+    <footer class="dash-footer">
+      <span>Part of <a href="https://py4web.com">py4web</a></span>
+      <a href="[[=URL('index')]]" role="button" class="secondary outline">Back</a>
     </footer>
+
+    <script src="js/utils.js"></script>
+    [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
   </body>
-  <!-- You've gotta have utils.js -->
-  <script src="js/utils.js"></script>
-  [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

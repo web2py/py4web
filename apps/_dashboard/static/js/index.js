@@ -12,15 +12,10 @@ const TreeFiles = {
     </ul>
     <ul class="dirs">
       <li v-for="dir in f.dirs">
-        <div class="accordion">
-          <input type="checkbox" v-bind:id="combineb64(p,dir.name)">
-          <label v-bind:for="combineb64(p,dir.name)" v-on:click="select_folder(p,dir.name)">
-            <a><tt>{{dir.name}}</tt></a>
-          </label>
-          <div class="subfolder">
-            <tree-files :f="dir.content" :p="combine(p,dir.name)"></tree-files>
-          </div>
-        </div>
+        <details>
+          <summary v-on:click="select_folder(p,dir.name)"><tt>{{dir.name}}</tt></summary>
+          <tree-files :f="dir.content" :p="combine(p,dir.name)"></tree-files>
+        </details>
       </li>
     </ul>
   </div>`,
@@ -28,7 +23,6 @@ const TreeFiles = {
     select_file(path, name) { this.$root.select_filename(path + '/' + name); },
     select_folder(path, name) { return true; },
     combine(path, name) { return path + '/' + name; },
-    combineb64(path, name) { return btoa(path + '/' + name); },
   }
 };
 
@@ -88,7 +82,8 @@ const app = Vue.createApp({
       this.files[path] = payload;
       if (!this.editor) {
         this.editor = ace.edit("editor");
-        this.editor.setTheme("ace/theme/pastel_on_dark");
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        this.editor.setTheme(dark ? "ace/theme/pastel_on_dark" : "ace/theme/chrome");
         this.editor.$blockScrolling = Infinity;
       }
       this.editor.session.setValue(payload);

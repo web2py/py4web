@@ -1,69 +1,89 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <base href="[[=URL('static')]]/">
-    <link rel="stylesheet" type="text/css" href="css/future.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <style>
-        .unverified {
-            color: yellow;
-        }
-        
-        button {
-            min-width: 160px;
-        }
-    </style>
+    <script src="js/theme-selector.js"></script>
+    <title>i18n + p11n — py4web</title>
 </head>
 
 <body>
-    <!-- 
-        Translation Manager Interface
-        Vue 3 compatible version preserving all original functionality
-    -->
-    <div id="vue" class="my-effects">
-        <div style="position: absolute; width: 300px;  box-sizing: border-box; padding: 10px; left:0; top:0; z-index:2">
-            <h3>Languages</h3>
-            <div>
+    <header class="dash-header">
+        <nav>
+            <a href="javascript:history.back()" style="font-weight:600">← Back</a>
+            <span style="color:var(--pico-muted-color); margin:0 0.5rem">/</span>
+            <span>Translations</span>
+        </nav>
+        <button type="button" class="theme-toggle" data-theme-toggle onclick="toggleDashboardTheme()">
+            <span data-theme-label>☾ Dark</span>
+        </button>
+    </header>
+
+    <main class="container">
+        <div id="vue" class="my-effects translations-layout" v-cloak>
+            <aside class="translations-sidebar">
+                <h3>Actions</h3>
                 <button @click="save_languages">Save Languages</button>
-                <button @click="update_languages">Update Languages</button>
-                <button @click="add_language">Add Language</button>
-            </div>
-            <h3>Known Languages</h3>
-            <div v-for="(value, name) in translations" :key="name">
-                <button @click="select_language(name)">{{name}}</button>
-            </div>
+                <button @click="update_languages" class="secondary">Update Languages</button>
+                <button @click="add_language" class="secondary outline">Add Language</button>
+
+                <h3 style="margin-top:1rem">Known Languages</h3>
+                <div v-for="(value, name) in translations" :key="name">
+                    <button @click="select_language(name)" class="secondary outline">{{name}}</button>
+                </div>
+            </aside>
+
+            <section>
+                <hgroup>
+                    <h1>i18n + p11n</h1>
+                    <p>Internationalization &amp; pluralization manager</p>
+                </hgroup>
+                <p>
+                    Select or add a language to support. Click <em>Update Languages</em> to find strings that may need translation.
+                    Each string may have multiple plural forms (e.g. <code>0 dogs, 1 dog, 2 dogs</code>). Read more
+                    <a href="https://github.com/web2py/pluralize" target="_blank">here</a>.
+                    Untranslated strings are highlighted.
+                </p>
+
+                <h2 v-if="selected_language">Selected: {{selected_language}}</h2>
+                <table v-if="selected_language">
+                    <tbody v-for="(values, name) in selected_translations" :key="name">
+                        <tr>
+                            <th colspan="3">{{name}}</th>
+                        </tr>
+                        <tr v-for="(v,k) in values" :key="k">
+                            <td style="width: 50px;">{{k}}</td>
+                            <td v-if="is_unverified(v)" class="unverified">{{v}}</td>
+                            <td v-else>{{v}}</td>
+                            <td style="width: 50px;">
+                                <a @click="delete_translation(name, k)" style="cursor:pointer" aria-label="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input v-model="num[name]" type="number" min="0" max="100" style="width: 60px; margin:0"></td>
+                            <td><input v-model="string[name]" type="text" style="margin:0"></td>
+                            <td>
+                                <a @click="add_translation(name, num, string)" style="cursor:pointer" aria-label="Add">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
         </div>
-        <div style="position: absolute;  box-sizing: border-box; width: 100%; padding: 10px 10px 10px 200px; left:0; top:0;">
-            <h1>Internationalization (i18n) and Pluralization (p11n) Interface</h1>
-            <p>
-                Select or add the language you want to support. Click on "update languages" to find all strings that may need translation. Each string may have multiple translations such as "0 dogs, 1 dog, 2 dogs". Read more <a href="https://github.com/web2py/pluralize">here</a>                Untranslated strings will be marked in yellow.
-            </p>
-            <h2 v-if="selected_language">Selected Language: {{selected_language}}</h2>
-            <table v-if="selected_language">
-                <tbody v-for="(values, name) in selected_translations" :key="name">
-                    <tr>
-                        <th colspan="3">{{name}}</th>
-                    </tr>
-                    <tr v-for="(v,k) in values" :key="k">
-                        <td style="width: 50px;">{{k}}</td>
-                        <td v-if="is_unverified(v)" class="unverified">{{v}}</td>
-                        <td v-else>{{v}}</td>
-                        <td style="width: 50px; ">
-                            <i @click="delete_translation(name, k)" class="fa fa-trash"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input v-model="num[name]" type="number" min="0" max="100" style="width: 50px"></td>
-                        <td><input v-model="string[name]" type="text" style="width:200px"></td>
-                        <td><i class="fa fa-plus" @click="add_translation(name, num, string)"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/translations.js"></script>
 </body>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/translations.js"></script>
 
 </html>

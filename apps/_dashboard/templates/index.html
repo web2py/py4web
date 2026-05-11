@@ -1,293 +1,313 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <base href="[[=URL('static')]]/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
-    <link rel="stylesheet" type="text/css" href="css/future.css" />
-    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css" />
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <script src="js/theme-selector.js"></script>
+    <title>py4web Dashboard</title>
 </head>
 
 <body>
-    <!-- 
-        PY4WEB Dashboard 2.0 - Vue 3 Conversion
-    -->
-    <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png" /></a>
+    <a href="https://github.com/web2py/py4web" aria-label="Fork me on GitHub">
+        <img style="position:absolute; width:100px; top:0; right:0; border:0; z-index:50" src="../static/images/forkme.png" />
+    </a>
+
     <div id="target" class="my-effects" v-cloak>
-        <div class="login" v-if="!user">
-            <h1>PY4WEB</h1>
-            <h2><i class="fa fa-lock fa-2x"></i></h2>
-            <form @submit.prevent="login">
-            <input 
-                v-model="password" 
-                type="password"
-                id="password"
-                name="password"
-                placeholder="py4web password"
-            />
-            </form>
-            [[if mode=='demo':]]
-            <div style="margin-top:10px">Demo mode: any password will get you in</div>[[pass]]
+
+        <!-- Login overlay -->
+        <div class="login-overlay" v-if="!user">
+            <div class="login-card">
+                <h1>py4web</h1>
+                <div class="lock-icon"><i class="fa fa-lock"></i></div>
+                <form @submit.prevent="login">
+                    <input
+                        v-model="password"
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="py4web password"
+                        autofocus
+                    />
+                </form>
+                [[if mode=='demo':]]
+                <p class="hint">Demo mode: any password will get you in.</p>
+                [[pass]]
+            </div>
         </div>
-        <div class="loading" v-if="loading"></div>
+
+        <!-- Loading overlay -->
+        <div class="loading-overlay" v-if="loading && user">
+            <div class="spinner"></div>
+            <small>Loading…</small>
+        </div>
+
+        <!-- Main app -->
         <div v-if="user">
-            <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; align-items: center;">
-                    <img src="images/widget.gif" class="spinner-top" />
-                    <span style="margin-left:80px" class="logo">py4web Dashboard</span>
+            <header class="dash-header">
+                <div class="logo">
+                    <img src="images/widget.gif" />
+                    py4web Dashboard
                 </div>
-                <div style="padding-right: 100px; display: flex; align-items: center; gap: 8px;">
-                    <label for="dashboard-theme-select" style="font-size: 12px;">Theme</label>
-                    <select id="dashboard-theme-select" data-theme-selector onchange="setDashboardTheme(this.value)" style="width: 140px;">
-                        [[for theme in __vars__.get('themes', ['AlienDark', 'AlienLight']):]]<option value="[[=theme]]">[[=theme]]</option>[[pass]]
-                    </select>
-                </div>
-            </div>
-        <div v-if="last_error" class="dialog-error">
-            <h2>API error</h2>
-            <pre v-text="last_error"></pre>
-            <button v-on:click="close_dialog_error">Ignore and Dismiss</button>
-        </div>
-        <div class="panel accordion">
-            <input type="checkbox" id="applications">
-            <label for="applications">Installed Applications</label>
-            <div class="applications-inner">
-                <div class="right">
-                    <button @click="upload_new_app()"><i class="fas fa-magic"></i> Create/Upload App</button>
-                    <button @click="reload()"><i class="fas fa-sync-alt"></i> Reload Apps</button>
-                </div>
-                <div>
-                    <button class="btn-app" width="300px" v-for="app in apps" :key="app.name" @click="select(app)">
-              <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
-              <i v-else class="fa fa-cog red blink"></i>
-              {{app.name}}
-              <img v-if="app.name=='_default'" align="right" alt=" " src="/static/favicon.ico" height="18"/>
-              <img v-else align="right" alt=" " :src="'/'+app.name+'/static/favicon.ico'" height="18"/>
-            </button>
-                </div>
-            </div>
-        </div>
-        <div class="panel accordion" v-if="selected_app && selected_app.error">
-            <input type="checkbox" id="traceback" checked>
-            <label for="traceback">Cause of failure for {{selected_app.name}}</label>
-            <div>
-                <pre style="background:red;color:black;padding:5px">{{selected_app.error}}</pre>
-            </div>
-        </div>
-        <div class="panel accordion" v-if="selected_app && !selected_app.error">
-            <input type="checkbox" id="routes">
-            <label for="routes">Routes for {{selected_app.name}}</label>
-            <div>
-                <div class="right">
-                    <button @click="gitlog(selected_app.name)"><i class="fas fa-list"></i> Gitlog {{selected_app.name}}</button>
-                    <button @click="reload(selected_app.name)"><i class="fas fa-sync-alt"></i> Reload {{selected_app.name}}</button>
-                </div>
-                <table v-if="routes[selected_app.name]?.length">
-                    <thead>
-                        <tr>
-                            <th>Rule</th>
-                            <th>Method</th>
-                            <th>Filename</th>
-                            <th>Action</th>
-                            <th>Time(s)</th>
-                            <th>Calls/s</th>
-                            <th>Errors/s</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="route in routes[selected_app.name]" :key="route.rule">
-                            <td><a :href="route.rule" target="_blank"><tt>{{route.rule}}</tt></a></td>
-                            <td><tt>{{route.method}}</tt></td>
-                            <td><a @click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>
-                            <td><tt>{{route.action}}</tt></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <span v-else>No routes found</span>
-            </div>
-        </div>
+                <button type="button" class="theme-toggle" data-theme-toggle onclick="toggleDashboardTheme()" style="margin-right:50px">
+                    <span data-theme-label>☾ Dark</span>
+                </button>
+            </header>
 
-        <div class="panel accordion" v-if="selected_app">
-            <input type="checkbox" id="files" checked>
-            <label for="files">Files in {{selected_app.name}}</label>
+            <main class="container">
 
-            <div>
-                <div class="right">
-                    <button @click="create_new_file()"><i class="fas fa-magic"></i> Create New File</button>
-                    <button @click="upload_new_file()"><i class="fas fa-upload"></i> Upload New File</button>
-                    <button @click="download_selected_app()"><i class="fas fa-download"></i> Download App</button>
-                    <button @click="delete_selected_app()"><i class="fas fa-trash"></i> Delete App</button>
-                    <button :onclick="'window.open(\'[[=URL('translations')]]/'+selected_app.name+'\')'" target="translations">i18n+p11n</button>
+                <!-- API error banner -->
+                <div v-if="last_error" class="dialog-error" role="alert">
+                    <h2>API error</h2>
+                    <pre v-text="last_error"></pre>
+                    <button v-on:click="close_dialog_error" class="secondary">Dismiss</button>
                 </div>
-                <tree-files v-if="walk" :f="walk" :p="selected_app.name"></tree-files>
-            </div>
-        </div>
-        <div v-show="selected_filename" class="panel accordion">
-            <input type="checkbox" id="editor_container" checked>
-            <label for="editor_container">File: {{selected_filename}}</label>
-            <div>
-                <div class="right">
-                    <button @click="delete_selected_file()"><i class="fas fa-trash"></i> Delete File</button>
-                    <button @click="load_file()"><i class="fas fa-sync-alt"></i> Reload File</button>
-                    <button @click="save_file()"><i class="fas fa-save"></i> Save File</button>
-                </div>
-                <div v-show="selected_type=='text'" id="editor"></div>
-                <div v-if="selected_type=='image'"><img :src="selected_file_link" class="preview" /></div>
-                <div v-if="selected_type=='video'"><video :src="selected_file_link" class="preview"></video></div>
-                <div v-if="selected_type=='audio'"><audio :src="selected_file_link" class="preview"></audio></div>
-            </div>
-        </div>
-        <div class="panel accordion" v-if="selected_app">
-            <input type="checkbox" id="databases" checked>
-            <label for="databases">Databases in {{selected_app.name}}</label>
-            <div style="max-width:100vw">
-                <div style="overflow-x:auto">
-                    <table>
-                        <tbody v-for="db in databases" :key="db.name">
-                            <tr v-for="table in db.tables" :key="table.name">
-                                <td width="10%">
-                                    <button style="width:100%" :onclick="'window.open(\''+table.link+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
-                                </td>
-                                <td style="padding-top:9px">
-                                    <span v-for="name in table.fields" :key="name" class="tag">{{name}}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="panel accordion">
-            <input type="checkbox" id="tickets">
-            <label for="tickets">Recent Tickets</label>
-            <div style="max-width:100vw">
-                <div class="right">
-                    <button @click="reload_tickets()"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
-                    <button @click="clear_tickets()"><i class="fas fa-trash"></i> Clear Tickets</button>
-                </div>
-                <div style="overflow-x: auto">
-                    <table v-if="tickets.length>0">
-                        <thead>
-                            <tr>
-                                <th>Occurrences</th>
-                                <th>Most Recent</th>
-                                <th>Client IP</th>
-                                <th>App</th>
-                                <th>Method</th>
-                                <th>Path</th>
-                                <th>Error</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="ticket in tickets" :key="ticket.uuid">
-                                <td>{{ticket.count}}</td>
-                                <td>{{ticket.timestamp}}</td>
-                                <td>{{ticket.client_ip}}</td>
-                                <td>{{ticket.app_name}}</td>
-                                <td>{{ticket.method}}</td>
-                                <td>{{ticket.path}}</td>
-                                <td><a target="blank" :href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
-                                <td><a class="button" target="blank" :href="'[[=URL('tickets/search')]]?search_string=path is '+ticket.path+' and error is &quot;'+ticket.error+'&quot;'">Search</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="panel accordion">
-            <input type="checkbox" id="learn">
-            <label for="learn">System</label>
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Module</th>
-                            <th>Version</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in info" :key="row.name">
-                            <td>{{row.name}}</td>
-                            <td>{{row.version}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel">
-            <button @click="logout()">Logout</button>
-            <div class="right">
-                Created by Massimo Di Pierro @ BSDv3 License
-            </div>
-        </div>
-        <div class="modal" v-if="modal">
-            <div class="modal-inner">
-                <div>
-                    <h2>{{modal.title}}</h2>
-                    <p>{{modal.message}}</p>
-                    <div v-if="modal.form_name=='create-file'">
+
+                <!-- Installed applications -->
+                <details class="panel" open>
+                    <summary>Installed Applications</summary>
+                    <div class="panel-body">
+                        <div class="toolbar">
+                            <button @click="upload_new_app()"><i class="fas fa-magic"></i> Create / Upload App</button>
+                            <button @click="reload()" class="secondary"><i class="fas fa-sync-alt"></i> Reload Apps</button>
+                        </div>
+                        <div class="app-grid">
+                            <button class="btn-app" :class="{ 'has-error': app.error }" v-for="app in apps" :key="app.name" @click="select(app)">
+                                <span>{{app.name}}</span>
+                                <img alt="" :src="'/'+app.name+'/static/favicon.ico'" width="30" />
+                            </button>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Failure traceback -->
+                <details class="panel" open v-if="selected_app && selected_app.error">
+                    <summary>Cause of failure for {{selected_app.name}}</summary>
+                    <div class="panel-body">
+                        <pre style="background:var(--pico-del-color); color:white; padding:0.75rem; border-radius:var(--dash-radius)">{{selected_app.error}}</pre>
+                    </div>
+                </details>
+
+                <!-- Routes -->
+                <details class="panel" v-if="selected_app && !selected_app.error">
+                    <summary>Routes for {{selected_app.name}}</summary>
+                    <div class="panel-body">
+                        <div class="toolbar">
+                            <button @click="gitlog(selected_app.name)" class="secondary outline"><i class="fas fa-list"></i> Gitlog</button>
+                            <button @click="reload(selected_app.name)" class="secondary"><i class="fas fa-sync-alt"></i> Reload {{selected_app.name}}</button>
+                        </div>
+                        <div class="scrollx">
+                            <table v-if="routes[selected_app.name]?.length">
+                                <thead>
+                                    <tr>
+                                        <th>Rule</th>
+                                        <th>Method</th>
+                                        <th>Filename</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="route in routes[selected_app.name]" :key="route.rule">
+                                        <td><a :href="route.rule" target="_blank"><tt>{{route.rule}}</tt></a></td>
+                                        <td><tt>{{route.method}}</tt></td>
+                                        <td><a @click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>
+                                        <td><tt>{{route.action}}</tt></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p v-else><small>No routes found.</small></p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Files -->
+                <details class="panel" open v-if="selected_app">
+                    <summary>Files in {{selected_app.name}}</summary>
+                    <div class="panel-body">
+                        <div class="toolbar">
+                            <button @click="create_new_file()"><i class="fas fa-magic"></i> Create File</button>
+                            <button @click="upload_new_file()" class="secondary outline"><i class="fas fa-upload"></i> Upload File</button>
+                            <button @click="download_selected_app()" class="secondary outline"><i class="fas fa-download"></i> Download App</button>
+                            <button @click="delete_selected_app()" class="contrast"><i class="fas fa-trash"></i> Delete App</button>
+                            <button :onclick="'window.open(\'[[=URL('translations')]]/'+selected_app.name+'\')'" class="secondary outline">i18n + p11n</button>
+                        </div>
+                        <div class="tree-root">
+                            <tree-files v-if="walk" :f="walk" :p="selected_app.name"></tree-files>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- File editor -->
+                <details class="panel" open v-show="selected_filename">
+                    <summary>File: {{selected_filename}}</summary>
+                    <div class="panel-body">
+                        <div class="toolbar">
+                            <button @click="delete_selected_file()" class="contrast"><i class="fas fa-trash"></i> Delete</button>
+                            <button @click="load_file()" class="secondary outline"><i class="fas fa-sync-alt"></i> Reload</button>
+                            <button @click="save_file()"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                        <div v-show="selected_type=='text'" id="editor"></div>
+                        <div v-if="selected_type=='image'"><img :src="selected_file_link" class="preview" /></div>
+                        <div v-if="selected_type=='video'"><video :src="selected_file_link" class="preview" controls></video></div>
+                        <div v-if="selected_type=='audio'"><audio :src="selected_file_link" class="preview" controls></audio></div>
+                    </div>
+                </details>
+
+                <!-- Databases -->
+                <details class="panel" open v-if="selected_app">
+                    <summary>Databases in {{selected_app.name}}</summary>
+                    <div class="panel-body">
+                        <div class="scrollx">
+                            <table>
+                                <tbody v-for="db in databases" :key="db.name">
+                                    <tr v-for="table in db.tables" :key="table.name">
+                                        <td style="width: 1%; white-space: nowrap;">
+                                            <button class="secondary outline" :onclick="'window.open(\''+table.link+'\')'" style="margin:0; padding:0.3rem 0.6rem; font-size:0.85rem">{{db.name}}.{{table.name}}</button>
+                                        </td>
+                                        <td>
+                                            <span v-for="name in table.fields" :key="name" class="tag">{{name}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Tickets -->
+                <details class="panel">
+                    <summary>Recent Tickets</summary>
+                    <div class="panel-body">
+                        <div class="toolbar">
+                            <button @click="reload_tickets()" class="secondary outline"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
+                            <button @click="clear_tickets()" class="contrast"><i class="fas fa-trash"></i> Clear Tickets</button>
+                        </div>
+                        <div class="scrollx">
+                            <table v-if="tickets.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Most Recent</th>
+                                        <th>Client IP</th>
+                                        <th>App</th>
+                                        <th>Method</th>
+                                        <th>Path</th>
+                                        <th>Error</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="ticket in tickets" :key="ticket.uuid">
+                                        <td>{{ticket.count}}</td>
+                                        <td>{{ticket.timestamp}}</td>
+                                        <td>{{ticket.client_ip}}</td>
+                                        <td>{{ticket.app_name}}</td>
+                                        <td>{{ticket.method}}</td>
+                                        <td>{{ticket.path}}</td>
+                                        <td><a target="blank" :href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
+                                        <td><a role="button" class="secondary outline" style="padding:0.2rem 0.5rem; font-size:0.8rem" target="blank" :href="'[[=URL('tickets/search')]]?search_string=path is '+ticket.path+' and error is &quot;'+ticket.error+'&quot;'">Search</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p v-else><small>No tickets.</small></p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- System info -->
+                <details class="panel">
+                    <summary>System</summary>
+                    <div class="panel-body">
                         <table>
-                            <tr>
-                                <td></td>
-                                <td><input type="text" v-model="modal.form.filename" placeholder="path/somefile.html"></td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Version</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="row in info" :key="row.name">
+                                    <td>{{row.name}}</td>
+                                    <td><code>{{row.version}}</code></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
-                    <div v-if="modal.form_name=='create-app'">
-                        <table>
-                            <tr>
-                                <td></td>
-                                <td><input type="text" v-model="modal.form.name" placeholder="new app name"></td>
-                            </tr>
-                            <tr>
-                                <td><input v-model="modal.form.type" type="radio" value="minimal"></td>
-                                <td>Minimal</td>
-                            </tr>
-                            <tr>
-                                <td><input v-model="modal.form.type" type="radio" value="scaffold"></td>
-                                <td>Scaffold (db, session, auth, etc. based on vue.js)</td>
-                            </tr>
-                            <tr>
-                                <td><input v-model="modal.form.type" type="radio" value="web"></td>
-                                <td><input v-model="modal.form.source" type="text" placeholder="clone from web (git or zip)"></td>
-                            </tr>
-                            <tr>
-                                <td><input v-model="modal.form.type" type="radio" value="upload"></td>
-                                <td>Upload: <input type="file" id="upload-file" @change="handle_upload_file" /></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td style="padding-top: 20px">
-                                    <input type="radio" name="mode" v-model="modal.form.mode" value="new" /> New App
-                                    <input type="radio" name="mode" v-model="modal.form.mode" value="update" /> Update
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div style="text-align: right; padding-top:30px">
-                        <button v-for="button in modal.buttons" :key="button.text" @click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" @click="modal_dismiss()">Dismiss</button>
-                    </div>
+                </details>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem">
+                    <button @click="logout()" class="secondary outline" style="width:auto">Logout</button>
+                    <small style="color:var(--pico-muted-color)">Created by Massimo Di Pierro · BSDv3 License</small>
+                </div>
+            </main>
+        </div>
+
+        <!-- Modal dialog -->
+        <dialog class="dash-modal" :open="!!modal" v-if="modal">
+            <div class="modal-body">
+                <h2>{{modal.title}}</h2>
+                <p v-if="modal.message">{{modal.message}}</p>
+
+                <div v-if="modal.form_name=='create-file'">
+                    <input type="text" v-model="modal.form.filename" placeholder="path/somefile.html">
+                </div>
+
+                <div v-if="modal.form_name=='create-app'">
+                    <label>
+                        App name
+                        <input type="text" v-model="modal.form.name" placeholder="new app name">
+                    </label>
+                    <fieldset>
+                        <legend><strong>Source</strong></legend>
+                        <label>
+                            <input v-model="modal.form.type" type="radio" value="minimal"> Minimal
+                        </label>
+                        <label>
+                            <input v-model="modal.form.type" type="radio" value="scaffold"> Scaffold (db, session, auth, Vue.js)
+                        </label>
+                        <label>
+                            <input v-model="modal.form.type" type="radio" value="web"> Clone from web
+                            <input v-model="modal.form.source" type="text" placeholder="git or zip URL">
+                        </label>
+                        <label>
+                            <input v-model="modal.form.type" type="radio" value="upload"> Upload
+                            <input type="file" id="upload-file" @change="handle_upload_file" />
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend><strong>Mode</strong></legend>
+                        <label>
+                            <input type="radio" name="mode" v-model="modal.form.mode" value="new" /> New App
+                        </label>
+                        <label>
+                            <input type="radio" name="mode" v-model="modal.form.mode" value="update" /> Update
+                        </label>
+                    </fieldset>
                 </div>
             </div>
+            <div class="modal-actions">
+                <button v-for="button in modal.buttons" :key="button.text" @click="button.onclick()">{{button.text}}</button>
+                <button v-if="!modal.buttons" @click="modal_dismiss()" class="secondary">Dismiss</button>
+            </div>
+        </dialog>
     </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="js/ace/ace.js"></script>
+    <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/utils.js"></script>
+    <script>
+      var USER_ID = Number('[[= user_id or 0 ]]');
+    </script>
+    <script>
+      T.languages = JSON.parse('[[= languages ]]');
+    </script>
+    <script src="js/index.js"></script>
 </body>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="js/ace/ace.js"></script>
-<script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/utils.js"></script>
-<script>
-  var USER_ID = Number('[[= user_id or 0 ]]');
-  // "Number" is used only to avoid javascript linter warning about non-constant in template literal
-</script>
-<script>
-  T.languages = JSON.parse('[[= languages ]]');
-    // "JSON.parse" is used only to avoid javascript linter warning about non-constant in template literal
-</script>
-<script src="js/index.js"></script>
+
 </html>

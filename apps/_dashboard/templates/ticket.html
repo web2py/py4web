@@ -1,64 +1,38 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <base href="[[=URL('static')]]/">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/future.css">
-    <link id="dashboard-theme" rel="stylesheet" href="themes/AlienDark/theme.css">
+    <link rel="shortcut icon" href="[[=URL('static','favicon.ico')]]" />
+    <link rel="stylesheet" href="css/pico.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <script src="js/theme-selector.js"></script>
-    <style>
-  * {
-    font-family: courier;
-    font-size: 12px;
-  }
-  body {
-    margin: 0;
-    border: 0;
-    padding: 9px;
-    background-color: var(--bg-primary, #111111);
-    color: var(--text-primary, #e1e1e1);
-  }
-  h2.page-title { font-size: 2em }
-  .ticket {
-    overflow-x: auto;    
-  }
-  .ticket table {
-    margin-top: -1px;
-  }
-  .ticket tr {
-    border-top: 1px solid var(--border-color, #e1e1e1);        
-    padding-left: 5px;
-  }
-  .ticket th:after {
-    content: ':'
-  }
-  .ticket th {
-    font-weight: bold;
-    text-align: left;
-    vertical-align: top;
-    padding-right: 10px;
-    border-right: 5px solid var(--border-color, #d2d2d2);
-  }
-  .ticket td {
-    white-space: pre;
-    padding-left: 5px;
-  }  
-  .ticket-traceback {
-    background-color: red;
-    color: white;
-    padding: 5px 20px;
-    overflow-x: auto;
-  }
-  .ticket-traceback pre {
-    font-family: courier;
-    font-size: 12px;
-  }
-    </style>
+    <title>Ticket — py4web</title>
   </head>
   <body>
-    <h2 class="page-title">Error Ticket: [[=ticket.get('error')]]</h2>    
-    <div class="ticket-traceback">
-      <pre>[[=ticket.get('snapshot',{}).get('traceback')]]</pre>
-    </div>
-    <div class="ticket">[[=BEAUTIFY(ticket)]]</div>
+    <header class="dash-header">
+      <nav>
+        <a href="[[=URL('index')]]" style="font-weight:600">py4web Dashboard</a>
+        <span style="color:var(--pico-muted-color); margin:0 0.5rem">/</span>
+        <span>ticket</span>
+      </nav>
+      <button type="button" class="theme-toggle" data-theme-toggle onclick="toggleDashboardTheme()">
+        <span data-theme-label>☾ Dark</span>
+      </button>
+    </header>
+
+    <main class="container ticket-page">
+      <hgroup>
+        <h2>Error Ticket</h2>
+        <p>[[=ticket.get('error')]]</p>
+      </hgroup>
+
+      <div class="ticket-traceback">
+        <pre>[[=ticket.get('snapshot',{}).get('traceback')]]</pre>
+      </div>
+
+      <div class="ticket">[[=BEAUTIFY(ticket)]]</div>
+    </main>
   </body>
 </html>
