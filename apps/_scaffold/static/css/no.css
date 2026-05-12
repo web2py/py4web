@@ -1,23 +1,54 @@
 /*****************************************************
- no.css version 2020-08-09.1
+ no.css version 2026-05-11.1
 
- Designed to style pages without need for custom classes.
- headers, paragraphs, buttons, tables, forms,
- nav menus, alerts, and dialogs are styled automatically.
- The only custom classes are color names, grid column sizes,
- and a few convenience ones.
+ The no-JS little sibling of pico.css: a classless CSS
+ library under 10 KB that styles HTML automatically and
+ ships modal, accordion, and a responsive hamburger nav
+ in pure CSS — no JavaScript required.
 
- Grid:
-   columns, col, c25, c33, c50, c66, c75
- Colors:
-   black, white, default, success, warning, error, info, transparent
- Effects:
-   accordion, close, tags-list
- Utils:
-   fill, padded
+ Styled automatically: headers, paragraphs, buttons,
+ tables, forms, nav menus, alerts, dialogs.
+
+ Optional classes:
+   Grid:    columns, col, c25, c33, c50, c66, c75
+   Colors:  black, white, default, success, warning,
+            error, info, transparent
+   Effects: accordion, close, tags-list
+   Utils:   fill, padded
+
+ Theming via CSS variables; dark mode follows
+ prefers-color-scheme automatically.
 
  License: MIT
  *****************************************************/
+
+/****************************************************
+ theme variables
+ ****************************************************/
+
+:root {
+  --bg: #fff;
+  --fg: #111;
+  --muted-bg: #f1f1f1;
+  --border: #d1d1d1;
+  --primary: #0074d9;
+  --primary-fg: #fff;
+  --hover-bg: #fbf6d9;
+  --code-bg: #f4f5f6;
+  --success: #2ecc40;
+  --warning: #ffdc00;
+  --error: #cc1f00;
+  --radius: 5px;
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --fg: #eee;
+  --muted-bg: #2a2a2a;
+  --border: #555;
+  --hover-bg: #3a3a2a;
+  --code-bg: #2a2a2a;
+}
 
 /****************************************************
  global style
@@ -38,7 +69,9 @@ html, body {
 }
 
 body {
-  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.8em;
   min-height: 100vh;
   display: grid;
@@ -64,7 +97,7 @@ ul {
 
 a {
   text-decoration:none;
-  color:#0074d9;
+  color: var(--primary);
   white-space:nowrap
 }
 
@@ -113,9 +146,9 @@ header, footer {
 }
 
 code {
-  background: #f4f5f6;
+  background: var(--code-bg);
   border-radius: .4rem;
-  font-size: 90;
+  font-size: 0.9em;
   margin: 0 .2rem;
   padding: .2rem .5rem;
   white-space: nowrap;
@@ -135,15 +168,15 @@ table {
 }
 
 tbody tr:hover {
-  background-color:#fbf6d9
+  background-color: var(--hover-bg)
 }
 
 thead tr {
-  background-color:#f1f1f1
+  background-color: var(--muted-bg)
 }
 
 tbody tr {
-  border-bottom:2px solid #f1f1f1
+  border-bottom: 2px solid var(--muted-bg)
 }
 
 td, th {
@@ -168,11 +201,11 @@ thead th {
  ****************************************************/
 
 [role="button"], button, input[type='button'], input[type='reset'], input[type='submit'] {
-  background-color: #0074d9;
-  border-radius: 5px;
+  background-color: var(--primary);
+  border-radius: var(--radius);
   margin-right: 10px;
   margin-bottom: 10px;
-  color: #fff;
+  color: var(--primary-fg);
   cursor: pointer;
   display: inline-block;
   font-size: 1.1rem;
@@ -196,9 +229,10 @@ thead th {
 
 input[type='color'], input[type='date'], input[type='datetime'], input[type='time'], input[type='datetime-local'], input[type='email'], input[type='month'], input[type='number'], input[type='password'], input[type='search'], input[type='tel'], input[type='text'], input[type='url'], input[type='week'], input:not([type]), textarea, select {
   -webkit-appearance: none;
+  appearance: none;
   background-color: transparent;
-  border: 0.1rem solid #d1d1d1;
-  border-radius: 5px;
+  border: 0.1rem solid var(--border);
+  border-radius: var(--radius);
   box-shadow: none;
   box-sizing: inherit;
   font-family: monospace;
@@ -208,7 +242,7 @@ input[type='color'], input[type='date'], input[type='datetime'], input[type='tim
 }
 
 input[type='color']:focus, input[type='date']:focus, input[type='time']:focus, input[type='datetime']:focus, input[type='datetime-local']:focus, input[type='email']:focus, input[type='month']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, input[type='week']:focus, input:not([type]):focus, textarea:focus, select:focus {
-  border-color: #0074d9;
+  border-color: var(--primary);
   outline: 0;
 }
 
@@ -290,13 +324,13 @@ body > center > * {
  colors
  ****************************************************/
 
-.transparent{background-color:transparent;color:#111}
-.default{background-color:#0074d9;color:white}
-.success{background-color:#2ecc40;color:white}
-.warning{background-color:#ffdc00;color:#111}
-.error{background-color:#cc1f00;color:white}
-.info{background-color:#f1f1f1;color:#111}
-.white{background-color:white;color:#111;padding 5px;}
+.transparent{background-color:transparent;color:var(--fg)}
+.default{background-color:var(--primary);color:var(--primary-fg)}
+.success{background-color:var(--success);color:white}
+.warning{background-color:var(--warning);color:#111}
+.error{background-color:var(--error);color:white}
+.info{background-color:var(--muted-bg);color:var(--fg)}
+.white{background-color:white;color:#111}
 .black{background-color:#111;color:white}
 
 /****************************************************
@@ -364,22 +398,22 @@ nav > input[type=checkbox], nav > label {
 }
 
 nav li:hover {
-  background-color: #0074d9
+  background-color: var(--primary)
 }
 
 nav li:hover > a {
-  color: white
+  color: var(--primary-fg)
 }
 
 nav a {
   padding:0 5px;
   text-decoration:none;
   text-align:left;
-  color: black;
+  color: var(--fg);
 }
 
 nav.black ul ul a {
-  color: black
+  color: var(--fg)
 }
 
 nav.black a, nav.black > label {
@@ -394,7 +428,7 @@ nav li {
 }
 
 nav ul ul {
-  border:1px solid #e1e1e1;
+  border: 1px solid var(--border);
   visibility:hidden;
   opacity:0;
   position:absolute;
@@ -405,7 +439,7 @@ nav ul ul {
   transition:all 0.2s ease-out;
   list-style-type: none;
   box-shadow:5px 5px 10px #666;
-  background-color: white
+  background-color: var(--bg)
 }
 
 nav ul ul li {
@@ -414,12 +448,11 @@ nav ul ul li {
 
 nav ul ul a {
   padding:10px 15px;
-  color:#333;
   font-weight:700;
   font-size:12px;
   line-height:16px;
   display: block;
-  color: #111;
+  color: var(--fg);
 }
 
 nav ul ul ul {
@@ -428,12 +461,12 @@ nav ul ul ul {
   z-index:1100
 }
 
-nav li:hover > ul {
+nav li:hover > ul, nav li:focus-within > ul {
   visibility:visible;
   opacity:1
 }
 
-nav>li>ul>li:first-child:before{
+nav > ul > li > ul > li:first-child:before{
   content:'';
   position:absolute;
   width:1px;
@@ -442,7 +475,7 @@ nav>li>ul>li:first-child:before{
   left:50px;
   top:-20px;
   margin-left:-10px;
-  border-bottom-color:white
+  border-bottom-color: var(--bg)
 }
 
 /****************************************************
@@ -464,7 +497,7 @@ nav>li>ul>li:first-child:before{
 }
 [role="dialog"] > input[type=checkbox] { display: none !important; }
 input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
-[role="dialog"] > div > *:not(.close) {width: 66%; margin-left:auto; margin-right:auto; border-radius: 5px;}
+[role="dialog"] > div > *:not(.close) {width: 66%; margin-left:auto; margin-right:auto; border-radius: var(--radius);}
 [role="dialog"] > div > .close, [role="alert"] > .close {
   background: url('data:image/svg+xml;utf8,<svg fill="%23000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M 12 2 C 6.4889971 2 2 6.4889971 2 12 C 2 17.511003 6.4889971 22 12 22 C 17.511003 22 22 17.511003 22 12 C 22 6.4889971 17.511003 2 12 2 z M 12 4 C 16.430123 4 20 7.5698774 20 12 C 20 16.430123 16.430123 20 12 20 C 7.5698774 20 4 16.430123 4 12 C 4 7.5698774 7.5698774 4 12 4 z M 8.7070312 7.2929688 L 7.2929688 8.7070312 L 10.585938 12 L 7.2929688 15.292969 L 8.7070312 16.707031 L 12 13.414062 L 15.292969 16.707031 L 16.707031 15.292969 L 13.414062 12 L 16.707031 8.7070312 L 15.292969 7.2929688 L 12 10.585938 L 8.7070312 7.2929688 z"/></svg>') center right no-repeat;
   width:24px; height:24px; cursor: pointer; position:absolute; top:15px; right:15px;
@@ -503,8 +536,8 @@ input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
   margin: 1.5em;
   padding: 1.5em;
   position: relative;
-  border-radius: 5px;
-  color: black;
+  border-radius: var(--radius);
+  color: var(--fg);
 }
 
 [role="alert"] > .close {
@@ -534,7 +567,7 @@ ul.tags-list li {
   line-height: 1.2em;
   margin: 2px;
   cursor: pointer;
-  opacity: 0.2;
+  opacity: 0.5;
 }
 
 ul.tags-list li[data-selected=true] {
