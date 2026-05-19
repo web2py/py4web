@@ -915,7 +915,7 @@ requires-dist = [
     { name = "pluralize", specifier = ">=20250901.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20260313.1" },
+    { name = "pydal", specifier = ">=20260518.1" },
     { name = "pygments", specifier = ">=2.20.0" },
     { name = "pyjwt", specifier = ">=2.12.0" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
@@ -935,7 +935,7 @@ requires-dist = [
     { name = "twine", marker = "extra == 'manage'" },
     { name = "watchgod", specifier = ">=0.6" },
     { name = "wheel" },
-    { name = "yatl", specifier = ">=20230507.3" },
+    { name = "yatl", specifier = ">=20260518.1" },
 ]
 provides-extras = ["test", "docs", "manage"]
 
@@ -985,11 +985,11 @@ wheels = [
 
 [[package]]
 name = "pydal"
-version = "20260313.1"
+version = "20260818.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/68/51/c6ae7cfa615718812f974560b24001aff542ee6739232fd689e87ba75b1f/pydal-20260313.1.tar.gz", hash = "sha256:2df8de415dda8821f0a291cd66459fb889b28458ee6501778f682e55530847e9", size = 635919, upload-time = "2026-03-14T00:26:58.599Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/c5/041ad8ccaafc1895ba504fa59e16188fbbc3c55747992204d371d2ca1d90/pydal-20260818.1.tar.gz", hash = "sha256:a231d8e007300be9fdb12fed332c9350e7cdc910a8a238ea4fd1f0ed463c3044", size = 505484, upload-time = "2026-05-19T04:05:06.964Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/0a/1d4dab75bfcd68694cfa88599df1c364db301731165e32d32259fb609004/pydal-20260313.1-py2.py3-none-any.whl", hash = "sha256:501c91f02dad9e2bc1abed2e9276b9aa6d205875a1eff42fc3da2d24ee1b9c3e", size = 253951, upload-time = "2026-03-14T00:26:56.159Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/1c/5d11e835ac72e95d72f80c12b47a5774b6da445a107af20625ee30170782/pydal-20260818.1-py2.py3-none-any.whl", hash = "sha256:8e8687441baca617b0234dc280aaa907cc5f309a0fa620ecccc58c5762a8c559", size = 254224, upload-time = "2026-05-19T04:05:04.839Z" },
 ]
 
 [[package]]
@@ -1724,11 +1724,11 @@ wheels = [
 
 [[package]]
 name = "yatl"
-version = "20230507.3"
+version = "20260518.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bd/3b/723a667a24512a299e1e139608e787c3b24b7819302c15c7aac09c3bec68/yatl-20230507.3.tar.gz", hash = "sha256:a7d60abff563d7eb680f4f97efb107b60b32f80061c45bf4fab15c4ea2a057e2", size = 22125, upload-time = "2023-05-08T01:14:15.539Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/69/c294d4496d80eef6a106772ff8da097b08a3316fcbe0107ab9aac1f8e506/yatl-20260518.1.tar.gz", hash = "sha256:6bc0242308a8f51d79e61d2e05cca846e3ff82bf12c0b412d7a4ab5fea5db2e2", size = 21918, upload-time = "2026-05-19T04:09:45.565Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2e/20/59043804636e0dc544689d0af071a19ff14e0f7f2963db3e4f0bd8ca8534/yatl-20230507.3-py3-none-any.whl", hash = "sha256:56858ff32747ac5763ffdbeba795471dd6e9e5d68f12b4468eaaf0412dea24d9", size = 19332, upload-time = "2023-05-08T01:14:13.599Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/2a/6854773ad324c7022190bf5a668289b9d005d393c3411b8defb92cfef004/yatl-20260518.1-py3-none-any.whl", hash = "sha256:9539f7d8a4c044b799045050be25f199f1496031dfa42d884c74dd8c59161ec5", size = 19038, upload-time = "2026-05-19T04:09:44.287Z" },
 ]
 
 [[package]]

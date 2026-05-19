@@ -75,6 +75,7 @@ class TestAuth(unittest.TestCase):
                     "first_name": "required",
                     "last_name": "required",
                 },
+                "success": False,
                 "status": "error",
                 "message": "validation errors",
                 "code": 401,
@@ -92,7 +93,7 @@ class TestAuth(unittest.TestCase):
         }
         self.assertEqual(
             self.auth.action("api/register", "POST", {}, body),
-            {"id": 1, "status": "success", "code": 200},
+            {"id": 1, "success": True, "status": "success", "code": 200},
         )
         user = self.db.auth_user[1]
         self.assertTrue(user.action_token.startswith("pending-registration"))
