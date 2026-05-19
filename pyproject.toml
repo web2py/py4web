@@ -27,8 +27,8 @@ dependencies = [
     "pygments >= 2.20.0",
     "pluralize >= 20250901.2",
     "rocket3 >= 20241225.1",
-    "yatl >= 20230507.3",
-    "pydal >= 20260313.1",
+    "yatl >= 20260518.1",
+    "pydal >= 20260518.1",
     "watchgod >= 0.6",
 ]
 
