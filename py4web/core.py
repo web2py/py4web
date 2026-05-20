@@ -1724,14 +1724,42 @@ class Reloader:
                 rule = url_prefix
             else:
                 rule = url_prefix + rule
-        dec_func = action.catch_errors(app_name, func)
         if "method" not in kwargs:
             kwargs["method"] = ["GET", "POST"]
-        bottle.route(rule, **kwargs)(dec_func)
-        filename = module2filename(func.__module__)
         methods = kwargs.get("method")
         if isinstance(methods, str):
             methods = [methods]
+
+        # Look up any existing registration for (rule, method) and surface
+        # a clearer error before ombott raises a noisy RouteMethodError.
+        # The canonical foot-gun is @action("/") + @action("index"), since
+        # py4web auto-aliases /index to / for callers.
+        existing = {
+            (entry["rule"], entry["method"]): entry
+            for entry in Reloader.ROUTES[app_name]
+        }
+        for method in methods:
+            prior = existing.get((rule, method))
+            if prior is not None and prior["action"] != func.__name__:
+                raise RuntimeError(
+                    "py4web: duplicate route registration for %s %s in app "
+                    "%r — previously bound to %s() from %s, now %s() from %s. "
+                    "Hint: @action('/') and @action('index') both resolve to "
+                    "'/'; pick one, or give them distinct paths."
+                    % (
+                        method,
+                        rule,
+                        app_name,
+                        prior["action"],
+                        prior.get("filename", "<?>"),
+                        func.__name__,
+                        module2filename(func.__module__),
+                    )
+                )
+
+        dec_func = action.catch_errors(app_name, func)
+        bottle.route(rule, **kwargs)(dec_func)
+        filename = module2filename(func.__module__)
         for method in methods:
             Reloader.ROUTES[app_name].append(
                 {
@@ -2448,8 +2476,34 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     help="default or development",
     show_default=True,
 )
+@click.option(
+    "--dev",
+    is_flag=True,
+    default=False,
+    help="Development preset: --mode=development, --debug, verbose logs, "
+         "lazy reload. Apps read PY4WEB_MODE=development from settings.py "
+         "to relax password rules and disable email verification.",
+)
 def run(**kwargs):
     """Run the applications on apps_folder"""
+    if kwargs.pop("dev", False):
+        # --dev is a convenience preset. Only flip a knob if the user did
+        # not pass an explicit value for it, so explicit flags win.
+        if kwargs.get("mode") == "default":
+            kwargs["mode"] = "development"
+        if not kwargs.get("debug"):
+            kwargs["debug"] = True
+        if kwargs.get("logging_level") == logging.INFO:
+            kwargs["logging_level"] = logging.DEBUG
+        if kwargs.get("watch") == "lazy":
+            # Lazy is already the default but keep it explicit so the
+            # banner reflects it.
+            kwargs["watch"] = "lazy"
+        click.secho(
+            "[--dev] mode=development, debug=on, verbose logs. "
+            "Do not use in production.",
+            fg="yellow",
+        )
     install_args(kwargs)
 
     from py4web import __version__  # pylint: disable=import-outside-toplevel
