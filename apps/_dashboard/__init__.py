@@ -636,12 +636,11 @@ if MODE == "full":
 @action("translations/<name>", method="GET")
 @action.uses(Logged(session), "translations.html")
 def translations(name):
-    """returns a json with all translations for all languages"""
+    """renders the translation editor for app ``name``"""
     folder = os.path.join(FOLDER, name, "translations")
     if not os.path.exists(folder):
         os.makedirs(folder)
-    t = Translator(folder)
-    return t.languages
+    return dict(app_name=name)
 
 
 @action("api/translations/<name>", method="GET")

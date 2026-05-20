@@ -580,7 +580,28 @@ dialog.dash-modal table td {
   font-size: 0.85rem;
 }
 
-.unverified { color: var(--pico-color-amber-500, #d4a017); }
+.unverified { color: var(--pico-color-amber-500, #d4a017); font-style: italic; }
+
+.translations-page .source-row td {
+  padding-top: 0.85rem;
+  font-weight: 600;
+  background: var(--pico-card-sectioning-background-color, transparent);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.translations-page .source-row code {
+  font-size: 0.9rem;
+  color: var(--pico-color);
+}
+
+.app-grid button.btn-app.lang-btn.selected,
+.app-grid button.btn-app.lang-btn.selected:hover,
+.app-grid button.btn-app.lang-btn.selected:focus {
+  background-color: var(--pico-primary-background);
+  border-color: var(--pico-primary-border);
+  color: var(--pico-primary-inverse);
+}
 
 /* ----- Compact form rows inside modal/sidebar ----- */
 .row-form {

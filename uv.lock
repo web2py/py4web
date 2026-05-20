@@ -836,11 +836,11 @@ wheels = [
 
 [[package]]
 name = "pluralize"
-version = "20250901.2"
+version = "20260519.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d7/c6/f5b3fdfa5fa88eb0ed13ac3d9485965259f48980c1e644286201d9639c8c/pluralize-20250901.2.tar.gz", hash = "sha256:b35b7b309acd41a62725d64d47f41638e476cec62279c0012081662ea0a74b23", size = 4904, upload-time = "2025-09-01T17:20:33.158Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/67/1a/00444cc68f6ed512f16ca51841d80c3c8b7fcc19b1ac3f43363eaf981c46/pluralize-20260519.2.tar.gz", hash = "sha256:4dc83fa6a8b3f2e279499ba2aace43c98231e828d38f4a03fb221349e0708182", size = 6706, upload-time = "2026-05-20T05:28:21.03Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/0e/63bf05bb75f82a8433049c6abfb2bc8340e9faffcecd8fa9003ea2a2cfda/pluralize-20250901.2-py3-none-any.whl", hash = "sha256:2bbdbbf41035730d6a789bcd8273ac187d33c328c5c0a3298210e77608772053", size = 4431, upload-time = "2025-09-01T17:20:31.994Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/41/79d2f79a719dd4a94fe36d536801c195bca662015750f142ef0340fda2c2/pluralize-20260519.2-py3-none-any.whl", hash = "sha256:03b3c80946286554a78103f77e13e05eb027b8e24666d1147adca46c1646852a", size = 6028, upload-time = "2026-05-20T05:28:19.938Z" },
 ]
 
 [[package]]
@@ -912,10 +912,10 @@ requires-dist = [
     { name = "mechanize", marker = "extra == 'test'", specifier = "==0.4.6" },
     { name = "ombott", specifier = ">=2.4" },
     { name = "pathspec" },
-    { name = "pluralize", specifier = ">=20250901.2" },
+    { name = "pluralize", specifier = ">=20260519.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20260518.1" },
+    { name = "pydal", specifier = ">=20260519.1" },
     { name = "pygments", specifier = ">=2.20.0" },
     { name = "pyjwt", specifier = ">=2.12.0" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
@@ -985,11 +985,11 @@ wheels = [
 
 [[package]]
 name = "pydal"
-version = "20260818.1"
+version = "20260519.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/37/c5/041ad8ccaafc1895ba504fa59e16188fbbc3c55747992204d371d2ca1d90/pydal-20260818.1.tar.gz", hash = "sha256:a231d8e007300be9fdb12fed332c9350e7cdc910a8a238ea4fd1f0ed463c3044", size = 505484, upload-time = "2026-05-19T04:05:06.964Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/9f/06f75524eebe5bc99815a55237054808964483d9c8e5989d47dcdbef386e/pydal-20260519.1.tar.gz", hash = "sha256:3ea117a1a6744858b4bb1cf3403f1e91ac3aafe11c10ecf8a2583af9d1703fce", size = 507467, upload-time = "2026-05-20T05:50:56.129Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4a/1c/5d11e835ac72e95d72f80c12b47a5774b6da445a107af20625ee30170782/pydal-20260818.1-py2.py3-none-any.whl", hash = "sha256:8e8687441baca617b0234dc280aaa907cc5f309a0fa620ecccc58c5762a8c559", size = 254224, upload-time = "2026-05-19T04:05:04.839Z" },
+    { url = "https://files.pythonhosted.org/packages/03/17/bc2d35c5d7b6289669657f29a0789d42425e798250ac67d5f9412a043359/pydal-20260519.1-py2.py3-none-any.whl", hash = "sha256:21afec4f90511eaddd6f07c5f3fe107453c8acb40cd47fa3423e65b543a6159c", size = 255199, upload-time = "2026-05-20T05:50:54.107Z" },
 ]
 
 [[package]]
