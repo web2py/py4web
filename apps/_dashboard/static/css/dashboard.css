@@ -132,18 +132,30 @@ body > main {
 }
 
 .app-grid button.btn-app {
+  position: relative;
   width: 100%;
   margin: 0;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
   text-align: left;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
   font-size: 0.9rem;
   background-color: var(--pico-secondary-background);
   border: 1px solid var(--pico-secondary-border);
   color: var(--pico-secondary-inverse);
+  overflow: hidden;
+}
+
+.app-grid button.btn-app > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-grid button.btn-app > img {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  pointer-events: none;
 }
 
 .app-grid button.btn-app:hover,
