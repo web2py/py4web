@@ -1,6 +1,6 @@
 [[extend "layout.html"]]
 
 <div class="dbadmin">
-<h2>Application "[[=app_name]]" - Table "[[=table_name]]"</h2>
+<h2>[[if globals().get('app_name'):]]Application "[[=app_name]]" - [[pass]]Table "[[=table_name]]"</h2>
 [[=grid]]
 </div>

@@ -499,6 +499,63 @@ dialog.dash-modal table td {
   white-space: nowrap;
 }
 
+/* Search bar: keep input + Search/Clear buttons on a single row, same height */
+.dbadmin .grid-search,
+.dbadmin .grid-search-form {
+  display: block;
+  width: 100%;
+  margin: 0;
+  clear: both;
+}
+
+.dbadmin .grid-new-button {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.dbadmin .grid-search-form-table {
+  margin-bottom: 0.75rem;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.dbadmin .grid-search-form-td {
+  padding: 0 0.25rem 0 0;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.dbadmin .grid-search-form-td:last-child {
+  padding-right: 0;
+}
+
+/* Make the search input cell stretch so the table fills the form width */
+.dbadmin .grid-search-form-td:nth-last-child(2) {
+  width: 100%;
+}
+
+.dbadmin .grid-search-form-input,
+.dbadmin .grid-search-form-select {
+  margin: 0;
+}
+
+.dbadmin .grid-search-form-input {
+  width: 100%;
+}
+
+.dbadmin .grid-search-button,
+.dbadmin .grid-clear-button {
+  width: auto;
+  display: inline-block;
+  margin: 0 0 0 0.25rem;
+  white-space: nowrap;
+}
+
+.dbadmin .grid-search-form-td:last-child .grid-search-button {
+  margin-left: 0;
+}
+
 /* ----- Ticket page ----- */
 .ticket-page {
   font-family: var(--pico-font-family-monospace);
