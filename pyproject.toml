@@ -26,9 +26,9 @@ dependencies = [
     "pycryptodome",
     "pygments >= 2.20.0",
     "pluralize >= 20260519.2",
-    "rocket3 >= 20241225.1",
+    "rocket3 >= 20260520.0",
     "yatl >= 20260518.1",
-    "pydal >= 20260519.1",
+    "pydal >= 20260520.0",
     "watchgod >= 0.6",
 ]
 
