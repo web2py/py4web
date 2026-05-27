@@ -3,12 +3,11 @@
 from __future__ import print_function
 
 import datetime
+import pickle
 import random
 import re
 import sys
 import uuid
-
-from pydal._compat import pickle
 
 IUP = {
     "ad": {"minim": 1},

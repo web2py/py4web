@@ -1,6 +1,6 @@
 import base64
-
-from pydal._compat import urllib2, urlopen
+import urllib.error
+import urllib.request
 
 
 class BasicAuthPlugin:
@@ -18,9 +18,9 @@ class BasicAuthPlugin:
         """
         key = base64.b64encode(username + ":" + password)
         headers = {"Authorization": "Basic " + key}
-        request = urllib2.Request(self.server, None, headers)
+        request = urllib.request.Request(self.server, None, headers)
         try:
-            urlopen(request)
+            urllib.request.urlopen(request)
             return True
-        except (urllib2.URLError, urllib2.HTTPError):
+        except (urllib.error.URLError, urllib.error.HTTPError):
             return False

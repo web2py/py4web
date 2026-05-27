@@ -4,7 +4,6 @@ import time
 import uuid
 
 import jwt
-from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from yatl.helpers import (
     CAT,
@@ -993,7 +992,8 @@ class Form(object):
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
         key = self._get_key() or self._make_key()
-        self.formkey = to_native(jwt.encode(payload, key, algorithm="HS256"))
+        token = jwt.encode(payload, key, algorithm="HS256")
+        self.formkey = token.decode("utf8") if isinstance(token, bytes) else token
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
