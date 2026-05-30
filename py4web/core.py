@@ -1196,7 +1196,7 @@ class action:  # pylint: disable=invalid-name
                         # to see in the logs rather than silently lose.
                         try:
                             Fixture.local_delete(fixture)
-                        except KeyError:
+                        except (KeyError, AttributeError):
                             pass
                         except Exception as cleanup_err:  # pylint: disable=broad-exception-caught
                             logging.warning(
