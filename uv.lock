@@ -915,7 +915,7 @@ requires-dist = [
     { name = "pluralize", specifier = ">=20260519.2" },
     { name = "portalocker" },
     { name = "pycryptodome" },
-    { name = "pydal", specifier = ">=20260520.0" },
+    { name = "pydal", specifier = ">=3.20260526.0" },
     { name = "pygments", specifier = ">=2.20.0" },
     { name = "pyjwt", specifier = ">=2.12.0" },
     { name = "pystemmer", marker = "extra == 'docs'", specifier = ">=2.2" },
@@ -925,7 +925,7 @@ requires-dist = [
     { name = "renoir", specifier = ">=1.4.0" },
     { name = "requests", specifier = ">=2.33.0" },
     { name = "rinohtype", marker = "extra == 'docs'", specifier = "==0.5.4" },
-    { name = "rocket3", specifier = ">=20260520.0" },
+    { name = "rocket3", specifier = ">=20260526.0" },
     { name = "sphinx", marker = "extra == 'docs'" },
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'" },
     { name = "sphinx-tabs", marker = "extra == 'docs'" },
@@ -1014,14 +1014,14 @@ wheels = [
 
 [[package]]
 name = "pyjwt"
-version = "2.12.1"
+version = "2.13.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c2/27/a3b6e5bf6ff856d2509292e95c8f57f0df7017cf5394921fc4e4ef40308a/pyjwt-2.12.1.tar.gz", hash = "sha256:c74a7a2adf861c04d002db713dd85f84beb242228e671280bf709d765b03672b", size = 102564, upload-time = "2026-03-13T19:27:37.25Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/81/58d0ac84e1ef3a3843791d6954d94c0b33d526c75eeb1efbce9d0a4c4077/pyjwt-2.13.0.tar.gz", hash = "sha256:41571c89ca91598c79e8ef18a2d07367d4810fbbd6f637794879baf1b7703423", size = 107515, upload-time = "2026-05-21T19:54:36.618Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/7a/8dd906bd22e79e47397a61742927f6747fe93242ef86645ee9092e610244/pyjwt-2.12.1-py3-none-any.whl", hash = "sha256:28ca37c070cad8ba8cd9790cd940535d40274d22f80ab87f3ac6a713e6e8454c", size = 29726, upload-time = "2026-03-13T19:27:35.677Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/5e/ecf12fdb62546d64385c158514e9b2b671f7832108ef2ecd2020ce0af2d1/pyjwt-2.13.0-py3-none-any.whl", hash = "sha256:66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728", size = 31274, upload-time = "2026-05-21T19:54:35.362Z" },
 ]
 
 [[package]]
@@ -1304,11 +1304,11 @@ wheels = [
 
 [[package]]
 name = "rocket3"
-version = "20260520.0"
+version = "20260526.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/47/4d/45940d63546ba959c1c4af7f62889e67ac0ef2e7b908505c353b0a422f09/rocket3-20260520.0.tar.gz", hash = "sha256:4e3fdaf025e50bfca630b73a471e01a98c54e5cff5466d758aeb86c61f436fa8", size = 20688, upload-time = "2026-05-20T23:09:22.975Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/f7/fed13d11a5c93e19daddf1fa73ce09fcdb58b43ce2ae95a653150dd3bcca/rocket3-20260526.0.tar.gz", hash = "sha256:5828422badec10e45bf18f837f14d3022c98b19ac66dbb8fbaafdb17f8d4cdb3", size = 20881, upload-time = "2026-05-27T00:36:27.891Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/fd/a86fbb73f6db6e98220bf48b96c594d92eff9f74a6fb2a68bd1b0afb3ec3/rocket3-20260520.0-py3-none-any.whl", hash = "sha256:4e5e896172acd2c270dbb49dc5bca25513e9b5f157b7583a5d767d3581cb0eea", size = 15860, upload-time = "2026-05-20T23:09:21.562Z" },
+    { url = "https://files.pythonhosted.org/packages/db/91/638d75407c7076f954faf7997a6c3dcbc8a3978a193f6a096e350fe12419/rocket3-20260526.0-py3-none-any.whl", hash = "sha256:a114cb9691857916dfabc038b56f9b6099171df7da6fa5e113b0a4fede6fa52b", size = 16030, upload-time = "2026-05-27T00:36:26.579Z" },
 ]
 
 [[package]]
