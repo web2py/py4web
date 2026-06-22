@@ -596,6 +596,7 @@ class FormStyleFactory:
 
         # Set the deletable json field attributes.
         submit_button_attributes["_label"] = T("Submit")
+        submit_button_attributes["_name"] = "_submit"
         submit_button_attributes["_type"] = submit_button_field_type
         submit_button_attributes["_class"] = self.classes["input[type=submit]"]
 
@@ -604,6 +605,7 @@ class FormStyleFactory:
 
         controls["submit"] = INPUT(
             _type=submit_button_field_type,
+            _name="_submit",
             _value=T("Submit"),
             _class=self.classes["input[type=submit]"],
         )
