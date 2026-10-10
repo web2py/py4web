@@ -113,9 +113,10 @@ decorated with ``@action()``.
 Notice that py4web automatically prepends ``/myapp`` (the app name) to
 the path declared in ``@action``. Multiple apps could otherwise
 declare colliding routes; prefixing each route with the app name
-keeps them separate. The one exception is the app called
-``_default`` (or a symlink from ``_default`` to ``myapp``): its
-routes are exposed without a prefix.
+keeps them separate. The one exception is the root app, by default
+the one called ``_default``: its routes are exposed without a prefix.
+To make ``myapp`` the root app, start py4web with
+``py4web run --root_app myapp apps``.
 
 On return values
 ~~~~~~~~~~~~~~~~
