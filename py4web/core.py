@@ -101,7 +101,19 @@ DEFAULTS = dict(
     PY4WEB_APPS_FOLDER="apps",
     PY4WEB_SERVICE_FOLDER=".service",
     PY4WEB_SERVICE_DB_URI="sqlite://service.storage",
+    PY4WEB_ROOT_APP="_default",
 )
+
+
+def get_root_app_name():
+    """Returns the name of the app mounted at / (set with run --root_app)"""
+    return os.environ.get("PY4WEB_ROOT_APP") or DEFAULTS["PY4WEB_ROOT_APP"]
+
+
+def is_root_app(app_name):
+    """True if app_name is the app mounted at / instead of /{app_name}"""
+    return app_name == get_root_app_name()
+
 
 HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
 
@@ -1023,7 +1035,7 @@ def URL(  # pylint: disable=invalid-name
         # When the caller explicitly opted out of the app prefix, strip it
         # from the current path; otherwise URL(use_appname=False) would
         # silently retain it, contradicting its documented behaviour.
-        if not use_appname and app_name and app_name != "_default":
+        if not use_appname and app_name and not is_root_app(app_name):
             app_segment = f"/{app_name}"
             if prefix == app_segment:
                 prefix = "/"
@@ -1032,7 +1044,7 @@ def URL(  # pylint: disable=invalid-name
         prefix = script_name + prefix
     elif parts and parts[0].startswith("/"):
         prefix = ""
-    elif has_appname and app_name != "_default":
+    elif has_appname and not is_root_app(app_name):
         prefix = f"{script_name}/{app_name}/"
     else:
         prefix = f"{script_name}/"
@@ -1262,7 +1274,7 @@ class action:  # pylint: disable=invalid-name
         if self.path[0] == "/":
             path = self.path.rstrip("/") or "/"
         else:
-            base_path = "" if app_name == "_default" else f"/{app_name}"
+            base_path = "" if is_root_app(app_name) else f"/{app_name}"
             path = (f"{base_path}/{self.path}").rstrip("/")
         Reloader.register_route(app_name, path, self.kwargs, func)
         if path.endswith("/index"):  # /index is always optional
@@ -1608,7 +1620,7 @@ class Reloader:
         def hook(*args, **kwargs):  # pylint: disable=unused-argument
             app_name = request.path.split("/")[1]
             if app_name not in Reloader.ROUTES:
-                app_name = "_default"
+                app_name = get_root_app_name()
             with Reloader._import_lock:
                 # Re-check inside the lock so only the first thread
                 # actually triggers the reimport; subsequent threads see
@@ -1703,7 +1715,7 @@ class Reloader:
 
         if os.path.exists(static_folder):
             app_name = path.split(os.path.sep)[-1]
-            prefix = "" if app_name == "_default" else f"/{app_name}"
+            prefix = "" if is_root_app(app_name) else f"/{app_name}"
             path = prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>"
 
             def server_static(fp, static_folder=static_folder):
@@ -2385,6 +2397,12 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     help="List of apps to run, comma separated (all if omitted or empty)",
 )
 @click.option(
+    "--root_app",
+    default="_default",
+    help="App that handles / requests (instead of /{app_name}/)",
+    show_default=True,
+)
+@click.option(
     "-p",
     "--password_file",
     default=PASSWORD_FILENAME,
@@ -2517,6 +2535,15 @@ def run(**kwargs):
 
     # Start
     Reloader.import_apps()
+
+    root_app = get_root_app_name()
+    if root_app != DEFAULTS["PY4WEB_ROOT_APP"] and not Reloader.MODULES.get(
+        root_app
+    ):
+        click.secho(
+            f'Root app "{root_app}" is not loaded, nothing will be served at /',
+            fg="yellow",
+        )
 
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):

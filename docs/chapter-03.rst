@@ -307,9 +307,9 @@ In order to stop py4web, you need to hit :kbd:`Control-C` on the window where yo
 .. note::
 
    The **Default** app is special: it does not require the
-   ``{appname}/`` prefix in the URL, unlike every other app.  In
-   practice you may want to symlink ``apps/_default`` to your real
-   default app.
+   ``{appname}/`` prefix in the URL, unlike every other app. To serve
+   one of your own apps at ``/`` instead, start py4web with
+   ``--root_app {yourappname}`` (see :ref:`run command option`).
 
 For all apps the trailing ``/index`` is also optional.
 
@@ -404,6 +404,8 @@ This currently gives an error on binaries installations and from source installa
       -P, --port INTEGER              Port number  [default: 8000]
       -A, --app_names TEXT            List of apps to run, comma separated (all if
                                        omitted or empty)
+      --root_app TEXT                 App that handles / requests (instead of
+                                       /{app_name}/)  [default: _default]
       -p, --password_file TEXT        File for the encrypted password  [default:
                                        password.txt]
       -Q, --quiet                     Suppress server output
@@ -433,6 +435,17 @@ This currently gives an error on binaries installations and from source installa
 The ``app_names`` option lets you filter which apps to serve
 (comma-separated). If omitted or empty, every app in ``APPS_FOLDER``
 runs.
+
+The ``root_app`` option chooses which app is served at ``/``, without
+the ``/{app_name}`` prefix. By default this is ``_default``. For
+example, ``py4web run --root_app todo apps`` serves the **todo** app
+at ``http://localhost:8000/`` and its static files at
+``/static/...``, while ``_default`` moves to ``/_default/``. URLs
+built with ``URL()`` follow automatically; paths hardcoded as
+``/todo/...`` do not. The option can also be set with the
+``PY4WEB_ROOT_APP`` environment variable, or passed to ``wsgi(root_app=...)``
+when py4web is started from a WSGI file. If the chosen app is not loaded, py4web
+prints a warning at startup and nothing is served at ``/``.
 
 For security reasons, py4web listens only on ``127.0.0.1`` (localhost)
 by default. To reach it from another machine, set the host
