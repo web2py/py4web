@@ -1,4 +1,7 @@
 .PHONY: clean docs docs-pdf clean-assets assets test setup run build deploy
+
+# Keep the virtualenv out of the (Dropbox-synced) source tree
+export UV_PROJECT_ENVIRONMENT := $(HOME)/.venvs$(CURDIR)/venv
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
