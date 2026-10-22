@@ -18,6 +18,9 @@ from email.encoders import encode_base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
+from email.charset import Charset, QP as charset_QP, add_charset
+from email.header import Header
+from email import encoders as Encoders
 
 try:
     from google.appengine.api import mail as google_mail
