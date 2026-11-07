@@ -1,7 +1,7 @@
 import copy
 import os
+import secrets
 import time
-import uuid
 
 import jwt
 from pydal.objects import FieldVirtual
@@ -972,11 +972,10 @@ class Form(object):
             }
 
     def _make_key(self):
+        key = secrets.token_hex(32)
         if self.csrf_session is not None:
-            key = str(uuid.uuid1())
             self.csrf_session["_formkey"] = key
         else:
-            key = str(uuid.uuid1())
             response.set_cookie("_formkey", key, same_site="Strict")
         return key
 

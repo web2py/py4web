@@ -660,7 +660,8 @@ class Auth(Fixture):
     def store_user_in_session(self, user_id):
         self.session["user"] = {"id": user_id}
         self.session["recent_activity"] = calendar.timegm(time.gmtime())
-        self.session["uuid"] = str(uuid.uuid1())
+        # a new random session id at login (also the server side storage key)
+        self.session["uuid"] = secrets.token_urlsafe(32)
 
     # Methods that do not assume a user
 

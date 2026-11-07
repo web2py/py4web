@@ -2,9 +2,9 @@ import base64
 import hashlib
 import hmac
 import json
+import secrets
 import os
 import time
-import uuid
 
 from py4web import HTTP, request
 from py4web.core import Fixture, Session
@@ -119,7 +119,7 @@ class URLSigner(Fixture):
     def on_request(self, context):
         """Creates the signing key if necessary."""
         if self.session is not None and self.session.get("_signature_key") is None:
-            key = str(uuid.uuid1())
+            key = secrets.token_hex(32)
             self.session["_signature_key"] = key
             # Note that we CANNOT save the key in the URLsigner object,
             # because there is only one object -- it's not thread-local in
@@ -154,7 +154,7 @@ class URLSigner(Fixture):
             assert v not in variables
         h = self.algo(self.get_key())
         ts = "%.3f" % time.time()
-        salt = str(uuid.uuid1())
+        salt = secrets.token_hex(16)
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
         if url_prefix:
             url = url_prefix + url

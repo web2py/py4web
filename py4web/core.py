@@ -839,6 +839,7 @@ class Session(Fixture):
         self_local = self.local
         self_local.changed = False
         self_local.data = {}
+        self_local.loaded_uuid = None
         self_local.cookie_name = params.name.format(app_name=app_name)
         self_local.secure = request.url.startswith("https")
         # The session token is read from the cookie or, for clients that do not
@@ -886,6 +887,7 @@ class Session(Fixture):
             )
         ):
             self_local.data.update(data)  # the take the loaded data
+            self_local.loaded_uuid = data.get("uuid")
 
     def save(self):
         """Saves the session"""
@@ -899,6 +901,12 @@ class Session(Fixture):
         self_local.data["cookie_name"] = self_local.cookie_name
         if params.storage:
             cookie_data = self_local.data["uuid"]
+            # the session id changed (login, logout/clear): make sure the old
+            # id stops working, else a stolen or fixated id would stay valid
+            old_uuid = getattr(self_local, "loaded_uuid", None)
+            if old_uuid and old_uuid != cookie_data:
+                params.storage.set(old_uuid, "{}", params.expiration)
+                self_local.loaded_uuid = cookie_data
             params.storage.set(
                 cookie_data, json.dumps(self_local.data), params.expiration
             )

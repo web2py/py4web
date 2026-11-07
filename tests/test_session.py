@@ -138,6 +138,36 @@ class TestSession(unittest.TestCase):
         with request_context(session):
             self.assertEqual(session.get("key"), None)
 
+    def test_session_rotation_invalidates_old_id(self):
+        request.app_name = "myapp"
+        db = DAL("sqlite:memory")
+
+        def cookie():
+            a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split(
+                "=", 1
+            )
+            return a, unquote(b)
+
+        session = Session(secret=secret1, expiration=10, storage=DBStore(db))
+        with request_context(session):
+            session["key"] = "value"
+        name, old_id = cookie()
+        # e.g. login: the session id is rotated
+        request.cookies[name] = old_id
+        with request_context(session):
+            self.assertEqual(session.get("key"), "value")
+            session["uuid"] = "new-session-id"
+        self.assertEqual(cookie()[1], "new-session-id")
+        # the old id no longer loads the session
+        request.cookies[name] = old_id
+        with request_context(session):
+            self.assertEqual(session.get("key"), None)
+        # the new one does
+        request.cookies[name] = "new-session-id"
+        with request_context(session):
+            self.assertEqual(session.get("key"), "value")
+        request.cookies.clear()
+
     def test_session_in_memcache(self):
         memcache_process = None
         try:
