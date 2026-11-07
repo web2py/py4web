@@ -2,7 +2,6 @@ import base64
 import calendar
 import copy
 import hashlib
-import random
 import os
 import re
 import secrets
@@ -74,6 +73,59 @@ def prevent_open_redirect(url):
     ):
         return url
     return None
+
+
+class AttemptCounter:
+    """Counts attempts server side, in the auth_attempt table
+
+    Used to limit two factor guesses and to throttle logins. Counters cannot
+    live in the session: with the default cookie session a client can replay
+    an older cookie and reset them. Keys are stored hashed. If the table is not
+    defined counting is disabled.
+    """
+
+    def __init__(self, db, tablename="auth_attempt"):
+        self.db = db
+        self.tablename = tablename
+
+    @property
+    def table(self):
+        if self.db and self.tablename in self.db.tables:
+            return self.db[self.tablename]
+        return None
+
+    @staticmethod
+    def _hash(key):
+        return hashlib.sha256(str(key).encode("utf8")).hexdigest()
+
+    def count(self, key):
+        """number of attempts for key in the current window"""
+        table = self.table
+        if table is None:
+            return 0
+        row = table(key_hash=self._hash(key))
+        if not row or row.expires_on < time.time():
+            return 0
+        return row.counter or 0
+
+    def hit(self, key, window):
+        """records an attempt, returns the number of attempts in the window"""
+        table = self.table
+        if table is None:
+            return 0
+        now = time.time()
+        self.db(table.expires_on < now).delete()
+        row = table(key_hash=self._hash(key))
+        if not row:
+            table.insert(key_hash=self._hash(key), counter=1, expires_on=now + window)
+            return 1
+        row.update_record(counter=(row.counter or 0) + 1)
+        return row.counter
+
+    def reset(self, key):
+        table = self.table
+        if table is not None:
+            self.db(table.key_hash == self._hash(key)).delete()
 
 
 class AuthEnforcer(Fixture):
@@ -218,6 +270,7 @@ class Auth(Fixture):
             "two_factor": "Verification code does not match",
             "two_factor_max_tries": "Two factor max tries exceeded",
             "two_factor_required": "Two factor authentication required",
+            "two_factor_expired": "Verification code expired",
         },
     }
 
@@ -282,6 +335,7 @@ class Auth(Fixture):
             two_factor_send=two_factor_send,
             two_factor_validate=two_factor_validate,
             two_factor_tries=3,
+            two_factor_lifespan=300,  # seconds a two factor code is valid
             auth_enforcer=None,
             template_args=template_args or {},
             # trusted base url (e.g. "https://example.com") used for links
@@ -319,6 +373,8 @@ class Auth(Fixture):
         self.extra_auth_user_fields = extra_fields or []
         self.extra_form_fields = extra_form_fields or {}
         self._link = None
+        # server side counters (two factor tries, login throttling)
+        self.attempts = AttemptCounter(db)
         if db and define_tables:
             self.define_tables()
         # these are plugins like SAML, OAuth2, etc which delegate authentication
@@ -492,6 +548,13 @@ class Auth(Fixture):
                 "auth_user",
                 *(auth_fields + self.extra_auth_user_fields),
                 format=lambda u: f"{u.first_name} {u.last_name}",
+            )
+        if "auth_attempt" not in db.tables:
+            db.define_table(
+                "auth_attempt",
+                Field("key_hash", length=64),
+                Field("counter", "integer", default=0),
+                Field("expires_on", "double"),
             )
 
     @property
@@ -1926,7 +1989,13 @@ class DefaultAuthForms:
     def _reset_two_factor(self):
         self.auth.session["auth.2fa_user"] = None
         self.auth.session["auth.2fa_code"] = None
+        self.auth.session["auth.2fa_expires"] = None
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+
+    def _abort_two_factor(self, message, next_url):
+        self._reset_two_factor()
+        self._set_flash(message)
+        redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
 
     def two_factor(self):
         if (self.auth.param.two_factor_send is None) and (
@@ -1941,6 +2010,11 @@ class DefaultAuthForms:
             redirect(URL("index"))
 
         user = self.auth.db.auth_user(user_id)
+        # the number of tries is counted server side: a counter in the session
+        # could be reset by replaying an older session cookie
+        attempts_key = f"2fa:{user_id}"
+        max_tries = self.auth.param.two_factor_tries
+        lifespan = self.auth.param.two_factor_lifespan
         code = self.auth.session.get("auth.2fa_code")
         if (not code) and (not self.auth.param.two_factor_send is None):
             # generate and send the code
@@ -1948,9 +2022,21 @@ class DefaultAuthForms:
             code = self.auth.param.two_factor_send(user, code)
             # store code in session
             self.auth.session["auth.2fa_code"] = code
-            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+            self.auth.session["auth.2fa_expires"] = time.time() + lifespan
+            self.auth.session["auth.2fa_tries_left"] = max_tries
+            self.auth.attempts.reset(attempts_key)
         elif self.auth.session.get("auth.2fa_tries_left") is None:
-            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+            self.auth.session["auth.2fa_tries_left"] = max_tries
+
+        expires = self.auth.session.get("auth.2fa_expires")
+        if code and expires and time.time() > expires:
+            self._abort_two_factor(
+                self.auth.param.messages["errors"]["two_factor_expired"], next_url
+            )
+        if self.auth.attempts.count(attempts_key) >= max_tries:
+            self._abort_two_factor(
+                self.auth.param.messages["errors"]["two_factor_max_tries"], next_url
+            )
 
         def two_factor_validate(form):
             # external validation outcome
@@ -1989,6 +2075,7 @@ class DefaultAuthForms:
         if form.accepted:
             # reset the 2f session
             self._reset_two_factor()
+            self.auth.attempts.reset(attempts_key)
             # store user in session
             self.auth.store_user_in_session(user["id"])
             # login user
@@ -1996,15 +2083,15 @@ class DefaultAuthForms:
             # redirect after login
             redirect(next_url)
         elif form.errors:
-            # decrease the retries count
-            self.auth.session["auth.2fa_tries_left"] -= 1
+            # count the failed try server side
+            tries = self.auth.attempts.hit(attempts_key, lifespan)
+            self.auth.session["auth.2fa_tries_left"] = max(max_tries - tries, 0)
             # if 0 retries available, reset, and redirect to login
-            if self.auth.session.get("auth.2fa_tries_left") < 1:
-                self._reset_two_factor()
-                self._set_flash(
-                    self.auth.param.messages["errors"]["two_factor_max_tries"]
+            if tries >= max_tries:
+                self._abort_two_factor(
+                    self.auth.param.messages["errors"]["two_factor_max_tries"],
+                    next_url,
                 )
-                redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):

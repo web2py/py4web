@@ -218,5 +218,63 @@ class TestSSO(AuthTestBase):
         self.assertIsNone(self.auth.user_id)
 
 
+class TestTwoFactorServerSide(AuthTestBase):
+    def setUp(self):
+        super().setUp()
+        self.auth.param.two_factor_send = lambda user, code: code
+        self.register()
+        self.verify(1)
+
+    def start(self):
+        self.on_request()
+        self.session["auth.2fa_user"] = 1
+        self.session["auth.2fa_next_url"] = "/app/index"
+        request.environ["REQUEST_METHOD"] = "GET"
+        request.environ["wsgi.input"] = io.BytesIO()
+
+    def two_factor(self):
+        response.headers.pop("Location", None)
+        with self.assertRaises(HTTP) as cm:
+            self.auth.form_source.two_factor()
+        return cm.exception.status, response.headers.get("Location")
+
+    def test_counter(self):
+        counter = self.auth.attempts
+        self.assertEqual(counter.count("k"), 0)
+        self.assertEqual(counter.hit("k", 60), 1)
+        self.assertEqual(counter.hit("k", 60), 2)
+        self.assertEqual(counter.count("k"), 2)
+        self.assertEqual(counter.hit("other", 60), 1)
+        counter.reset("k")
+        self.assertEqual(counter.count("k"), 0)
+        # expired entries do not count
+        counter.hit("old", -1)
+        self.assertEqual(counter.count("old"), 0)
+        # keys are not stored in clear
+        self.assertIsNone(self.db.auth_attempt(key_hash="k"))
+
+    def test_max_tries_enforced_server_side(self):
+        self.start()
+        self.auth.form_source.two_factor()  # generates the code, renders form
+        self.assertTrue(self.session.get("auth.2fa_code"))
+        for _ in range(self.auth.param.two_factor_tries):
+            self.auth.attempts.hit("2fa:1", 300)
+        # even with a session claiming tries are left (replayed cookie)
+        self.session["auth.2fa_tries_left"] = 3
+        status, location = self.two_factor()
+        self.assertEqual(status, 303)
+        self.assertIn("/auth/login", location)
+        self.assertIsNone(self.session.get("auth.2fa_user"))
+
+    def test_code_expires(self):
+        self.start()
+        self.auth.form_source.two_factor()
+        self.session["auth.2fa_expires"] = 1
+        status, location = self.two_factor()
+        self.assertEqual(status, 303)
+        self.assertIn("/auth/login", location)
+        self.assertIsNone(self.session.get("auth.2fa_code"))
+
+
 if __name__ == "__main__":
     unittest.main()
