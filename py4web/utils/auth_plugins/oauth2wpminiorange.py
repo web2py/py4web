@@ -129,8 +129,9 @@ class OAuth2WPMiniorange(OAuth2):
             if "id" not in data:
                 data["id"] = data.get("username") or data.get("email")
         user_id = data.get("id")
-        auth.store_user_in_session(user_id)
-        redirect(URL("index"))
+        next = auth.session.get("_next")
+        auth.session["_next"] = None
+        auth.complete_login(user_id, next)
 
     # -# This method is an exact copy of the one from original class
     # without this subsequent error is raised from the jwt library (don't know why)

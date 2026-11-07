@@ -1,4 +1,4 @@
-import random
+import secrets
 import string
 import urllib
 
@@ -20,6 +20,13 @@ class UsernamePassword:
         raise NotImplementedError
 
 
+def safe_next(url):
+    """a local url to go to after login (prevents open redirects)"""
+    from py4web.utils.auth import prevent_open_redirect
+
+    return prevent_open_redirect(url) or URL("index")
+
+
 class SSO(object):
     name = "undefined"
     maps = {}
@@ -35,7 +42,7 @@ class SSO(object):
 
     def handle_request(self, auth, path, get_vars, post_vars):
         if path == "login":
-            auth.session["_next"] = request.query.get("next") or URL("index")
+            auth.session["_next"] = safe_next(request.query.get("next"))
             redirect(self.get_login_url())
         elif path == "callback":
             self._handle_callback(auth, get_vars)
@@ -85,13 +92,10 @@ class SSO(object):
                     data.get("sso_id") or data.get("username") or data.get("email")
                 )
         user_id = data.get("id")
-        auth.store_user_in_session(user_id)
-        if "_next" in auth.session:
-            next = auth.session.get("_next")
-            del auth.session["_next"]
-        else:
-            next = URL("index")
-        redirect(next)
+        next = auth.session.get("_next")
+        auth.session["_next"] = None
+        # checks blocked/pending accounts, two factor, rotates the session
+        auth.complete_login(user_id, next)
 
     @staticmethod
     def _build_url(base, data):
@@ -136,7 +140,27 @@ class OAuth2(SSO):
         size=18,
         chars=string.ascii_uppercase + string.digits + string.ascii_lowercase,
     ):
-        return "".join(random.choice(chars) for _ in range(size))
+        return "".join(secrets.choice(chars) for _ in range(max(size, 32)))
+
+    def handle_request(self, auth, path, get_vars, post_vars):
+        """stores a random state in session at login and checks it on
+        callback, else an attacker could log the victim into the attacker's
+        account by sending them to the callback with the attacker's code"""
+        if path == "login":
+            auth.session["_next"] = safe_next(request.query.get("next"))
+            state = self.state_generator()
+            auth.session["_oauth2_state"] = state
+            redirect(self.get_login_url(state=state))
+        elif path == "callback":
+            expected = auth.session.get("_oauth2_state")
+            auth.session["_oauth2_state"] = None
+            if not expected or not secrets.compare_digest(
+                str(get_vars.get("state") or ""), expected
+            ):
+                raise HTTP(401, "Invalid state")
+            self._handle_callback(auth, get_vars)
+        else:
+            raise HTTP(404)
 
     def get_login_url(self, state=None, next=None):
         callback_url = self.parameters.get("callback_url")
@@ -152,7 +176,7 @@ class OAuth2(SSO):
             client_id=self.parameters.get("client_id"),
         )
         scope = self.parameters.get("scope")
-        state = self.state_generator()
+        state = state or self.state_generator()
         if scope:
             data["scope"] = scope
             data["include_granted_scopes"] = "true"

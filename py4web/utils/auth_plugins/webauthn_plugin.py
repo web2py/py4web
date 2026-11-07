@@ -21,6 +21,7 @@ from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
     AuthenticatorAttachment,
     PublicKeyCredentialDescriptor,
+    UserVerificationRequirement,
 )
 
 log = logging.getLogger(__name__)
@@ -150,7 +151,8 @@ class WebAuthnPlugin:
         creds = self.db(self.db.webauthn_credentials.user_id == user.id).select()
         if not creds: raise HTTP(404, "Invaid authentication method")
         allow_credentials = [PublicKeyCredentialDescriptor(id=bytes.fromhex(c.credential_id)) for c in creds]
-        options = generate_authentication_options(rp_id=self.rp_id, allow_credentials=allow_credentials)
+        # passwordless login: the authenticator must verify the user (PIN/biometric)
+        options = generate_authentication_options(rp_id=self.rp_id, allow_credentials=allow_credentials, user_verification=UserVerificationRequirement.REQUIRED)
         self.session["webauthn_challenge"] = bytes_to_urlsafe_b64(options.challenge)
         self.session["webauthn_user_id"] = user.id
         response.headers["Content-Type"] = "application/json"
@@ -160,6 +162,9 @@ class WebAuthnPlugin:
         credential = request.json
         challenge_b64 = self.session.get("webauthn_challenge")
         user_id = self.session.get("webauthn_user_id")
+        # the challenge is single use, even if verification fails
+        self.session["webauthn_challenge"] = None
+        self.session["webauthn_user_id"] = None
         if not all([credential, challenge_b64, user_id]): raise HTTP(400)
         challenge = urlsafe_b64_to_bytes(challenge_b64)
         cred_id_from_client_bytes = base64url_to_bytes(credential["id"])
@@ -167,11 +172,13 @@ class WebAuthnPlugin:
         if not cred_in_db: raise HTTP(404)
         try:
             public_key_bytes = bytes.fromhex(cred_in_db.public_key)
-            verification = verify_authentication_response(credential=credential, expected_challenge=challenge, expected_origin=self.origin, expected_rp_id=self.rp_id, credential_public_key=public_key_bytes, credential_current_sign_count=cred_in_db.sign_count)
-            cred_in_db.update_record(sign_count=verification.new_sign_count)
-            self.auth.store_user_in_session(user_id)
-            del self.session["webauthn_challenge"]
-            del self.session["webauthn_user_id"]
-            return {"verified": True, "redirect_url": URL("index")}
+            verification = verify_authentication_response(credential=credential, expected_challenge=challenge, expected_origin=self.origin, expected_rp_id=self.rp_id, credential_public_key=public_key_bytes, credential_current_sign_count=cred_in_db.sign_count, require_user_verification=True)
         except Exception as e:
-            log.error(f"Error en login WebAuthn: {e}"); raise HTTP(403, f"Invalid authentication response")
+            log.error(f"Error en login WebAuthn: {e}"); raise HTTP(403, "Invalid authentication response")
+        cred_in_db.update_record(sign_count=verification.new_sign_count)
+        user = self.db.auth_user(user_id)
+        error = self.auth.check_login_blockers(user) if user else "invalid user"
+        if error: raise HTTP(403, error)
+        # stores only the id (not the password hash etc.) and rotates the session
+        self.auth.store_user_in_session(user.id)
+        return {"verified": True, "redirect_url": URL("index")}

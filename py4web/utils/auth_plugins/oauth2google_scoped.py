@@ -5,11 +5,8 @@
 # the user).
 # See https://developers.google.com/identity/protocols/oauth2/web-server#python
 
-import calendar
 import json
 import re
-import time
-import uuid
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -18,7 +15,7 @@ from googleapiclient.discovery import build
 from pydal import Field
 
 from py4web import HTTP, URL, redirect, request, response
-from py4web.utils.auth import REGEX_APPJSON, AuthEnforcer
+from py4web.utils.auth import REGEX_APPJSON, AuthEnforcer, prevent_open_redirect
 
 
 class AuthEnforcerGoogleScoped(AuthEnforcer):
@@ -162,7 +159,9 @@ class OAuth2GoogleScoped(object):
     def handle_request(self, auth, path, get_vars, post_vars):
         """Handles the login request or the callback."""
         if path == "login":
-            auth.session["_next"] = request.query.get("next") or URL("index")
+            auth.session["_next"] = prevent_open_redirect(
+                request.query.get("next")
+            ) or URL("index")
             redirect(self._get_login_url(auth))
         elif path == "callback":
             self._handle_callback(auth, get_vars)
@@ -174,7 +173,7 @@ class OAuth2GoogleScoped(object):
                     self._db(self._db.auth_credentials.email == email).delete()
                     self._db.commit()
             auth.session.clear()
-            next = request.query.get("next") or URL("index")
+            next = prevent_open_redirect(request.query.get("next")) or URL("index")
             redirect(next)
         else:
             raise HTTP(404)
@@ -200,14 +199,15 @@ class OAuth2GoogleScoped(object):
 
     def _handle_callback(self, auth, get_vars):
         # Builds a flow again, this time with the state in it.
-        state = auth.session["oauth2googlescoped:state"]
+        state = auth.session.get("oauth2googlescoped:state")
+        auth.session["oauth2googlescoped:state"] = None
+        # the state must exist (set at login) and match, else login CSRF
+        if not state or get_vars.get("state", None) != state:
+            raise HTTP(401, "Invalid state")
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             self._secrets_file, scopes=self._scopes, state=state
         )
         flow.redirect_uri = URL(self.callback_url, scheme=True)
-        # Use the authorization server's response to fetch the OAuth 2.0 tokens.
-        if state and get_vars.get("state", None) != state:
-            raise HTTP(401, "Invalid state")
         error = get_vars.get("error")
         if error:
             if isinstance(error, str):
@@ -257,18 +257,12 @@ class OAuth2GoogleScoped(object):
             user = dict(user_info)
             if "id" not in user:
                 user["id"] = user.get("username") or user.get("email")
-        # Stores the user in the session.  We do it here, so we store
-        # the complete details, and not just the user_id.
-        auth.session["user"] = user
-        auth.session["recent_activity"] = calendar.timegm(time.gmtime())
-        auth.session["uuid"] = str(uuid.uuid1())
-        # Finally, redirects to next.
-        if "_next" in auth.session:
-            next = auth.session.get("_next")
-            del auth.session["_next"]
-        else:
-            next = URL("index")
-        redirect(next)
+        # Stores the user in the session (with the complete details, not just
+        # the user_id) after checking blocked/pending accounts and two factor,
+        # then redirects to next.
+        next = auth.session.get("_next")
+        auth.session["_next"] = None
+        auth.complete_login(user["id"], next, extra_user_info=user)
 
     @staticmethod
     def credentials_to_dict(credentials):

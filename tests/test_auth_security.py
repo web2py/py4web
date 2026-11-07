@@ -3,8 +3,9 @@ import os
 import unittest
 import uuid
 
-from py4web.core import DAL, Fixture, Session, bottle, request, safely
+from py4web.core import DAL, HTTP, Fixture, Session, bottle, request, response, safely
 from py4web.utils.auth import Auth, AuthAPI
+from py4web.utils.auth_plugins import OAuth2
 
 SECRET = str(uuid.uuid4())
 
@@ -151,6 +152,70 @@ class TestApiLoginTwoFactor(AuthTestBase):
         )
         self.assertEqual(res["status"], "success")
         self.assertEqual(self.auth.user_id, 1)
+
+
+class FakeOAuth2(OAuth2):
+    name = "fake"
+    login_url = "https://idp.example.com/authorize"
+    maps = {"sso_id": "sub", "email": "email", "first_name": "given_name",
+            "last_name": "family_name"}
+
+    def callback(self, query):
+        return {"sub": "42", "email": "sso@example.com", "given_name": "S",
+                "family_name": "O"}
+
+
+class TestSSO(AuthTestBase):
+    def setUp(self):
+        super().setUp()
+        self.plugin = FakeOAuth2("id", "secret", "auth/plugin/fake/callback")
+
+    def call(self, path, query):
+        request.environ["ombott.request.query"] = query
+        response.headers.pop("Location", None)
+        with self.assertRaises(HTTP) as cm:
+            self.plugin.handle_request(self.auth, path, query, {})
+        self.location = response.headers.get("Location")
+        return cm.exception
+
+    def test_state_is_stored_and_checked(self):
+        self.on_request()
+        res = self.call("login", {"next": "https://evil.com"})
+        self.assertEqual(res.status, 303)
+        state = self.session.get("_oauth2_state")
+        self.assertTrue(state and len(state) >= 32)
+        self.assertIn("state=" + state, self.location)
+        # next is not an open redirect
+        self.assertNotIn("evil", self.session.get("_next"))
+        # wrong state is rejected (login CSRF)
+        res = self.call("callback", {"code": "x", "state": "wrong"})
+        self.assertEqual(res.status, 401)
+        self.assertIsNone(self.auth.user_id)
+
+    def test_callback_without_login_is_rejected(self):
+        self.on_request()
+        res = self.call("callback", {"code": "attacker-code", "state": ""})
+        self.assertEqual(res.status, 401)
+
+    def test_valid_callback_logs_in(self):
+        self.on_request()
+        self.call("login", {"next": "/app/page"})
+        state = self.session.get("_oauth2_state")
+        res = self.call("callback", {"code": "x", "state": state})
+        self.assertEqual(res.status, 303)
+        self.assertEqual(self.location, "/app/page")
+        self.assertTrue(self.auth.user_id)
+
+    def test_blocked_account_cannot_sso(self):
+        self.on_request()
+        self.call("login", {})
+        state = self.session.get("_oauth2_state")
+        self.db.auth_user.insert(
+            email="sso@example.com", sso_id="fake:42", action_token="account-blocked"
+        )
+        res = self.call("callback", {"code": "x", "state": state})
+        self.assertEqual(res.status, 403)
+        self.assertIsNone(self.auth.user_id)
 
 
 if __name__ == "__main__":

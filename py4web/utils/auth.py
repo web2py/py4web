@@ -768,18 +768,51 @@ class Auth(Fixture):
 
         # then check for possible login blockers
         if not user:
-            error = "invalid_credentials"
-        elif (user.get("action_token") or "").startswith("pending-registration:"):
-            error = "registration_is_pending"
-        elif user.get("action_token") == "account-blocked":
-            error = "account_is_blocked"
-        elif user.get("action_token") == "pending-approval":
-            error = "account_needs_to_be_approved"
+            error = self.param.messages["errors"].get("invalid_credentials")
+        else:
+            error = self.check_login_blockers(user)
 
         # return the error or the user
         if error:
-            return (None, self.param.messages["errors"].get(error, error))
+            return (None, error)
         return (user, None)
+
+    def check_login_blockers(self, user):
+        """returns an error message if this user is not allowed to log in"""
+        token = user.get("action_token") or ""
+        if token.startswith("pending-registration:"):
+            error = "registration_is_pending"
+        elif token == "account-blocked":
+            error = "account_is_blocked"
+        elif token == "pending-approval":
+            error = "account_needs_to_be_approved"
+        else:
+            return None
+        return self.param.messages["errors"].get(error, error)
+
+    def complete_login(self, user_id, next_url=None, extra_user_info=None):
+        """final step shared by redirect based logins (SSO, OAuth2, ...)
+
+        checks that the account can log in, hands over to two factor
+        authentication if configured, else stores the user in session
+        (rotating the session uuid) and redirects to next_url
+        """
+        next_url = prevent_open_redirect(next_url) or URL("index")
+        if self.db:
+            user = self.db.auth_user(user_id)
+            if not user:
+                raise HTTP(401)
+            error = self.check_login_blockers(user)
+            if error:
+                raise HTTP(403, error)
+            if self.requires_two_factor(user):
+                redirect(self.start_two_factor(user, next_url))
+        self.store_user_in_session(user_id)
+        if extra_user_info:
+            self.session["user"].update(
+                {k: v for k, v in extra_user_info.items() if k != "id"}
+            )
+        redirect(next_url)
 
     def request_reset_password(self, email, send=True, next="", route=None):
         """Send a mail with token for changing user's password after the user's parameters are entered
@@ -1438,8 +1471,12 @@ class AuthAPI:
                     auth.logger.debug(
                         f"AuthAPI.login: User after get_or_register_user: {user}"
                     )
-                    if auth.requires_two_factor(user):
-                        return AuthAPI._two_factor_required(auth, user, payload)
+                    row = auth.db.auth_user(user["id"])
+                    error = auth.check_login_blockers(row)
+                    if error:
+                        return auth._error(error)
+                    if auth.requires_two_factor(row):
+                        return AuthAPI._two_factor_required(auth, row, payload)
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
