@@ -635,12 +635,20 @@ class Grid:
         if not self.tablename:
             raise HTTP(400)
 
-        # SECURITY: if the record does not exist or does not match query, than we are not allowed
         self.table = db[self.tablename]
 
         # if we have a record id retrieve the record
+        # SECURITY: the record must also match the grid query, else a user could
+        # read/edit/delete any record of the table by tampering with the id
         if self.record_id:
-            self.record = self.table(self.record_id)
+            record_id = safe_int(self.record_id, default=None)
+            self.record = None
+            if record_id is not None:
+                self.record = db(
+                    self.query & (self.table._id == record_id)
+                ).select(
+                    self.table.ALL, left=self.param.left, limitby=(0, 1)
+                ).first()
             if not self.record:
                 redirect(URL())
         else:
