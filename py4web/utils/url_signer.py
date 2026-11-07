@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import hmac
 import json
 import os
 import time
@@ -42,7 +43,7 @@ class URLVerifier(Fixture):
                 )
             )
             computed_sig = base64.b16encode(h.digest()).decode("utf-8")
-            if sig != computed_sig:
+            if not hmac.compare_digest(str(sig), computed_sig):
                 raise HTTP(403)
             # We remove the signature, not to pollute the request.
             del request.query["_signature"]

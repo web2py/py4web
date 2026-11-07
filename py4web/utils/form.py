@@ -893,7 +893,7 @@ class Form(object):
         if self.csrf_protection and not self._verify_form(self.post_vars):
             return
 
-        if self.post_vars.get("_delete") and self.dbio:
+        if self.deletable and self.post_vars.get("_delete") and self.dbio:
             self.accepted = True
             self.deleted = True
             self.record.delete_record()

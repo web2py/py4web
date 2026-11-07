@@ -699,7 +699,10 @@ class Grid:
 
     def _handle_mode_delete(self):
         if not self.is_deletable(self.record):
-            self._handle_mode_delete()
+            raise HTTP(
+                403,
+                str(self.T("You do not have access to delete a record from the %s table.")) % self.tablename,
+            )
         self.form = self._make_form(readonly=True)
         if self.param.delete_submit_value:
             self.form.param.submit_value = self.param.delete_submit_value

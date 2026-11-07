@@ -186,7 +186,14 @@ if MODE in ("demo", "readonly", "full"):
                     "big-reference",
                 )
             ]
-            return Grid(table, columns=columns)
+            writable = MODE == "full"
+            return Grid(
+                table,
+                columns=columns,
+                create=writable,
+                editable=writable,
+                deletable=writable,
+            )
 
         grid = action.uses(db)(make_grid)()
         return dict(app_name=app_name, table_name=table_name, grid=grid)
@@ -239,6 +246,8 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def delete_app(name):
         """delete the app"""
+        if MODE != "full":
+            abort(403)
         path = os.path.join(FOLDER, name)
         # Keep backups out of the apps folder so they don't show up in
         # listings or get re-imported by py4web.
@@ -259,6 +268,8 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def new_file(name, file_name):
         """creates a new file"""
+        if MODE != "full":
+            abort(403)
         app_path = os.path.join(FOLDER, name)
         if not os.path.exists(app_path):
             return {"status": "success", "payload": "App does not exist"}
@@ -384,7 +395,7 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
+        tickets = safely(error_logger.database_logger.get) if MODE != "demo" else None
         return {"payload": tickets or [], "status": "success"}
 
     @action("clear")
@@ -643,8 +654,8 @@ if MODE == "full":
 @action.uses(Logged(session), "translations.html")
 def translations(name):
     """renders the translation editor for app ``name``"""
-    folder = os.path.join(FOLDER, name, "translations")
-    if not os.path.exists(folder):
+    folder = os.path.join(safe_join(FOLDER, name) or abort(400), "translations")
+    if MODE == "full" and not os.path.exists(folder):
         os.makedirs(folder)
     return dict(app_name=name)
 
@@ -653,7 +664,7 @@ def translations(name):
 @action.uses(Logged(session))
 def get_translations(name):
     """returns a json with all translations for all languages"""
-    t = Translator(os.path.join(FOLDER, name, "translations"))
+    t = Translator(os.path.join(safe_join(FOLDER, name) or abort(400), "translations"))
     return t.languages
 
 
@@ -661,8 +672,8 @@ def get_translations(name):
 @action.uses(Logged(session))
 def post_translations(name):
     """updates all languages"""
-    folder = os.path.join(FOLDER, name, "translations")
-    if not os.path.exists(folder):
+    folder = os.path.join(safe_join(FOLDER, name) or abort(400), "translations")
+    if MODE == "full" and not os.path.exists(folder):
         os.makedirs(folder)
     t = Translator(folder)
     t.languages = request.json
@@ -674,6 +685,6 @@ def post_translations(name):
 @action.uses(Logged(session))
 def update_translations(name):
     """find all T(...) decorated strings in the code and returns them"""
-    app_folder = os.path.join(FOLDER, name)
+    app_folder = safe_join(FOLDER, name) or abort(400)
     strings = Translator.find_matches(app_folder)
     return {"strings": strings}

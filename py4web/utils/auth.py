@@ -4,6 +4,7 @@ import copy
 import hashlib
 import random
 import re
+import secrets
 import time
 import uuid
 import logging
@@ -63,7 +64,13 @@ def b16d(text):
 
 def prevent_open_redirect(url):
     """url must be a valid absolute URL whithout schema"""
-    if url and url[0] == "/" and "//" not in url:
+    if (
+        url
+        and url[0] == "/"
+        and "//" not in url
+        and "\\" not in url
+        and not any(ord(c) < 32 for c in url)
+    ):
         return url
     return None
 
@@ -819,6 +826,7 @@ class Auth(Fixture):
         if error:
             return {"errors": {"new_password": error}}
         qset.update(password=value)
+        self._consume_reset_token(user["id"])
         return {}
 
     # Methods that assume a user
@@ -981,6 +989,14 @@ class Auth(Fixture):
         query = self.db.auth_user.action_token == "reset-password-request:%s" % token
         query |= self.db.auth_user.action_token == "pending-registration:%s" % token
         return query
+
+    def _consume_reset_token(self, user_id):
+        """invalidates a reset-password token once it has been used"""
+        db = self.db
+        db(
+            (db.auth_user.id == user_id)
+            & db.auth_user.action_token.startswith("reset-password-request:")
+        ).update(action_token=None)
 
     def _error(self, message, code=400):
         return {"status": "error", "message": message, "code": code}
@@ -1837,7 +1853,7 @@ class DefaultAuthForms:
         code = self.auth.session.get("auth.2fa_code")
         if (not code) and (not self.auth.param.two_factor_send is None):
             # generate and send the code
-            code = str(random.randint(100000, 999999))
+            code = str(100000 + secrets.randbelow(900000))
             code = self.auth.param.two_factor_send(user, code)
             # store code in session
             self.auth.session["auth.2fa_code"] = code
@@ -2088,6 +2104,8 @@ class DefaultAuthForms:
             )
             form.errors = res.get("errors", {})
             form.accepted = not form.errors
+            if form.accepted and not check_old_password:
+                self.auth._consume_reset_token(user["id"])
             if not form.accepted:
                 form.vars.clear()
 
