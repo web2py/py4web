@@ -812,6 +812,378 @@ You will also have to register your OAuth2 redirect URI in your created applicat
     Discord username as the first name and discriminator as the last name.
 
 
+Passkey (WebAuthn)
+^^^^^^^^^^^^^^^^^^
+
+To enable passkey login (Touch ID, Face ID, Windows Hello, hardware security keys, and any other authenticator supported by the browser), configure the following:
+
+.. note::
+   The site must be served over HTTPS with a certificate the browser trusts. WebAuthn will not run over plain HTTP (except on ``localhost`` during development).
+
+Once is configured go to: https://yoursite/yourApp/my_keys  to register your keys. 
+
+Install webauth dependencies
+
+.. code:: python
+   pip install webauthn
+
+
+settings.py
+-----------
+
+.. code:: python
+
+    USE_WEBAUTHN = True
+    WEBAUTHN_RP_NAME = "WebAuthn Login"
+    WEBAUTHN_RP_ID = "yourdomain.com"          # may be an internal domain
+    WEBAUTHN_ORIGIN = "https://yourdomain.com"
+
+
+common.py
+---------
+
+.. code:: python
+
+    webauthn = None
+    if settings.USE_WEBAUTHN:
+        # Import the plugin only when the feature is enabled
+        from py4web.utils.auth_plugins.webauthn_plugin import WebAuthnPlugin
+
+        # Create the global plugin instance
+        webauthn = WebAuthnPlugin(
+            auth,                              # the auth object
+            session,                           # the session object
+            rp_name=settings.WEBAUTHN_RP_NAME,
+            rp_id=settings.WEBAUTHN_RP_ID,
+            origin=settings.WEBAUTHN_ORIGIN,
+        )
+
+
+controller.py
+-------------
+
+.. code:: python
+
+    # --- WebAuthn section ---
+
+    @action("auth2/webauthn/<path:path>/", method=["GET", "POST"])
+    @action.uses(session, db)  # No auth required here; the plugin handles it internally
+    def webauthn_router(path=None):
+        """
+        Router for every WebAuthn plugin action.
+        The request is delegated to the plugin instance.
+        """
+        # If the plugin is not enabled in settings, return 404
+        if not webauthn:
+            raise HTTP(404, "WebAuthn is not enabled in this application.")
+
+        try:
+            # The plugin already holds a reference to `auth`, so it knows
+            # whether a user is currently logged in.
+            return webauthn.handle_request(path)
+        except HTTP as e:
+            # Surface HTTP errors raised by the plugin as JSON
+            return {"error": str(e.body)}
+
+    # --- Application pages that use the plugin ---
+
+    @action("auth2/login")
+    @action.uses("webauthn_login.html", session, db, auth, url_signer)
+    def login():
+        my_keys_url = URL('auth2/webauthn', signer=url_signer)
+        # Flag passed to the template so it knows whether to show the WebAuthn UI
+        return dict(use_webauthn=bool(webauthn), my_keys_url=my_keys_url)
+
+    @action("my_keys")
+    @action.uses("my_keys.html", session, db, auth.user)
+    def profile():
+        # Same flag is forwarded to the profile page
+        return dict(use_webauthn=bool(webauthn))
+
+
+Templates
+---------
+
+Two templates are needed. Add them under the ``templates`` folder.
+
+templates/webauthn_login.html
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: html
+
+    [[extend 'layout.html']]
+
+    [[if use_webauthn:]]
+    <hr>
+    <h3>Or sign in with your security key</h3>
+
+    <div class="field">
+        <label class="label">Email</label>
+        <div class="control">
+            <input class="input" type="email" id="webauthn-email" placeholder="Your registered email">
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="control">
+            <button class="button is-link" id="btn-login">Log in with passkey</button>
+        </div>
+    </div>
+
+    <p id="status" class="has-text-info mt-2"></p>
+
+    <script>
+
+        function bufferDecode(value) {
+            const padding = '='.repeat((4 - value.length % 4) % 4);
+            const base64 = (value + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function bufferEncode(value) {
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(value)))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+
+        const loginButton = document.getElementById('btn-login');
+
+        if (loginButton) {
+            loginButton.addEventListener('click', async () => {
+                const statusEl = document.getElementById('status');
+                if (!statusEl) {
+                    console.error("Element #status not found.");
+                    return;
+                }
+
+                statusEl.innerText = "Signing in...";
+                const email = document.getElementById('webauthn-email').value;
+                if (!email) {
+                    statusEl.innerText = "Please enter your email.";
+                    return;
+                }
+
+                const resp = await fetch('[[=URL("auth2/webauthn/login_begin")]]', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email: email})
+                });
+
+                let options;
+                try {
+                    options = await resp.json();
+                } catch (e) {
+                    statusEl.innerText = "Communication error.";
+                    return;
+                }
+
+                if (options.error) {
+                    statusEl.innerText = `Error: ${options.error}`;
+                    return;
+                }
+
+                options.challenge = bufferDecode(options.challenge);
+                if (options.allowCredentials) {
+                    for (let cred of options.allowCredentials) {
+                        cred.id = bufferDecode(cred.id);
+                    }
+                }
+
+                let assertion;
+                try {
+                    statusEl.innerText = "Please touch your security key...";
+                    assertion = await navigator.credentials.get({publicKey: options});
+                } catch (e) {
+                    console.log(e.message)
+                    statusEl.innerText = "Unable to log in.";
+                    return;
+                }
+
+                const assertionForServer = {
+                    id: assertion.id,
+                    rawId: bufferEncode(assertion.rawId),
+                    type: assertion.type,
+                    response: {
+                        authenticatorData: bufferEncode(assertion.response.authenticatorData),
+                        clientDataJSON: bufferEncode(assertion.response.clientDataJSON),
+                        signature: bufferEncode(assertion.response.signature),
+                        userHandle: assertion.response.userHandle ? bufferEncode(assertion.response.userHandle) : null,
+                    },
+                };
+
+                const verificationResp = await fetch('[[=URL("auth2/webauthn/login_complete")]]', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(assertionForServer),
+                });
+
+                const verificationJSON = await verificationResp.json();
+                if (verificationJSON && verificationJSON.verified) {
+                    statusEl.innerText = "🔓 Login successful. Redirecting...";
+                    window.location.href = verificationJSON.redirect_url;
+                } else {
+                    statusEl.innerText = `❌ Could not sign in: ${verificationJSON.error || 'Unknown error'}`;
+                }
+            });
+        }
+    </script>
+    [[pass]]
+
+
+templates/my_keys.html
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: html
+
+    [[extend 'layout.html']]
+
+    <div class="section">
+        <h1 class="title">My Profile</h1>
+        <p>Welcome, [[=globals().get('user',{}).get('email')]]</p>
+
+        <div class="box mt-5">
+            <h2 class="subtitle">Passkeys &mdash; hardware keys</h2>
+            <!-- The management UI is loaded here via fetch -->
+            <div id="webauthn-management">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Script that loads the manager and handles registration/removal -->
+    <script>
+        // --- Helper functions ---
+        function bufferDecode(value) {
+            return Uint8Array.from(atob(value.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+        }
+        function bufferEncode(value) {
+            return btoa(String.fromCharCode.apply(null, new Uint8Array(value)))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+
+        // Note: `statusEl` is looked up on demand inside each handler,
+        // because it is part of the HTML injected by loadManagementUI().
+
+        // --- Management logic (registration and removal) ---
+
+        async function loadManagementUI() {
+            try {
+                const resp = await fetch('[[=URL("auth2/webauthn/manage")]]');
+                if (!resp.ok) throw new Error("Could not load the management UI.");
+
+                const html = await resp.text();
+                document.getElementById('webauthn-management').innerHTML = html;
+
+                const registerBtn = document.getElementById('btn-register');
+                if (registerBtn) {
+                    registerBtn.addEventListener('click', registerCredential);
+                }
+            } catch (e) {
+                document.getElementById('webauthn-management').innerHTML = `<p class="has-text-danger">${e}</p>`;
+            }
+        }
+
+        async function registerCredential() {
+            // Resolved on demand because the element is injected dynamically.
+            const statusEl = document.getElementById('status');
+            if (!statusEl) return;
+
+            statusEl.innerText = "Starting registration...";
+
+            const resp = await fetch('[[=URL("auth2/webauthn/register_begin")]]', { method: 'POST' });
+            let options = await resp.json();
+
+            if (options.error) {
+                statusEl.innerText = `Server error: ${options.error}`;
+                return;
+            }
+
+            options.challenge = bufferDecode(options.challenge);
+            options.user.id = bufferDecode(options.user.id);
+            if (options.excludeCredentials) {
+                for (let cred of options.excludeCredentials) {
+                    cred.id = bufferDecode(cred.id);
+                }
+            }
+
+            let credential;
+            try {
+                credential = await navigator.credentials.create({ publicKey: options });
+            } catch (e) {
+                statusEl.innerText = `Could not create the credential: ${e.message}`;
+                return;
+            }
+
+            const keyName = prompt("Give this new key a name (e.g. 'My home YubiKey'):", "YubiKey");
+            if (!keyName) {
+                statusEl.innerText = "Registration cancelled.";
+                return;
+            }
+
+            const credentialForServer = {
+                id: credential.id, rawId: bufferEncode(credential.rawId), type: credential.type,
+                response: {
+                    attestationObject: bufferEncode(credential.response.attestationObject),
+                    clientDataJSON: bufferEncode(credential.response.clientDataJSON),
+                },
+                name: keyName,
+            };
+
+            const verificationResp = await fetch('[[=URL("auth2/webauthn/register_complete")]]', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(credentialForServer),
+            });
+
+            const verificationJSON = await verificationResp.json();
+            if (verificationJSON && verificationJSON.verified) {
+                statusEl.innerText = "✅ Key successfully registered!";
+                loadManagementUI();
+            } else {
+                statusEl.innerText = `❌ Could not register the key: ${verificationJSON.error || 'Unknown error'}`;
+            }
+        }
+
+        async function deleteCredential(id) {
+            const statusEl = document.getElementById('status');
+            if (!statusEl) return;
+
+            if (!confirm("Are you sure you want to delete this key? This action cannot be undone.")) return;
+
+            statusEl.innerText = "Deleting key...";
+            await fetch('[[=URL("auth2/webauthn/delete")]]', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+            statusEl.innerText = "Key deleted.";
+            loadManagementUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadManagementUI);
+
+    </script>
+
+
+templates/auth.html
+~~~~~~~~~~~~~~~~~~~
+
+Add a button that redirects the user to the passkey login page:
+
+.. code:: html
+
+    [[extend 'layout.html']]
+    [[form.structure.append(A("Log in with passkey", _class="button is-light", _href=URL("auth2/login"))) ]]
+
+    [[=form]]
+
+
 
 Auth API Plugins
 ~~~~~~~~~~~~~~~~
