@@ -59,6 +59,31 @@ class TestSession(unittest.TestCase):
         with request_context(session):
             self.assertEqual(session.get("key"), "value")
 
+    def test_session_token_sources(self):
+        request.app_name = "myapp"
+        session = Session(secret=secret1, expiration=10)
+        with request_context(session):
+            session["key"] = "value"
+        a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
+        token = unquote(b)
+        request.cookies.clear()
+        try:
+            # a token in the request body is ignored (login CSRF)
+            request.environ["REQUEST_METHOD"] = "POST"
+            request.environ["ombott.request.json"] = {"_session_token": token}
+            session = Session(secret=secret1, expiration=10)
+            with request_context(session):
+                self.assertEqual(session.get("key"), None)
+            # a token in the X-Session-Token header is accepted
+            request.environ["HTTP_X_SESSION_TOKEN"] = token
+            session = Session(secret=secret1, expiration=10)
+            with request_context(session):
+                self.assertEqual(session.get("key"), "value")
+        finally:
+            request.environ["REQUEST_METHOD"] = "GET"
+            request.environ.pop("ombott.request.json", None)
+            request.environ.pop("HTTP_X_SESSION_TOKEN", None)
+
     def test_session_as_attributes(self):
         request.app_name = "myapp"
         session = Session(secret=secret1, expiration=10)
