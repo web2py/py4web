@@ -62,6 +62,10 @@ class TestRootAppRoutes(unittest.TestCase):
     APPS = ("rootapp_main", "rootapp_other")
 
     def setUp(self):
+        # routes left behind by tests that load real apps (e.g. test_main
+        # running "py4web run", which mounts _default at /) would collide with
+        # the root level routes registered here, so start from a clean router
+        Reloader.clear_routes()
         self.saved_app_name = action.app_name
         self.env = mock.patch.dict(os.environ, {"PY4WEB_ROOT_APP": "rootapp_main"})
         self.env.start()
