@@ -779,7 +779,11 @@ class Auth(Fixture):
             else db.auth_user.username
         )
         user = db(field == value).select().first()
-        if user and user.action_token != "account-blocked":
+        # only allow a reset on active accounts: issuing a reset token would
+        # otherwise overwrite pending-registration / pending-approval and let
+        # the user log in without verifying the email or being approved
+        current = (user and user.action_token) or ""
+        if user and (not current or current.startswith("reset-password-request:")):
             token = str(uuid.uuid4())
             if next:
                 token += "/" + b16e(next)

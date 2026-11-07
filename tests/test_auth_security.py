@@ -98,5 +98,34 @@ class TestEmailLinks(AuthTestBase):
         )
 
 
+class TestResetPasswordStates(AuthTestBase):
+    def test_reset_does_not_bypass_email_verification(self):
+        self.register()
+        self.on_request()
+        self.api("request_reset_password", {"email": USER["email"]})
+        token = self.db.auth_user[1].action_token
+        self.assertTrue(token.startswith("pending-registration:"), token)
+        self.on_request()
+        res = self.api(
+            "login", {"email": USER["email"], "password": USER["password"]}
+        )
+        self.assertEqual(res.get("message"), "Registration is pending")
+
+    def test_reset_does_not_bypass_approval(self):
+        self.register()
+        self.db(self.db.auth_user.id == 1).update(action_token="pending-approval")
+        self.on_request()
+        self.api("request_reset_password", {"email": USER["email"]})
+        self.assertEqual(self.db.auth_user[1].action_token, "pending-approval")
+
+    def test_reset_allowed_on_active_account(self):
+        self.register()
+        self.verify(1)
+        self.on_request()
+        self.api("request_reset_password", {"email": USER["email"]})
+        token = self.db.auth_user[1].action_token
+        self.assertTrue(token.startswith("reset-password-request:"), token)
+
+
 if __name__ == "__main__":
     unittest.main()
