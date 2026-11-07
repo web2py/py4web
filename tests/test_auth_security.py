@@ -127,5 +127,31 @@ class TestResetPasswordStates(AuthTestBase):
         self.assertTrue(token.startswith("reset-password-request:"), token)
 
 
+class TestApiLoginTwoFactor(AuthTestBase):
+    def test_api_login_requires_two_factor(self):
+        self.auth.param.two_factor_send = lambda user, code: code
+        self.register()
+        self.verify(1)
+        self.on_request()
+        res = self.api(
+            "login", {"email": USER["email"], "password": USER["password"]}
+        )
+        self.assertEqual(res["status"], "error")
+        self.assertEqual(res["code"], 401)
+        self.assertTrue(res["two_factor_url"].endswith("/auth/two_factor"))
+        self.assertIsNone(self.auth.user_id)
+        self.assertEqual(self.session.get("auth.2fa_user"), 1)
+
+    def test_api_login_without_two_factor(self):
+        self.register()
+        self.verify(1)
+        self.on_request()
+        res = self.api(
+            "login", {"email": USER["email"], "password": USER["password"]}
+        )
+        self.assertEqual(res["status"], "success")
+        self.assertEqual(self.auth.user_id, 1)
+
+
 if __name__ == "__main__":
     unittest.main()

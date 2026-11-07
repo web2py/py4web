@@ -217,6 +217,7 @@ class Auth(Fixture):
             "no_post_payload": "no post payload",
             "two_factor": "Verification code does not match",
             "two_factor_max_tries": "Two factor max tries exceeded",
+            "two_factor_required": "Two factor authentication required",
         },
     }
 
@@ -641,6 +642,20 @@ class Auth(Fixture):
             self.password_in_db = False
             self.deny_action("change_password")
             self.deny_action("request_reset_password")
+
+    def requires_two_factor(self, user):
+        """True if this user must complete two factor authentication"""
+        if self.param.two_factor_send is None:
+            return False
+        return not self.param.two_factor_required or bool(
+            self.param.two_factor_required(user, request)
+        )
+
+    def start_two_factor(self, user, next_url=None):
+        """stores the pending 2FA login in session, returns the 2FA page url"""
+        self.session["auth.2fa_user"] = user["id"]
+        self.session["auth.2fa_next_url"] = next_url
+        return URL(f"{self.route}/two_factor")
 
     def store_user_in_session(self, user_id):
         self.session["user"] = {"id": user_id}
@@ -1423,6 +1438,8 @@ class AuthAPI:
                     auth.logger.debug(
                         f"AuthAPI.login: User after get_or_register_user: {user}"
                     )
+                    if auth.requires_two_factor(user):
+                        return AuthAPI._two_factor_required(auth, user, payload)
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
@@ -1436,14 +1453,25 @@ class AuthAPI:
         # Else use normal login
         else:
             user, error = auth.login(username, password)
-            if user:
-                auth.session["user"] = {"id": user.get("id")}
-                auth.session["recent_activity"] = calendar.timegm(time.gmtime())
-                auth.session["uuid"] = str(uuid.uuid1())
+            if user and auth.requires_two_factor(user):
+                data = AuthAPI._two_factor_required(auth, user, payload)
+            elif user:
+                auth.store_user_in_session(user["id"])
                 user = {f.name: user[f.name] for f in auth.db.auth_user if f.readable}
                 data = {"user": user}
             else:
                 data = auth._error(error)
+        return data
+
+    @staticmethod
+    def _two_factor_required(auth, user, payload):
+        """the API cannot complete 2FA: hand over to the two_factor page"""
+        next_url = prevent_open_redirect(payload.get("next"))
+        url = auth.start_two_factor(user, next_url)
+        data = auth._error(
+            auth.param.messages["errors"].get("two_factor_required"), code=401
+        )
+        data["two_factor_url"] = url
         return data
 
     @staticmethod
@@ -1831,14 +1859,8 @@ class DefaultAuthForms:
             #  - two_factor_required() returns True
             #  If two_factor_required exists and returns False,
             #  then this user bypasses two_factor processing
-            if self.auth.param.two_factor_send is not None:
-                if (
-                    not self.auth.param.two_factor_required
-                    or self.auth.param.two_factor_required(user, request)
-                ):
-                    self.auth.session["auth.2fa_user"] = user["id"]
-                    self.auth.session["auth.2fa_next_url"] = next_url
-                    redirect(URL(f"{self.auth.route}/two_factor"))
+            if self.auth.requires_two_factor(user):
+                redirect(self.auth.start_two_factor(user, next_url))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
