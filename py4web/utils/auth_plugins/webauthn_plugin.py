@@ -1,4 +1,4 @@
-# webauthn_plugin.py (VERSIÓN FINAL CON RENDERIZADO Y GUARDADO ROBUSTO)
+# webauthn_plugin.py (Fix WebAuthn login loop after session expiration)
 
 import json
 import logging
@@ -169,8 +169,7 @@ class WebAuthnPlugin:
             public_key_bytes = bytes.fromhex(cred_in_db.public_key)
             verification = verify_authentication_response(credential=credential, expected_challenge=challenge, expected_origin=self.origin, expected_rp_id=self.rp_id, credential_public_key=public_key_bytes, credential_current_sign_count=cred_in_db.sign_count)
             cred_in_db.update_record(sign_count=verification.new_sign_count)
-            user = self.db.auth_user(user_id)
-            self.session["user"] = user.as_dict()
+            self.auth.store_user_in_session(user_id)
             del self.session["webauthn_challenge"]
             del self.session["webauthn_user_id"]
             return {"verified": True, "redirect_url": URL("index")}
