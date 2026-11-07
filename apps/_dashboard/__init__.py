@@ -34,7 +34,16 @@ from py4web import (
     request,
     response,
 )
-from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
+from py4web.core import (
+    DAL,
+    Fixture,
+    Reloader,
+    Session,
+    dumps,
+    error_logger,
+    get_script_name,
+    safely,
+)
 from py4web.utils.factories import ActionFactory
 from py4web.utils.grid import Grid
 
@@ -92,10 +101,7 @@ if MODE in ("demo", "readonly", "full"):
             user_id=(session.get("user") or {}).get("id"),
             # reverse-proxy prefix so client-rendered route links (Vue) point at
             # the externally-visible path, not the raw registered rule
-            script_prefix=(
-                request.environ.get("SCRIPT_NAME", "")
-                or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-            ).rstrip("/"),
+            script_prefix=get_script_name(),
         )
 
     # brute force protection for the dashboard password (per process, per ip)
