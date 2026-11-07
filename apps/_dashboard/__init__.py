@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import traceback
 import uuid
 import zipfile
@@ -96,12 +98,37 @@ if MODE in ("demo", "readonly", "full"):
             ).rstrip("/"),
         )
 
+    # brute force protection for the dashboard password (per process, per ip)
+    LOGIN_MAX_FAILURES = 5
+    LOGIN_WINDOW = 300  # seconds
+    LOGIN_FAILURES = {}  # ip -> (failures, first failure time)
+    LOGIN_LOCK = threading.Lock()
+
+    def _login_failures(ip):
+        with LOGIN_LOCK:
+            count, since = LOGIN_FAILURES.get(ip, (0, 0))
+            if time.time() - since > LOGIN_WINDOW:
+                LOGIN_FAILURES.pop(ip, None)
+                return 0
+            return count
+
+    def _record_login(ip, valid):
+        with LOGIN_LOCK:
+            if valid:
+                LOGIN_FAILURES.pop(ip, None)
+            else:
+                count, since = LOGIN_FAILURES.get(ip, (0, time.time()))
+                LOGIN_FAILURES[ip] = (count + 1, since)
+
     @action("login", method="POST")
     @action.uses(session)
     def login():
         if MODE == "demo":
             valid = True
         else:
+            ip = request.remote_addr or ""
+            if _login_failures(ip) >= LOGIN_MAX_FAILURES:
+                return dict(user=False, mode=MODE, error="too many failed attempts")
             valid = False
             password = request.json.get("password")
             password_file = os.environ.get("PY4WEB_PASSWORD_FILE")
@@ -109,6 +136,7 @@ if MODE in ("demo", "readonly", "full"):
                 with open(password_file, "r") as fp:
                     encrypted_password = fp.read().strip()
                     valid = CRYPT()(password)[0] == encrypted_password
+            _record_login(ip, valid)
         if valid:
             session["user"] = dict(id=1)
         return dict(user=valid, mode=MODE)

@@ -41,6 +41,12 @@ from py4web.utils.param import Param
 
 
 # Allow logger to be set externally before importing this module
+# hash used for new passwords. Existing hashes (which embed their algorithm)
+# keep working and are upgraded to this one at the next successful login.
+# 210000 iterations of pbkdf2-sha512 is the OWASP recommendation.
+PASSWORD_HASH_ALG = "pbkdf2(210000,20,sha512)"
+
+
 def make_default_logger(name="py4web.auth"):
     """Makes a default logger"""
     logger = logging.getLogger(name)
@@ -271,6 +277,7 @@ class Auth(Fixture):
             "two_factor_max_tries": "Two factor max tries exceeded",
             "two_factor_required": "Two factor authentication required",
             "two_factor_expired": "Verification code expired",
+            "too_many_attempts": "Too many failed attempts, try again later",
         },
     }
 
@@ -336,6 +343,10 @@ class Auth(Fixture):
             two_factor_validate=two_factor_validate,
             two_factor_tries=3,
             two_factor_lifespan=300,  # seconds a two factor code is valid
+            # login throttling (needs the auth_attempt table), 0 disables
+            login_max_attempts=10,  # failed logins per account per window
+            login_max_attempts_per_ip=100,  # failed logins per ip per window
+            login_attempts_window=600,  # seconds
             auth_enforcer=None,
             template_args=template_args or {},
             # trusted base url (e.g. "https://example.com") used for links
@@ -503,9 +514,12 @@ class Auth(Fixture):
         if "auth_user" not in db.tables:
             ne = IS_NOT_EMPTY()
             if self.param.password_complexity:
-                requires = [IS_STRONG(**self.param.password_complexity), CRYPT()]
+                requires = [
+                    IS_STRONG(**self.param.password_complexity),
+                    CRYPT(digest_alg=PASSWORD_HASH_ALG),
+                ]
             else:
-                requires = [CRYPT()]
+                requires = [CRYPT(digest_alg=PASSWORD_HASH_ALG)]
             auth_fields = [
                 Field(
                     "email",
@@ -804,6 +818,11 @@ class Auth(Fixture):
         user = None
         error = None
         prevent_db_lookup = False
+
+        # refuse to even check the password after too many failures
+        if self.login_throttled(email):
+            return (None, self.param.messages["errors"].get("too_many_attempts"))
+
         # first check if we have a plugin that can check credentials
 
         for plugin in self.plugins.values():
@@ -853,17 +872,56 @@ class Auth(Fixture):
             user = db(field == value).select().first()
             if user and not (CRYPT()(password)[0] == user.password):
                 user = None
+            elif user:
+                self._upgrade_password_hash(user, password)
 
         # then check for possible login blockers
         if not user:
+            self.record_failed_login(email)
             error = self.param.messages["errors"].get("invalid_credentials")
         else:
+            self.reset_failed_logins(email)
             error = self.check_login_blockers(user)
 
         # return the error or the user
         if error:
             return (None, error)
         return (user, None)
+
+    def _login_attempt_keys(self, username):
+        username = (username or "").lower()
+        try:
+            ip = request.remote_addr or ""
+        except Exception:
+            ip = ""
+        return (
+            (f"login:user:{username}", self.param.login_max_attempts),
+            (f"login:ip:{ip}", self.param.login_max_attempts_per_ip),
+        )
+
+    def login_throttled(self, username):
+        """True if there were too many failed logins for this account or ip"""
+        return any(
+            limit and self.attempts.count(key) >= limit
+            for key, limit in self._login_attempt_keys(username)
+        )
+
+    def record_failed_login(self, username):
+        window = self.param.login_attempts_window
+        for key, limit in self._login_attempt_keys(username):
+            if limit:
+                self.attempts.hit(key, window)
+
+    def reset_failed_logins(self, username):
+        key, _ = self._login_attempt_keys(username)[0]
+        self.attempts.reset(key)
+
+    def _upgrade_password_hash(self, user, password):
+        """re-hash a password stored with an older/weaker algorithm"""
+        stored = user.get("password") or ""
+        if stored.count("$") == 2 and not stored.startswith(PASSWORD_HASH_ALG + "$"):
+            new_hash = str(CRYPT(digest_alg=PASSWORD_HASH_ALG)(password)[0])
+            self.db(self.db.auth_user.id == user["id"]).update(password=new_hash)
 
     def check_login_blockers(self, user):
         """returns an error message if this user is not allowed to log in"""
@@ -1523,10 +1581,18 @@ class AuthAPI:
         if "pam" in auth.plugins or "ldap" in auth.plugins:
             plugin_name = "pam" if "pam" in auth.plugins else "ldap"
             plugin = auth.plugins[plugin_name]
+            if auth.login_throttled(username):
+                return auth._error(
+                    auth.param.messages["errors"].get("too_many_attempts")
+                )
             auth.logger.debug(
                 f"AuthAPI.login: Trying plugin {plugin_name} for user {username}"
             )
             check = plugin.check_credentials(username, password)
+            if check:
+                auth.reset_failed_logins(username)
+            else:
+                auth.record_failed_login(username)
             auth.logger.debug(
                 f"AuthAPI.login: plugin.check_credentials returned {check}"
             )
@@ -1743,7 +1809,7 @@ class DefaultAuthForms:
             if self.auth.password_in_db:
                 self.auth.db.auth_user.password.requires = [
                     IS_STRONG(**self.auth.param.password_complexity),
-                    CRYPT(),
+                    CRYPT(digest_alg=PASSWORD_HASH_ALG),
                 ]
             else:
                 self.auth.param.password_complexity = {"entropy": 0}

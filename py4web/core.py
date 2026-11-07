@@ -2182,7 +2182,8 @@ def set_password(password, password_file):
     """Set administrator's password for the Dashboard"""
     click.echo(f'Storing the hashed password in file "{password_file}"\n')
     with open(password_file, "w", encoding="utf8") as fp:
-        fp.write(str(pydal.validators.CRYPT()(password)[0]))
+        alg = "pbkdf2(210000,20,sha512)"
+        fp.write(str(pydal.validators.CRYPT(digest_alg=alg)(password)[0]))
 
 
 def reinstall_apps(kwargs):

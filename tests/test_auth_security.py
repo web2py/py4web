@@ -300,5 +300,54 @@ class TestTokenUser(AuthTestBase):
         self.assertFalse(self.auth.is_logged_in)
 
 
+class TestLoginHardening(AuthTestBase):
+    def login(self, password, email=USER["email"]):
+        self.on_request()
+        return self.api("login", {"email": email, "password": password})
+
+    def test_new_passwords_use_strong_hash(self):
+        from py4web.utils.auth import PASSWORD_HASH_ALG
+
+        self.register()
+        self.assertTrue(self.db.auth_user[1].password.startswith(PASSWORD_HASH_ALG))
+
+    def test_old_hash_is_upgraded_on_login(self):
+        from pydal.validators import CRYPT
+
+        from py4web.utils.auth import PASSWORD_HASH_ALG
+
+        self.register()
+        self.verify(1)
+        old = str(CRYPT(digest_alg="pbkdf2(1000,20,sha512)")(USER["password"])[0])
+        self.db(self.db.auth_user.id == 1).update(password=old)
+        self.assertEqual(self.login(USER["password"])["status"], "success")
+        self.assertTrue(self.db.auth_user[1].password.startswith(PASSWORD_HASH_ALG))
+        self.assertEqual(self.login(USER["password"])["status"], "success")
+
+    def test_login_throttled_per_account(self):
+        self.register()
+        self.verify(1)
+        limit = self.auth.param.login_max_attempts
+        for _ in range(limit):
+            self.assertEqual(self.login("wrong")["message"], "Invalid Credentials")
+        # even the right password is refused now
+        res = self.login(USER["password"])
+        self.assertEqual(res["message"], "Too many failed attempts, try again later")
+        self.assertIsNone(self.auth.user_id)
+        # other accounts are not affected
+        self.assertEqual(
+            self.login("x", email="other@example.com")["message"], "Invalid Credentials"
+        )
+
+    def test_success_resets_counter(self):
+        self.register()
+        self.verify(1)
+        for _ in range(self.auth.param.login_max_attempts - 1):
+            self.login("wrong")
+        self.assertEqual(self.login(USER["password"])["status"], "success")
+        self.assertEqual(self.login("wrong")["message"], "Invalid Credentials")
+        self.assertEqual(self.login(USER["password"])["status"], "success")
+
+
 if __name__ == "__main__":
     unittest.main()
