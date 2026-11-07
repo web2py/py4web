@@ -5,6 +5,16 @@ from py4web import DAL, HTTP, Field, request, response
 from py4web.utils.grid import Grid
 
 
+def reset_request_cache():
+    """drop what ombott cached from the previous simulated request"""
+    for key in list(request.environ):
+        if key.startswith("ombott.request.") and key not in (
+            "ombott.request.cookies",
+            "ombott.request.ext.app_name",
+        ):
+            del request.environ[key]
+
+
 class GridSecurityTest(unittest.TestCase):
     def setUp(self):
         self.db = DAL("sqlite:memory")
@@ -24,13 +34,7 @@ class GridSecurityTest(unittest.TestCase):
         request.environ["QUERY_STRING"] = "&".join(
             f"{k}={v}" for k, v in query.items()
         )
-        # drop what ombott cached from the previous simulated request
-        for key in list(request.environ):
-            if key.startswith("ombott.request.") and key not in (
-                "ombott.request.cookies",
-                "ombott.request.ext.app_name",
-            ):
-                del request.environ[key]
+        reset_request_cache()
         body = "&".join(f"{k}={v}" for k, v in (post or {}).items()).encode()
         request.environ["wsgi.input"] = io.BytesIO(body)
         request.environ["CONTENT_LENGTH"] = str(len(body))
@@ -81,6 +85,7 @@ class GridSecurityTest(unittest.TestCase):
         from py4web.utils.grid import safe_referrer
 
         request.environ["HTTP_HOST"] = "example.com"
+        reset_request_cache()
         self.assertEqual(safe_referrer("/app/grid?page=2"), "/app/grid?page=2")
         self.assertEqual(
             safe_referrer("http://example.com/app/grid"), "http://example.com/app/grid"
@@ -103,6 +108,27 @@ class GridSecurityTest(unittest.TestCase):
         self.assertIsNone(grid.referrer)
         grid = self.make_grid({"mode": "details", "id": 1, "referrer": "zz"})
         self.assertIsNone(grid.referrer)
+
+    def test_orderby_restricted_to_columns(self):
+        grid = self.make_grid({"orderby": "~thing.name"}, columns=[self.db.thing.name])
+        self.assertEqual([r.name for r in grid.rows], ["mine"])
+        captured = []
+        original = self.db._adapter.select
+
+        def spy(query, fields, attributes):
+            captured.append(attributes.get("orderby"))
+            return original(query, fields, attributes)
+
+        self.db._adapter.select = spy
+        try:
+            self.make_grid({"orderby": "thing.owner"}, columns=[self.db.thing.name])
+            self.make_grid({"orderby": "~thing.name"}, columns=[self.db.thing.name])
+        finally:
+            self.db._adapter.select = original
+        orderbys = [str(o).replace('"', "") for o in captured]
+        # thing.owner is not a grid column: falls back to the default order
+        self.assertEqual(orderbys[0], "None")
+        self.assertEqual(orderbys[1], "thing.name DESC")
 
 
 if __name__ == "__main__":

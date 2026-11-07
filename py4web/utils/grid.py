@@ -895,9 +895,15 @@ class Grid:
 
         select_params["orderby"] = self.param.orderby
         if sort_order:
-            parts = sort_order.lstrip("~").split(".")
-            if len(parts) == 2 and parts[0] in db.tables and parts[1] in db[parts[0]]:
-                orderby = db[parts[0]][parts[1]]
+            # SECURITY: only sort by the columns displayed by this grid, never by
+            # arbitrary table.field (e.g. hidden fields or auth_user.password)
+            sortable = {
+                str(col.orderby): col.orderby
+                for col in self.columns
+                if col.orderby is not None
+            }
+            orderby = sortable.get(sort_order.lstrip("~"))
+            if orderby is not None:
                 if sort_order.startswith("~"):
                     orderby = ~orderby
                 select_params["orderby"] = orderby
