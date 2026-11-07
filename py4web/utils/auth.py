@@ -193,11 +193,11 @@ class AuthEnforcer(Fixture):
         the condition is met"""
         self.auth.on_request(context)
 
-        if "user" not in self.auth.session or "id" not in self.auth.session["user"]:
+        user = self.auth._logged_user()
+        if not user or "id" not in user:
             message = self.auth.param.messages["flash"].get("login-required")
             self.goto_login(message=message)
 
-        user = self.auth.session.get("user")
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
 
@@ -390,6 +390,7 @@ class Auth(Fixture):
 
         # check if a valid user in session
         user = self.session.get("user")
+        self._set_token_user(None)
 
         # else try if this is an API call with token
         is_token = False
@@ -416,8 +417,35 @@ class Auth(Fixture):
                     self.session["recent_activity"] = time_now
             self.session["recent_timestamp"] = utcnow().isoformat()
         else:
-            # handle the case with a token, no checks required
-            self.session["user"] = user
+            # handle the case with a token, no checks required. The user is
+            # only kept for this request, never stored in the session: else
+            # the session cookie would keep working after the token is revoked
+            self._set_token_user(user)
+
+    @property
+    def _token_user_key(self):
+        return f"py4web.auth.token_user.{id(self)}"
+
+    def _set_token_user(self, user):
+        try:
+            request.environ[self._token_user_key] = user
+        except Exception:
+            pass
+
+    def _get_token_user(self):
+        try:
+            return request.environ.get(self._token_user_key)
+        except Exception:
+            return None
+
+    def _logged_user(self):
+        """the user dict for this request: from a token, else from session"""
+        user = self._get_token_user()
+        if user:
+            return user
+        if not self.session.is_valid():
+            return None
+        return self.session.get("user")
 
     def allows(self, action_name):
         """Checks if the provided action is allowed on the Auth object"""
@@ -632,7 +660,7 @@ class Auth(Fixture):
         If session contains only a user['id']
         retrives the other readable user info from auth_user
         """
-        if not self.session.is_valid() or not self.user_id:
+        if not self.user_id:
             return {}
         if self.db:
             user = self.db.auth_user(self.user_id)
@@ -648,15 +676,11 @@ class Auth(Fixture):
 
     @property
     def is_logged_in(self):
-        if not self.session.is_valid():
-            return False
-        return self.session.get("user", {}).get("id", None) is not None
+        return self.user_id is not None
 
     @property
     def user_id(self):
-        if not self.session.is_valid():
-            return None
-        user = self.session.get("user")
+        user = self._logged_user()
         if not user:
             # handles corner case: session=dict(user=None)
             return None

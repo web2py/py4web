@@ -4,7 +4,7 @@ import unittest
 import uuid
 
 from py4web.core import DAL, HTTP, Fixture, Session, bottle, request, response, safely
-from py4web.utils.auth import Auth, AuthAPI
+from py4web.utils.auth import Auth, AuthAPI, SimpleTokenPlugin
 from py4web.utils.auth_plugins import OAuth2
 
 SECRET = str(uuid.uuid4())
@@ -274,6 +274,30 @@ class TestTwoFactorServerSide(AuthTestBase):
         self.assertEqual(status, 303)
         self.assertIn("/auth/login", location)
         self.assertIsNone(self.session.get("auth.2fa_code"))
+
+
+class TestTokenUser(AuthTestBase):
+    def test_token_user_not_stored_in_session(self):
+        plugin = SimpleTokenPlugin(self.auth)
+        self.auth.token_plugins.append(plugin)
+        self.register()
+        self.verify(1)
+        token = plugin.table.insert(user_id=1, description="test")
+        token = plugin.table[token].token
+        request.environ["HTTP_AUTHORIZATION"] = f"Bearer {token}"
+        try:
+            self.on_request()
+            self.assertEqual(self.auth.user_id, 1)
+            self.assertTrue(self.auth.is_logged_in)
+            self.assertEqual(self.auth.get_user()["email"], USER["email"])
+            self.assertIsNone(self.session.get("user"))
+            self.assertFalse(self.session.local.changed)
+        finally:
+            request.environ.pop("HTTP_AUTHORIZATION", None)
+        # without the token the next request is anonymous
+        self.on_request()
+        self.assertIsNone(self.auth.user_id)
+        self.assertFalse(self.auth.is_logged_in)
 
 
 if __name__ == "__main__":
