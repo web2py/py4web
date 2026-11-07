@@ -7,7 +7,7 @@ import copy
 import datetime
 import functools
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
 
 from pydal.objects import Expression, Field, FieldVirtual
 from pydal.querybuilder import QueryBuilder
@@ -50,6 +50,33 @@ def safe_int(text, default):
         return int(text)
     except (ValueError, TypeError):
         return default
+
+
+def safe_referrer(url):
+    """Returns url if it is safe to redirect to / link to, else None
+
+    Accepts a local path ("/app/grid?...") or an http(s) url on the same host
+    as the current request (Grid itself stores request.url). Rejects
+    javascript: and other schemes, other hosts, and "//host" or backslash
+    tricks that browsers treat as other hosts.
+    """
+    if not url or any(ord(c) < 32 for c in url) or "\\" in url:
+        return None
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return None
+    if parts.scheme or parts.netloc:
+        if parts.scheme not in ("http", "https"):
+            return None
+        try:
+            host = urlsplit(request.url).netloc
+        except Exception:
+            return None
+        return url if parts.netloc == host else None
+    if url.startswith("/") and not url.startswith("//"):
+        return url
+    return None
 
 
 def query_join(a, b):
@@ -608,7 +635,11 @@ class Grid:
             mode = "details"
         referrer = query.get("referrer")
         if referrer:
-            referrer = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+            try:
+                referrer = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+            except (ValueError, UnicodeDecodeError):
+                referrer = None
+            referrer = safe_referrer(referrer)
         return {"mode": mode, "record_id": record_id, "referrer": referrer}
 
     def process(self):
@@ -715,6 +746,13 @@ class Grid:
         if self.param.delete_submit_value:
             self.form.param.submit_value = self.param.delete_submit_value
         if request.method == "POST":
+            # SECURITY: the confirmation form carries a signed _formkey, require it
+            # so that a cross-site or forged POST cannot delete records
+            form = self.form
+            if getattr(form, "csrf_protection", False) and not form._verify_form(
+                request.POST
+            ):
+                raise HTTP(403, "invalid form key")
             self.record.delete_record()
         self._handle_redirect_to_referrer(True, True)
 
