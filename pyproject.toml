@@ -7,7 +7,7 @@ name = "py4web"
 authors = [{ name="Massimo Di Pierro", email="massimo.dipierro@gmail.com" },]
 description = "A fast, stable, comprehensive web framework"
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = { file="LICENSE.md" }
 dynamic = ["version"]
 dependencies = [
@@ -18,7 +18,7 @@ dependencies = [
     "cryptography >= 46.0.6",
     "pathspec",
     "portalocker",
-    "tornado >= 6.5.5",
+    "tornado >= 6.6",
     "renoir >= 1.4.0",
     "requests >= 2.33.0",
     "threadsafevariable >= 20250716.1",
@@ -29,7 +29,7 @@ dependencies = [
     "rocket3 >= 20260526.0",
     "yatl >= 20260805.1",
     "pydal >= 20261107.0",
-    "watchgod >= 0.6",
+    "watchfiles >= 1.0",
 ]
 
 [tool.setuptools.dynamic]
