@@ -33,6 +33,7 @@ class OAuth2Discord(OAuth2):
     default_scope = "identify email"
     maps = {
         "email": "email",
+        "email_verified": "verified",
         "sso_id": "id",
         "first_name": "username",
         "last_name": "discriminator",

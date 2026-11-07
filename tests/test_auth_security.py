@@ -218,6 +218,37 @@ class TestSSO(AuthTestBase):
         self.assertIsNone(self.auth.user_id)
 
 
+    def test_sso_links_existing_account_with_verified_email(self):
+        self.on_request()
+        uid = self.db.auth_user.insert(email="sso@example.com", password="x")
+        user = self.auth.get_or_register_user(
+            {"sso_id": "fake:42", "email": "sso@example.com", "email_verified": True}
+        )
+        self.assertEqual(user["id"], uid)
+        self.assertEqual(self.db.auth_user(uid).sso_id, "fake:42")
+        # next login is found by sso_id, still no duplicate
+        user = self.auth.get_or_register_user(
+            {"sso_id": "fake:42", "email": "sso@example.com", "email_verified": True}
+        )
+        self.assertEqual(user["id"], uid)
+        self.assertEqual(self.db(self.db.auth_user).count(), 1)
+
+    def test_sso_does_not_link_unverified_email(self):
+        self.on_request()
+        uid = self.db.auth_user.insert(email="sso@example.com", password="x")
+        with self.assertRaises(HTTP) as cm:
+            self.auth.get_or_register_user(
+                {"sso_id": "fake:42", "email": "sso@example.com"}
+            )
+        self.assertEqual(cm.exception.status, 401)
+        self.assertEqual(self.db(self.db.auth_user).count(), 1)
+        self.assertIsNone(self.db.auth_user(uid).sso_id)
+
+    def test_sso_without_email(self):
+        self.on_request()
+        user = self.auth.get_or_register_user({"sso_id": "fake:42"})
+        self.assertTrue(user["id"])
+
 class TestTwoFactorServerSide(AuthTestBase):
     def setUp(self):
         super().setUp()

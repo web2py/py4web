@@ -1143,7 +1143,19 @@ class Auth(Fixture):
         return row
 
     def get_or_register_user(self, user):
+        """finds (or creates) the auth_user for a user coming from a plugin
+
+        Users are identified by sso_id. If no account has that sso_id yet
+        (the first login with a provider) and the provider asserts that the
+        email is verified (user["email_verified"]), an existing account with
+        the same email is linked to the sso_id instead of creating a duplicate.
+        An unverified email never links to an existing account, else anyone
+        able to claim that email at the provider could take it over.
+        """
         db = self.db
+        user = dict(user)
+        email_verified = user.pop("email_verified", None) in (True, "true", "True", 1)
+        row = None
         # if we have an sso_id we use it to id the user
         if user.get("sso_id"):
             keyid = "sso_id"
@@ -1152,9 +1164,25 @@ class Auth(Fixture):
             )
             # the sso source is always more authoritative so update the record
             if row:
-                row.update_record(**user)
+                row.update_record(**db.auth_user._filter_fields(user))
                 # pass the full user
                 user = row.as_dict()
+            # first login with this provider: link to a verified existing account
+            elif email_verified and user.get("email"):
+                row = self.get_or_delete_existing_unverified_account(user["email"])
+                if row:
+                    # do not steal the account from another provider's sso_id
+                    if not row.sso_id:
+                        row.update_record(sso_id=user["sso_id"])
+                    # the database is more authoritative
+                    user = row.as_dict()
+            elif user.get("email") and self.get_or_delete_existing_unverified_account(
+                user["email"]
+            ):
+                raise HTTP(
+                    401,
+                    body="An account with this email exists, login with your password",
+                )
         # otherwise we id the user via email
         elif user.get("email"):
             keyid = "email"
