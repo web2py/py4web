@@ -281,7 +281,8 @@ if MODE in ("demo", "readonly", "full"):
     def delete_app(name):
         """delete the app"""
         if MODE != "full":
-            abort(403)
+            # demo/readonly: do not write, but do not raise an error either
+            return {"status": "success", "payload": "Read only mode"}
         path = os.path.join(FOLDER, name)
         # Keep backups out of the apps folder so they don't show up in
         # listings or get re-imported by py4web.
@@ -303,7 +304,8 @@ if MODE in ("demo", "readonly", "full"):
     def new_file(name, file_name):
         """creates a new file"""
         if MODE != "full":
-            abort(403)
+            # demo/readonly: do not write, but do not raise an error either
+            return {"status": "success", "payload": "Read only mode"}
         app_path = os.path.join(FOLDER, name)
         if not os.path.exists(app_path):
             return {"status": "success", "payload": "App does not exist"}
@@ -459,7 +461,8 @@ if MODE in ("demo", "readonly", "full"):
         args = path.split("/")
         app_name = args[0]
         if MODE != "full":
-            raise HTTP(403)
+            # demo/readonly: do not expose databases, but do not raise an error
+            return {"status": "success", "databases": []}
         module = Reloader.MODULES.get(app_name)
 
         if not module:
