@@ -2,8 +2,9 @@ import base64
 import calendar
 import copy
 import hashlib
-import random
+import os
 import re
+import secrets
 import time
 import uuid
 import logging
@@ -40,6 +41,12 @@ from py4web.utils.param import Param
 
 
 # Allow logger to be set externally before importing this module
+# hash used for new passwords. Existing hashes (which embed their algorithm)
+# keep working and are upgraded to this one at the next successful login.
+# 210000 iterations of pbkdf2-sha512 is the OWASP recommendation.
+PASSWORD_HASH_ALG = "pbkdf2(210000,20,sha512)"
+
+
 def make_default_logger(name="py4web.auth"):
     """Makes a default logger"""
     logger = logging.getLogger(name)
@@ -63,9 +70,68 @@ def b16d(text):
 
 def prevent_open_redirect(url):
     """url must be a valid absolute URL whithout schema"""
-    if url and url[0] == "/" and "//" not in url:
+    if (
+        url
+        and url[0] == "/"
+        and "//" not in url
+        and "\\" not in url
+        and not any(ord(c) < 32 for c in url)
+    ):
         return url
     return None
+
+
+class AttemptCounter:
+    """Counts attempts server side, in the auth_attempt table
+
+    Used to limit two factor guesses and to throttle logins. Counters cannot
+    live in the session: with the default cookie session a client can replay
+    an older cookie and reset them. Keys are stored hashed. If the table is not
+    defined counting is disabled.
+    """
+
+    def __init__(self, db, tablename="auth_attempt"):
+        self.db = db
+        self.tablename = tablename
+
+    @property
+    def table(self):
+        if self.db and self.tablename in self.db.tables:
+            return self.db[self.tablename]
+        return None
+
+    @staticmethod
+    def _hash(key):
+        return hashlib.sha256(str(key).encode("utf8")).hexdigest()
+
+    def count(self, key):
+        """number of attempts for key in the current window"""
+        table = self.table
+        if table is None:
+            return 0
+        row = table(key_hash=self._hash(key))
+        if not row or row.expires_on < time.time():
+            return 0
+        return row.counter or 0
+
+    def hit(self, key, window):
+        """records an attempt, returns the number of attempts in the window"""
+        table = self.table
+        if table is None:
+            return 0
+        now = time.time()
+        self.db(table.expires_on < now).delete()
+        row = table(key_hash=self._hash(key))
+        if not row:
+            table.insert(key_hash=self._hash(key), counter=1, expires_on=now + window)
+            return 1
+        row.update_record(counter=(row.counter or 0) + 1)
+        return row.counter
+
+    def reset(self, key):
+        table = self.table
+        if table is not None:
+            self.db(table.key_hash == self._hash(key)).delete()
 
 
 class AuthEnforcer(Fixture):
@@ -133,11 +199,11 @@ class AuthEnforcer(Fixture):
         the condition is met"""
         self.auth.on_request(context)
 
-        if "user" not in self.auth.session or "id" not in self.auth.session["user"]:
+        user = self.auth._logged_user()
+        if not user or "id" not in user:
             message = self.auth.param.messages["flash"].get("login-required")
             self.goto_login(message=message)
 
-        user = self.auth.session.get("user")
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized", "User not authorized")
 
@@ -209,6 +275,9 @@ class Auth(Fixture):
             "no_post_payload": "no post payload",
             "two_factor": "Verification code does not match",
             "two_factor_max_tries": "Two factor max tries exceeded",
+            "two_factor_required": "Two factor authentication required",
+            "two_factor_expired": "Verification code expired",
+            "too_many_attempts": "Too many failed attempts, try again later",
         },
     }
 
@@ -246,6 +315,7 @@ class Auth(Fixture):
         template_args=None,
         logger=None,
         T=None,
+        base_url=None,
     ):
         # configuration parameters
         self.param = Param(
@@ -272,8 +342,16 @@ class Auth(Fixture):
             two_factor_send=two_factor_send,
             two_factor_validate=two_factor_validate,
             two_factor_tries=3,
+            two_factor_lifespan=300,  # seconds a two factor code is valid
+            # login throttling (needs the auth_attempt table), 0 disables
+            login_max_attempts=10,  # failed logins per account per window
+            login_max_attempts_per_ip=100,  # failed logins per ip per window
+            login_attempts_window=600,  # seconds
             auth_enforcer=None,
             template_args=template_args or {},
+            # trusted base url (e.g. "https://example.com") used for links
+            # sent by email; when None they are built from the request
+            base_url=base_url or os.environ.get("PY4WEB_BASE_URL"),
         )
 
         # callbacks for forms
@@ -306,6 +384,8 @@ class Auth(Fixture):
         self.extra_auth_user_fields = extra_fields or []
         self.extra_form_fields = extra_form_fields or {}
         self._link = None
+        # server side counters (two factor tries, login throttling)
+        self.attempts = AttemptCounter(db)
         if db and define_tables:
             self.define_tables()
         # these are plugins like SAML, OAuth2, etc which delegate authentication
@@ -321,6 +401,7 @@ class Auth(Fixture):
 
         # check if a valid user in session
         user = self.session.get("user")
+        self._set_token_user(None)
 
         # else try if this is an API call with token
         is_token = False
@@ -347,8 +428,35 @@ class Auth(Fixture):
                     self.session["recent_activity"] = time_now
             self.session["recent_timestamp"] = utcnow().isoformat()
         else:
-            # handle the case with a token, no checks required
-            self.session["user"] = user
+            # handle the case with a token, no checks required. The user is
+            # only kept for this request, never stored in the session: else
+            # the session cookie would keep working after the token is revoked
+            self._set_token_user(user)
+
+    @property
+    def _token_user_key(self):
+        return f"py4web.auth.token_user.{id(self)}"
+
+    def _set_token_user(self, user):
+        try:
+            request.environ[self._token_user_key] = user
+        except Exception:
+            pass
+
+    def _get_token_user(self):
+        try:
+            return request.environ.get(self._token_user_key)
+        except Exception:
+            return None
+
+    def _logged_user(self):
+        """the user dict for this request: from a token, else from session"""
+        user = self._get_token_user()
+        if user:
+            return user
+        if not self.session.is_valid():
+            return None
+        return self.session.get("user")
 
     def allows(self, action_name):
         """Checks if the provided action is allowed on the Auth object"""
@@ -406,9 +514,12 @@ class Auth(Fixture):
         if "auth_user" not in db.tables:
             ne = IS_NOT_EMPTY()
             if self.param.password_complexity:
-                requires = [IS_STRONG(**self.param.password_complexity), CRYPT()]
+                requires = [
+                    IS_STRONG(**self.param.password_complexity),
+                    CRYPT(digest_alg=PASSWORD_HASH_ALG),
+                ]
             else:
-                requires = [CRYPT()]
+                requires = [CRYPT(digest_alg=PASSWORD_HASH_ALG)]
             auth_fields = [
                 Field(
                     "email",
@@ -479,6 +590,13 @@ class Auth(Fixture):
                 "auth_user",
                 *(auth_fields + self.extra_auth_user_fields),
                 format=lambda u: f"{u.first_name} {u.last_name}",
+            )
+        if "auth_attempt" not in db.tables:
+            db.define_table(
+                "auth_attempt",
+                Field("key_hash", length=64),
+                Field("counter", "integer", default=0),
+                Field("expires_on", "double"),
             )
 
     @property
@@ -556,7 +674,7 @@ class Auth(Fixture):
         If session contains only a user['id']
         retrives the other readable user info from auth_user
         """
-        if not self.session.is_valid() or not self.user_id:
+        if not self.user_id:
             return {}
         if self.db:
             user = self.db.auth_user(self.user_id)
@@ -572,15 +690,11 @@ class Auth(Fixture):
 
     @property
     def is_logged_in(self):
-        if not self.session.is_valid():
-            return False
-        return self.session.get("user", {}).get("id", None) is not None
+        return self.user_id is not None
 
     @property
     def user_id(self):
-        if not self.session.is_valid():
-            return None
-        user = self.session.get("user")
+        user = self._logged_user()
         if not user:
             # handles corner case: session=dict(user=None)
             return None
@@ -630,10 +744,25 @@ class Auth(Fixture):
             self.deny_action("change_password")
             self.deny_action("request_reset_password")
 
+    def requires_two_factor(self, user):
+        """True if this user must complete two factor authentication"""
+        if self.param.two_factor_send is None:
+            return False
+        return not self.param.two_factor_required or bool(
+            self.param.two_factor_required(user, request)
+        )
+
+    def start_two_factor(self, user, next_url=None):
+        """stores the pending 2FA login in session, returns the 2FA page url"""
+        self.session["auth.2fa_user"] = user["id"]
+        self.session["auth.2fa_next_url"] = next_url
+        return URL(f"{self.route}/two_factor")
+
     def store_user_in_session(self, user_id):
         self.session["user"] = {"id": user_id}
         self.session["recent_activity"] = calendar.timegm(time.gmtime())
-        self.session["uuid"] = str(uuid.uuid1())
+        # a new random session id at login (also the server side storage key)
+        self.session["uuid"] = secrets.token_urlsafe(32)
 
     # Methods that do not assume a user
 
@@ -663,12 +792,8 @@ class Auth(Fixture):
             fields["action_token"] = "pending-registration:%s" % token
             res = store(fields)
             if send and res.get("id"):
-                self._link = link = URL(
-                    route or self.route,
-                    "verify_email",
-                    vars=dict(token=token),
-                    scheme=True,
-                    use_appname=self.param.use_appname_in_redirects,
+                self._link = link = self._make_email_link(
+                    route or self.route, "verify_email", token
                 )
                 self.send("verify_email", fields, link=link)
         elif self.param.registration_requires_approval:
@@ -693,6 +818,11 @@ class Auth(Fixture):
         user = None
         error = None
         prevent_db_lookup = False
+
+        # refuse to even check the password after too many failures
+        if self.login_throttled(email):
+            return (None, self.param.messages["errors"].get("too_many_attempts"))
+
         # first check if we have a plugin that can check credentials
 
         for plugin in self.plugins.values():
@@ -742,21 +872,93 @@ class Auth(Fixture):
             user = db(field == value).select().first()
             if user and not (CRYPT()(password)[0] == user.password):
                 user = None
+            elif user:
+                self._upgrade_password_hash(user, password)
 
         # then check for possible login blockers
         if not user:
-            error = "invalid_credentials"
-        elif (user.get("action_token") or "").startswith("pending-registration:"):
-            error = "registration_is_pending"
-        elif user.get("action_token") == "account-blocked":
-            error = "account_is_blocked"
-        elif user.get("action_token") == "pending-approval":
-            error = "account_needs_to_be_approved"
+            self.record_failed_login(email)
+            error = self.param.messages["errors"].get("invalid_credentials")
+        else:
+            self.reset_failed_logins(email)
+            error = self.check_login_blockers(user)
 
         # return the error or the user
         if error:
-            return (None, self.param.messages["errors"].get(error, error))
+            return (None, error)
         return (user, None)
+
+    def _login_attempt_keys(self, username):
+        username = (username or "").lower()
+        try:
+            ip = request.remote_addr or ""
+        except Exception:
+            ip = ""
+        return (
+            (f"login:user:{username}", self.param.login_max_attempts),
+            (f"login:ip:{ip}", self.param.login_max_attempts_per_ip),
+        )
+
+    def login_throttled(self, username):
+        """True if there were too many failed logins for this account or ip"""
+        return any(
+            limit and self.attempts.count(key) >= limit
+            for key, limit in self._login_attempt_keys(username)
+        )
+
+    def record_failed_login(self, username):
+        window = self.param.login_attempts_window
+        for key, limit in self._login_attempt_keys(username):
+            if limit:
+                self.attempts.hit(key, window)
+
+    def reset_failed_logins(self, username):
+        key, _ = self._login_attempt_keys(username)[0]
+        self.attempts.reset(key)
+
+    def _upgrade_password_hash(self, user, password):
+        """re-hash a password stored with an older/weaker algorithm"""
+        stored = user.get("password") or ""
+        if stored.count("$") == 2 and not stored.startswith(PASSWORD_HASH_ALG + "$"):
+            new_hash = str(CRYPT(digest_alg=PASSWORD_HASH_ALG)(password)[0])
+            self.db(self.db.auth_user.id == user["id"]).update(password=new_hash)
+
+    def check_login_blockers(self, user):
+        """returns an error message if this user is not allowed to log in"""
+        token = user.get("action_token") or ""
+        if token.startswith("pending-registration:"):
+            error = "registration_is_pending"
+        elif token == "account-blocked":
+            error = "account_is_blocked"
+        elif token == "pending-approval":
+            error = "account_needs_to_be_approved"
+        else:
+            return None
+        return self.param.messages["errors"].get(error, error)
+
+    def complete_login(self, user_id, next_url=None, extra_user_info=None):
+        """final step shared by redirect based logins (SSO, OAuth2, ...)
+
+        checks that the account can log in, hands over to two factor
+        authentication if configured, else stores the user in session
+        (rotating the session uuid) and redirects to next_url
+        """
+        next_url = prevent_open_redirect(next_url) or URL("index")
+        if self.db:
+            user = self.db.auth_user(user_id)
+            if not user:
+                raise HTTP(401)
+            error = self.check_login_blockers(user)
+            if error:
+                raise HTTP(403, error)
+            if self.requires_two_factor(user):
+                redirect(self.start_two_factor(user, next_url))
+        self.store_user_in_session(user_id)
+        if extra_user_info:
+            self.session["user"].update(
+                {k: v for k, v in extra_user_info.items() if k != "id"}
+            )
+        redirect(next_url)
 
     def request_reset_password(self, email, send=True, next="", route=None):
         """Send a mail with token for changing user's password after the user's parameters are entered
@@ -771,18 +973,18 @@ class Auth(Fixture):
             else db.auth_user.username
         )
         user = db(field == value).select().first()
-        if user and user.action_token != "account-blocked":
+        # only allow a reset on active accounts: issuing a reset token would
+        # otherwise overwrite pending-registration / pending-approval and let
+        # the user log in without verifying the email or being approved
+        current = (user and user.action_token) or ""
+        if user and (not current or current.startswith("reset-password-request:")):
             token = str(uuid.uuid4())
             if next:
                 token += "/" + b16e(next)
             user.update_record(action_token="reset-password-request:" + token)
             if send:
-                self._link = link = URL(
-                    route or self.route,
-                    "reset_password",
-                    vars=dict(token=token),
-                    scheme=True,
-                    use_appname=self.param.use_appname_in_redirects,
+                self._link = link = self._make_email_link(
+                    route or self.route, "reset_password", token
                 )
                 self.send("reset_password", user, link=link)
             return token
@@ -819,6 +1021,7 @@ class Auth(Fixture):
         if error:
             return {"errors": {"new_password": error}}
         qset.update(password=value)
+        self._consume_reset_token(user["id"])
         return {}
 
     # Methods that assume a user
@@ -940,7 +1143,19 @@ class Auth(Fixture):
         return row
 
     def get_or_register_user(self, user):
+        """finds (or creates) the auth_user for a user coming from a plugin
+
+        Users are identified by sso_id. If no account has that sso_id yet
+        (the first login with a provider) and the provider asserts that the
+        email is verified (user["email_verified"]), an existing account with
+        the same email is linked to the sso_id instead of creating a duplicate.
+        An unverified email never links to an existing account, else anyone
+        able to claim that email at the provider could take it over.
+        """
         db = self.db
+        user = dict(user)
+        email_verified = user.pop("email_verified", None) in (True, "true", "True", 1)
+        row = None
         # if we have an sso_id we use it to id the user
         if user.get("sso_id"):
             keyid = "sso_id"
@@ -949,9 +1164,25 @@ class Auth(Fixture):
             )
             # the sso source is always more authoritative so update the record
             if row:
-                row.update_record(**user)
+                row.update_record(**db.auth_user._filter_fields(user))
                 # pass the full user
                 user = row.as_dict()
+            # first login with this provider: link to a verified existing account
+            elif email_verified and user.get("email"):
+                row = self.get_or_delete_existing_unverified_account(user["email"])
+                if row:
+                    # do not steal the account from another provider's sso_id
+                    if not row.sso_id:
+                        row.update_record(sso_id=user["sso_id"])
+                    # the database is more authoritative
+                    user = row.as_dict()
+            elif user.get("email") and self.get_or_delete_existing_unverified_account(
+                user["email"]
+            ):
+                raise HTTP(
+                    401,
+                    body="An account with this email exists, login with your password",
+                )
         # otherwise we id the user via email
         elif user.get("email"):
             keyid = "email"
@@ -981,6 +1212,44 @@ class Auth(Fixture):
         query = self.db.auth_user.action_token == "reset-password-request:%s" % token
         query |= self.db.auth_user.action_token == "pending-registration:%s" % token
         return query
+
+    def _make_email_link(self, route, name, token):
+        """builds the absolute link sent by email (verify email, reset password)
+
+        The host of a link built from the request comes from client-controlled
+        headers (Origin/Host), so an attacker could make the emailed token point
+        to a host they control. Set base_url (or the PY4WEB_BASE_URL env var) or
+        PY4WEB_DOMAINS to pin it.
+        """
+        base_url = self.param.base_url
+        if base_url:
+            path = URL(
+                route,
+                name,
+                vars=dict(token=token),
+                use_appname=self.param.use_appname_in_redirects,
+            )
+            return base_url.rstrip("/") + path
+        if not os.environ.get("PY4WEB_DOMAINS"):
+            self.logger.warning(
+                "auth: email links use the request host; set auth.param.base_url,"
+                " PY4WEB_BASE_URL, or PY4WEB_DOMAINS to prevent host header injection"
+            )
+        return URL(
+            route,
+            name,
+            vars=dict(token=token),
+            scheme=True,
+            use_appname=self.param.use_appname_in_redirects,
+        )
+
+    def _consume_reset_token(self, user_id):
+        """invalidates a reset-password token once it has been used"""
+        db = self.db
+        db(
+            (db.auth_user.id == user_id)
+            & db.auth_user.action_token.startswith("reset-password-request:")
+        ).update(action_token=None)
 
     def _error(self, message, code=400):
         return {"status": "error", "message": message, "code": code}
@@ -1340,10 +1609,18 @@ class AuthAPI:
         if "pam" in auth.plugins or "ldap" in auth.plugins:
             plugin_name = "pam" if "pam" in auth.plugins else "ldap"
             plugin = auth.plugins[plugin_name]
+            if auth.login_throttled(username):
+                return auth._error(
+                    auth.param.messages["errors"].get("too_many_attempts")
+                )
             auth.logger.debug(
                 f"AuthAPI.login: Trying plugin {plugin_name} for user {username}"
             )
             check = plugin.check_credentials(username, password)
+            if check:
+                auth.reset_failed_logins(username)
+            else:
+                auth.record_failed_login(username)
             auth.logger.debug(
                 f"AuthAPI.login: plugin.check_credentials returned {check}"
             )
@@ -1376,6 +1653,12 @@ class AuthAPI:
                     auth.logger.debug(
                         f"AuthAPI.login: User after get_or_register_user: {user}"
                     )
+                    row = auth.db.auth_user(user["id"])
+                    error = auth.check_login_blockers(row)
+                    if error:
+                        return auth._error(error)
+                    if auth.requires_two_factor(row):
+                        return AuthAPI._two_factor_required(auth, row, payload)
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
@@ -1389,14 +1672,25 @@ class AuthAPI:
         # Else use normal login
         else:
             user, error = auth.login(username, password)
-            if user:
-                auth.session["user"] = {"id": user.get("id")}
-                auth.session["recent_activity"] = calendar.timegm(time.gmtime())
-                auth.session["uuid"] = str(uuid.uuid1())
+            if user and auth.requires_two_factor(user):
+                data = AuthAPI._two_factor_required(auth, user, payload)
+            elif user:
+                auth.store_user_in_session(user["id"])
                 user = {f.name: user[f.name] for f in auth.db.auth_user if f.readable}
                 data = {"user": user}
             else:
                 data = auth._error(error)
+        return data
+
+    @staticmethod
+    def _two_factor_required(auth, user, payload):
+        """the API cannot complete 2FA: hand over to the two_factor page"""
+        next_url = prevent_open_redirect(payload.get("next"))
+        url = auth.start_two_factor(user, next_url)
+        data = auth._error(
+            auth.param.messages["errors"].get("two_factor_required"), code=401
+        )
+        data["two_factor_url"] = url
         return data
 
     @staticmethod
@@ -1543,7 +1837,7 @@ class DefaultAuthForms:
             if self.auth.password_in_db:
                 self.auth.db.auth_user.password.requires = [
                     IS_STRONG(**self.auth.param.password_complexity),
-                    CRYPT(),
+                    CRYPT(digest_alg=PASSWORD_HASH_ALG),
                 ]
             else:
                 self.auth.param.password_complexity = {"entropy": 0}
@@ -1784,14 +2078,8 @@ class DefaultAuthForms:
             #  - two_factor_required() returns True
             #  If two_factor_required exists and returns False,
             #  then this user bypasses two_factor processing
-            if self.auth.param.two_factor_send is not None:
-                if (
-                    not self.auth.param.two_factor_required
-                    or self.auth.param.two_factor_required(user, request)
-                ):
-                    self.auth.session["auth.2fa_user"] = user["id"]
-                    self.auth.session["auth.2fa_next_url"] = next_url
-                    redirect(URL(f"{self.auth.route}/two_factor"))
+            if self.auth.requires_two_factor(user):
+                redirect(self.auth.start_two_factor(user, next_url))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1819,7 +2107,13 @@ class DefaultAuthForms:
     def _reset_two_factor(self):
         self.auth.session["auth.2fa_user"] = None
         self.auth.session["auth.2fa_code"] = None
+        self.auth.session["auth.2fa_expires"] = None
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+
+    def _abort_two_factor(self, message, next_url):
+        self._reset_two_factor()
+        self._set_flash(message)
+        redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
 
     def two_factor(self):
         if (self.auth.param.two_factor_send is None) and (
@@ -1834,16 +2128,33 @@ class DefaultAuthForms:
             redirect(URL("index"))
 
         user = self.auth.db.auth_user(user_id)
+        # the number of tries is counted server side: a counter in the session
+        # could be reset by replaying an older session cookie
+        attempts_key = f"2fa:{user_id}"
+        max_tries = self.auth.param.two_factor_tries
+        lifespan = self.auth.param.two_factor_lifespan
         code = self.auth.session.get("auth.2fa_code")
         if (not code) and (not self.auth.param.two_factor_send is None):
             # generate and send the code
-            code = str(random.randint(100000, 999999))
+            code = str(100000 + secrets.randbelow(900000))
             code = self.auth.param.two_factor_send(user, code)
             # store code in session
             self.auth.session["auth.2fa_code"] = code
-            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+            self.auth.session["auth.2fa_expires"] = time.time() + lifespan
+            self.auth.session["auth.2fa_tries_left"] = max_tries
+            self.auth.attempts.reset(attempts_key)
         elif self.auth.session.get("auth.2fa_tries_left") is None:
-            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+            self.auth.session["auth.2fa_tries_left"] = max_tries
+
+        expires = self.auth.session.get("auth.2fa_expires")
+        if code and expires and time.time() > expires:
+            self._abort_two_factor(
+                self.auth.param.messages["errors"]["two_factor_expired"], next_url
+            )
+        if self.auth.attempts.count(attempts_key) >= max_tries:
+            self._abort_two_factor(
+                self.auth.param.messages["errors"]["two_factor_max_tries"], next_url
+            )
 
         def two_factor_validate(form):
             # external validation outcome
@@ -1882,6 +2193,7 @@ class DefaultAuthForms:
         if form.accepted:
             # reset the 2f session
             self._reset_two_factor()
+            self.auth.attempts.reset(attempts_key)
             # store user in session
             self.auth.store_user_in_session(user["id"])
             # login user
@@ -1889,15 +2201,15 @@ class DefaultAuthForms:
             # redirect after login
             redirect(next_url)
         elif form.errors:
-            # decrease the retries count
-            self.auth.session["auth.2fa_tries_left"] -= 1
+            # count the failed try server side
+            tries = self.auth.attempts.hit(attempts_key, lifespan)
+            self.auth.session["auth.2fa_tries_left"] = max(max_tries - tries, 0)
             # if 0 retries available, reset, and redirect to login
-            if self.auth.session.get("auth.2fa_tries_left") < 1:
-                self._reset_two_factor()
-                self._set_flash(
-                    self.auth.param.messages["errors"]["two_factor_max_tries"]
+            if tries >= max_tries:
+                self._abort_two_factor(
+                    self.auth.param.messages["errors"]["two_factor_max_tries"],
+                    next_url,
                 )
-                redirect(URL(f"{self.auth.route}/login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):
@@ -2088,6 +2400,8 @@ class DefaultAuthForms:
             )
             form.errors = res.get("errors", {})
             form.accepted = not form.errors
+            if form.accepted and not check_old_password:
+                self.auth._consume_reset_token(user["id"])
             if not form.accepted:
                 form.vars.clear()
 

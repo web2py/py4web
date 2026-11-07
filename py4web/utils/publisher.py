@@ -12,11 +12,17 @@ class Publisher:
     """this is a work in progress - API subject to change"""
 
     def __init__(self, db, policy=None, auth=None, path="service/{uuid}/<tablename>"):
+        """
+        policy: a pydal.restapi.Policy. If None nothing is allowed
+            (DENY_ALL_POLICY): with no policy pydal performs no checks at all and
+            every table, auth_user included, would be readable and writable.
+        auth: if provided the service requires a logged in user (auth.user)
+        """
         self.db = db
-        self.policy = policy
-        self.restapi = RestAPI(self.db, policy)
+        self.policy = policy if policy is not None else DENY_ALL_POLICY
+        self.restapi = RestAPI(self.db, self.policy)
         self.path = path.format(uuid=str(uuid.uuid4()))
-        args = [db, auth] if auth else [db]
+        args = [db, auth.user] if auth else [db]
         f = action.uses(*args)(self.api)
         f = action(self.path, method=["GET", "POST"])(f)
         f = action(self.path + "/<id:int>", method=["PUT", "DELETE"])(f)

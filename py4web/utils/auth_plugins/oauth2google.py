@@ -12,6 +12,7 @@ class OAuth2Google(OAuth2):
     default_scope = "email profile"
     maps = {
         "email": "email",
+        "email_verified": "email_verified",
         "sso_id": "sub",
         "first_name": "given_name",
         "last_name": "family_name",

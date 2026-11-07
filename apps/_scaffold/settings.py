@@ -53,6 +53,10 @@ LOGIN_AFTER_REGISTRATION = False
 ALLOWED_ACTIONS = ["all"]
 
 # email settings
+# trusted base url for links sent by email (e.g. "https://example.com")
+# if None they are built from the request Host/Origin headers
+BASE_URL = os.environ.get("PY4WEB_BASE_URL")
+
 SMTP_SSL = False
 SMTP_SERVER = None
 SMTP_SENDER = "you@example.com"

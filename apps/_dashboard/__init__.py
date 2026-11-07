@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import traceback
 import uuid
 import zipfile
@@ -32,7 +34,16 @@ from py4web import (
     request,
     response,
 )
-from py4web.core import DAL, Fixture, Reloader, Session, dumps, error_logger, safely
+from py4web.core import (
+    DAL,
+    Fixture,
+    Reloader,
+    Session,
+    dumps,
+    error_logger,
+    get_script_name,
+    safely,
+)
 from py4web.utils.factories import ActionFactory
 from py4web.utils.grid import Grid
 
@@ -90,11 +101,30 @@ if MODE in ("demo", "readonly", "full"):
             user_id=(session.get("user") or {}).get("id"),
             # reverse-proxy prefix so client-rendered route links (Vue) point at
             # the externally-visible path, not the raw registered rule
-            script_prefix=(
-                request.environ.get("SCRIPT_NAME", "")
-                or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-            ).rstrip("/"),
+            script_prefix=get_script_name(),
         )
+
+    # brute force protection for the dashboard password (per process, per ip)
+    LOGIN_MAX_FAILURES = 5
+    LOGIN_WINDOW = 300  # seconds
+    LOGIN_FAILURES = {}  # ip -> (failures, first failure time)
+    LOGIN_LOCK = threading.Lock()
+
+    def _login_failures(ip):
+        with LOGIN_LOCK:
+            count, since = LOGIN_FAILURES.get(ip, (0, 0))
+            if time.time() - since > LOGIN_WINDOW:
+                LOGIN_FAILURES.pop(ip, None)
+                return 0
+            return count
+
+    def _record_login(ip, valid):
+        with LOGIN_LOCK:
+            if valid:
+                LOGIN_FAILURES.pop(ip, None)
+            else:
+                count, since = LOGIN_FAILURES.get(ip, (0, time.time()))
+                LOGIN_FAILURES[ip] = (count + 1, since)
 
     @action("login", method="POST")
     @action.uses(session)
@@ -102,6 +132,9 @@ if MODE in ("demo", "readonly", "full"):
         if MODE == "demo":
             valid = True
         else:
+            ip = request.remote_addr or ""
+            if _login_failures(ip) >= LOGIN_MAX_FAILURES:
+                return dict(user=False, mode=MODE, error="too many failed attempts")
             valid = False
             password = request.json.get("password")
             password_file = os.environ.get("PY4WEB_PASSWORD_FILE")
@@ -109,6 +142,7 @@ if MODE in ("demo", "readonly", "full"):
                 with open(password_file, "r") as fp:
                     encrypted_password = fp.read().strip()
                     valid = CRYPT()(password)[0] == encrypted_password
+            _record_login(ip, valid)
         if valid:
             session["user"] = dict(id=1)
         return dict(user=valid, mode=MODE)
@@ -186,7 +220,14 @@ if MODE in ("demo", "readonly", "full"):
                     "big-reference",
                 )
             ]
-            return Grid(table, columns=columns)
+            writable = MODE == "full"
+            return Grid(
+                table,
+                columns=columns,
+                create=writable,
+                editable=writable,
+                deletable=writable,
+            )
 
         grid = action.uses(db)(make_grid)()
         return dict(app_name=app_name, table_name=table_name, grid=grid)
@@ -239,6 +280,8 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def delete_app(name):
         """delete the app"""
+        if MODE != "full":
+            abort(403)
         path = os.path.join(FOLDER, name)
         # Keep backups out of the apps folder so they don't show up in
         # listings or get re-imported by py4web.
@@ -259,6 +302,8 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def new_file(name, file_name):
         """creates a new file"""
+        if MODE != "full":
+            abort(403)
         app_path = os.path.join(FOLDER, name)
         if not os.path.exists(app_path):
             return {"status": "success", "payload": "App does not exist"}
@@ -384,7 +429,7 @@ if MODE in ("demo", "readonly", "full"):
     @catch_errors
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
+        tickets = safely(error_logger.database_logger.get) if MODE != "demo" else None
         return {"payload": tickets or [], "status": "success"}
 
     @action("clear")
@@ -643,8 +688,8 @@ if MODE == "full":
 @action.uses(Logged(session), "translations.html")
 def translations(name):
     """renders the translation editor for app ``name``"""
-    folder = os.path.join(FOLDER, name, "translations")
-    if not os.path.exists(folder):
+    folder = os.path.join(safe_join(FOLDER, name) or abort(400), "translations")
+    if MODE == "full" and not os.path.exists(folder):
         os.makedirs(folder)
     return dict(app_name=name)
 
@@ -653,7 +698,7 @@ def translations(name):
 @action.uses(Logged(session))
 def get_translations(name):
     """returns a json with all translations for all languages"""
-    t = Translator(os.path.join(FOLDER, name, "translations"))
+    t = Translator(os.path.join(safe_join(FOLDER, name) or abort(400), "translations"))
     return t.languages
 
 
@@ -661,8 +706,8 @@ def get_translations(name):
 @action.uses(Logged(session))
 def post_translations(name):
     """updates all languages"""
-    folder = os.path.join(FOLDER, name, "translations")
-    if not os.path.exists(folder):
+    folder = os.path.join(safe_join(FOLDER, name) or abort(400), "translations")
+    if MODE == "full" and not os.path.exists(folder):
         os.makedirs(folder)
     t = Translator(folder)
     t.languages = request.json
@@ -674,6 +719,6 @@ def post_translations(name):
 @action.uses(Logged(session))
 def update_translations(name):
     """find all T(...) decorated strings in the code and returns them"""
-    app_folder = os.path.join(FOLDER, name)
+    app_folder = safe_join(FOLDER, name) or abort(400)
     strings = Translator.find_matches(app_folder)
     return {"strings": strings}

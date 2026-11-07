@@ -1,7 +1,7 @@
 import copy
 import os
+import secrets
 import time
-import uuid
 
 import jwt
 from pydal.objects import FieldVirtual
@@ -40,16 +40,26 @@ def compat_represent(field, value, row):
         return represent(value)
 
 
-def get_options(validators):
-    """given a validator chain, if one has .options, return them"""
+def get_options(validators, depth=0):
+    """given a validator chain, if one has .options, return them
+
+    Looks inside wrapping validators (IS_EMPTY_OR, IS_LIST_OF, ...) through
+    their .other, so a list:reference field, whose default validator is
+    IS_EMPTY_OR(IS_LIST_OF(IS_IN_DB(...))), still gets a (multiple) select.
+    """
     options = None
-    if validators:
+    if validators and depth < 5:
         if not isinstance(validators, (list, tuple)):
             validators = [validators]
         for item in validators:
             if hasattr(item, "options"):
                 options = item.options
                 break
+            other = getattr(item, "other", None)
+            if other is not None and other is not item:
+                options = get_options(other, depth + 1)
+                if options is not None:
+                    return options
         if callable(options):
             options = options(zero=True)
     return options
@@ -893,7 +903,7 @@ class Form(object):
         if self.csrf_protection and not self._verify_form(self.post_vars):
             return
 
-        if self.post_vars.get("_delete") and self.dbio:
+        if self.deletable and self.post_vars.get("_delete") and self.dbio:
             self.accepted = True
             self.deleted = True
             self.record.delete_record()
@@ -952,15 +962,31 @@ class Form(object):
                 validated_vars[field_name] = (
                     self.record and self.record.get(field_name) or None
                 )
-        self.vars = validated_vars
+        # keep the other submitted vars (hidden fields) in form.vars, but the
+        # validated values win, and only those are written to the database
+        self.vars.update(validated_vars)
         if self.record and self.dbio:
             self.vars["id"] = self.record.id
+        before = dict(self.vars)
         if self.validation:
             self.validation(self)
         if not self.errors:
             self.accepted = True
             if self.dbio:
-                self.update_or_insert(self.vars)
+                # write the validated fields, plus any table field that the
+                # validation callback set or changed (never raw posted vars)
+                db_vars = {
+                    name: self.vars[name]
+                    for name in self.table.fields
+                    if name != "id"
+                    and name in self.vars
+                    and (
+                        name in validated_vars
+                        or name not in before
+                        or self.vars[name] is not before[name]
+                    )
+                }
+                self.update_or_insert(db_vars)
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
@@ -972,11 +998,10 @@ class Form(object):
             }
 
     def _make_key(self):
+        key = secrets.token_hex(32)
         if self.csrf_session is not None:
-            key = str(uuid.uuid1())
             self.csrf_session["_formkey"] = key
         else:
-            key = str(uuid.uuid1())
             response.set_cookie("_formkey", key, same_site="Strict")
         return key
 

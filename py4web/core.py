@@ -93,6 +93,7 @@ __all__ = [
 
 PY4WEB_CMD = sys.argv[0]
 
+REGEX_SCRIPT_NAME = re.compile(r"^(/[\w.~-]+)*/?$")
 REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
 PASSWORD_FILENAME = "password.txt"
@@ -838,20 +839,18 @@ class Session(Fixture):
         self_local = self.local
         self_local.changed = False
         self_local.data = {}
+        self_local.loaded_uuid = None
         self_local.cookie_name = params.name.format(app_name=app_name)
         self_local.secure = request.url.startswith("https")
-        # The session token is read from the cookie only.  It used to also be
-        # accepted from the query string and request body; query-string
-        # tokens leak via Referer headers, browser history, and access logs,
-        # so that fallback was a session-stealing footgun.
+        # The session token is read from the cookie or, for clients that do not
+        # keep cookies, from the X-Session-Token header. It used to also be
+        # accepted from the query string and request body: query-string tokens
+        # leak via Referer headers, browser history, and access logs, and a
+        # body token lets a cross-site form force the attacker's session on a
+        # victim (a custom header cannot be sent cross-site without CORS).
         raw_token = request.get_cookie(self_local.cookie_name)
-        if not raw_token and request.method in {"POST", "PUT", "DELETE", "PATCH"}:
-            raw_token = (
-                request.forms
-                and request.forms.get("_session_token")
-                or request.json
-                and request.json.get("_session_token")
-            )
+        if not raw_token:
+            raw_token = request.headers.get("X-Session-Token")
         if DEBUG:
             logging.debug("Session token found %s", raw_token)
         data = {}
@@ -888,6 +887,7 @@ class Session(Fixture):
             )
         ):
             self_local.data.update(data)  # the take the loaded data
+            self_local.loaded_uuid = data.get("uuid")
 
     def save(self):
         """Saves the session"""
@@ -901,6 +901,12 @@ class Session(Fixture):
         self_local.data["cookie_name"] = self_local.cookie_name
         if params.storage:
             cookie_data = self_local.data["uuid"]
+            # the session id changed (login, logout/clear): make sure the old
+            # id stops working, else a stolen or fixated id would stay valid
+            old_uuid = getattr(self_local, "loaded_uuid", None)
+            if old_uuid and old_uuid != cookie_data:
+                params.storage.set(old_uuid, "{}", params.expiration)
+                self_local.loaded_uuid = cookie_data
             params.storage.set(
                 cookie_data, json.dumps(self_local.data), params.expiration
             )
@@ -997,6 +1003,22 @@ class Session(Fixture):
 #########################################################################################
 
 
+def get_script_name():
+    """Returns the URL prefix the app is mounted under (without trailing /)
+
+    SCRIPT_NAME is set by the WSGI server and trusted. X-Script-Name is a
+    client-controlled header, so only a plain path prefix is accepted from it,
+    never something like "@evil.com" that would change the host of absolute
+    URLs.
+    """
+    script_name = request.environ.get("SCRIPT_NAME", "")
+    if not script_name:
+        script_name = request.environ.get("HTTP_X_SCRIPT_NAME", "")
+        if script_name and not REGEX_SCRIPT_NAME.match(script_name):
+            script_name = ""
+    return script_name.rstrip("/")
+
+
 def URL(  # pylint: disable=invalid-name
     *parts,
     vars=None,  # pylint: disable=redefined-builtin
@@ -1023,10 +1045,7 @@ def URL(  # pylint: disable=invalid-name
     # no-parts branch below can strip it when use_appname=False.
     app_name = getattr(request, "app_name", None)
     has_appname = bool(use_appname and app_name)
-    script_name = (
-        request.environ.get("SCRIPT_NAME", "")
-        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-    ).rstrip("/")
+    script_name = get_script_name()
     if not parts:
         # request.path is WSGI PATH_INFO, which never carries SCRIPT_NAME, so a
         # self-referential URL(vars=...) behind a reverse-proxy prefix must have
@@ -1837,10 +1856,7 @@ def error404(error):  # pylint: disable=unused-argument
         href = "/"
     else:
         href = "/" + guess_app_name
-    script_name = (
-        request.environ.get("SCRIPT_NAME", "")
-        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-    ).rstrip("/")
+    script_name = get_script_name()
     if script_name:
         href = script_name + href
     return error_page(404, button_text=guess_app_name, href=href)
@@ -2166,7 +2182,8 @@ def set_password(password, password_file):
     """Set administrator's password for the Dashboard"""
     click.echo(f'Storing the hashed password in file "{password_file}"\n')
     with open(password_file, "w", encoding="utf8") as fp:
-        fp.write(str(pydal.validators.CRYPT()(password)[0]))
+        alg = "pbkdf2(210000,20,sha512)"
+        fp.write(str(pydal.validators.CRYPT(digest_alg=alg)(password)[0]))
 
 
 def reinstall_apps(kwargs):
