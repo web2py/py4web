@@ -104,6 +104,7 @@ auth.param.login_expiration_time = 3600
 auth.param.password_complexity = {"entropy": settings.PASSWORD_ENTROPY}
 auth.param.block_previous_password_num = 3
 auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
+auth.param.base_url = settings.BASE_URL
 auth.define_tables()
 auth.fix_actions()
 auth.logger = logger

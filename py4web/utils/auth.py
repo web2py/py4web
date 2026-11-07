@@ -3,6 +3,7 @@ import calendar
 import copy
 import hashlib
 import random
+import os
 import re
 import secrets
 import time
@@ -253,6 +254,7 @@ class Auth(Fixture):
         template_args=None,
         logger=None,
         T=None,
+        base_url=None,
     ):
         # configuration parameters
         self.param = Param(
@@ -281,6 +283,9 @@ class Auth(Fixture):
             two_factor_tries=3,
             auth_enforcer=None,
             template_args=template_args or {},
+            # trusted base url (e.g. "https://example.com") used for links
+            # sent by email; when None they are built from the request
+            base_url=base_url or os.environ.get("PY4WEB_BASE_URL"),
         )
 
         # callbacks for forms
@@ -670,12 +675,8 @@ class Auth(Fixture):
             fields["action_token"] = "pending-registration:%s" % token
             res = store(fields)
             if send and res.get("id"):
-                self._link = link = URL(
-                    route or self.route,
-                    "verify_email",
-                    vars=dict(token=token),
-                    scheme=True,
-                    use_appname=self.param.use_appname_in_redirects,
+                self._link = link = self._make_email_link(
+                    route or self.route, "verify_email", token
                 )
                 self.send("verify_email", fields, link=link)
         elif self.param.registration_requires_approval:
@@ -784,12 +785,8 @@ class Auth(Fixture):
                 token += "/" + b16e(next)
             user.update_record(action_token="reset-password-request:" + token)
             if send:
-                self._link = link = URL(
-                    route or self.route,
-                    "reset_password",
-                    vars=dict(token=token),
-                    scheme=True,
-                    use_appname=self.param.use_appname_in_redirects,
+                self._link = link = self._make_email_link(
+                    route or self.route, "reset_password", token
                 )
                 self.send("reset_password", user, link=link)
             return token
@@ -989,6 +986,36 @@ class Auth(Fixture):
         query = self.db.auth_user.action_token == "reset-password-request:%s" % token
         query |= self.db.auth_user.action_token == "pending-registration:%s" % token
         return query
+
+    def _make_email_link(self, route, name, token):
+        """builds the absolute link sent by email (verify email, reset password)
+
+        The host of a link built from the request comes from client-controlled
+        headers (Origin/Host), so an attacker could make the emailed token point
+        to a host they control. Set base_url (or the PY4WEB_BASE_URL env var) or
+        PY4WEB_DOMAINS to pin it.
+        """
+        base_url = self.param.base_url
+        if base_url:
+            path = URL(
+                route,
+                name,
+                vars=dict(token=token),
+                use_appname=self.param.use_appname_in_redirects,
+            )
+            return base_url.rstrip("/") + path
+        if not os.environ.get("PY4WEB_DOMAINS"):
+            self.logger.warning(
+                "auth: email links use the request host; set auth.param.base_url,"
+                " PY4WEB_BASE_URL, or PY4WEB_DOMAINS to prevent host header injection"
+            )
+        return URL(
+            route,
+            name,
+            vars=dict(token=token),
+            scheme=True,
+            use_appname=self.param.use_appname_in_redirects,
+        )
 
     def _consume_reset_token(self, user_id):
         """invalidates a reset-password token once it has been used"""

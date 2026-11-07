@@ -93,6 +93,7 @@ __all__ = [
 
 PY4WEB_CMD = sys.argv[0]
 
+REGEX_SCRIPT_NAME = re.compile(r"^(/[\w.~-]+)*/?$")
 REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
 PASSWORD_FILENAME = "password.txt"
@@ -997,6 +998,22 @@ class Session(Fixture):
 #########################################################################################
 
 
+def get_script_name():
+    """Returns the URL prefix the app is mounted under (without trailing /)
+
+    SCRIPT_NAME is set by the WSGI server and trusted. X-Script-Name is a
+    client-controlled header, so only a plain path prefix is accepted from it,
+    never something like "@evil.com" that would change the host of absolute
+    URLs.
+    """
+    script_name = request.environ.get("SCRIPT_NAME", "")
+    if not script_name:
+        script_name = request.environ.get("HTTP_X_SCRIPT_NAME", "")
+        if script_name and not REGEX_SCRIPT_NAME.match(script_name):
+            script_name = ""
+    return script_name.rstrip("/")
+
+
 def URL(  # pylint: disable=invalid-name
     *parts,
     vars=None,  # pylint: disable=redefined-builtin
@@ -1023,10 +1040,7 @@ def URL(  # pylint: disable=invalid-name
     # no-parts branch below can strip it when use_appname=False.
     app_name = getattr(request, "app_name", None)
     has_appname = bool(use_appname and app_name)
-    script_name = (
-        request.environ.get("SCRIPT_NAME", "")
-        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-    ).rstrip("/")
+    script_name = get_script_name()
     if not parts:
         # request.path is WSGI PATH_INFO, which never carries SCRIPT_NAME, so a
         # self-referential URL(vars=...) behind a reverse-proxy prefix must have
@@ -1837,10 +1851,7 @@ def error404(error):  # pylint: disable=unused-argument
         href = "/"
     else:
         href = "/" + guess_app_name
-    script_name = (
-        request.environ.get("SCRIPT_NAME", "")
-        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
-    ).rstrip("/")
+    script_name = get_script_name()
     if script_name:
         href = script_name + href
     return error_page(404, button_text=guess_app_name, href=href)
